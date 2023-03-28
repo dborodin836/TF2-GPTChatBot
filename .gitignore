@@ -1,0 +1,13 @@
+# IDE
+.idea
+
+# Local config file
+local.ini
+
+# Cache
+__pychache/
+
+# Build
+dist
+build
+*.spec
