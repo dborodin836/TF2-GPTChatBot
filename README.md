@@ -66,7 +66,7 @@ RCON_PORT=27015
 3. Add the following options:
 
 ```
--rpt -usercon -ip 127.0.0.1 +rcon_password password +net_start
+-rpt -usercon -ip 127.0.0.1 +rcon_password password
 ```
 
 ### 4. Launch Team Fortress 2
@@ -98,9 +98,16 @@ cd TF2-GPTChatBot
 
 ### 3. (Optional) Create and activate a new virtual environment:
 
+Linux:
 ```sh
 python3 -m venv venv
 source venv/bin/activate
+```
+
+Windows:
+```sh
+py -m venv venv
+venv/bin/activate
 ```
 
 ### 4. Install the project dependencies using pip:
