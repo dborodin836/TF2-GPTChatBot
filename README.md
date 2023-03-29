@@ -66,7 +66,7 @@ RCON_PORT=27015
 3. Add the following options:
 
 ```
--rpt -usercon -ip 127.0.0.1 +rcon_password password
+-rpt -usercon -ip 0.0.0.0 +rcon_password password +net_start
 ```
 
 ### 4. Launch Team Fortress 2
@@ -152,7 +152,7 @@ source venv/bin/activate
 3. Add the following options:
 
 ```
--flushlog -rpt -usercon -ip 127.0.0.1 +rcon_password password +net_start
+-rpt -usercon -ip 0.0.0.0 +rcon_password password +net_start
 ```
 
 ### 8. Launch Team Fortress 2
@@ -277,7 +277,7 @@ cannot be undone.
 |---------|------------------------------------------------------|------------|
 | \skynet | AI will behave like Skynet from Terminator franchise | skynet.txt |
 | \walter | AI will behave like Walter White from Breaking Bad   | walter.txt |
-| \jessy  | AI will behave like Jessy Pinkman from Breaking Bad  | walter.txt |
+| \jessy  | AI will behave like Jessy Pinkman from Breaking Bad  | jessy.txt  |
 
 #### Adding new prompts
 
