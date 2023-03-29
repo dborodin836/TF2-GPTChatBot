@@ -139,13 +139,7 @@ RCON_PASSWORD=password
 RCON_PORT=27015
 ```
 
-### 6. Activate the virtual environment (if created):
-
-```sh
-source venv/bin/activate
-```
-
-### 7. Add launch options to TF2 on Steam:
+### 6. Add launch options to TF2 on Steam:
 
 1. Right-click on Team Fortress 2 in your Steam library and select "Properties"
 2. Click "Set Launch Options" under the "General" tab
@@ -155,9 +149,9 @@ source venv/bin/activate
 -rpt -usercon -ip 0.0.0.0 +rcon_password password +net_start
 ```
 
-### 8. Launch Team Fortress 2
+### 7. Launch Team Fortress 2
 
-### 7. Start the application:
+### 8. Start the application:
 
 ```sh
 python main.py
