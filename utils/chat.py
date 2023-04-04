@@ -25,7 +25,7 @@ def handle_gpt_request(message_type: Literal["CHAT", "GPT3"], username: str, use
     if message_type == "CHAT":
         chat_buffer += response + '\n'
 
-    log_message(message_type, username, response)
+    log_message(message_type, username, ' '.join(response.split()))
 
     send_say_command_to_tf2(response)
     return chat_buffer
