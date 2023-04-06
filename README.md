@@ -170,6 +170,11 @@ python main.py
 
 The application should now be running and ready to use.
 
+_**NOTE: You can create your own executable using this command**_
+```sh
+pyinstaller --onefile --clean -n TF2-GPTChatBot --icon icon.ico main.py
+```
+
 ## Usage
 
 ### Commands
