@@ -4,7 +4,7 @@ import time
 import os
 from typing import Tuple
 
-from config import TF2_LOGFILE_PATH
+from config import TF2_LOGFILE_PATH, SOFT_COMPLETION_LIMIT
 from utils.prompt import PROMPTS
 
 MAX_LENGTH_CYRILLIC = 65
@@ -75,7 +75,7 @@ def add_prompts_by_flags(user_prompt: str) -> str:
     result += user_prompt.strip()
 
     if r'\l' not in args:
-        result += " Answer in less than 250 chars!"
+        result += f" Answer in less than {SOFT_COMPLETION_LIMIT} chars!"
     result = result.replace(r'\l', '')
 
     return result

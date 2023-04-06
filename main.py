@@ -16,7 +16,6 @@ def main() -> None:
     load_prompts()
     print("Ready to use!")
 
-
     # Loop through log file
     for line, user in open_tf2_logfile():
         # Handle GPT3 completion requests
