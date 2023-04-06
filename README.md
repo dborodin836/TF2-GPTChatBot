@@ -23,6 +23,9 @@
     - [Adding new prompts](#adding-new-prompts)
 - [FAQ](#faq)
     - [Can I receive a VAC ban for using this?](can-i-receive-a-VAC-ban-for-using-this?)
+    - [How to deal with spammers?](#how-to-deal-with-spammers)
+    - [Program has stopped working and I are unable to type in the chat, but I can still see messages in the program window, what can I do?](#program-has-stopped-working-and-i-are-unable-to-type-in-the-chat-but-i-can-still-see-messages-in-the-program-window-what-can-i-do)
+    - [Other Source Engine games](#other-source-engine-games)
 
 ## Running Using Binary
 
@@ -167,6 +170,11 @@ python main.py
 
 The application should now be running and ready to use.
 
+_**NOTE: You can create your own executable using this command**_
+```sh
+pyinstaller --onefile --clean -n TF2-GPTChatBot --icon icon.ico main.py
+```
+
 ## Usage
 
 ### Commands
@@ -304,3 +312,35 @@ Hi chatGPT, you are going to pretend to be MEDIC from Team Fortress 2. You can d
 
 The TF2-GPTChatBot does not alter the game or operating system memory in any manner.
 It solely utilizes the built-in features of the game engine as intended.
+
+### How to deal with spammers?
+
+One way to address spammers is to utilize the existing mute system in Team Fortress 2. It can be used to mute
+players who are spamming messages. It's worth noting that muting a player in Team Fortress 2 not only prevents them from
+using any commands, but also prohibits them from communicating with you through text or voice chat. It's also worth
+mentioning that a ban system may be implemented in the future for TF2-GPTChatBot.
+
+### Program has stopped working and I are unable to type in the chat, but I can still see messages in the program window, what can I do?
+
+If you are unable to type in the chat, it may be due to TF2's limitation on the number of messages that can be sent via
+text chat. This also affects the TF2-GPTChatBot's ability to answer user messages. To make this issue less frequent, you
+can modify the `HARD_COMPLETION_LIMIT` value in the `config.ini` file to limit the number of messages sent through TF2 chat.
+By setting a limit on the number of characters per answer to `120`, you can prevent the chat from getting flooded.
+
+One way to resolve this issue is to refrain from sending any further commands or messages to TF2 and simply wait for a
+while. This generally helps.
+
+If you have any helpful information on how to deal with this issue, I would appreciate it if you could share it.
+
+### Other Source Engine games?
+
+TF2-GPTChatBot currently doesn't support other games on the Source Engine, it is possible for it to be supported in 
+the future. At the moment, I am not aware of any limitations that could pose a problem.
+
+## Contributing
+
+We welcome contributions to this project!
+
+If you have any questions or problems with the project, please 
+[open an issue](https://github.com/dborodin836/TF2-GPTChatBot/issues/new) 
+and we'll be happy to help. Please be respectful to everyone in the project :).
