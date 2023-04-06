@@ -11,26 +11,6 @@ MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120
 
 
-def follow(logfile) -> Tuple[str, str]:
-    """
-    Continuously monitoring a log file
-    """
-    logfile.seek(0, os.SEEK_END)  # Go to the end of the file
-
-    while True:
-        try:
-            line = logfile.readline()
-        except Exception:
-            continue
-
-        if not line:
-            time.sleep(0.1)
-            continue
-        #  This yields a tuple containing the user prompt and the username.
-        #  ('!gpt3 Who are you Chatgpt?', 'username')
-        yield line.split(" :  ")[-1], line.split(" :  ")[0]
-
-
 def get_chunks(s, maxlength):
     """
     This function splits a string into chunks of a maximum length, with each chunk ending at the
@@ -81,6 +61,36 @@ def add_prompts_by_flags(user_prompt: str) -> str:
     return result
 
 
+def follow_tail(file_path: str) -> str:
+    first_call = True
+    while True:
+        try:
+            with codecs.open(file_path, encoding='utf-8') as input:
+                if first_call:
+                    input.seek(0, 2)
+                    first_call = False
+                latest_data = input.read()
+                while True:
+                    if '\n' not in latest_data:
+                        latest_data += input.read()
+                        if '\n' not in latest_data:
+                            yield ''
+                            if not os.path.isfile(file_path):
+                                break
+                            continue
+                    latest_lines = latest_data.split('\n')
+                    if latest_data[-1] != '\n':
+                        latest_data = latest_lines[-1]
+                    else:
+                        latest_data = input.read()
+                    for line in latest_lines[:-1]:
+                        yield line + '\n'
+        except IOError:
+            yield ''
+
+
 def open_tf2_logfile() -> Tuple[str, str]:
-    logfile = codecs.open(TF2_LOGFILE_PATH, "r", encoding='utf-8')
-    return follow(logfile)
+    for line in follow_tail(TF2_LOGFILE_PATH):
+        #  This yields a tuple containing the user prompt and the username.
+        #  ('!gpt3 Who are you Chatgpt?', 'username')
+        yield line.split(" :  ")[-1], line.split(" :  ")[0]
