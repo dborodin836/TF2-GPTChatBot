@@ -39,6 +39,9 @@ class LogWindow(tk.Frame):
     def handle_commands(self, event):
         text = self.cmd_line.get("1.0", tk.END).strip()
 
+        if text.strip == "":
+            return
+
         handle_gui_console_commands(text)
 
         # Clear the additional_text widget after the function is executed
