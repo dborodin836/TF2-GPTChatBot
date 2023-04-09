@@ -1,6 +1,8 @@
 import codecs
 import json
 import sys
+import queue
+import time
 from json import JSONDecodeError
 from typing import Literal
 
@@ -13,6 +15,8 @@ from utils.logs import log_message, log_cmd_message
 
 BOT_RUNNING = True
 BANNED_PLAYERS = set()
+
+prompts_queue = queue.Queue()
 
 BANS_FILE = 'bans.json'
 
@@ -154,6 +158,10 @@ def handle_gui_console_commands(command: str) -> None:
         name = command.removeprefix("unban ").strip()
         unban_player(name)
 
+    elif command.startswith("gpt3 "):
+        prompt = command.removeprefix("gpt3 ").strip()
+        prompts_queue.put(prompt)
+
     elif command.startswith("bans"):
         if len(BANNED_PLAYERS) == 0:
             print("### NO BANS ###")
@@ -170,4 +178,15 @@ def handle_gui_console_commands(command: str) -> None:
               "bans - show all banned players",
               "ban <username> - ban user by username",
               "unban <username> - unban user by username",
+              "gpt3 <prompt> - sends a response to GPT3",
               sep='\n')
+
+
+def gpt3_cmd_handler():
+    while True:
+        if prompts_queue.qsize() != 0:
+            prompt = prompts_queue.get()
+            response = send_gpt_completion_request(prompt, "admin")
+            print(response)
+        else:
+            time.sleep(2)
