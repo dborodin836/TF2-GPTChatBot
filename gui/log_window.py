@@ -2,6 +2,8 @@ import tkinter as tk
 
 from utils.chat import handle_gui_console_commands
 
+PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
+
 
 class LogWindow(tk.Frame):
     def __init__(self, master=None):
@@ -23,7 +25,7 @@ class LogWindow(tk.Frame):
         self.cmd_line.bind("<Return>", self.handle_commands)
 
         # Add a placeholder to the additional_text widget
-        self.cmd_line.insert("1.0", "Type your commands here...")
+        self.cmd_line.insert("1.0", PROMPT_PLACEHOLDER)
 
         # Binds to make the placeholder work
         self.cmd_line.bind("<FocusIn>", self.handle_additional_text_focus_in)
@@ -49,13 +51,13 @@ class LogWindow(tk.Frame):
 
     def handle_additional_text_focus_in(self, event):
         # Clear the placeholder text when the additional_text widget receives focus
-        if self.cmd_line.get("1.0", tk.END).strip() == "Type your commands here...":
+        if self.cmd_line.get("1.0", tk.END).strip() == PROMPT_PLACEHOLDER:
             self.cmd_line.delete("1.0", tk.END)
 
     def handle_additional_text_focus_out(self, event):
         # Show the placeholder text when the additional_text widget loses focus and is empty
         if not self.cmd_line.get("1.0", tk.END).strip():
-            self.cmd_line.insert("1.0", "Type your commands here...")
+            self.cmd_line.insert("1.0", PROMPT_PLACEHOLDER)
 
 
 class CustomOutput:
