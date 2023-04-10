@@ -31,6 +31,7 @@ class LogWindow(tk.Frame):
 
     def update_logs(self, message):
         self.log_text.insert(tk.END, f"{message}")
+        self.log_text.see(tk.END)  # Scroll to the end of the text widget
 
     def exit_program(self):
         self.master.destroy()
