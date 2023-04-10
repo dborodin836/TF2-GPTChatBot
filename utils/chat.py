@@ -4,7 +4,7 @@ import sys
 from json import JSONDecodeError
 from typing import Literal
 
-from config import GPT_COMMAND, CHATGPT_COMMAND, CLEAR_CHAT_COMMAND
+from config import GPT_COMMAND, CHATGPT_COMMAND, CLEAR_CHAT_COMMAND, RICKROLL_ENABLED
 from services.chatgpt import send_gpt_completion_request
 from services.network import send_say_command_to_tf2, check_connection
 from utils.prompt import load_prompts
@@ -83,6 +83,12 @@ def handle_command(line: str, user: str, conversation_history: str) -> str:
     elif line.strip().startswith(CLEAR_CHAT_COMMAND):
         log_message("CHAT", user, "CLEARING CHAT")
         return ''
+
+    elif line.strip().startswith("!rtd"):
+        if RICKROLL_ENABLED:
+            log_cmd_message("RICKROLLED!!11!!")
+            time.sleep(1)
+            send_say_command_to_tf2(f"[RTD] {user} rolled: youtu.be/dQw4w9WgXcQ")
 
     elif line.strip() == "!gpt_stop":
         BOT_RUNNING = False
