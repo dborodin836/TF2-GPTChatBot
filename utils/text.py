@@ -93,4 +93,4 @@ def open_tf2_logfile() -> Tuple[str, str]:
     for line in follow_tail(TF2_LOGFILE_PATH):
         #  This yields a tuple containing the user prompt and the username.
         #  ('!gpt3 Who are you Chatgpt?', 'username')
-        yield line.split(" :  ")[-1], line.split(" :  ")[0]
+        yield line.split(" :  ")[-1], line.split(" :  ")[0].removeprefix("*DEAD* ")
