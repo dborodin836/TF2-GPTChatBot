@@ -1,5 +1,8 @@
+import datetime
 from typing import Literal
 from datetime import datetime as dt
+
+DATE = None
 
 
 def get_time_stamp():
@@ -17,3 +20,13 @@ def log_message(message_type: Literal["CHAT", "GPT3"], username: str, user_promp
 def log_cmd_message(message: str) -> None:
     log_msg = f"[{get_time_stamp()}] -- {message}"
     print(log_msg)
+
+
+def log_to_file(mes):
+    global DATE
+    if DATE is None:
+        DATE = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+
+    filename = f"log_{DATE}.txt"
+    with open(filename, "a") as f:
+        f.write(mes)
