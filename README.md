@@ -13,10 +13,12 @@
 - [Running Using Binary](#running-using-binary)
 - [Running from Source](#running-from-source)
 - [Usage](#usage)
-    - [Commands](#comands)
+    - [GUI Commands](#gui-commands)
+    - [Chat Commands](#chat-commands)
         - [!gpt3](#-gpt3)
         - [!cgpt](#-cgpt)
         - [!clear](#-clear)
+        - [!rtd](#-rtd)
     - [Screenshots](#screenshots)
 - [Prompts](#prompts)
     - [Pre-build prompts](#pre-build-prompts)
@@ -48,8 +50,8 @@ Here's an example of what the config file might look like:
 
 ```
 [GENERAL]
-TF2_LOGFILE_PATH=C:\Program Files (x86)\Steam\steamapps\common\Team Fortress 2\tf\console.log
-OPENAI_API_KEY=sk-blahblahblahblahblahblahblahblahblahblahblahblah
+TF2_LOGFILE_PATH=H:\Programs\Steam\steamapps\common\Team Fortress 2\tf\console.log
+OPENAI_API_KEY=sk-************************************************
 
 [COMMANDS]
 GPT_COMMAND=!gpt3
@@ -63,7 +65,10 @@ RCON_PORT=27015
 
 [MISC]
 SOFT_COMPLETION_LIMIT=128
-HARD_COMPLETION_LIMIT=300
+HARD_COMPLETION_LIMIT=250
+
+[FUN]
+RTD_MODE = 0
 ```
 
 ### 3. Add launch options to TF2 on Steam:
@@ -132,8 +137,8 @@ Here's an example of what the config file might look like:
 
 ```
 [GENERAL]
-TF2_LOGFILE_PATH=C:\Program Files (x86)\Steam\steamapps\common\Team Fortress 2\tf\console.log
-OPENAI_API_KEY=sk-blahblahblahblahblahblahblahblahblahblahblahblah
+TF2_LOGFILE_PATH=H:\Programs\Steam\steamapps\common\Team Fortress 2\tf\console.log
+OPENAI_API_KEY=sk-************************************************
 
 [COMMANDS]
 GPT_COMMAND=!gpt3
@@ -147,7 +152,10 @@ RCON_PORT=27015
 
 [MISC]
 SOFT_COMPLETION_LIMIT=128
-HARD_COMPLETION_LIMIT=300
+HARD_COMPLETION_LIMIT=250
+
+[FUN]
+RTD_MODE = 0
 ```
 
 ### 6. Add launch options to TF2 on Steam:
@@ -172,12 +180,23 @@ The application should now be running and ready to use.
 
 _**NOTE: You can create your own executable using this command**_
 ```sh
-pyinstaller --onefile --clean -n TF2-GPTChatBot --icon icon.ico main.py
+pyinstaller --onefile --clean -n TF2-GPTChatBot_gui -w --icon icon.ico main.py
 ```
 
 ## Usage
 
-### Commands
+### GUI Commands
+
+- `start`: starts the chatbot
+- `stop`: stops the chatbot
+- `quit`: closes the program
+- `bans`: shows all banned users
+- `ban <username>`: bans a user by username
+- `unban <username>`: unbans a user by username
+- `gpt3 <prompt>`: sends a prompt to the GPT3 language model to generate a response
+- `help`: displays a list of available commands and their descriptions.
+
+### Chat Commands
 
 Commands can be changed in `config.ini` file.
 
@@ -263,6 +282,30 @@ This command takes no arguments or options. Simply type !clear in the chat to cl
 cannot be undone.
 ```
 
+#### !rtd
+
+```
+Command: !rtd
+
+Description: Sends a random link to a YouTube meme or rickroll.
+
+This command takes no arguments or options. Simply type !rtd in the chat.
+
+Mode 1: Sends a Rickroll.
+
+%username% :  !rtd
+%username% :  %username% rolled: youtu.be/dQw4w9WgXcQ
+
+Mode 2: Sends a random link to a YouTube meme.
+
+%username% :  !rtd
+%username% :  %username% rolled: youtu.be/***********
+```
+**The mode can be set in the `config.ini` file.**
+
+**You set your own list of video. Just edit `vids.txt` file.**
+
+
 ### Prompts
 
 #### Pre-build prompts
@@ -306,6 +349,8 @@ Hi chatGPT, you are going to pretend to be MEDIC from Team Fortress 2. You can d
 
 ### Screenshots
 
+[![image.png](https://i.postimg.cc/SxnDckGJ/image.png)](https://postimg.cc/K1yP2Xw2)
+
 ## FAQ
 
 ### Can I receive a VAC ban for using this?
@@ -317,8 +362,11 @@ It solely utilizes the built-in features of the game engine as intended.
 
 One way to address spammers is to utilize the existing mute system in Team Fortress 2. It can be used to mute
 players who are spamming messages. It's worth noting that muting a player in Team Fortress 2 not only prevents them from
-using any commands, but also prohibits them from communicating with you through text or voice chat. It's also worth
-mentioning that a ban system may be implemented in the future for TF2-GPTChatBot.
+using any commands, but also prohibits them from communicating with you through text or voice chat.
+
+Another option is to use the built-in bans feature of the TF2-GPTChatBot, which can be accessed through the GUI commands
+section. This feature allows you to ban specific players who are engaging in spamming behavior, preventing them from 
+interacting with program.
 
 ### Program has stopped working and I are unable to type in the chat, but I can still see messages in the program window, what can I do?
 
