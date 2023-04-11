@@ -2,6 +2,7 @@ import codecs
 import re
 import time
 import os
+import time
 from typing import Tuple
 
 from config import TF2_LOGFILE_PATH, SOFT_COMPLETION_LIMIT
@@ -77,6 +78,7 @@ def follow_tail(file_path: str) -> str:
                             yield ''
                             if not os.path.isfile(file_path):
                                 break
+                            time.sleep(0.1)
                             continue
                     latest_lines = latest_data.split('\n')
                     if latest_data[-1] != '\n':
