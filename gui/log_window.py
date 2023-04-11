@@ -1,6 +1,7 @@
 import tkinter as tk
 
 from utils.chat import handle_gui_console_commands
+from utils.logs import log_to_file
 
 PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
 
@@ -66,6 +67,7 @@ class CustomOutput:
 
     def write(self, message):
         self.window.update_logs(message)
+        log_to_file(message)
 
     def flush(self):
         ...

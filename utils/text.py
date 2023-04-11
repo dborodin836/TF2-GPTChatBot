@@ -1,6 +1,5 @@
 import codecs
 import re
-import time
 import os
 import time
 from typing import Tuple
