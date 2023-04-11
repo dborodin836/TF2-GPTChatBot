@@ -3,7 +3,7 @@ import tkinter as tk
 import threading
 
 from gui.log_window import LogWindow, CustomOutput
-from utils.chat import parse_tf2_console
+from utils.chat import parse_tf2_console, gpt3_cmd_handler
 
 
 def run_threads():
@@ -13,9 +13,9 @@ def run_threads():
     sys.stdout = CustomOutput(log_window)
 
     t1 = threading.Thread(target=parse_tf2_console, daemon=True)
-    # t2 = threading.Thread(target=test1, daemon=True)
+    t2 = threading.Thread(target=gpt3_cmd_handler, daemon=True)
     t1.start()
-    # t2.start()
+    t2.start()
 
     log_window.pack()
     root.mainloop()
