@@ -1,3 +1,4 @@
+import codecs
 import datetime
 from typing import Literal
 from datetime import datetime as dt
@@ -28,5 +29,5 @@ def log_to_file(mes):
         DATE = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
     filename = f"log_{DATE}.txt"
-    with open(filename, "a") as f:
+    with codecs.open(filename, "a", encoding="utf-8") as f:
         f.write(mes)
