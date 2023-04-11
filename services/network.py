@@ -33,6 +33,9 @@ def login() -> None:
 def send_say_command_to_tf2(message: str) -> None:
     chunks_size: int = get_chunk_size(message)
 
+    # No " should be in answer it causes say command to broke
+    message = message.replace('"', '')
+
     if len(message) > HARD_COMPLETION_LIMIT:
         message = message[:HARD_COMPLETION_LIMIT] + '...'
 
