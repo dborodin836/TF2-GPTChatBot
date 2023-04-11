@@ -2,6 +2,8 @@ import sys
 import time
 import tkinter as tk
 
+import openai
+
 from services.chatgpt import send_gpt_completion_request
 from utils.bans import list_banned_players, unban_player, ban_player
 from utils.chat import PROMPTS_QUEUE
@@ -106,11 +108,15 @@ def handle_gui_console_commands(command: str) -> None:
     elif command.startswith("help"):
         print_help_command()
 
+
 def gpt3_cmd_handler():
     while True:
         if PROMPTS_QUEUE.qsize() != 0:
             prompt = PROMPTS_QUEUE.get()
-            response = send_gpt_completion_request(prompt, "admin")
-            print(response)
+            try:
+                response = send_gpt_completion_request(prompt, "admin")
+                print(response)
+            except openai.error.RateLimitError:
+                print("Rate Limited! Try again later.")
         else:
             time.sleep(2)
