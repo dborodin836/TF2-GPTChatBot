@@ -4,7 +4,7 @@ import openai
 import hashlib
 from config import OPENAI_API_KEY
 from services.network import send_say_command_to_tf2
-from utils.logs import log_message
+from utils.logs import log_message, log_cmd_message
 from utils.text import add_prompts_by_flags
 
 
@@ -35,7 +35,11 @@ def handle_gpt_request(message_type: Literal["CHAT", "GPT3"], username: str, use
         chat_buffer += 'HUMAN:' + message + '\n' + 'AI:'
         message = chat_buffer
 
-    response = send_gpt_completion_request(message, username)
+    try:
+        response = send_gpt_completion_request(message, username)
+    except openai.error.RateLimitError:
+        log_cmd_message("Rate limited! Try again later!")
+        return chat_buffer
 
     if message_type == "CHAT":
         chat_buffer += response + '\n'
