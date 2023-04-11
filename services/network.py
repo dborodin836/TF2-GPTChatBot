@@ -1,4 +1,3 @@
-from typing import List
 import time
 import sys
 
@@ -10,6 +9,11 @@ from utils.text import get_chunk_size, get_chunks
 
 
 def check_connection():
+    """
+    Continuously tries to login to a remote RCON server using the provided credentials until a
+    successful connection is established. If a connection is refused, the function will wait for
+    4 seconds and then try again.
+    """
     while True:
         try:
             login()
@@ -22,6 +26,9 @@ def check_connection():
 
 
 def login() -> None:
+    """
+    Attempts to login to a remote RCON server using the provided credentials.
+    """
     with Client(RCON_HOST, RCON_PORT, passwd=RCON_PASSWORD) as client:
         try:
             client.login(RCON_PASSWORD)
@@ -31,6 +38,9 @@ def login() -> None:
 
 
 def send_say_command_to_tf2(message: str) -> None:
+    """
+    Sends a "say" command to a Team Fortress 2 server using RCON protocol.
+    """
     chunks_size: int = get_chunk_size(message)
 
     # No " should be in answer it causes say command to broke
@@ -39,7 +49,7 @@ def send_say_command_to_tf2(message: str) -> None:
     if len(message) > HARD_COMPLETION_LIMIT:
         message = message[:HARD_COMPLETION_LIMIT] + '...'
 
-    chunks: List[str] = get_chunks(" ".join(message.split()), chunks_size)
+    chunks = get_chunks(" ".join(message.split()), chunks_size)
     cmd: str = ' '
 
     for chunk in chunks:

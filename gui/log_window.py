@@ -1,6 +1,11 @@
+import sys
+import time
 import tkinter as tk
 
-from utils.chat import handle_gui_console_commands
+from services.chatgpt import send_gpt_completion_request
+from utils.bans import list_banned_players, unban_player, ban_player
+from utils.chat import PROMPTS_QUEUE
+from utils.commands import print_help_command, start_bot, stop_bot
 from utils.logs import log_to_file
 
 PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
@@ -71,3 +76,41 @@ class CustomOutput:
 
     def flush(self):
         ...
+
+
+def handle_gui_console_commands(command: str) -> None:
+    if command.startswith("stop"):
+        stop_bot()
+
+    elif command.startswith("start"):
+        start_bot()
+
+    elif command.startswith("quit"):
+        sys.exit(0)
+
+    elif command.startswith("ban "):
+        name = command.removeprefix("ban ").strip()
+        ban_player(name)
+
+    elif command.startswith("unban "):
+        name = command.removeprefix("unban ").strip()
+        unban_player(name)
+
+    elif command.startswith("gpt3 "):
+        prompt = command.removeprefix("gpt3 ").strip()
+        PROMPTS_QUEUE.put(prompt)
+
+    elif command.startswith("bans"):
+        list_banned_players()
+
+    elif command.startswith("help"):
+        print_help_command()
+
+def gpt3_cmd_handler():
+    while True:
+        if PROMPTS_QUEUE.qsize() != 0:
+            prompt = PROMPTS_QUEUE.get()
+            response = send_gpt_completion_request(prompt, "admin")
+            print(response)
+        else:
+            time.sleep(2)

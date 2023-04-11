@@ -1,81 +1,35 @@
-import codecs
-import json
-import sys
 import queue
-import time
-from json import JSONDecodeError
-from typing import Literal
 
-from config import GPT_COMMAND, CHATGPT_COMMAND, CLEAR_CHAT_COMMAND, RICKROLL_ENABLED
-from services.chatgpt import send_gpt_completion_request
-from services.network import send_say_command_to_tf2, check_connection
+from config import GPT_COMMAND, CHATGPT_COMMAND, CLEAR_CHAT_COMMAND
+from services.chatgpt import  handle_gpt_request
+from services.network import check_connection
+from utils.bans import unban_player, ban_player, load_banned_players, is_banned_username
+from utils.commands import handle_rtd_command, stop_bot, start_bot, get_bot_state
 from utils.prompt import load_prompts
-from utils.text import add_prompts_by_flags, open_tf2_logfile
-from utils.logs import log_message, log_cmd_message
+from utils.text import open_tf2_logfile
+from utils.logs import log_message
 
-BOT_RUNNING = True
-BANNED_PLAYERS = set()
-
-prompts_queue = queue.Queue()
-
-BANS_FILE = 'bans.json'
+PROMPTS_QUEUE = queue.Queue()
 
 
-def handle_gpt_request(message_type: Literal["CHAT", "GPT3"], username: str, user_prompt: str,
-                       chat_buffer: str = ""):
-    """
-    This function is called when the user wants to send a message to the AI chatbot. It logs the
-    user's message, and sends a request to GPT-3 to generate a response. Finally, the function
-    sends the generated response to the TF2 game.
-    """
-    log_message(message_type, username, user_prompt)
-
-    message = add_prompts_by_flags(user_prompt)
-    if message_type == "CHAT":
-        chat_buffer += 'HUMAN:' + message + '\n' + 'AI:'
-        message = chat_buffer
-
-    response = send_gpt_completion_request(message, username)
-
-    if message_type == "CHAT":
-        chat_buffer += response + '\n'
-
-    log_message(message_type, username, ' '.join(response.split()))
-
-    send_say_command_to_tf2(response)
-    return chat_buffer
-
-
-def load_banned_players() -> set:
-    banned_players = set()
-    with codecs.open(BANS_FILE, 'r', encoding='utf-8') as f:
-        try:
-            banned_players = set(json.load(f))
-        except (EOFError, JSONDecodeError):
-            pass
-    return banned_players
-
-
-def parse_tf2_console() -> None:
+def parse_tf2_console_logs() -> None:
     conversation_history: str = ''
-    global BOT_RUNNING
-    global BANNED_PLAYERS
+
     check_connection()
     load_prompts()
+    load_banned_players()
+
     print("Ready to use!")
-    BANNED_PLAYERS = load_banned_players()
 
     for line, user in open_tf2_logfile():
-        if not BOT_RUNNING:
+        if not get_bot_state():
             continue
-        if user in BANNED_PLAYERS:
+        if is_banned_username(user):
             continue
-        handle_command(line, user, conversation_history)
+        conversation_history = handle_command(line, user, conversation_history)
 
 
 def handle_command(line: str, user: str, conversation_history: str) -> str:
-    global BOT_RUNNING
-
     if line.strip().startswith(GPT_COMMAND):
         return handle_gpt_request("GPT3", user, line.removeprefix(GPT_COMMAND).strip(),
                                   conversation_history)
@@ -89,104 +43,19 @@ def handle_command(line: str, user: str, conversation_history: str) -> str:
         return ''
 
     elif line.strip().startswith("!rtd"):
-        if RICKROLL_ENABLED:
-            log_cmd_message("RICKROLLED!!11!!")
-            time.sleep(1)
-            send_say_command_to_tf2(f"[RTD] {user} rolled: youtu.be/dQw4w9WgXcQ")
+        handle_rtd_command(user)
 
     elif line.strip() == "!gpt_stop":
-        BOT_RUNNING = False
-        log_cmd_message("BOT STOPPED")
-        return conversation_history
+        stop_bot()
 
     elif line.strip() == "!gpt_start":
-        BOT_RUNNING = True
-        log_cmd_message("BOT STARTED")
-        return conversation_history
+        start_bot()
 
     elif line.strip().startswith("ban "):
         name = line.removeprefix("ban ").strip()
         ban_player(name)
-        return conversation_history
 
     elif line.strip().startswith("unban "):
         name = line.removeprefix("unban ").strip()
         unban_player(name)
-        return conversation_history
-
-    else:
-        return conversation_history
-
-
-def unban_player(username: str) -> None:
-    try:
-        BANNED_PLAYERS.remove(username)
-    except KeyError:
-        pass
-    log_cmd_message(f"UNBANNED '{username}'")
-    with codecs.open(BANS_FILE, 'w', encoding='utf-8') as f:
-        json.dump(list(BANNED_PLAYERS), f)
-
-
-def ban_player(username: str) -> None:
-    BANNED_PLAYERS.add(username)
-    log_cmd_message(f"BANNED '{username}'")
-    with codecs.open(BANS_FILE, 'w', encoding='utf-8') as f:
-        json.dump(list(BANNED_PLAYERS), f)
-
-
-def handle_gui_console_commands(command: str) -> None:
-    global BOT_RUNNING
-    global BANNED_PLAYERS
-
-    if command.startswith("stop"):
-        BOT_RUNNING = False
-        log_cmd_message("BOT STOPPED")
-
-    elif command.startswith("start"):
-        BOT_RUNNING = True
-        log_cmd_message("BOT STARTED")
-
-    elif command.startswith("quit"):
-        sys.exit(0)
-
-    elif command.startswith("ban "):
-        name = command.removeprefix("ban ").strip()
-        ban_player(name)
-
-    elif command.startswith("unban "):
-        name = command.removeprefix("unban ").strip()
-        unban_player(name)
-
-    elif command.startswith("gpt3 "):
-        prompt = command.removeprefix("gpt3 ").strip()
-        prompts_queue.put(prompt)
-
-    elif command.startswith("bans"):
-        if len(BANNED_PLAYERS) == 0:
-            print("### NO BANS ###")
-        else:
-            print("### BANNED PLAYERS ###",
-                  *list(BANNED_PLAYERS),
-                  sep='\n')
-
-    elif command.startswith("help"):
-        print("### HELP ###",
-              "start - start the bot",
-              "stop - stop the bot",
-              "quit - quit the proogram",
-              "bans - show all banned players",
-              "ban <username> - ban user by username",
-              "unban <username> - unban user by username",
-              "gpt3 <prompt> - sends a response to GPT3",
-              sep='\n')
-
-
-def gpt3_cmd_handler():
-    while True:
-        if prompts_queue.qsize() != 0:
-            prompt = prompts_queue.get()
-            response = send_gpt_completion_request(prompt, "admin")
-            print(response)
-        else:
-            time.sleep(2)
+    return conversation_history
