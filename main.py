@@ -1,42 +1,25 @@
 from config import *
-from services.network import check_connection
-from utils.chat import handle_gpt_request
-from utils.logs import log_message
-from utils.prompt import load_prompts
-from utils.text import open_tf2_logfile
+import tkinter as tk
+import threading
+
+from gui.log_window import LogWindow, CustomOutput
+from utils.chat import parse_tf2_console
 
 
-def main() -> None:
-    # Initialize conversation history
-    conversation_history = ''
+def run_threads():
+    root = tk.Tk()
+    log_window = LogWindow(root)
 
-    check_connection()
+    sys.stdout = CustomOutput(log_window)
 
-    # Load prompts from .xtx files
-    load_prompts()
-    print("Ready to use!")
+    t1 = threading.Thread(target=parse_tf2_console, daemon=True)
+    # t2 = threading.Thread(target=test1, daemon=True)
+    t1.start()
+    # t2.start()
 
-    # Loop through log file
-    for line, user in open_tf2_logfile():
-        # Handle GPT3 completion requests
-        if line.strip().startswith(GPT_COMMAND):
-            prompt = line.removeprefix(GPT_COMMAND).strip()
-            conversation_history = handle_gpt_request("GPT3", user, prompt, conversation_history)
-
-        # Handle ChatGPT requests
-        if line.strip().startswith(CHATGPT_COMMAND):
-            prompt = line.removeprefix(CHATGPT_COMMAND).strip()
-            conversation_history = handle_gpt_request("CHAT", user, prompt, conversation_history)
-
-        # Handle clear chat requests
-        if line.strip().startswith(CLEAR_CHAT_COMMAND):
-            log_message("CHAT", user, "CLEARING CHAT")
-            conversation_history = ''
+    log_window.pack()
+    root.mainloop()
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except KeyboardInterrupt:
-        print()
-
+    run_threads()

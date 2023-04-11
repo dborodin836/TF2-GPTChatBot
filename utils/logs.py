@@ -12,3 +12,8 @@ def log_message(message_type: Literal["CHAT", "GPT3"], username: str, user_promp
     """
     log_msg = f"[{get_time_stamp()}] ({message_type}) User: '{username}' --- '{user_prompt}'"
     print(log_msg)
+
+
+def log_cmd_message(message: str) -> None:
+    log_msg = f"[{get_time_stamp()}] -- {message}"
+    print(log_msg)
