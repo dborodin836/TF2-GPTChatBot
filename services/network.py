@@ -1,4 +1,3 @@
-from typing import Generator
 import time
 import sys
 
@@ -50,7 +49,7 @@ def send_say_command_to_tf2(message: str) -> None:
     if len(message) > HARD_COMPLETION_LIMIT:
         message = message[:HARD_COMPLETION_LIMIT] + '...'
 
-    chunks: Generator[str] = get_chunks(" ".join(message.split()), chunks_size)
+    chunks = get_chunks(" ".join(message.split()), chunks_size)
     cmd: str = ' '
 
     for chunk in chunks:

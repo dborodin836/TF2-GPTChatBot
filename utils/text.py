@@ -2,7 +2,7 @@ import codecs
 import re
 import os
 import time
-from typing import NamedTuple, Generator
+from typing import NamedTuple
 
 from config import TF2_LOGFILE_PATH, SOFT_COMPLETION_LIMIT
 from utils.prompt import PROMPTS
@@ -19,7 +19,7 @@ class LogLine(NamedTuple):
     username: str
 
 
-def get_chunks(string: str, maxlength: int) -> Generator[str]:
+def get_chunks(string: str, maxlength: int) -> str:
     """
     This function splits a string into chunks of a maximum length, with each chunk ending at the
     last space character before the maximum length.
