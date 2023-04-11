@@ -22,15 +22,16 @@ def handle_rtd_command(username: str) -> None:
     If RTD_MODE is set to RICKROLL, the user is rickrolled.
     If RTD_MODE is set to RANDOM_MEME, a random link for a meme is chosen from a file.
     """
-    if RTD_MODE == RTDModes.RICKROLL:
+    if RTD_MODE == RTDModes.RICKROLL.value:
         log_cmd_message("RICKROLLED!!11!!")
         time.sleep(1)
         send_say_command_to_tf2(f"[RTD] {username} rolled: {RICKROLL_LINK}")
-    elif RTD_MODE == RTDModes.RANDOM_MEME:
+    elif RTD_MODE == RTDModes.RANDOM_MEME.value:
         with open('vids.txt', 'r') as file:
             # Reads all lines and removes 'https://'
             lines = list(map(lambda x: x.removeprefix('https://').strip(), file.readlines()))
         time.sleep(1)
+        log_cmd_message(f"[RTD] {username} rolled: {random.choice(lines)}")
         send_say_command_to_tf2(f"[RTD] {username} rolled: {random.choice(lines)}")
 
 
