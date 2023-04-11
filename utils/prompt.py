@@ -6,7 +6,10 @@ import codecs
 PROMPTS = []
 
 
-def load_prompts():
+def load_prompts() -> None:
+    """
+    Load prompt data from files in the 'prompts' directory.
+    """
     try:
         files = [f for f in os.listdir("prompts") if f.endswith('.txt')]
     except FileNotFoundError:
@@ -14,6 +17,7 @@ def load_prompts():
         os.makedirs('prompts')
         files = []
 
+    # In order for pyinstaller to work
     if getattr(sys, 'frozen', False):
         path = os.path.dirname(sys.executable)
     else:

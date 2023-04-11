@@ -1,12 +1,14 @@
 import codecs
-import datetime
 from typing import Literal
 from datetime import datetime as dt
 
 DATE = None
 
 
-def get_time_stamp():
+def get_time_stamp() -> str:
+    """
+    Returns the current time as a string in the format "HH:MM:SS".
+    """
     return f"{dt.now().strftime('%H:%M:%S')}"
 
 
@@ -23,11 +25,14 @@ def log_cmd_message(message: str) -> None:
     print(log_msg)
 
 
-def log_to_file(mes):
+def log_to_file(message: str) -> None:
+    """
+    Appends the given message to a log file with a timestamp.
+    """
     global DATE
     if DATE is None:
-        DATE = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        DATE = dt.now().strftime('%Y-%m-%d_%H-%M-%S')
 
     filename = f"log_{DATE}.txt"
     with codecs.open(filename, "a", encoding="utf-8") as f:
-        f.write(mes)
+        f.write(message)

@@ -2,7 +2,7 @@ import codecs
 import re
 import os
 import time
-from typing import Tuple
+from typing import NamedTuple, Generator
 
 from config import TF2_LOGFILE_PATH, SOFT_COMPLETION_LIMIT
 from utils.prompt import PROMPTS
@@ -11,18 +11,26 @@ MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120
 
 
-def get_chunks(s, maxlength):
+class LogLine(NamedTuple):
+    """
+    Represents a line from a log file.
+    """
+    prompt: str
+    username: str
+
+
+def get_chunks(string: str, maxlength: int) -> Generator[str]:
     """
     This function splits a string into chunks of a maximum length, with each chunk ending at the
     last space character before the maximum length.
     """
     start = 0
     end = 0
-    while start + maxlength < len(s) and end != -1:
-        end = s.rfind(" ", start, start + maxlength + 1)
-        yield s[start:end]
+    while start + maxlength < len(string) and end != -1:
+        end = string.rfind(" ", start, start + maxlength + 1)
+        yield string[start:end]
         start = end + 1
-    yield s[start:]
+    yield string[start:]
 
 
 def has_cyrillic(text: str) -> bool:
@@ -43,6 +51,9 @@ def get_chunk_size(text: str) -> int:
 
 
 def add_prompts_by_flags(user_prompt: str) -> str:
+    """
+    Adds prompts to a user prompt based on the flags provided in the prompt.
+    """
     #  This args var also contains user prompt lul
     args = user_prompt.split(' ')
     result = ''
@@ -62,6 +73,9 @@ def add_prompts_by_flags(user_prompt: str) -> str:
 
 
 def follow_tail(file_path: str) -> str:
+    """
+    Follows the tail of a file, yielding new lines as they are added.
+    """
     first_call = True
     while True:
         try:
@@ -90,8 +104,12 @@ def follow_tail(file_path: str) -> str:
             yield ''
 
 
-def open_tf2_logfile() -> Tuple[str, str]:
+def open_tf2_logfile() -> LogLine:
+    """
+    Opens a log file for Team Fortress 2 and yields tuples containing user prompts and usernames.
+    """
     for line in follow_tail(TF2_LOGFILE_PATH):
-        #  This yields a tuple containing the user prompt and the username.
-        #  ('!gpt3 Who are you Chatgpt?', 'username')
-        yield line.split(" :  ")[-1], line.split(" :  ")[0].removeprefix("*DEAD* ")
+        parts = line.split(" :  ")
+        username = parts[0].removeprefix("*DEAD* ")
+        prompt = parts[-1]
+        yield LogLine(prompt, username)
