@@ -20,6 +20,7 @@ class LogWindow(tk.Frame):
         self.cmd_line = None
         self.create_widgets()
         self.master.title("TF2-GPTChatBot")
+        self.master.resizable(False, False)
 
     def create_widgets(self):
         # Add a Text widget to the window for displaying logs
