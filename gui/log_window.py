@@ -24,7 +24,7 @@ class LogWindow(tk.Frame):
 
     def create_widgets(self):
         # Add a Text widget to the window for displaying logs
-        self.log_text = tk.Text(self, height=20, width=100)
+        self.log_text = tk.Text(self, height=20, width=100, state="disabled")
         self.log_text.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         # Add another Text widget below the log_text widget for displaying additional text
@@ -41,7 +41,9 @@ class LogWindow(tk.Frame):
         self.cmd_line.bind("<FocusOut>", self.handle_additional_text_focus_out)
 
     def update_logs(self, message):
+        self.log_text.config(state="normal")
         self.log_text.insert(tk.END, f"{message}")
+        self.log_text.config(state="disabled")
         self.log_text.see(tk.END)  # Scroll to the end of the text widget
 
     def exit_program(self):
