@@ -4,7 +4,7 @@ import sys
 from rcon import WrongPassword
 from rcon.source import Client
 
-from config import *
+from config import config
 from utils.text import get_chunk_size, get_chunks
 
 
@@ -29,9 +29,9 @@ def login() -> None:
     """
     Attempts to login to a remote RCON server using the provided credentials.
     """
-    with Client(RCON_HOST, RCON_PORT, passwd=RCON_PASSWORD) as client:
+    with Client(config.RCON_HOST, config.RCON_PORT, passwd=config.RCON_PASSWORD) as client:
         try:
-            client.login(RCON_PASSWORD)
+            client.login(config.RCON_PASSWORD)
         except WrongPassword:
             print("Passwords do not match!")
             sys.exit(1)
@@ -46,8 +46,8 @@ def send_say_command_to_tf2(message: str) -> None:
     # No " should be in answer it causes say command to broke
     message = message.replace('"', '')
 
-    if len(message) > HARD_COMPLETION_LIMIT:
-        message = message[:HARD_COMPLETION_LIMIT] + '...'
+    if len(message) > config.HARD_COMPLETION_LIMIT:
+        message = message[:config.HARD_COMPLETION_LIMIT] + '...'
 
     chunks = get_chunks(" ".join(message.split()), chunks_size)
     cmd: str = ' '
@@ -55,5 +55,5 @@ def send_say_command_to_tf2(message: str) -> None:
     for chunk in chunks:
         cmd += f'say "{chunk}";wait 1300;'
 
-    with Client(RCON_HOST, RCON_PORT, passwd=RCON_PASSWORD) as client:
+    with Client(config.RCON_HOST, config.RCON_PORT, passwd=config.RCON_PASSWORD) as client:
         client.run(cmd)

@@ -1,19 +1,11 @@
 import random
 import time
-from enum import Enum
-
-from config import RTD_MODE
+from config import config, RTDModes
 from services.network import send_say_command_to_tf2
 from utils.logs import log_cmd_message
 
 BOT_RUNNING = True
 RICKROLL_LINK = "youtu.be/dQw4w9WgXcQ"
-
-
-class RTDModes(Enum):
-    DISABLED = 0
-    RICKROLL = 1
-    RANDOM_MEME = 2
 
 
 def handle_rtd_command(username: str) -> None:
@@ -22,11 +14,11 @@ def handle_rtd_command(username: str) -> None:
     If RTD_MODE is set to RICKROLL, the user is rickrolled.
     If RTD_MODE is set to RANDOM_MEME, a random link for a meme is chosen from a file.
     """
-    if RTD_MODE == RTDModes.RICKROLL.value:
+    if config.RTD_MODE == RTDModes.RICKROLL.value:
         log_cmd_message("RICKROLLED!!11!!")
         time.sleep(1)
         send_say_command_to_tf2(f"[RTD] {username} rolled: {RICKROLL_LINK}")
-    elif RTD_MODE == RTDModes.RANDOM_MEME.value:
+    elif config.RTD_MODE == RTDModes.RANDOM_MEME.value:
         with open('vids.txt', 'r') as file:
             # Reads all lines and removes 'https://'
             lines = list(map(lambda x: x.removeprefix('https://').strip(), file.readlines()))

@@ -1,6 +1,6 @@
 import queue
 
-from config import GPT_COMMAND, CHATGPT_COMMAND, CLEAR_CHAT_COMMAND
+from config import config
 from services.chatgpt import  handle_gpt_request
 from services.network import check_connection
 from utils.bans import unban_player, ban_player, load_banned_players, is_banned_username
@@ -39,15 +39,15 @@ def parse_tf2_console_logs() -> None:
 
 
 def handle_command(line: str, user: str, conversation_history: str) -> str:
-    if line.strip().startswith(GPT_COMMAND):
-        return handle_gpt_request("GPT3", user, line.removeprefix(GPT_COMMAND).strip(),
+    if line.strip().startswith(config.GPT_COMMAND):
+        return handle_gpt_request("GPT3", user, line.removeprefix(config.GPT_COMMAND).strip(),
                                   conversation_history)
 
-    elif line.strip().startswith(CHATGPT_COMMAND):
-        return handle_gpt_request("CHAT", user, line.removeprefix(CHATGPT_COMMAND).strip(),
+    elif line.strip().startswith(config.CHATGPT_COMMAND):
+        return handle_gpt_request("CHAT", user, line.removeprefix(config.CHATGPT_COMMAND).strip(),
                                   conversation_history)
 
-    elif line.strip().startswith(CLEAR_CHAT_COMMAND):
+    elif line.strip().startswith(config.CLEAR_CHAT_COMMAND):
         log_message("CHAT", user, "CLEARING CHAT")
         return ''
 

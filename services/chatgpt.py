@@ -2,14 +2,14 @@ from typing import Literal
 
 import openai
 import hashlib
-from config import OPENAI_API_KEY
+from config import config
 from services.network import send_say_command_to_tf2
 from utils.logs import log_message, log_cmd_message
 from utils.text import add_prompts_by_flags
 
 
 def send_gpt_completion_request(message: str, username: str) -> str:
-    openai.api_key = OPENAI_API_KEY
+    openai.api_key = config.OPENAI_API_KEY
 
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
