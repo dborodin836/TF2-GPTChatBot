@@ -4,7 +4,7 @@ import os
 import time
 from typing import NamedTuple
 
-from config import TF2_LOGFILE_PATH, SOFT_COMPLETION_LIMIT
+from config import config
 from utils.prompt import PROMPTS
 
 MAX_LENGTH_CYRILLIC = 65
@@ -66,7 +66,7 @@ def add_prompts_by_flags(user_prompt: str) -> str:
     result += user_prompt.strip()
 
     if r'\l' not in args:
-        result += f" Answer in less than {SOFT_COMPLETION_LIMIT} chars!"
+        result += f" Answer in less than {config.SOFT_COMPLETION_LIMIT} chars!"
     result = result.replace(r'\l', '')
 
     return result
@@ -108,7 +108,7 @@ def open_tf2_logfile() -> LogLine:
     """
     Opens a log file for Team Fortress 2 and yields tuples containing user prompts and usernames.
     """
-    for line in follow_tail(TF2_LOGFILE_PATH):
+    for line in follow_tail(config.TF2_LOGFILE_PATH):
         parts = line.split(" :  ")
         username = parts[0].removeprefix("*DEAD* ")
         prompt = parts[-1]
