@@ -1,7 +1,9 @@
+import os
 import queue
+from io import StringIO
 
-from config import GPT_COMMAND, CHATGPT_COMMAND, CLEAR_CHAT_COMMAND
-from services.chatgpt import  handle_gpt_request
+from config import config, BUFFERED_CONFIG_INIT_LOG_MESSAGES
+from services.chatgpt import handle_gpt_request
 from services.network import check_connection
 from utils.bans import unban_player, ban_player, load_banned_players, is_banned_username
 from utils.commands import handle_rtd_command, stop_bot, start_bot, get_bot_state
@@ -28,7 +30,13 @@ def parse_tf2_console_logs() -> None:
     load_prompts()
     load_banned_players()
 
-    print("Ready to use!")
+    BUFFERED_CONFIG_INIT_LOG_MESSAGES.seek(0)
+
+    if get_io_string_size(BUFFERED_CONFIG_INIT_LOG_MESSAGES) > 0:
+        for line in BUFFERED_CONFIG_INIT_LOG_MESSAGES:
+            print(line, end='')
+    else:
+        print("Ready to use!")
 
     for line, user in open_tf2_logfile():
         if not get_bot_state():
@@ -38,16 +46,23 @@ def parse_tf2_console_logs() -> None:
         conversation_history = handle_command(line, user, conversation_history)
 
 
+def get_io_string_size(string_io: StringIO):
+    string_io.seek(0, os.SEEK_END)
+    length = string_io.tell()
+    string_io.seek(0)
+    return length
+
+
 def handle_command(line: str, user: str, conversation_history: str) -> str:
-    if line.strip().startswith(GPT_COMMAND):
-        return handle_gpt_request("GPT3", user, line.removeprefix(GPT_COMMAND).strip(),
+    if line.strip().startswith(config.GPT_COMMAND):
+        return handle_gpt_request("GPT3", user, line.removeprefix(config.GPT_COMMAND).strip(),
                                   conversation_history)
 
-    elif line.strip().startswith(CHATGPT_COMMAND):
-        return handle_gpt_request("CHAT", user, line.removeprefix(CHATGPT_COMMAND).strip(),
+    elif line.strip().startswith(config.CHATGPT_COMMAND):
+        return handle_gpt_request("CHAT", user, line.removeprefix(config.CHATGPT_COMMAND).strip(),
                                   conversation_history)
 
-    elif line.strip().startswith(CLEAR_CHAT_COMMAND):
+    elif line.strip().startswith(config.CLEAR_CHAT_COMMAND):
         log_message("CHAT", user, "CLEARING CHAT")
         return ''
 
