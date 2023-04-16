@@ -1,6 +1,5 @@
 import configparser
 import os
-import sys
 import re
 from enum import IntEnum
 from os.path import exists
@@ -9,10 +8,11 @@ from io import StringIO
 
 CONFIG_FILE = 'config.ini'
 OPENAI_API_KEY_RE_PATTERN = r"sk-[a-zA-Z0-9]{48}"
+BUFFERED_CONFIG_INIT_LOG_MESSAGES = StringIO()
 
 
-def handle_exit_with_exception(message: str) -> None:
-    print(message)
+def buffered_print(message: str) -> None:
+    BUFFERED_CONFIG_INIT_LOG_MESSAGES.write(message)
 
 
 class RTDModes(IntEnum):
@@ -23,13 +23,6 @@ class RTDModes(IntEnum):
     @classmethod
     def has_value(cls, value):
         return value in {x.value for x in iter(RTDModes)}
-
-
-if not exists(CONFIG_FILE):
-    handle_exit_with_exception(f"Couldn't find '{CONFIG_FILE}' file.")
-
-configparser_config = configparser.ConfigParser()
-configparser_config.read(CONFIG_FILE)
 
 
 class Config(BaseModel):
@@ -48,31 +41,34 @@ class Config(BaseModel):
     @validator('OPENAI_API_KEY')
     def api_key_pattern_match(cls, v):
         if not re.fullmatch(OPENAI_API_KEY_RE_PATTERN, v):
-            handle_exit_with_exception("API key not set or invalid! Check documentation and edit "
-                                       "config.ini file.")
+            buffered_print("API key not set or invalid! Check documentation and edit "
+                           "config.ini file.")
         return v
 
     @validator('RTD_MODE')
     def rtd_mode_is_valid_enum(cls, v):
         if not RTDModes.has_value(v):
-            handle_exit_with_exception(
+            buffered_print(
                 f"Invalid RTD_MODE value! Expected one of {[mode.value for mode in RTDModes]}.")
         return v
 
     @validator('TF2_LOGFILE_PATH')
     def is_logfile_path_exists(cls, v):
         if not os.path.exists(os.path.dirname(v)):
-            handle_exit_with_exception(
-                f"Non-valid logfile path!")
+            buffered_print(f"Non-valid logfile path!")
         return v
 
-
-sys.stdout = output = StringIO()
 
 config: Config | None = None
 
 
 def init_config():
+    if not exists(CONFIG_FILE):
+        buffered_print(f"Couldn't find '{CONFIG_FILE}' file.")
+
+    configparser_config = configparser.ConfigParser()
+    configparser_config.read(CONFIG_FILE)
+
     config_dict = {key.upper(): value for section in configparser_config.sections() for key, value
                    in
                    configparser_config.items(section)}

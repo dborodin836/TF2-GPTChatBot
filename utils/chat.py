@@ -2,7 +2,7 @@ import os
 import queue
 from io import StringIO
 
-from config import config, output
+from config import config, BUFFERED_CONFIG_INIT_LOG_MESSAGES
 from services.chatgpt import handle_gpt_request
 from services.network import check_connection
 from utils.bans import unban_player, ban_player, load_banned_players, is_banned_username
@@ -30,10 +30,10 @@ def parse_tf2_console_logs() -> None:
     load_prompts()
     load_banned_players()
 
-    output.seek(0)
+    BUFFERED_CONFIG_INIT_LOG_MESSAGES.seek(0)
 
-    if get_io_string_size(output) > 0:
-        for line in output:
+    if get_io_string_size(BUFFERED_CONFIG_INIT_LOG_MESSAGES) > 0:
+        for line in BUFFERED_CONFIG_INIT_LOG_MESSAGES:
             print(line, end='')
     else:
         print("Ready to use!")
@@ -47,9 +47,9 @@ def parse_tf2_console_logs() -> None:
 
 
 def get_io_string_size(string_io: StringIO):
-    output.seek(0, os.SEEK_END)
+    string_io.seek(0, os.SEEK_END)
     length = string_io.tell()
-    output.seek(0)
+    string_io.seek(0)
     return length
 
 
