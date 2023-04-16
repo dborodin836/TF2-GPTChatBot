@@ -1,4 +1,3 @@
-import codecs
 import configparser
 import os
 import sys
@@ -6,6 +5,7 @@ import re
 from enum import IntEnum
 from os.path import exists
 from pydantic import BaseModel, validator
+from io import StringIO
 
 CONFIG_FILE = 'config.ini'
 OPENAI_API_KEY_RE_PATTERN = r"sk-[a-zA-Z0-9]{48}"
@@ -13,8 +13,6 @@ OPENAI_API_KEY_RE_PATTERN = r"sk-[a-zA-Z0-9]{48}"
 
 def handle_exit_with_exception(message: str) -> None:
     print(message)
-    os.system('pause')
-    sys.exit(1)
 
 
 class RTDModes(IntEnum):
@@ -63,25 +61,15 @@ class Config(BaseModel):
 
     @validator('TF2_LOGFILE_PATH')
     def is_logfile_path_exists(cls, v):
-        # if not os.path.exists(os.path.dirname(v)):
-        #     handle_exit_with_exception(
-        #         f"Non-valid logfile path!")
-        #
-        # if not os.path.exists(v):
-        #     try:
-        #
-        #         with codecs.open(v, 'w', encoding='utf-8'):
-        #             pass
-        #     except Exception:
-        #         handle_exit_with_exception(
-        #             f"Non-valid logfile path!")
-        print(1)
+        if not os.path.exists(os.path.dirname(v)):
+            handle_exit_with_exception(
+                f"Non-valid logfile path!")
         return v
 
 
-config: Config | None = Config(**{key.upper(): value for section in configparser_config.sections() for key, value
-                   in
-                   configparser_config.items(section)})
+sys.stdout = output = StringIO()
+
+config: Config | None = None
 
 
 def init_config():

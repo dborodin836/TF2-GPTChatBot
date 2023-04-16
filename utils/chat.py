@@ -1,7 +1,9 @@
+import os
 import queue
+from io import StringIO
 
-from config import config
-from services.chatgpt import  handle_gpt_request
+from config import config, output
+from services.chatgpt import handle_gpt_request
 from services.network import check_connection
 from utils.bans import unban_player, ban_player, load_banned_players, is_banned_username
 from utils.commands import handle_rtd_command, stop_bot, start_bot, get_bot_state
@@ -28,7 +30,13 @@ def parse_tf2_console_logs() -> None:
     load_prompts()
     load_banned_players()
 
-    print("Ready to use!")
+    output.seek(0)
+
+    if get_io_string_size(output) > 0:
+        for line in output:
+            print(line, end='')
+    else:
+        print("Ready to use!")
 
     for line, user in open_tf2_logfile():
         if not get_bot_state():
@@ -36,6 +44,13 @@ def parse_tf2_console_logs() -> None:
         if is_banned_username(user):
             continue
         conversation_history = handle_command(line, user, conversation_history)
+
+
+def get_io_string_size(string_io: StringIO):
+    output.seek(0, os.SEEK_END)
+    length = string_io.tell()
+    output.seek(0)
+    return length
 
 
 def handle_command(line: str, user: str, conversation_history: str) -> str:
