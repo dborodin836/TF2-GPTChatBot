@@ -1,0 +1,9 @@
+[run]
+omit =
+    tests/*
+    utils/__init__.py
+    services/__init__.py
+    gui/__init__.py
+
+[tool:pytest]
+addopts = --cov . --cov-report html
