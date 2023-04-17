@@ -69,7 +69,7 @@ def add_prompts_by_flags(user_prompt: str) -> str:
         result += f" Answer in less than {config.SOFT_COMPLETION_LIMIT} chars!"
     result = result.replace(r'\l', '')
 
-    return result
+    return result.strip()
 
 
 def follow_tail(file_path: str) -> str:
