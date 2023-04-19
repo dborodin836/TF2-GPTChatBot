@@ -37,6 +37,7 @@ class Config(BaseModel):
     SOFT_COMPLETION_LIMIT: int
     HARD_COMPLETION_LIMIT: int
     RTD_MODE: int
+    APP_VERSION: str = '1.1.0'
 
     @validator('OPENAI_API_KEY')
     def api_key_pattern_match(cls, v):

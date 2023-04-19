@@ -1,5 +1,7 @@
 import os
 import queue
+import requests
+import json
 from io import StringIO
 
 from config import config, BUFFERED_CONFIG_INIT_LOG_MESSAGES
@@ -14,22 +16,36 @@ from utils.logs import log_message
 PROMPTS_QUEUE = queue.Queue()
 
 
-def parse_tf2_console_logs() -> None:
-    conversation_history: str = ''
+def check_for_updates():
+    api_url = 'https://api.github.com/repos/dborodin836/TF2-GPTChatBot/releases/latest'
+    response = requests.get(api_url)
 
+    data = json.loads(response.content)
+    latest_version = data['tag_name']
+
+    if latest_version > config.APP_VERSION:
+        print(f'A new version ({latest_version}) of the app is available. Please update.')
+    else:
+        print('The app is up to date.')
+
+
+def setup():
     print("""
-  _____ _____ ____        ____ ____ _____ ____ _           _   ____        _   
- |_   _|  ___|___ \      / ___|  _ \_   _/ ___| |__   __ _| |_| __ )  ___ | |_ 
-   | | | |_    __) |____| |  _| |_) || || |   | '_ \ / _` | __|  _ \ / _ \| __|
-   | | |  _|  / __/_____| |_| |  __/ | || |___| | | | (_| | |_| |_) | (_) | |_ 
-   |_| |_|   |_____|     \____|_|    |_| \____|_| |_|\__,_|\__|____/ \___/ \__|
-                                                                               
-""")
+      _____ _____ ____        ____ ____ _____ ____ _           _   ____        _   
+     |_   _|  ___|___ \      / ___|  _ \_   _/ ___| |__   __ _| |_| __ )  ___ | |_ 
+       | | | |_    __) |____| |  _| |_) || || |   | '_ \ / _` | __|  _ \ / _ \| __|
+       | | |  _|  / __/_____| |_| |  __/ | || |___| | | | (_| | |_| |_) | (_) | |_ 
+       |_| |_|   |_____|     \____|_|    |_| \____|_| |_|\__,_|\__|____/ \___/ \__|
 
+    """)
+
+    check_for_updates()
     check_connection()
     load_prompts()
     load_banned_players()
 
+
+def print_buffered_config_innit_messages():
     BUFFERED_CONFIG_INIT_LOG_MESSAGES.seek(0)
 
     if get_io_string_size(BUFFERED_CONFIG_INIT_LOG_MESSAGES) > 0:
@@ -37,6 +53,12 @@ def parse_tf2_console_logs() -> None:
             print(line, end='')
     else:
         print("Ready to use!")
+
+
+def parse_tf2_console_logs() -> None:
+    conversation_history: str = ''
+
+    setup()
 
     for line, user in open_tf2_logfile():
         if not get_bot_state():
