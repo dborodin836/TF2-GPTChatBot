@@ -1,4 +1,4 @@
-from utils.text import has_cyrillic, get_chunks, get_chunk_size
+from utils.text import has_cyrillic, get_chunks, get_chunk_size, add_prompts_by_flags
 
 MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120
@@ -32,3 +32,9 @@ def test_get_chunk_size_with_non_cyrillic_text():
     # Test the function with non-Cyrillic text
     text = "Hello, world!"
     assert get_chunk_size(text) == MAX_LENGTH_OTHER
+
+
+def test_add_prompts_by_flags():
+    expected_output = "Please enter your name"
+    result = add_prompts_by_flags(r"\l Please enter your name")
+    assert result == expected_output

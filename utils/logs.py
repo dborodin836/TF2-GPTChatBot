@@ -25,7 +25,7 @@ def log_cmd_message(message: str) -> None:
     print(log_msg)
 
 
-def log_to_file(message: str) -> None:
+def log_to_file(message: str, path: str = None) -> None:
     """
     Appends the given message to a log file with a timestamp.
     """
@@ -33,6 +33,6 @@ def log_to_file(message: str) -> None:
     if DATE is None:
         DATE = dt.now().strftime('%Y-%m-%d_%H-%M-%S')
 
-    filename = f"log_{DATE}.txt"
+    filename = path or f"log_{DATE}.txt"
     with codecs.open(filename, "a", encoding="utf-8") as f:
         f.write(message)
