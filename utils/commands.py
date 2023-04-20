@@ -6,6 +6,13 @@ from utils.logs import log_cmd_message
 
 BOT_RUNNING = True
 RICKROLL_LINK = "youtu.be/dQw4w9WgXcQ"
+GITHUB_LINK = "bit.ly/tf2-gpt3"
+
+
+def handle_gh_command(username: str) -> None:
+    log_cmd_message(f"User '{username}' GET GH LINK")
+    time.sleep(1)
+    send_say_command_to_tf2(f"GitHub: {GITHUB_LINK}")
 
 
 def handle_rtd_command(username: str) -> None:
