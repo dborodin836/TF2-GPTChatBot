@@ -26,18 +26,24 @@ class RTDModes(IntEnum):
 
 
 class Config(BaseModel):
+    APP_VERSION: str = '1.1.0'
+
     TF2_LOGFILE_PATH: str
     OPENAI_API_KEY: str
+
     GPT_COMMAND: str
     CHATGPT_COMMAND: str
     CLEAR_CHAT_COMMAND: str
+    RTD_COMMAND: str
+
     RCON_HOST: str
     RCON_PASSWORD: str
     RCON_PORT: int
+
     SOFT_COMPLETION_LIMIT: int
     HARD_COMPLETION_LIMIT: int
+
     RTD_MODE: int
-    APP_VERSION: str = '1.1.0'
 
     @validator('OPENAI_API_KEY')
     def api_key_pattern_match(cls, v):

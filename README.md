@@ -57,6 +57,7 @@ OPENAI_API_KEY=sk-************************************************
 GPT_COMMAND=!gpt3
 CHATGPT_COMMAND=!cgpt
 CLEAR_CHAT_COMMAND=!clear
+RTD_COMMAND=!rtd
 
 [RCON]
 RCON_HOST=127.0.0.1
@@ -144,6 +145,7 @@ OPENAI_API_KEY=sk-************************************************
 GPT_COMMAND=!gpt3
 CHATGPT_COMMAND=!cgpt
 CLEAR_CHAT_COMMAND=!clear
+RTD_COMMAND=!rtd
 
 [RCON]
 RCON_HOST=127.0.0.1
