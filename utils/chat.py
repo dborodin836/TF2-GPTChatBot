@@ -89,7 +89,7 @@ def handle_command(line: str, user: str, conversation_history: str) -> str:
         log_message("CHAT", user, "CLEARING CHAT")
         return ''
 
-    elif line.strip().startswith("!rtd"):
+    elif line.strip().startswith(config.RTD_COMMAND):
         handle_rtd_command(user)
 
     elif line.strip().startswith("!gh"):
