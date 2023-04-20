@@ -8,7 +8,8 @@ from config import config, BUFFERED_CONFIG_INIT_LOG_MESSAGES
 from services.chatgpt import handle_gpt_request
 from services.network import check_connection
 from utils.bans import unban_player, ban_player, load_banned_players, is_banned_username
-from utils.commands import handle_rtd_command, stop_bot, start_bot, get_bot_state
+from utils.commands import (handle_rtd_command, stop_bot, start_bot, get_bot_state,
+                            handle_gh_command)
 from utils.prompt import load_prompts
 from utils.text import open_tf2_logfile
 from utils.logs import log_message
@@ -90,6 +91,9 @@ def handle_command(line: str, user: str, conversation_history: str) -> str:
 
     elif line.strip().startswith("!rtd"):
         handle_rtd_command(user)
+
+    elif line.strip().startswith("!gh"):
+        handle_gh_command(user)
 
     elif line.strip() == "!gpt_stop":
         stop_bot()
