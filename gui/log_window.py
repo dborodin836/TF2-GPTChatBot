@@ -3,6 +3,8 @@ import time
 import tkinter as tk
 
 import openai
+from ttkbootstrap import Style
+import ttkbootstrap as ttk
 
 from services.chatgpt import send_gpt_completion_request
 from utils.bans import list_banned_players, unban_player, ban_player
@@ -22,13 +24,20 @@ class LogWindow(tk.Frame):
         self.master.title("TF2-GPTChatBot")
         self.master.resizable(False, False)
 
+        # Set the style to "simplex"
+        style = Style(theme='cosmo')
+        style.configure(".", font=("TkDefaultFont", 11), foreground="black")
+        style.configure("TButton", padding=6, relief="flat")
+        style.configure("TEntry", padding=6)
+        style.configure("TFrame", background="white")
+
     def create_widgets(self):
         # Add a Text widget to the window for displaying logs
-        self.log_text = tk.Text(self, height=20, width=100, state="disabled")
+        self.log_text = ttk.Text(self, height=20, width=100, state="disabled")
         self.log_text.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         # Add another Text widget below the log_text widget for displaying additional text
-        self.cmd_line = tk.Text(self, height=1, width=100)
+        self.cmd_line = ttk.Text(self, height=1, width=100)
         self.cmd_line.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         self.cmd_line.bind("<Return>", self.handle_commands)
