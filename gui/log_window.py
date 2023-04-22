@@ -16,6 +16,18 @@ from utils.logs import log_to_file
 PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
 
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    import os
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
 class LogWindow(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
@@ -24,6 +36,7 @@ class LogWindow(tk.Frame):
         self.create_widgets()
         self.master.title("TF2-GPTChatBot")
         self.master.resizable(False, False)
+        self.master.iconbitmap(resource_path('icon.ico'))
 
         # Set the style to "simplex"
         style = Style(theme='cosmo')

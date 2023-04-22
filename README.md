@@ -181,8 +181,15 @@ python main.py
 The application should now be running and ready to use.
 
 _**NOTE: You can create your own executable using this command**_
+
+Windows:
 ```sh
-pyinstaller --onefile --clean -n TF2-GPTChatBot_gui -w --icon icon.ico main.py
+pyinstaller --onefile --clean -n TF2-GPTChatBot -w --icon icon.ico --add-data "icon.ico;." main.py 
+```
+
+Linux:
+```sh
+pyinstaller --onefile --clean -n TF2-GPTChatBot -w --icon icon.ico --add-data "icon.ico:." main.py 
 ```
 
 ## Usage
