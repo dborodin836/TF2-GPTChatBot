@@ -49,11 +49,12 @@ def test_list_banned_players(capsys):
 
 
 def test_unban_player():
-    with patch('utils.bans.log_cmd_message') as mock_log_cmd_message:
-        bans.unban_player('player1')
-        banned_players = bans.load_banned_players()
-        assert 'player1' not in banned_players
-        mock_log_cmd_message.assert_called_once_with("UNBANNED 'player1'")
+    assert bans.BANNED_PLAYERS == set()
+    bans.ban_player("test1")
+    assert bans.BANNED_PLAYERS == {'test1'}
+    bans.unban_player("test1")
+    assert bans.BANNED_PLAYERS == set()
+
 
 
 def test_ban_player():

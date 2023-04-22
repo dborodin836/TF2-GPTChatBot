@@ -12,12 +12,15 @@ def load_banned_players() -> set:
     """
     Loads the set of banned players.
     """
-    banned_players = set()
-    with codecs.open(BANS_FILE, 'r', encoding='utf-8') as f:
-        try:
+    try:
+        with codecs.open(BANS_FILE, 'r', encoding='utf-8') as f:
             banned_players = set(json.load(f))
-        except (EOFError, JSONDecodeError):
-            pass
+    except (EOFError, JSONDecodeError):
+        banned_players = set()
+    except FileNotFoundError:
+        banned_players = set()
+        print(f'File {BANS_FILE} could not be found.')
+
     return banned_players
 
 
@@ -32,23 +35,26 @@ def unban_player(username: str) -> None:
     """
     Removes a player from the set of banned players.
     """
-    try:
+    if is_banned_username(username):
         BANNED_PLAYERS.remove(username)
-    except KeyError:
-        pass
-    log_cmd_message(f"UNBANNED '{username}'")
-    with codecs.open(BANS_FILE, 'w', encoding='utf-8') as f:
-        json.dump(list(BANNED_PLAYERS), f)
+        log_cmd_message(f"UNBANNED '{username}'")
+        with codecs.open(BANS_FILE, 'w', encoding='utf-8') as f:
+            json.dump(list(BANNED_PLAYERS), f)
+    else:
+        log_cmd_message(f"USER '{username}' WAS NOT BANNED!")
 
 
 def ban_player(username: str) -> None:
     """
     Adds a player to the set of banned players.
     """
-    BANNED_PLAYERS.add(username)
-    log_cmd_message(f"BANNED '{username}'")
-    with codecs.open(BANS_FILE, 'w', encoding='utf-8') as f:
-        json.dump(list(BANNED_PLAYERS), f)
+    if not is_banned_username(username):
+        BANNED_PLAYERS.add(username)
+        log_cmd_message(f"BANNED '{username}'")
+        with codecs.open(BANS_FILE, 'w', encoding='utf-8') as f:
+            json.dump(list(BANNED_PLAYERS), f)
+    else:
+        log_cmd_message(f"USER '{username}' ALREADY BANNED")
 
 
 def list_banned_players() -> None:
