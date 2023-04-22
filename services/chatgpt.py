@@ -22,7 +22,7 @@ def send_gpt_completion_request(message: str, username: str) -> str:
 
 
 def handle_gpt_request(message_type: Literal["CHAT", "GPT3"], username: str, user_prompt: str,
-                       chat_buffer: str = ""):
+                       chat_buffer: str = "") -> str:
     """
     This function is called when the user wants to send a message to the AI chatbot. It logs the
     user's message, and sends a request to GPT-3 to generate a response. Finally, the function
@@ -35,10 +35,22 @@ def handle_gpt_request(message_type: Literal["CHAT", "GPT3"], username: str, use
         chat_buffer += 'HUMAN:' + message + '\n' + 'AI:'
         message = chat_buffer
 
-    try:
-        response = send_gpt_completion_request(message, username)
-    except openai.error.RateLimitError:
-        log_cmd_message("Rate limited! Try again later!")
+    attempts = 0
+    max_attempts = 2
+
+    while attempts < max_attempts:
+        try:
+            response = send_gpt_completion_request(message, username)
+            break
+        except openai.error.RateLimitError:
+            log_cmd_message("Rate limited! Trying again...")
+            attempts += 1
+        except Exception:
+            log_cmd_message("Unhandled error happened! Trying again...")
+            attempts += 1
+
+    if attempts == max_attempts:
+        log_cmd_message("Max number of attempts reached! Try again later!")
         return chat_buffer
 
     if message_type == "CHAT":
