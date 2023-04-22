@@ -3,8 +3,13 @@ import os
 import re
 from enum import IntEnum
 from os.path import exists
+
+import pydantic
 from pydantic import BaseModel, validator
 from io import StringIO
+import tkinter as tk
+from tkinter import messagebox
+import sys
 
 CONFIG_FILE = 'config.ini'
 OPENAI_API_KEY_RE_PATTERN = r"sk-[a-zA-Z0-9]{48}"
@@ -73,11 +78,23 @@ def init_config():
     if not exists(CONFIG_FILE):
         buffered_print(f"Couldn't find '{CONFIG_FILE}' file.")
 
-    configparser_config = configparser.ConfigParser()
-    configparser_config.read(CONFIG_FILE)
+    try:
+        configparser_config = configparser.ConfigParser()
+        configparser_config.read(CONFIG_FILE)
 
-    config_dict = {key.upper(): value for section in configparser_config.sections() for key, value
-                   in
-                   configparser_config.items(section)}
-    global config
-    config = Config(**config_dict)
+        config_dict = {key.upper(): value for section in configparser_config.sections() for key, value
+                       in
+                       configparser_config.items(section)}
+        global config
+        config = Config(**config_dict)
+    except pydantic.ValidationError:
+        # Create a Tkinter window
+        root = tk.Tk()
+        root.withdraw()
+
+        # Show error message
+        messagebox.showerror("Error", "An error occurred. Check config file.")
+
+        # Close the window
+        root.destroy()
+        sys.exit(1)
