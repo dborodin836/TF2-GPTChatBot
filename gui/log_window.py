@@ -1,6 +1,7 @@
 import sys
 import time
 import tkinter as tk
+from tkinter.ttk import Checkbutton
 
 import openai
 from ttkbootstrap import Style
@@ -34,11 +35,22 @@ class LogWindow(tk.Frame):
     def create_widgets(self):
         # Add a Text widget to the window for displaying logs
         self.log_text = ttk.Text(self, height=20, width=100, state="disabled")
-        self.log_text.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=10, pady=10)
+        self.log_text.grid(row=0, column=0, padx=10, pady=10, columnspan=2)
 
         # Add another Text widget below the log_text widget for displaying additional text
-        self.cmd_line = ttk.Text(self, height=1, width=100)
-        self.cmd_line.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True, padx=10, pady=10)
+        self.cmd_line = ttk.Text(self, height=1, width=89)
+        self.cmd_line.grid(row=1, column=0, padx=10, pady=10)
+
+        self.toggle_var = tk.BooleanVar(value=True)
+        self.toggle_button = Checkbutton(
+            self,
+            text=" Stick \n Logs",
+            variable=self.toggle_var,
+            bootstyle="round-toggle",
+            command=lambda: self.log_text.see(tk.END) if self.toggle_var.get() else None
+        )
+
+        self.toggle_button.grid(row=1, column=1, padx=(0, 18))
 
         self.cmd_line.bind("<Return>", self.handle_commands)
 
@@ -53,7 +65,8 @@ class LogWindow(tk.Frame):
         self.log_text.config(state="normal")
         self.log_text.insert(tk.END, f"{message}")
         self.log_text.config(state="disabled")
-        self.log_text.see(tk.END)  # Scroll to the end of the text widget
+        if self.toggle_var.get():
+            self.log_text.see(tk.END)  # Scroll to the end of the text widget
 
     def exit_program(self):
         self.master.destroy()
