@@ -1,12 +1,14 @@
 import os
 import queue
+import time
+
 import requests
 import json
 from io import StringIO
 
 from config import config, BUFFERED_CONFIG_INIT_LOG_MESSAGES
 from services.chatgpt import handle_gpt_request
-from services.network import check_connection
+from services.network import check_connection, send_say_command_to_tf2
 from utils.bans import unban_player, ban_player, load_banned_players, is_banned_username
 from utils.commands import (handle_rtd_command, stop_bot, start_bot, get_bot_state,
                             handle_gh_command)
@@ -78,6 +80,12 @@ def get_io_string_size(string_io: StringIO):
 
 def handle_command(line: str, user: str, conversation_history: str) -> str:
     if line.strip().startswith(config.GPT_COMMAND):
+        if line.removeprefix(config.GPT_COMMAND).strip() == "":
+            time.sleep(1)
+            send_say_command_to_tf2("Hello there! I am ChatGPT, a ChatGPT plugin integrated into"
+                                    " Team Fortress 2. Ask me anything!")
+            return conversation_history
+
         return handle_gpt_request("GPT3", user, line.removeprefix(config.GPT_COMMAND).strip(),
                                   conversation_history)
 
