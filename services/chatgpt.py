@@ -1,3 +1,4 @@
+import time
 from typing import Literal
 
 import openai
@@ -44,6 +45,7 @@ def handle_gpt_request(message_type: Literal["CHAT", "GPT3"], username: str, use
             break
         except openai.error.RateLimitError:
             log_cmd_message("Rate limited! Trying again...")
+            time.sleep(2)
             attempts += 1
         except Exception:
             log_cmd_message("Unhandled error happened! Trying again...")
