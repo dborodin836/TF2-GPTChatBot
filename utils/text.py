@@ -111,6 +111,6 @@ def open_tf2_logfile() -> LogLine:
     """
     for line in follow_tail(config.TF2_LOGFILE_PATH):
         parts = line.split(" :  ")
-        username = parts[0].removeprefix("*DEAD* ")
+        username = parts[0].replace('(TEAM)', '', 1).removeprefix("*DEAD*").strip()
         prompt = parts[-1]
         yield LogLine(prompt, username)
