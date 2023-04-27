@@ -79,7 +79,7 @@ def follow_tail(file_path: str) -> str:
     first_call = True
     while True:
         try:
-            with codecs.open(file_path, encoding='utf-8') as input:
+            with codecs.open(file_path, encoding='utf-8', errors='ignore') as input:
                 if first_call:
                     input.seek(0, 2)
                     first_call = False
@@ -100,7 +100,8 @@ def follow_tail(file_path: str) -> str:
                         latest_data = input.read()
                     for line in latest_lines[:-1]:
                         yield line + '\n'
-        except IOError:
+        except Exception as e:
+            print(e)
             yield ''
 
 
