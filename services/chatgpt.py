@@ -1,5 +1,5 @@
 import time
-from typing import Literal
+from typing import Literal, Any
 
 import openai
 import hashlib
@@ -9,8 +9,20 @@ from utils.logs import log_message, log_cmd_message
 from utils.text import add_prompts_by_flags
 
 
-def send_gpt_completion_request(message: str, username: str) -> str:
+def is_violated_tos(message: str) -> bool:
     openai.api_key = config.OPENAI_API_KEY
+    response = openai.Moderation.create(
+        input=message,
+    )
+
+    return response.results[0]['flagged']
+
+
+def send_gpt_completion_request(message: str, username: str) -> Any | None:
+    openai.api_key = config.OPENAI_API_KEY
+
+    if is_violated_tos(message):
+        return None
 
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -47,8 +59,8 @@ def handle_gpt_request(message_type: Literal["CHAT", "GPT3"], username: str, use
             log_cmd_message("Rate limited! Trying again...")
             time.sleep(2)
             attempts += 1
-        except Exception:
-            log_cmd_message("Unhandled error happened! Trying again...")
+        except Exception as e:
+            log_cmd_message(f"Unhandled error happened! Trying again... {e}")
             attempts += 1
 
     if attempts == max_attempts:
