@@ -29,7 +29,7 @@ def check_for_updates():
     if latest_version > config.APP_VERSION:
         print(f'A new version ({latest_version}) of the app is available. Please update.')
     else:
-        print('The app is up to date.')
+        print(f'The app is up to date. ({latest_version})')
 
 
 def setup():
