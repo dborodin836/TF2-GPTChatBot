@@ -8,7 +8,7 @@ from io import StringIO
 
 from config import config, BUFFERED_CONFIG_INIT_LOG_MESSAGES
 from services.chatgpt import handle_gpt_request
-from services.network import check_connection, send_say_command_to_tf2
+from services.network import check_connection, send_say_command_to_tf2, get_username
 from utils.bans import unban_player, ban_player, load_banned_players, is_banned_username
 from utils.commands import (handle_rtd_command, stop_bot, start_bot, get_bot_state,
                             handle_gh_command)
@@ -32,6 +32,12 @@ def check_for_updates():
         print(f'The app is up to date. ({latest_version})')
 
 
+def set_host_username():
+    username = get_username()
+    config.HOST_USERNAME = username
+    print(f"Hello '{config.HOST_USERNAME}'!")
+
+
 def setup():
     print("""
       _____ _____ ____        ____ ____ _____ ____ _           _   ____        _   
@@ -44,6 +50,7 @@ def setup():
 
     check_for_updates()
     check_connection()
+    set_host_username()
     load_prompts()
     load_banned_players()
 
