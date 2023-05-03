@@ -105,12 +105,28 @@ def follow_tail(file_path: str) -> str:
             yield ''
 
 
+def parse_line(line: str) -> LogLine:
+    parts = line.split(" :  ")
+    username = parts[0].replace('(TEAM)', '', 1).removeprefix("*DEAD*").strip()
+
+    if len(parts) > 2:
+        prompt = ' '.join(parts[1:])
+    else:
+        prompt = parts[-1]
+
+    return LogLine(prompt, username)
+
+
 def open_tf2_logfile() -> LogLine:
     """
     Opens a log file for Team Fortress 2 and yields tuples containing user prompts and usernames.
     """
     for line in follow_tail(config.TF2_LOGFILE_PATH):
-        parts = line.split(" :  ")
-        username = parts[0].replace('(TEAM)', '', 1).removeprefix("*DEAD*").strip()
-        prompt = parts[-1]
-        yield LogLine(prompt, username)
+
+        try:
+            res = parse_line(line)
+        except Exception:
+            print("Unknown error happened while reading chat.")
+            res = LogLine('', '')
+        finally:
+            yield res
