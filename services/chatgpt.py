@@ -21,8 +21,13 @@ def is_violated_tos(message: str) -> bool:
 def send_gpt_completion_request(message: str, username: str) -> Any | None:
     openai.api_key = config.OPENAI_API_KEY
 
-    if is_violated_tos(message):
-        return None
+    print(f"{is_violated_tos(message)=}, {config.HOST_USERNAME != username=}, {config.TOS_VIOLATION=}")
+    print(f"{config.HOST_USERNAME=}, {username=}")
+
+    if not config.TOS_VIOLATION:
+        if is_violated_tos(message):
+            if config.HOST_USERNAME != username:
+                return None
 
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -65,6 +70,10 @@ def handle_gpt_request(message_type: Literal["CHAT", "GPT3"], username: str, use
 
     if attempts == max_attempts:
         log_cmd_message("Max number of attempts reached! Try again later!")
+        return chat_buffer
+
+    if response is None:
+        print(f"Request '{user_prompt}' violates OPENAI TOS. Skipping...")
         return chat_buffer
 
     if message_type == "CHAT":
