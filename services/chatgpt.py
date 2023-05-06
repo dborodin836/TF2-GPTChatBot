@@ -21,9 +21,6 @@ def is_violated_tos(message: str) -> bool:
 def send_gpt_completion_request(message: str, username: str) -> Any | None:
     openai.api_key = config.OPENAI_API_KEY
 
-    print(f"{is_violated_tos(message)=}, {config.HOST_USERNAME != username=}, {config.TOS_VIOLATION=}")
-    print(f"{config.HOST_USERNAME=}, {username=}")
-
     if not config.TOS_VIOLATION:
         if is_violated_tos(message):
             if config.HOST_USERNAME != username:
