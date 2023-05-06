@@ -12,6 +12,7 @@ from utils.bans import list_banned_players, unban_player, ban_player
 from utils.chat import PROMPTS_QUEUE
 from utils.commands import print_help_command, start_bot, stop_bot
 from utils.logs import log_to_file
+from config import config
 
 PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
 
@@ -112,7 +113,8 @@ class CustomOutput:
 
     def write(self, message):
         self.window.update_logs(message)
-        log_to_file(message)
+        if config.ENABLE_LOGS:
+            log_to_file(message)
 
     def flush(self):
         ...
