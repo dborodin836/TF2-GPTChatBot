@@ -91,6 +91,8 @@ class LogWindow(tk.Frame):
         if text.strip == "":
             return
 
+        print(f'> {text}')
+
         handle_gui_console_commands(text)
 
         # Clear the additional_text widget after the function is executed
@@ -155,7 +157,7 @@ def gpt3_cmd_handler():
             prompt = PROMPTS_QUEUE.get()
             try:
                 response = send_gpt_completion_request(prompt, "admin")
-                print(response)
+                print(f"GPT3> {response}")
             except openai.error.RateLimitError:
                 print("Rate Limited! Try again later.")
         else:
