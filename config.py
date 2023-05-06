@@ -50,6 +50,8 @@ class Config(BaseModel):
 
     RTD_MODE: int
 
+    ENABLE_LOGS: bool
+
     @validator('OPENAI_API_KEY')
     def api_key_pattern_match(cls, v):
         if not re.fullmatch(OPENAI_API_KEY_RE_PATTERN, v):
