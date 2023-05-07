@@ -32,6 +32,8 @@ class RTDModes(IntEnum):
 
 class Config(BaseModel):
     APP_VERSION: str = '1.2.1'
+    HOST_USERNAME: str = ''
+    TOS_VIOLATION: bool
 
     TF2_LOGFILE_PATH: str
     OPENAI_API_KEY: str

@@ -1,11 +1,25 @@
 import time
 import sys
+import re
 
 from rcon import WrongPassword
 from rcon.source import Client
 
 from config import config
 from utils.text import get_chunk_size, get_chunks
+
+
+def get_username() -> str:
+    with Client(config.RCON_HOST, config.RCON_PORT, passwd=config.RCON_PASSWORD) as client:
+        response = client.run('name')
+
+    pattern = r'"name"\s*=\s"(.+?)"'
+
+    match = re.search(pattern, response)
+
+    if match:
+        name = match.group(1)
+        return name
 
 
 def check_connection():
