@@ -9,13 +9,13 @@ RICKROLL_LINK = "youtu.be/dQw4w9WgXcQ"
 GITHUB_LINK = "bit.ly/tf2-gpt3"
 
 
-def handle_gh_command(username: str) -> None:
+def handle_gh_command(username: str, is_team: bool = False) -> None:
     log_cmd_message(f"User '{username}' GET GH LINK")
     time.sleep(1)
-    send_say_command_to_tf2(f"GitHub: {GITHUB_LINK}")
+    send_say_command_to_tf2(f"GitHub: {GITHUB_LINK}", is_team)
 
 
-def handle_rtd_command(username: str) -> None:
+def handle_rtd_command(username: str, is_team: bool = False) -> None:
     """
     Handles the RTD (Roll The Dice) command for the given username.
     If RTD_MODE is set to RICKROLL, the user is rickrolled.
@@ -31,7 +31,7 @@ def handle_rtd_command(username: str) -> None:
             lines = list(map(lambda x: x.removeprefix('https://').strip(), file.readlines()))
         time.sleep(1)
         log_cmd_message(f"[RTD] {username} rolled: {random.choice(lines)}")
-        send_say_command_to_tf2(f"[RTD] {username} rolled: {random.choice(lines)}")
+        send_say_command_to_tf2(f"[RTD] {username} rolled: {random.choice(lines)}", is_team)
 
 
 def print_help_command():

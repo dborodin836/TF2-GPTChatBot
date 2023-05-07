@@ -17,6 +17,7 @@ class LogLine(NamedTuple):
     """
     prompt: str
     username: str
+    is_team_message: bool
 
 
 def get_chunks(string: str, maxlength: int) -> str:
@@ -107,6 +108,7 @@ def follow_tail(file_path: str) -> str:
 
 def parse_line(line: str) -> LogLine:
     parts = line.split(" :  ")
+    is_team_mes = '(TEAM)' in line
     username = parts[0].replace('(TEAM)', '', 1).removeprefix("*DEAD*").strip()
 
     if len(parts) > 2:
@@ -114,10 +116,10 @@ def parse_line(line: str) -> LogLine:
     else:
         prompt = parts[-1]
 
-    return LogLine(prompt, username)
+    return LogLine(prompt, username, is_team_mes)
 
 
-def open_tf2_logfile() -> LogLine:
+def get_console_logline() -> LogLine:
     """
     Opens a log file for Team Fortress 2 and yields tuples containing user prompts and usernames.
     """
@@ -127,6 +129,6 @@ def open_tf2_logfile() -> LogLine:
             res = parse_line(line)
         except Exception:
             print("Unknown error happened while reading chat.")
-            res = LogLine('', '')
+            res = LogLine('', '', False)
         finally:
             yield res
