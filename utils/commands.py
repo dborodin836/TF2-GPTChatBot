@@ -1,7 +1,7 @@
 import random
 import time
 from config import config, RTDModes
-from services.network import send_say_command_to_tf2
+from services.source_game import send_say_command_to_tf2
 from utils.logs import log_cmd_message
 
 BOT_RUNNING = True

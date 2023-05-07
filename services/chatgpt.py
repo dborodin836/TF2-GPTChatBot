@@ -4,7 +4,7 @@ from typing import Literal, Any
 import openai
 import hashlib
 from config import config
-from services.network import send_say_command_to_tf2
+from services.source_game import send_say_command_to_tf2
 from utils.logs import log_message, log_cmd_message
 from utils.text import add_prompts_by_flags
 
