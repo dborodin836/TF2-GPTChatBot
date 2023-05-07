@@ -37,7 +37,7 @@ def send_gpt_completion_request(message: str, username: str) -> Any | None:
 
 
 def handle_gpt_request(message_type: Literal["CHAT", "GPT3"], username: str, user_prompt: str,
-                       chat_buffer: str = "") -> str:
+                       chat_buffer: str = "", is_team: bool = False) -> str:
     """
     This function is called when the user wants to send a message to the AI chatbot. It logs the
     user's message, and sends a request to GPT-3 to generate a response. Finally, the function
@@ -78,5 +78,5 @@ def handle_gpt_request(message_type: Literal["CHAT", "GPT3"], username: str, use
 
     log_message(message_type, username, ' '.join(response.split()))
 
-    send_say_command_to_tf2(response)
+    send_say_command_to_tf2(response, is_team)
     return chat_buffer

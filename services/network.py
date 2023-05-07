@@ -51,7 +51,7 @@ def login() -> None:
             sys.exit(1)
 
 
-def send_say_command_to_tf2(message: str) -> None:
+def send_say_command_to_tf2(message: str, team_chat: bool = False) -> None:
     """
     Sends a "say" command to a Team Fortress 2 server using RCON protocol.
     """
@@ -67,7 +67,10 @@ def send_say_command_to_tf2(message: str) -> None:
     cmd: str = ' '
 
     for chunk in chunks:
-        cmd += f'say "{chunk}";wait 1300;'
+        if team_chat:
+            cmd += f'say_team "{chunk}";wait 1300;'
+        else:
+            cmd += f'say "{chunk}";wait 1300;'
 
     with Client(config.RCON_HOST, config.RCON_PORT, passwd=config.RCON_PASSWORD) as client:
         client.run(cmd)

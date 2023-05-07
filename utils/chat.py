@@ -13,7 +13,7 @@ from utils.bans import unban_player, ban_player, load_banned_players, is_banned_
 from utils.commands import (handle_rtd_command, stop_bot, start_bot, get_bot_state,
                             handle_gh_command)
 from utils.prompt import load_prompts
-from utils.text import open_tf2_logfile
+from utils.text import get_console_logline, LogLine
 from utils.logs import log_message
 
 PROMPTS_QUEUE = queue.Queue()
@@ -70,12 +70,12 @@ def parse_tf2_console_logs() -> None:
 
     setup()
 
-    for line, user in open_tf2_logfile():
+    for logline in get_console_logline():
         if not get_bot_state():
             continue
-        if is_banned_username(user):
+        if is_banned_username(logline.username):
             continue
-        conversation_history = handle_command(line, user, conversation_history)
+        conversation_history = handle_command(logline, conversation_history)
 
 
 def get_io_string_size(string_io: StringIO):
@@ -85,30 +85,34 @@ def get_io_string_size(string_io: StringIO):
     return length
 
 
-def handle_command(line: str, user: str, conversation_history: str) -> str:
+def handle_command(logline: LogLine, conversation_history: str) -> str:
+    line = logline.prompt
+    user = logline.username
+    is_team = logline.is_team_message
+
     if line.strip().startswith(config.GPT_COMMAND):
         if line.removeprefix(config.GPT_COMMAND).strip() == "":
             time.sleep(1)
             send_say_command_to_tf2("Hello there! I am ChatGPT, a ChatGPT plugin integrated into"
-                                    " Team Fortress 2. Ask me anything!")
+                                    " Team Fortress 2. Ask me anything!", team_chat=is_team)
             return conversation_history
 
         return handle_gpt_request("GPT3", user, line.removeprefix(config.GPT_COMMAND).strip(),
-                                  conversation_history)
+                                  conversation_history, is_team=is_team)
 
     elif line.strip().startswith(config.CHATGPT_COMMAND):
         return handle_gpt_request("CHAT", user, line.removeprefix(config.CHATGPT_COMMAND).strip(),
-                                  conversation_history)
+                                  conversation_history, is_team=is_team)
 
     elif line.strip().startswith(config.CLEAR_CHAT_COMMAND):
         log_message("CHAT", user, "CLEARING CHAT")
         return ''
 
     elif line.strip().startswith(config.RTD_COMMAND):
-        handle_rtd_command(user)
+        handle_rtd_command(user, is_team=is_team)
 
     elif line.strip().startswith("!gh"):
-        handle_gh_command(user)
+        handle_gh_command(user, is_team=is_team)
 
     elif line.strip() == "!gpt_stop":
         stop_bot()
