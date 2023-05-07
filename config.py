@@ -31,7 +31,7 @@ class RTDModes(IntEnum):
 
 
 class Config(BaseModel):
-    APP_VERSION: str = '1.2.0-hotfix1'
+    APP_VERSION: str = '1.2.1'
     HOST_USERNAME: str = ''
     TOS_VIOLATION: bool
 
@@ -51,6 +51,8 @@ class Config(BaseModel):
     HARD_COMPLETION_LIMIT: int
 
     RTD_MODE: int
+
+    ENABLE_LOGS: bool
 
     @validator('OPENAI_API_KEY')
     def api_key_pattern_match(cls, v):

@@ -12,6 +12,7 @@ from utils.bans import list_banned_players, unban_player, ban_player
 from utils.chat import PROMPTS_QUEUE
 from utils.commands import print_help_command, start_bot, stop_bot
 from utils.logs import log_to_file
+from config import config
 
 PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
 
@@ -90,6 +91,8 @@ class LogWindow(tk.Frame):
         if text.strip == "":
             return
 
+        print(f'> {text}')
+
         handle_gui_console_commands(text)
 
         # Clear the additional_text widget after the function is executed
@@ -112,7 +115,8 @@ class CustomOutput:
 
     def write(self, message):
         self.window.update_logs(message)
-        log_to_file(message)
+        if config.ENABLE_LOGS:
+            log_to_file(message)
 
     def flush(self):
         ...
@@ -153,7 +157,7 @@ def gpt3_cmd_handler():
             prompt = PROMPTS_QUEUE.get()
             try:
                 response = send_gpt_completion_request(prompt, "admin")
-                print(response)
+                print(f"GPT3> {response}")
             except openai.error.RateLimitError:
                 print("Rate Limited! Try again later.")
         else:
