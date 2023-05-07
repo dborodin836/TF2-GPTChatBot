@@ -86,45 +86,46 @@ def get_io_string_size(string_io: StringIO):
 
 
 def handle_command(logline: LogLine, conversation_history: str) -> str:
-    line = logline.prompt
+    prompt = logline.prompt
     user = logline.username
     is_team = logline.is_team_message
 
-    if line.strip().startswith(config.GPT_COMMAND):
-        if line.removeprefix(config.GPT_COMMAND).strip() == "":
+    if prompt.strip().startswith(config.GPT_COMMAND):
+        if prompt.removeprefix(config.GPT_COMMAND).strip() == "":
             time.sleep(1)
             send_say_command_to_tf2("Hello there! I am ChatGPT, a ChatGPT plugin integrated into"
                                     " Team Fortress 2. Ask me anything!", team_chat=is_team)
+            log_message('GPT3', user, prompt.strip())
             return conversation_history
 
-        return handle_gpt_request("GPT3", user, line.removeprefix(config.GPT_COMMAND).strip(),
+        return handle_gpt_request("GPT3", user, prompt.removeprefix(config.GPT_COMMAND).strip(),
                                   conversation_history, is_team=is_team)
 
-    elif line.strip().startswith(config.CHATGPT_COMMAND):
-        return handle_gpt_request("CHAT", user, line.removeprefix(config.CHATGPT_COMMAND).strip(),
+    elif prompt.strip().startswith(config.CHATGPT_COMMAND):
+        return handle_gpt_request("CHAT", user, prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
                                   conversation_history, is_team=is_team)
 
-    elif line.strip().startswith(config.CLEAR_CHAT_COMMAND):
+    elif prompt.strip().startswith(config.CLEAR_CHAT_COMMAND):
         log_message("CHAT", user, "CLEARING CHAT")
         return ''
 
-    elif line.strip().startswith(config.RTD_COMMAND):
+    elif prompt.strip().startswith(config.RTD_COMMAND):
         handle_rtd_command(user, is_team=is_team)
 
-    elif line.strip().startswith("!gh"):
+    elif prompt.strip().startswith("!gh"):
         handle_gh_command(user, is_team=is_team)
 
-    elif line.strip() == "!gpt_stop":
+    elif prompt.strip() == "!gpt_stop":
         stop_bot()
 
-    elif line.strip() == "!gpt_start":
+    elif prompt.strip() == "!gpt_start":
         start_bot()
 
-    elif line.strip().startswith("ban "):
-        name = line.removeprefix("ban ").strip()
+    elif prompt.strip().startswith("ban "):
+        name = prompt.removeprefix("ban ").strip()
         ban_player(name)
 
-    elif line.strip().startswith("unban "):
-        name = line.removeprefix("unban ").strip()
+    elif prompt.strip().startswith("unban "):
+        name = prompt.removeprefix("unban ").strip()
         unban_player(name)
     return conversation_history
