@@ -2,15 +2,17 @@ import queue
 import time
 
 from config import config
-from services.chatgpt import handle_gpt_request
+from services.chatgpt import handle_cgpt_request, handle_gpt_request
 from services.github import check_for_updates
 from services.source_game import check_connection, send_say_command_to_tf2, get_username
 from utils.bans import unban_player, ban_player, load_banned_players, is_banned_username
 from utils.commands import (handle_rtd_command, stop_bot, start_bot, get_bot_state,
                             handle_gh_command)
 from utils.prompt import load_prompts
-from utils.text import get_console_logline, LogLine
+from utils.text import get_console_logline
+from utils.types import LogLine
 from utils.logs import log_message
+from utils.types import MessageHistory
 
 PROMPTS_QUEUE: queue.Queue = queue.Queue()
 
@@ -45,7 +47,7 @@ def setup() -> None:
 
 
 def parse_tf2_console_logs() -> None:
-    conversation_history: str = ''
+    conversation_history: MessageHistory = []
 
     setup()
 
@@ -57,7 +59,7 @@ def parse_tf2_console_logs() -> None:
         conversation_history = handle_command(logline, conversation_history)
 
 
-def handle_command(logline: LogLine, conversation_history: str) -> str:
+def handle_command(logline: LogLine, conversation_history: MessageHistory) -> MessageHistory:
     prompt = logline.prompt
     user = logline.username
     is_team = logline.is_team_message
@@ -70,16 +72,18 @@ def handle_command(logline: LogLine, conversation_history: str) -> str:
             log_message('GPT3', user, prompt.strip())
             return conversation_history
 
-        return handle_gpt_request("GPT3", user, prompt.removeprefix(config.GPT_COMMAND).strip(),
-                                  conversation_history, is_team=is_team)
+        handle_gpt_request("GPT3", user, prompt.removeprefix(config.GPT_COMMAND).strip(),
+                           is_team=is_team)
+
+        return conversation_history
 
     elif prompt.strip().startswith(config.CHATGPT_COMMAND):
-        return handle_gpt_request("CHAT", user, prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
-                                  conversation_history, is_team=is_team)
+        return handle_cgpt_request(user, prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
+                                   conversation_history, is_team=is_team)
 
     elif prompt.strip().startswith(config.CLEAR_CHAT_COMMAND):
         log_message("CHAT", user, "CLEARING CHAT")
-        return ''
+        return []
 
     elif prompt.strip().startswith(config.RTD_COMMAND):
         handle_rtd_command(user, is_team=is_team)

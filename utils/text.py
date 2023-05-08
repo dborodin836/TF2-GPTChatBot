@@ -2,22 +2,13 @@ import codecs
 import re
 import os
 import time
-from typing import NamedTuple
 
 from config import config
 from utils.prompt import PROMPTS
+from utils.types import LogLine
 
 MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120
-
-
-class LogLine(NamedTuple):
-    """
-    Represents a line from a log file.
-    """
-    prompt: str
-    username: str
-    is_team_message: bool
 
 
 def get_chunks(string: str, maxlength: int) -> str:
