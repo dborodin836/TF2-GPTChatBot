@@ -151,7 +151,7 @@ def handle_gui_console_commands(command: str) -> None:
         print_help_command()
 
 
-def gpt3_cmd_handler():
+def gpt3_cmd_handler() -> None:
     while True:
         if PROMPTS_QUEUE.qsize() != 0:
             prompt = PROMPTS_QUEUE.get()

@@ -12,7 +12,7 @@ from utils.prompt import load_prompts
 from utils.text import get_console_logline, LogLine
 from utils.logs import log_message
 
-PROMPTS_QUEUE = queue.Queue()
+PROMPTS_QUEUE: queue.Queue = queue.Queue()
 
 
 def set_host_username() -> None:
@@ -87,6 +87,7 @@ def handle_command(logline: LogLine, conversation_history: str) -> str:
     elif prompt.strip().startswith("!gh"):
         handle_gh_command(user, is_team=is_team)
 
+    # console echo commands start
     elif prompt.strip() == "!gpt_stop":
         stop_bot()
 
@@ -100,4 +101,6 @@ def handle_command(logline: LogLine, conversation_history: str) -> str:
     elif prompt.strip().startswith("unban "):
         name = prompt.removeprefix("unban ").strip()
         unban_player(name)
+    # console echo commands end
+
     return conversation_history
