@@ -2,6 +2,7 @@ import codecs
 import re
 import os
 import time
+import typing
 
 from config import config
 from utils.prompt import PROMPTS
@@ -11,7 +12,7 @@ MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120
 
 
-def get_chunks(string: str, maxlength: int) -> str:
+def get_chunks(string: str, maxlength: int) -> typing.Generator:
     """
     This function splits a string into chunks of a maximum length, with each chunk ending at the
     last space character before the maximum length.
@@ -64,7 +65,7 @@ def add_prompts_by_flags(user_prompt: str) -> str:
     return result.strip()
 
 
-def follow_tail(file_path: str) -> str:
+def follow_tail(file_path: str) -> typing.Generator:
     """
     Follows the tail of a file, yielding new lines as they are added.
     """
@@ -110,7 +111,7 @@ def parse_line(line: str) -> LogLine:
     return LogLine(prompt, username, is_team_mes)
 
 
-def get_console_logline() -> LogLine:
+def get_console_logline() -> typing.Generator:
     """
     Opens a log file for Team Fortress 2 and yields tuples containing user prompts and usernames.
     """

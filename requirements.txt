@@ -6,3 +6,4 @@ pytest-cov==4.0.0
 pydantic==1.10.7
 requests==2.28.2
 ttkbootstrap==1.10.1
+docutils-stubs==0.0.22

@@ -43,11 +43,9 @@ def handle_cgpt_request(username: str, user_prompt: str, conversation_history: M
 
     message = add_prompts_by_flags(user_prompt)
 
-    if not config.TOS_VIOLATION:
-        if is_violated_tos(message):
-            if config.HOST_USERNAME != username:
-                print(f"Request '{user_prompt}' violates OPENAI TOS. Skipping...")
-                return MessageHistory
+    if not config.TOS_VIOLATION and is_violated_tos(message) and config.HOST_USERNAME != username:
+        print(f"Request '{user_prompt}' violates OPENAI TOS. Skipping...")
+        return MessageHistory
 
     conversation_history.append({"role": "user", "content": message})
 
@@ -71,11 +69,9 @@ def handle_gpt_request(username: str, user_prompt: str, is_team: bool = False) -
 
     message = add_prompts_by_flags(user_prompt)
 
-    if not config.TOS_VIOLATION:
-        if is_violated_tos(message):
-            if config.HOST_USERNAME != username:
-                print(f"Request '{user_prompt}' violates OPENAI TOS. Skipping...")
-                return
+    if not config.TOS_VIOLATION and is_violated_tos(message) and config.HOST_USERNAME != username:
+        print(f"Request '{user_prompt}' violates OPENAI TOS. Skipping...")
+        return
 
     response = get_response([{"role": "user", "content": message}], username)
 
@@ -103,7 +99,6 @@ def get_response(conversation_history: MessageHistory, username: str) -> str | N
 
     if attempts == max_attempts:
         log_cmd_message("Max number of attempts reached! Try again later!")
-        return
 
 
 def remove_hashtags(text: str) -> str:
