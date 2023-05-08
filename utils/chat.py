@@ -72,10 +72,8 @@ def handle_command(logline: LogLine, conversation_history: MessageHistory) -> Me
             log_message('GPT3', user, prompt.strip())
             return conversation_history
 
-        handle_gpt_request("GPT3", user, prompt.removeprefix(config.GPT_COMMAND).strip(),
+        handle_gpt_request(user, prompt.removeprefix(config.GPT_COMMAND).strip(),
                            is_team=is_team)
-
-        return conversation_history
 
     elif prompt.strip().startswith(config.CHATGPT_COMMAND):
         return handle_cgpt_request(user, prompt.removeprefix(config.CHATGPT_COMMAND).strip(),

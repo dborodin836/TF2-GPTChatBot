@@ -1,6 +1,8 @@
 from typing import List, Dict, NamedTuple
 
-MessageHistory = List[Dict[str, str]]
+Message = Dict[str, str]
+
+MessageHistory = List[Message]
 
 
 class LogLine(NamedTuple):
