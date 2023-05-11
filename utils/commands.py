@@ -61,5 +61,5 @@ def stop_bot() -> None:
     log_cmd_message("BOT STOPPED")
 
 
-def get_bot_state():
+def get_bot_state() -> bool:
     return BOT_RUNNING

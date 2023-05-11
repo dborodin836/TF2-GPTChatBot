@@ -59,12 +59,16 @@ def parse_tf2_console_logs() -> None:
         conversation_history = handle_command(logline, conversation_history)
 
 
+def has_command(prompt: str, command: str) -> bool:
+    return prompt.strip().lower().startswith(command.lower())
+
+
 def handle_command(logline: LogLine, conversation_history: MessageHistory) -> MessageHistory:
     prompt = logline.prompt
     user = logline.username
     is_team = logline.is_team_message
 
-    if prompt.strip().startswith(config.GPT_COMMAND):
+    if has_command(prompt, config.GPT_COMMAND):
         if prompt.removeprefix(config.GPT_COMMAND).strip() == "":
             time.sleep(1)
             send_say_command_to_tf2("Hello there! I am ChatGPT, a ChatGPT plugin integrated into"
@@ -75,18 +79,18 @@ def handle_command(logline: LogLine, conversation_history: MessageHistory) -> Me
         handle_gpt_request(user, prompt.removeprefix(config.GPT_COMMAND).strip(),
                            is_team=is_team)
 
-    elif prompt.strip().startswith(config.CHATGPT_COMMAND):
+    elif has_command(prompt, config.CHATGPT_COMMAND):
         return handle_cgpt_request(user, prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
                                    conversation_history, is_team=is_team)
 
-    elif prompt.strip().startswith(config.CLEAR_CHAT_COMMAND):
+    elif has_command(prompt, config.CLEAR_CHAT_COMMAND):
         log_message("CHAT", user, "CLEARING CHAT")
         return []
 
-    elif prompt.strip().startswith(config.RTD_COMMAND):
+    elif has_command(prompt, config.RTD_COMMAND):
         handle_rtd_command(user, is_team=is_team)
 
-    elif prompt.strip().startswith("!gh"):
+    elif has_command(prompt, '!gh'):
         handle_gh_command(user, is_team=is_team)
 
     # console echo commands start
