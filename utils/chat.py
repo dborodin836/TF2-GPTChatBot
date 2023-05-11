@@ -6,8 +6,8 @@ from services.chatgpt import handle_cgpt_request, handle_gpt_request
 from services.github import check_for_updates
 from services.source_game import check_connection, send_say_command_to_tf2, get_username
 from utils.bans import unban_player, ban_player, load_banned_players, is_banned_username
-from utils.commands import (handle_rtd_command, stop_bot, start_bot, get_bot_state,
-                            handle_gh_command)
+from utils.commands import handle_rtd_command, handle_gh_command
+from utils.bot_state import start_bot, stop_bot, get_bot_state
 from utils.prompt import load_prompts
 from utils.text import get_console_logline
 from utils.types import LogLine
