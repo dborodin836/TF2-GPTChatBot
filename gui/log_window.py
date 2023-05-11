@@ -10,7 +10,8 @@ import ttkbootstrap as ttk
 from services.chatgpt import send_gpt_completion_request
 from utils.bans import list_banned_players, unban_player, ban_player
 from utils.chat import PROMPTS_QUEUE
-from utils.commands import print_help_command, start_bot, stop_bot
+from utils.commands import print_help_command
+from utils.bot_state import start_bot, stop_bot
 from utils.logs import log_to_file
 from config import config
 
@@ -151,7 +152,7 @@ def handle_gui_console_commands(command: str) -> None:
         print_help_command()
 
 
-def gpt3_cmd_handler():
+def gpt3_cmd_handler() -> None:
     while True:
         if PROMPTS_QUEUE.qsize() != 0:
             prompt = PROMPTS_QUEUE.get()

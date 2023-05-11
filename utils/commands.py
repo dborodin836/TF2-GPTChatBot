@@ -1,10 +1,9 @@
 import random
 import time
 from config import config, RTDModes
-from services.network import send_say_command_to_tf2
+from services.source_game import send_say_command_to_tf2
 from utils.logs import log_cmd_message
 
-BOT_RUNNING = True
 RICKROLL_LINK = "youtu.be/dQw4w9WgXcQ"
 GITHUB_LINK = "bit.ly/tf2-gpt3"
 
@@ -47,19 +46,3 @@ def print_help_command():
           "unban <username> - unban user by username",
           "gpt3 <prompt> - sends a response to GPT3",
           sep='\n')
-
-
-def start_bot() -> None:
-    global BOT_RUNNING
-    BOT_RUNNING = True
-    log_cmd_message("BOT STARTED")
-
-
-def stop_bot() -> None:
-    global BOT_RUNNING
-    BOT_RUNNING = False
-    log_cmd_message("BOT STOPPED")
-
-
-def get_bot_state():
-    return BOT_RUNNING
