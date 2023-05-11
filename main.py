@@ -1,3 +1,4 @@
+from utils.bot_state import switch_state_hotkey_handler
 from config import init_config
 # This is required due to config used in imported modules
 init_config()
@@ -15,10 +16,9 @@ def run_threads():
     log_window = LogWindow(root)
     sys.stdout = CustomOutput(log_window)
 
-    t1 = threading.Thread(target=parse_tf2_console_logs, daemon=True)
-    t2 = threading.Thread(target=gpt3_cmd_handler, daemon=True)
-    t1.start()
-    t2.start()
+    threading.Thread(target=parse_tf2_console_logs, daemon=True).start()
+    threading.Thread(target=gpt3_cmd_handler, daemon=True).start()
+    threading.Thread(target=switch_state_hotkey_handler, daemon=True).start()
 
     log_window.pack()
     root.mainloop()
