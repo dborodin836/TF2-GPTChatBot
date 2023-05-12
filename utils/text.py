@@ -6,6 +6,7 @@ import typing
 
 from config import config
 from utils.prompt import PROMPTS
+from utils.tf2_context import Data
 from utils.types import LogLine
 
 MAX_LENGTH_CYRILLIC = 65
@@ -57,6 +58,10 @@ def add_prompts_by_flags(user_prompt: str) -> str:
             user_prompt = user_prompt.replace(item["flag"], '')
 
     result += user_prompt.strip()
+
+    if r'\stats' in args:
+        result += f"{Data.get_data()} Based on this data answer following question."
+        result = result.replace(r'\stats', '')
 
     if r'\l' not in args:
         result += f" Answer in less than {config.SOFT_COMPLETION_LIMIT} chars!"
@@ -116,6 +121,52 @@ def get_console_logline() -> typing.Generator:
     Opens a log file for Team Fortress 2 and yields tuples containing user prompts and usernames.
     """
     for line in follow_tail(config.TF2_LOGFILE_PATH):
+
+        # Parsing status
+        if matches := re.search(r"^#\s*\d*\s*\"(.*)\"\s*\[.*\]\s*((\d*:)?\d*:\d*)\s*\d*\s*\d*\s*\w*\s*\w*", line):
+            name = matches.groups()[0]
+            time_on_server = matches.groups()[1]
+
+            import time
+            try:
+                struct_time = time.strptime(time_on_server, "%H:%M:%S")
+                tm = struct_time.tm_hour * 60 + struct_time.tm_min
+            except ValueError:
+                struct_time = time.strptime(time_on_server, "%M:%S")
+                tm = struct_time.tm_min
+            except Exception:
+                print("FUCK")
+                tm = 0
+
+            # print(struct_time)
+            d = {
+                "name": name,
+                "minutes_on_server": tm,
+                "kills": 0,
+                "deaths": 0
+                }
+            Data.add_player(d)
+
+        # Parsing map name on connection
+        if matches := re.search(r"^Map:\s(\w*)", line):
+            map_ = matches.groups()[0]
+            Data.set_map_name(map_)
+
+        # Parsing server ip
+        if matches := re.search(r"^udp/ip\s*:\s*((\d*.){4}:\d*)", line):
+            ip = matches.groups()[0]
+            Data.set_server_ip(ip)
+
+        # Parsing kill
+        if matches := re.search(r"(.*)\skilled\s(.*)\swith", line):
+            killer = matches.groups()[0]
+            victim = matches.groups()[1]
+            Data.process_kill(killer, victim)
+
+        # Parsing suicide
+        if matches := re.search(r"^(.*)\ssuicided", line):
+            user = matches.groups()[0]
+            Data.process_killbind(user)
 
         try:
             res = parse_line(line)
