@@ -1,9 +1,21 @@
 from typing import List
+from statistics import mean
 
 from utils.types import Player
 
 
-class Data:
+def steamid3_to_steamid64(steamid3: str) -> int:
+    for ch in ['[', ']']:
+        if ch in steamid3:
+            steamid3 = steamid3.replace(ch, '')
+
+    steamid3_split = steamid3.split(':')
+    steamid64 = int(steamid3_split[2]) + 76561197960265728
+
+    return steamid64
+
+
+class StatsData:
     players: List[Player] = []
     map_name: str | None = None
     server_ip: str | None = None
@@ -26,11 +38,20 @@ class Data:
     @classmethod
     def add_player(cls, new_player: Player):
         for player in cls.players:
+            # If player already exist
             if player.name == new_player.name:
+                # Update minutes on server and last_updated
                 player.minutes_on_server = new_player.minutes_on_server
                 player.last_updated = new_player.last_updated
+
+                # Update ping
+                player.ping_list.append(new_player.ping)
+                player.ping = round(mean(player.ping_list))
+
                 # print(f"Updated players time on server {player['name']}")
                 return
+
+        new_player.steamid64 = steamid3_to_steamid64(new_player.steamid3)
         cls.players.append(new_player)
         print(f"Added new player {new_player.name} with {new_player.minutes_on_server} minutes on server")
 
@@ -73,6 +94,7 @@ class Data:
                 "deaths": player.deaths,
                 "kills": player.kills,
                 "k/d": kd,
+                "avg_ping": player.ping,
                 "minutes_on_server": player.minutes_on_server
             })
 

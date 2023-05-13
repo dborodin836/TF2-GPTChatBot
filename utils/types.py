@@ -18,9 +18,13 @@ class LogLine(NamedTuple):
 
 class Player(BaseModel):
     name: str
+    steamid3: str
+    steamid64: int | None = None
 
     kills: int = 0
     deaths: int = 0
 
     minutes_on_server: int
     last_updated: int
+    ping_list: List[int] = []
+    ping: int = 0

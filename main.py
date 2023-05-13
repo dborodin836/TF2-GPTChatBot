@@ -1,6 +1,6 @@
 from utils.bot_state import switch_state_hotkey_handler
 from config import init_config
-from utils.tf2_context import Data
+from utils.tf2_context import StatsData
 
 # This is required due to config used in imported modules
 init_config()
@@ -25,7 +25,7 @@ def get_my_data():
     import keyboard
     while True:
         keyboard.wait("F10")
-        print(Data.get_data())
+        print(StatsData.get_data())
 
 
 def run_threads():

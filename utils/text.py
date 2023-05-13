@@ -6,7 +6,7 @@ import typing
 
 from config import config
 from utils.prompt import PROMPTS
-from utils.tf2_context import Data
+from utils.tf2_context import StatsData
 from utils.types import LogLine, Player
 
 MAX_LENGTH_CYRILLIC = 65
@@ -60,7 +60,7 @@ def add_prompts_by_flags(user_prompt: str) -> str:
     result += user_prompt.strip()
 
     if r'\stats' in args:
-        result = f" {Data.get_data()} Based on this data answer following question. By default measure by k/d. " + result
+        result = f" {StatsData.get_data()} Based on this data answer following question. By default measure by k/d. " + result
         result = result.replace(r'\stats', '')
 
     if r'\l' not in args:
@@ -116,55 +116,62 @@ def parse_line(line: str) -> LogLine:
     return LogLine(prompt, username, is_team_mes)
 
 
+def get_minutes_from_str(time_str: str) -> int:
+    try:
+        struct_time = time.strptime(time_str, "%H:%M:%S")
+        tm = struct_time.tm_hour * 60 + struct_time.tm_min
+    except ValueError:
+        struct_time = time.strptime(time_str, "%M:%S")
+        tm = struct_time.tm_min
+    except Exception as e:
+        print(f"Unhandled error while parsing time happened. ({e})")
+        tm = 0
+
+    return tm
+
+
 def get_console_logline() -> typing.Generator:
     """
     Opens a log file for Team Fortress 2 and yields tuples containing user prompts and usernames.
     """
     for line in follow_tail(config.TF2_LOGFILE_PATH):
 
-        # Parsing status
-        if matches := re.search(r"^#\s*\d*\s*\"(.*)\"\s*\[.*\]\s*((\d*:)?\d*:\d*)\s*\d*\s*\d*\s*\w*\s*\w*", line):
-            name = matches.groups()[0]
-            time_on_server = matches.groups()[1]
+        # Parsing user line from status command
+        if matches := re.search(r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*", line):
+            time_on_server = matches.groups()[2]
 
-            import time
-            try:
-                struct_time = time.strptime(time_on_server, "%H:%M:%S")
-                tm = struct_time.tm_hour * 60 + struct_time.tm_min
-            except ValueError:
-                struct_time = time.strptime(time_on_server, "%M:%S")
-                tm = struct_time.tm_min
-            except Exception as e:
-                print(f"Unhandled error while parsing time happened. ({e})")
-                tm = 0
+            tm = get_minutes_from_str(time_on_server)
 
             d = Player(
-                name=name,
+                name=matches.groups()[0],
                 minutes_on_server=tm,
-                last_updated=tm
+                last_updated=tm,
+                steamid3=matches.groups()[1],
+                ping=matches.groups()[3]
             )
-            Data.add_player(d)
+
+            StatsData.add_player(d)
 
         # Parsing map name on connection
         elif matches := re.search(r"^Map:\s(\w*)", line):
             map_ = matches.groups()[0]
-            Data.set_map_name(map_)
+            StatsData.set_map_name(map_)
 
         # Parsing server ip
         elif matches := re.search(r"^udp/ip\s*:\s*((\d*.){4}:\d*)", line):
             ip = matches.groups()[0]
-            Data.set_server_ip(ip)
+            StatsData.set_server_ip(ip)
 
         # Parsing kill
         elif matches := re.search(r"(.*)\skilled\s(.*)\swith", line):
             killer = matches.groups()[0]
             victim = matches.groups()[1]
-            Data.process_kill(killer, victim)
+            StatsData.process_kill(killer, victim)
 
         # Parsing suicide
         elif matches := re.search(r"^(.*)\ssuicided", line):
             user = matches.groups()[0]
-            Data.process_killbind(user)
+            StatsData.process_killbind(user)
 
         try:
             res = parse_line(line)
