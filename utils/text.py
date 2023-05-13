@@ -7,7 +7,7 @@ import typing
 from config import config
 from utils.prompt import PROMPTS
 from utils.tf2_context import Data
-from utils.types import LogLine
+from utils.types import LogLine, Player
 
 MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120
@@ -60,7 +60,7 @@ def add_prompts_by_flags(user_prompt: str) -> str:
     result += user_prompt.strip()
 
     if r'\stats' in args:
-        result += f"{Data.get_data()} Based on this data answer following question."
+        result = f" {Data.get_data()} Based on this data answer following question. By default measure by k/d. " + result
         result = result.replace(r'\stats', '')
 
     if r'\l' not in args:
@@ -134,37 +134,35 @@ def get_console_logline() -> typing.Generator:
             except ValueError:
                 struct_time = time.strptime(time_on_server, "%M:%S")
                 tm = struct_time.tm_min
-            except Exception:
-                print("FUCK")
+            except Exception as e:
+                print(f"Unhandled error while parsing time happened. ({e})")
                 tm = 0
 
-            # print(struct_time)
-            d = {
-                "name": name,
-                "minutes_on_server": tm,
-                "kills": 0,
-                "deaths": 0
-                }
+            d = Player(
+                name=name,
+                minutes_on_server=tm,
+                last_updated=tm
+            )
             Data.add_player(d)
 
         # Parsing map name on connection
-        if matches := re.search(r"^Map:\s(\w*)", line):
+        elif matches := re.search(r"^Map:\s(\w*)", line):
             map_ = matches.groups()[0]
             Data.set_map_name(map_)
 
         # Parsing server ip
-        if matches := re.search(r"^udp/ip\s*:\s*((\d*.){4}:\d*)", line):
+        elif matches := re.search(r"^udp/ip\s*:\s*((\d*.){4}:\d*)", line):
             ip = matches.groups()[0]
             Data.set_server_ip(ip)
 
         # Parsing kill
-        if matches := re.search(r"(.*)\skilled\s(.*)\swith", line):
+        elif matches := re.search(r"(.*)\skilled\s(.*)\swith", line):
             killer = matches.groups()[0]
             victim = matches.groups()[1]
             Data.process_kill(killer, victim)
 
         # Parsing suicide
-        if matches := re.search(r"^(.*)\ssuicided", line):
+        elif matches := re.search(r"^(.*)\ssuicided", line):
             user = matches.groups()[0]
             Data.process_killbind(user)
 

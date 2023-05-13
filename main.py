@@ -18,7 +18,7 @@ def wrapper():
     import time
     while True:
         get_status()
-        time.sleep(8)
+        time.sleep(20)
 
 
 def get_my_data():
