@@ -38,6 +38,8 @@ class Config(BaseModel):
     TF2_LOGFILE_PATH: str
     OPENAI_API_KEY: str
 
+    STEAM_WEBAPI_KEY: str
+
     GPT_COMMAND: str
     CHATGPT_COMMAND: str
     CLEAR_CHAT_COMMAND: str

@@ -60,7 +60,7 @@ def add_prompts_by_flags(user_prompt: str) -> str:
     result += user_prompt.strip()
 
     if r'\stats' in args:
-        result = f" {StatsData.get_data()} Based on this data answer following question. By default measure by k/d. " + result
+        result = f" {StatsData.get_data()} Based on this data answer following question. " + result + " Include the measured parameter in answer. Ignore unknown data."
         result = result.replace(r'\stats', '')
 
     if r'\l' not in args:
