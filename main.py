@@ -12,7 +12,7 @@ from utils.chat import parse_tf2_console_logs
 from utils.tf2_context import StatsData
 
 
-def wrapper():
+def status_command_sender():
     from services.source_game import get_status
     import time
     while True:
@@ -35,7 +35,7 @@ def run_threads():
     threading.Thread(target=parse_tf2_console_logs, daemon=True).start()
     threading.Thread(target=gpt3_cmd_handler, daemon=True).start()
     threading.Thread(target=switch_state_hotkey_handler, daemon=True).start()
-    threading.Thread(target=wrapper, daemon=True).start()
+    threading.Thread(target=status_command_sender, daemon=True).start()
     threading.Thread(target=get_my_data, daemon=True).start()
 
     log_window.pack()

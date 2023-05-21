@@ -157,7 +157,7 @@ def gpt3_cmd_handler() -> None:
         if PROMPTS_QUEUE.qsize() != 0:
             prompt = PROMPTS_QUEUE.get()
             try:
-                response = send_gpt_completion_request(prompt, "admin")
+                response = send_gpt_completion_request([{"role": "user", "content": prompt}], "admin")
                 print(f"GPT3> {response}")
             except openai.error.RateLimitError:
                 print("Rate Limited! Try again later.")
