@@ -13,6 +13,7 @@ import sys
 
 CONFIG_FILE = 'config.ini'
 OPENAI_API_KEY_RE_PATTERN = r"sk-[a-zA-Z0-9]{48}"
+WEB_API_KEY_RE_PATTERN = r"[a-zA-Z0-9]{32}"
 BUFFERED_CONFIG_INIT_LOG_MESSAGES = StringIO()
 
 
@@ -60,6 +61,13 @@ class Config(BaseModel):
     def api_key_pattern_match(cls, v):
         if not re.fullmatch(OPENAI_API_KEY_RE_PATTERN, v):
             buffered_print("API key not set or invalid! Check documentation and edit "
+                           "config.ini file.")
+        return v
+
+    @validator('STEAM_WEBAPI_KEY')
+    def steam_webapi_key_pattern_match(cls, v):
+        if not re.fullmatch(WEB_API_KEY_RE_PATTERN, v):
+            buffered_print("STEAM WEB API key not set or invalid! Check documentation and edit "
                            "config.ini file.")
         return v
 
