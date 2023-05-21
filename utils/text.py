@@ -171,7 +171,7 @@ def get_console_logline() -> typing.Generator:
         # Parsing suicide
         elif matches := re.search(r"^(.*)\ssuicided", line):
             user = matches.groups()[0]
-            StatsData.process_killbind(user)
+            StatsData.process_kill_bind(user)
 
         try:
             res = parse_line(line)

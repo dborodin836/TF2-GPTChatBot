@@ -7,6 +7,11 @@ Message = Dict[str, str]
 MessageHistory = List[Message]
 
 
+class SteamHoursApiUrlID64(NamedTuple):
+    url: str
+    steamid64: int
+
+
 class LogLine(NamedTuple):
     """
     Represents a line from a log file.

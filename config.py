@@ -73,7 +73,7 @@ class Config(BaseModel):
     @validator('TF2_LOGFILE_PATH')
     def is_logfile_path_exists(cls, v):
         if not os.path.exists(os.path.dirname(v)):
-            buffered_print(f"Non-valid logfile path!")
+            buffered_print("Non-valid logfile path!")
         return v
 
 
