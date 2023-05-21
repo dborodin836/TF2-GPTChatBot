@@ -1,8 +1,12 @@
-from typing import List, Dict, NamedTuple
+from typing import List, Literal, NamedTuple, TypedDict
 
 from pydantic import BaseModel
 
-Message = Dict[str, str]
+
+class Message(TypedDict):
+    role: Literal["assistant", "user", "system"]
+    content: str
+
 
 MessageHistory = List[Message]
 
