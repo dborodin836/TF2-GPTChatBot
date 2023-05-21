@@ -39,6 +39,7 @@ class Config(BaseModel):
     TF2_LOGFILE_PATH: str
     OPENAI_API_KEY: str
 
+    ENABLE_STATS: bool
     STEAM_WEBAPI_KEY: str
 
     GPT_COMMAND: str
@@ -65,7 +66,10 @@ class Config(BaseModel):
         return v
 
     @validator('STEAM_WEBAPI_KEY')
-    def steam_webapi_key_pattern_match(cls, v):
+    def steam_webapi_key_pattern_match(cls, v, values):
+        if not values["ENABLE_STATS"]:
+            return v
+
         if not re.fullmatch(WEB_API_KEY_RE_PATTERN, v):
             buffered_print("STEAM WEB API key not set or invalid! Check documentation and edit "
                            "config.ini file.")
