@@ -74,7 +74,7 @@ class StatsData:
                 player.ping_list.append(new_player.ping)
                 player.ping = round(mean(player.ping_list))
 
-                # print(f"Updated players time on server {player['name']}")
+                # print(f"Updated players time on server {player.name}")
                 return
 
         new_player.steamid64 = steamid3_to_steamid64(new_player.steamid3)
@@ -133,21 +133,21 @@ class StatsData:
                     country = player_steam_data.get("loccountrycode", "unknown")
                     real_name = player_steam_data.get("realname", "")
 
-            new_players.append({
-                "name": player.name,
-                "steam": {
-                    "steamid64": player.steamid64,
-                    "steam_account_age": account_age,
-                    "hours_in_team_fortress_2": "unknown",
-                    "country": country,
-                    "real_name": real_name
-                },
-                "deaths": player.deaths,
-                "kills": player.kills,
-                "k/d": cls.calculate_kd(player),
-                "avg_ping": player.ping,
-                "minutes_on_server": player.minutes_on_server
-            })
+                    new_players.append({
+                        "name": player.name,
+                        "steam": {
+                            "steamid64": player.steamid64,
+                            "steam_account_age": account_age,
+                            "hours_in_team_fortress_2": "unknown",
+                            "country": country,
+                            "real_name": real_name
+                        },
+                        "deaths": player.deaths,
+                        "kills": player.kills,
+                        "k/d": cls.calculate_kd(player),
+                        "avg_ping": player.ping,
+                        "minutes_on_server": player.minutes_on_server
+                    })
 
         new_players = cls._update_tf2_hours(new_players)
 
@@ -163,9 +163,9 @@ class StatsData:
         for player in cls.players:
             hours_url.append(
                 SteamHoursApiUrlID64(
-                    f"https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key={config.STEAM_WEBAPI_KEY}\
-                    &steamid={player.steamid64}&include_appinfo=false&include_played_free_games=true\
-                    &appids_filter[0]=440",
+                    f"https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key={config.STEAM_WEBAPI_KEY}"
+                    f"&steamid={player.steamid64}&include_appinfo=false&include_played_free_games=true"
+                    f"&appids_filter[0]=440",
                     player.steamid64)
             )
 
@@ -173,7 +173,7 @@ class StatsData:
 
         for response, steamid64 in results_total_game_hours:
             for player in to_update_players_list:
-                if player["steam"]["steamid64"] == str(steamid64):
+                if player["steam"]["steamid64"] == steamid64:
                     try:
                         player["steam"]["hours_in_team_fortress_2"] = str(
                             round(response["response"]["games"][0]["playtime_forever"] / 60)) + ' hours'
