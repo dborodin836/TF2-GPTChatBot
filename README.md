@@ -68,6 +68,10 @@ RCON_PORT=27015
 SOFT_COMPLETION_LIMIT=128
 HARD_COMPLETION_LIMIT=250
 
+[STATS]
+ENABLE_STATS=0
+STEAM_WEBAPI_KEY=********************************
+
 [DEV]
 ENABLE_LOGS=0
 
@@ -115,12 +119,14 @@ cd TF2-GPTChatBot
 ### 3. (Optional) Create and activate a new virtual environment:
 
 Linux:
+
 ```sh
 python3 -m venv venv
 source venv/bin/activate
 ```
 
 Windows:
+
 ```sh
 py -m venv venv
 venv/bin/activate
@@ -159,6 +165,10 @@ RCON_PORT=27015
 SOFT_COMPLETION_LIMIT=128
 HARD_COMPLETION_LIMIT=250
 
+[STATS]
+ENABLE_STATS=0
+STEAM_WEBAPI_KEY=********************************
+
 [DEV]
 ENABLE_LOGS=0
 
@@ -189,13 +199,9 @@ The application should now be running and ready to use.
 _**NOTE: You can create your own executable using this command**_
 
 Windows:
+
 ```sh
 pyinstaller --onefile --clean -n TF2-GPTChatBot -w --icon icon.ico --add-data "icon.ico;." main.py 
-```
-
-Linux:
-```sh
-pyinstaller --onefile --clean -n TF2-GPTChatBot -w --icon icon.ico --add-data "icon.ico:." main.py 
 ```
 
 ## Usage
@@ -234,9 +240,16 @@ Long Option:
   \l  The program automatically requires ChatGPT to restrict its responses to 250 characters by default. 
       I would advise against using this option due to the chat limitations in TF2.
   
+Stats Option:
+  \stats  Collects important information related to a player's performance in game, collects data on kills, deaths, and 
+          the number of hours a player has spent playing the game on the Steam platform. Additionally, can also gather 
+          data about a player's country of origin, real name, and account age. 
 Prompt:
   A required argument specifying the text prompt for generating text.
 ```
+
+`\stats` Must be enabled in `config.ini`. Also, you must set a [Steam Web API Key](https://steamcommunity.com/dev/apikey).
+
 
 #### !gpt3 Usage examples
 
@@ -270,10 +283,18 @@ Options are not required and can be used in any combination, but I recomend usin
 Long Option:
   \l  The program automatically requires ChatGPT to restrict its responses to 250 characters by default. 
       I would advise against using this option due to the chat limitations in TF2.
-  
+
+Stats Option:
+  \stats  Collects important information related to a player's performance in game, collects data on kills, deaths, and 
+          the number of hours a player has spent playing the game on the Steam platform. Additionally, can also gather 
+          data about a player's country of origin, real name, and account age. 
+
 Prompt:
   A required argument specifying the text prompt for generating text.
 ```
+
+`\stats` Must be enabled in `config.ini`. Also, you must set a [Steam Web API Key](https://steamcommunity.com/dev/apikey).
+
 
 #### !cgpt Usage examples
 
@@ -316,10 +337,10 @@ Mode 2: Sends a random link to a YouTube meme.
 %username% :  !rtd
 %username% :  %username% rolled: youtu.be/***********
 ```
+
 **The mode can be set in the `config.ini` file.**
 
 **You set your own list of video. Just edit `vids.txt` file.**
-
 
 ### Prompts
 
@@ -380,14 +401,15 @@ players who are spamming messages. It's worth noting that muting a player in Tea
 using any commands, but also prohibits them from communicating with you through text or voice chat.
 
 Another option is to use the built-in bans feature of the TF2-GPTChatBot, which can be accessed through the GUI commands
-section. This feature allows you to ban specific players who are engaging in spamming behavior, preventing them from 
+section. This feature allows you to ban specific players who are engaging in spamming behavior, preventing them from
 interacting with program.
 
 ### Program has stopped working and I are unable to type in the chat, but I can still see messages in the program window, what can I do?
 
 If you are unable to type in the chat, it may be due to TF2's limitation on the number of messages that can be sent via
 text chat. This also affects the TF2-GPTChatBot's ability to answer user messages. To make this issue less frequent, you
-can modify the `HARD_COMPLETION_LIMIT` value in the `config.ini` file to limit the number of messages sent through TF2 chat.
+can modify the `HARD_COMPLETION_LIMIT` value in the `config.ini` file to limit the number of messages sent through TF2
+chat.
 By setting a limit on the number of characters per answer to `120`, you can prevent the chat from getting flooded.
 
 One way to resolve this issue is to refrain from sending any further commands or messages to TF2 and simply wait for a
@@ -397,13 +419,13 @@ If you have any helpful information on how to deal with this issue, I would appr
 
 ### Other Source Engine games?
 
-TF2-GPTChatBot currently doesn't support other games on the Source Engine, it is possible for it to be supported in 
+TF2-GPTChatBot currently doesn't support other games on the Source Engine, it is possible for it to be supported in
 the future. At the moment, I am not aware of any limitations that could pose a problem.
 
 ## Contributing
 
 We welcome contributions to this project!
 
-If you have any questions or problems with the project, please 
-[open an issue](https://github.com/dborodin836/TF2-GPTChatBot/issues/new) 
+If you have any questions or problems with the project, please
+[open an issue](https://github.com/dborodin836/TF2-GPTChatBot/issues/new)
 and we'll be happy to help. Please be respectful to everyone in the project :).
