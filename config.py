@@ -13,6 +13,7 @@ import sys
 
 CONFIG_FILE = 'config.ini'
 OPENAI_API_KEY_RE_PATTERN = r"sk-[a-zA-Z0-9]{48}"
+WEB_API_KEY_RE_PATTERN = r"[a-zA-Z0-9]{32}"
 BUFFERED_CONFIG_INIT_LOG_MESSAGES = StringIO()
 
 
@@ -38,6 +39,9 @@ class Config(BaseModel):
     TF2_LOGFILE_PATH: str
     OPENAI_API_KEY: str
 
+    ENABLE_STATS: bool
+    STEAM_WEBAPI_KEY: str
+
     GPT_COMMAND: str
     CHATGPT_COMMAND: str
     CLEAR_CHAT_COMMAND: str
@@ -61,6 +65,16 @@ class Config(BaseModel):
                            "config.ini file.")
         return v
 
+    @validator('STEAM_WEBAPI_KEY')
+    def steam_webapi_key_pattern_match(cls, v, values):
+        if not values["ENABLE_STATS"]:
+            return v
+
+        if not re.fullmatch(WEB_API_KEY_RE_PATTERN, v):
+            buffered_print("STEAM WEB API key not set or invalid! Check documentation and edit "
+                           "config.ini file.")
+        return v
+
     @validator('RTD_MODE')
     def rtd_mode_is_valid_enum(cls, v):
         if not RTDModes.has_value(v):
@@ -71,7 +85,7 @@ class Config(BaseModel):
     @validator('TF2_LOGFILE_PATH')
     def is_logfile_path_exists(cls, v):
         if not os.path.exists(os.path.dirname(v)):
-            buffered_print(f"Non-valid logfile path!")
+            buffered_print("Non-valid logfile path!")
         return v
 
 

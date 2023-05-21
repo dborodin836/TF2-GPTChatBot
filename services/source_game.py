@@ -39,6 +39,16 @@ def check_connection():
             break
 
 
+def get_status():
+    while True:
+        try:
+            with Client(config.RCON_HOST, config.RCON_PORT, passwd=config.RCON_PASSWORD) as client:
+                response = client.run('cmd status')
+                return response
+        except ConnectionRefusedError:
+            time.sleep(2)
+
+
 def login() -> None:
     """
     Attempts to login to a remote RCON server using the provided credentials.

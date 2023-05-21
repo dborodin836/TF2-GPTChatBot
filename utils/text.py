@@ -6,7 +6,8 @@ import typing
 
 from config import config
 from utils.prompt import PROMPTS
-from utils.types import LogLine
+from utils.tf2_context import StatsData
+from utils.types import LogLine, Player
 
 MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120
@@ -57,6 +58,10 @@ def add_prompts_by_flags(user_prompt: str) -> str:
             user_prompt = user_prompt.replace(item["flag"], '')
 
     result += user_prompt.strip()
+
+    if r'\stats' in args and config.ENABLE_STATS:
+        result = f" {StatsData.get_data()} Based on this data answer following question. " + result + " Include the measured parameter in answer. Ignore unknown data."
+        result = result.replace(r'\stats', '')
 
     if r'\l' not in args:
         result += f" Answer in less than {config.SOFT_COMPLETION_LIMIT} chars!"
@@ -111,11 +116,67 @@ def parse_line(line: str) -> LogLine:
     return LogLine(prompt, username, is_team_mes)
 
 
+def get_minutes_from_str(time_str: str) -> int:
+    try:
+        struct_time = time.strptime(time_str, "%H:%M:%S")
+        tm = struct_time.tm_hour * 60 + struct_time.tm_min
+    except ValueError:
+        struct_time = time.strptime(time_str, "%M:%S")
+        tm = struct_time.tm_min
+    except Exception as e:
+        print(f"Unhandled error while parsing time happened. ({e})")
+        tm = 0
+
+    return tm
+
+
+def stats_regexes(line: str):
+    # Parsing user line from status command
+    if matches := re.search(r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*", line):
+        time_on_server = matches.groups()[2]
+
+        tm = get_minutes_from_str(time_on_server)
+
+        d = Player(
+            name=matches.groups()[0],
+            minutes_on_server=tm,
+            last_updated=tm,
+            steamid3=matches.groups()[1],
+            ping=matches.groups()[3]
+        )
+
+        StatsData.add_player(d)
+
+    # Parsing map name on connection
+    elif matches := re.search(r"^Map:\s(\w*)", line):
+        map_ = matches.groups()[0]
+        StatsData.set_map_name(map_)
+
+    # Parsing server ip
+    elif matches := re.search(r"^udp/ip\s*:\s*((\d*.){4}:\d*)", line):
+        ip = matches.groups()[0]
+        StatsData.set_server_ip(ip)
+
+    # Parsing kill
+    elif matches := re.search(r"(.*)\skilled\s(.*)\swith", line):
+        killer = matches.groups()[0]
+        victim = matches.groups()[1]
+        StatsData.process_kill(killer, victim)
+
+    # Parsing suicide
+    elif matches := re.search(r"^(.*)\ssuicided", line):
+        user = matches.groups()[0]
+        StatsData.process_kill_bind(user)
+
+
 def get_console_logline() -> typing.Generator:
     """
     Opens a log file for Team Fortress 2 and yields tuples containing user prompts and usernames.
     """
     for line in follow_tail(config.TF2_LOGFILE_PATH):
+
+        if config.ENABLE_STATS:
+            stats_regexes(line)
 
         try:
             res = parse_line(line)
