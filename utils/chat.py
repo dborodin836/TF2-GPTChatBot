@@ -13,6 +13,7 @@ from utils.text import get_console_logline
 from utils.types import LogLine
 from utils.logs import log_message
 from utils.types import MessageHistory
+from utils.io_buffer import print_buffered_config_innit_messages
 
 PROMPTS_QUEUE: queue.Queue = queue.Queue()
 
@@ -44,6 +45,7 @@ def setup() -> None:
     set_host_username()
     load_prompts()
     load_banned_players()
+    print_buffered_config_innit_messages()
 
 
 def parse_tf2_console_logs() -> None:
