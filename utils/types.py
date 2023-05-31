@@ -31,6 +31,8 @@ class Player(BaseModel):
     steamid64: int | None = None
 
     kills: int = 0
+    melee_kills: int = 0
+    crit_melee_kills: int = 0
     deaths: int = 0
 
     minutes_on_server: int

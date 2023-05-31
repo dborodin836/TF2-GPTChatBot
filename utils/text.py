@@ -60,7 +60,7 @@ def add_prompts_by_flags(user_prompt: str) -> str:
     result += user_prompt.strip()
 
     if r'\stats' in args and config.ENABLE_STATS:
-        result = f" {StatsData.get_data()} Based on this data answer following question. " + result + " Include the measured parameter in answer. Ignore unknown data."
+        result = f" {StatsData.get_data()} Based on this data answer following question. " + result + " Ignore unknown data."
         result = result.replace(r'\stats', '')
 
     if r'\l' not in args:
@@ -158,10 +158,12 @@ def stats_regexes(line: str):
         StatsData.set_server_ip(ip)
 
     # Parsing kill
-    elif matches := re.search(r"(.*)\skilled\s(.*)\swith", line):
+    elif matches := re.search(r"^(.*)\skilled\s(.*)\swith\s(\w*).", line):
         killer = matches.groups()[0]
         victim = matches.groups()[1]
-        StatsData.process_kill(killer, victim)
+        weapon = matches.groups()[2]
+        is_crit = line.strip().endswith("(crit)")
+        StatsData.process_kill(killer, victim, weapon, is_crit)
 
     # Parsing suicide
     elif matches := re.search(r"^(.*)\ssuicided", line):
