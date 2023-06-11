@@ -8,19 +8,15 @@ from config import config
 from utils.types import Player, SteamHoursApiUrlID64
 from utils.bulk_url_downloader import BulkSteamGameDetailsUrlDownloader
 
-MELEE_WEAPONS_KILL_IDS = {"skullbat", "nonnonviolent_protest", "crossing_guard", "disciplinary_action",
-                          "unique_pickaxe",
-                          "unique_pickaxe_escape", "freedom_staff", "fryingpan", "golden_fryingpan", "demokatana",
-                          "ham_shank", "market_gardener", "memory_maker", "necro_smasher", "paintrain",
-                          "prinny_machete",
-                          "saxxy", "shovel", "bat", "boston_basher", "candy_cane", "warfan", "holymackerel", "sandman",
-                          "lava_bat", "scout_sword", "unarmed_combat", "wrap_assassin", "axtinguisher",
-                          "back_scratcher",
+MELEE_WEAPONS_KILL_IDS = {"skullbat", "nonnonviolent_protest", "crossing_guard", "disciplinary_action", "memory_maker",
+                          "unique_pickaxe", "unique_pickaxe_escape", "freedom_staff", "fryingpan", "market_gardener",
+                          "golden_fryingpan", "demokatana", "ham_shank", "necro_smasher", "paintrain", "sandman",
+                          "saxxy", "shovel", "bat", "boston_basher", "candy_cane", "holymackerel", "back_scratcher",
+                          "lava_bat", "scout_sword", "unarmed_combat", "wrap_assassin", "axtinguisher", "warfan",
                           "fireaxe", "sledgehammer", "lollichop", "the_maul", "annihilator", "mailbox", "powerjack",
                           "lava_axe", "thirddegree", "bottle", "claidheamohmor", "sword", "headtaker", "nessieclub",
-                          "persian_persuader", "batteaxe", "scotland_shard", "voodoo_pin", "eternal_reward"
-                                                                                           "ullapool_caber",
-                          "apocofists", "bread_bite", "eviction_notice", "gloves_running_urgently",
+                          "persian_persuader", "batteaxe", "scotland_shard", "voodoo_pin", "eternal_reward"                                        
+                          "apocofists", "bread_bite", "eviction_notice", "gloves_running_urgently", "ullapool_caber",
                           "fists", "steel_fists", "holiday_punch", "gloves", "warrior_spirit", "eureka_effect",
                           "wrench_golden", "robot_arm", "wrench_jag", "southern_hospitality", "wrench", "amputator",
                           "bonesaw", "ubersaw", "solemn_vow", "battleneedle", "bushwacka", "club", "shahanshah",
@@ -28,6 +24,11 @@ MELEE_WEAPONS_KILL_IDS = {"skullbat", "nonnonviolent_protest", "crossing_guard",
 
 
 def steamid3_to_steamid64(steamid3: str) -> int:
+    """
+    This function converts a SteamID3 ([U:X:XXXXXXX]) string to a SteamID64 (XXXXXXXXXXXXXXXXX) integer and returns it.
+    It removes any square bracket characters, extracts the numerical identifier, calculates the SteamID64 by adding
+    a pre-defined constant, and returns it.
+    """
     for ch in ['[', ']']:
         if ch in steamid3:
             steamid3 = steamid3.replace(ch, '')
@@ -38,24 +39,29 @@ def steamid3_to_steamid64(steamid3: str) -> int:
     return steamid64
 
 
-def get_date(epoch: int) -> str:
-    birthdate = datetime.date.fromtimestamp(epoch)
-    current_date = datetime.date.today()
+def get_date(epoch: int, relative_epoch_time: int = None) -> str:
+    account_created_date = datetime.date.fromtimestamp(epoch)
 
-    age_years = current_date.year - birthdate.year - (
-            (current_date.month, current_date.day) < (birthdate.month, birthdate.day))
-    age_months = current_date.month - birthdate.month - (current_date.day < birthdate.day)
+    if relative_epoch_time is not None:
+        current_date = datetime.date.fromtimestamp(relative_epoch_time)
+    else:
+        current_date = datetime.date.today()
+
+    age_months = current_date.month - account_created_date.month - (current_date.day < account_created_date.day)
     if age_months < 0:
-        age_years -= 1
         age_months += 12
-    age_days = (current_date - birthdate.replace(year=current_date.year)).days
+    age_days = (current_date - account_created_date.replace(year=current_date.year)).days
     # Get the age tuple in years, months, and days
     age = datetime.timedelta(days=age_days)
     age_years, remainder_days = divmod(age.days, 365)
     age_months, remainder_days = divmod(remainder_days, 30)
     age_days = remainder_days
-    age_years = current_date.year - birthdate.year - (
-            (current_date.month, current_date.day) < (birthdate.month, birthdate.day))
+    age_years = current_date.year - account_created_date.year - (
+            (current_date.month, current_date.day) < (account_created_date.month, account_created_date.day))
+
+    print()
+
+    d = current_date - account_created_date
     return f"{age_years} years {age_months} months {age_days} days"
 
 

@@ -48,7 +48,7 @@ def setup() -> None:
     print_buffered_config_innit_messages()
 
 
-def parse_tf2_console_logs() -> None:
+def parse_console_logs_and_build_conversation_history() -> None:
     conversation_history: MessageHistory = []
 
     setup()

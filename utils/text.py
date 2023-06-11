@@ -6,7 +6,7 @@ import typing
 
 from config import config
 from utils.prompt import PROMPTS
-from utils.tf2_context import StatsData
+from utils.tf_statistics import StatsData
 from utils.types import LogLine, Player
 
 MAX_LENGTH_CYRILLIC = 65
