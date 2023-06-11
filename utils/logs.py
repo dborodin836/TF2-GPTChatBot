@@ -12,7 +12,7 @@ def get_time_stamp() -> str:
     return f"{dt.now().strftime('%H:%M:%S')}"
 
 
-def log_message(message_type: Literal["CHAT", "GPT3"], username: str, user_prompt: str) -> None:
+def log_message(message_type: Literal["CHAT", "GPT3", "CUSTOM"], username: str, user_prompt: str) -> None:
     """
     Logs a message with the current timestamp, message type, username, user_id, and prompt text.
     """

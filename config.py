@@ -58,6 +58,10 @@ class Config(BaseModel):
 
     ENABLE_LOGS: bool
 
+    ENABLE_CUSTOM_MODEL: bool
+    CUSTOM_MODEL_HOST: str
+    CUSTOM_MODEL_COMMAND: str
+
     @validator('OPENAI_API_KEY')
     def api_key_pattern_match(cls, v):
         if not re.fullmatch(OPENAI_API_KEY_RE_PATTERN, v):
