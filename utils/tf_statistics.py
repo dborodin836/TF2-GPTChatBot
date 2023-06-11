@@ -58,10 +58,6 @@ def get_date(epoch: int, relative_epoch_time: int = None) -> str:
     age_days = remainder_days
     age_years = current_date.year - account_created_date.year - (
             (current_date.month, current_date.day) < (account_created_date.month, account_created_date.day))
-
-    print()
-
-    d = current_date - account_created_date
     return f"{age_years} years {age_months} months {age_days} days"
 
 
