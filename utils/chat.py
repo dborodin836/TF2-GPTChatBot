@@ -48,7 +48,10 @@ def setup() -> None:
     print_buffered_config_innit_messages()
 
 
-def parse_tf2_console_logs() -> None:
+def parse_console_logs_and_build_conversation_history() -> None:
+    """
+    Processes the console logs and builds a conversation history, filters banned usernames.
+    """
     conversation_history: MessageHistory = []
 
     setup()
@@ -62,6 +65,9 @@ def parse_tf2_console_logs() -> None:
 
 
 def has_command(prompt: str, command: str) -> bool:
+    """
+    Check if given command matches with the beginning of the given prompt in a non-case-sensitive manner.
+    """
     return prompt.strip().lower().startswith(command.lower())
 
 
