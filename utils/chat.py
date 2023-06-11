@@ -49,6 +49,9 @@ def setup() -> None:
 
 
 def parse_console_logs_and_build_conversation_history() -> None:
+    """
+    Processes the console logs and builds a conversation history, filters banned usernames.
+    """
     conversation_history: MessageHistory = []
 
     setup()
@@ -62,6 +65,9 @@ def parse_console_logs_and_build_conversation_history() -> None:
 
 
 def has_command(prompt: str, command: str) -> bool:
+    """
+    Check if given command matches with the beginning of the given prompt in a non-case-sensitive manner.
+    """
     return prompt.strip().lower().startswith(command.lower())
 
 
