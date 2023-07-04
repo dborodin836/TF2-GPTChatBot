@@ -343,6 +343,27 @@ Mode 2: Sends a random link to a YouTube meme.
 
 **You set your own list of video. Just edit `vids.txt` file.**
 
+### Custom language mode (oobabooga / text-generation-webui)
+
+Please follow these steps to set up a custom model for text generation using the [oobabooga/text-generation-webui](https://github.com/oobabooga/text-generation-webui) project:
+
+1. Open the `config.ini` file and set the `ENABLE_CUSTOM_MODEL` variable to `1`.
+
+2. Next, install the `oobabooga/text-generation-webui` using installer. You can find the installation instructions 
+   easily in the README.md file of that repository.
+
+3. Download the model of your choice for text generation.
+
+4. Launch the `text-generation-webui` application, ensuring that you include the `--public-api` option in the launch settings.
+
+5. After the application starts, copy the **public non-streaming** URL provided by the application.
+
+6. Open the `config.ini` file once more and find the `CUSTOM_MODEL_HOST` variable. Paste the previously copied URL as the value for this variable.
+
+7. Save the changes made to the `config.ini` file.
+
+8. DONE!
+
 ### Prompts
 
 #### Pre-build prompts

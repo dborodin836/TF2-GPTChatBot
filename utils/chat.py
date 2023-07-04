@@ -1,12 +1,13 @@
 import queue
 import time
+import threading
 
 from config import config
 from services.chatgpt import handle_cgpt_request, handle_gpt_request
 from services.github import check_for_updates
 from services.source_game import check_connection, send_say_command_to_tf2, get_username
 from utils.bans import unban_player, ban_player, load_banned_players, is_banned_username
-from utils.commands import handle_rtd_command, handle_gh_command
+from utils.commands import handle_rtd_command, handle_gh_command, handle_custom_model_command
 from utils.bot_state import start_bot, stop_bot, get_bot_state
 from utils.prompt import load_prompts
 from utils.text import get_console_logline
@@ -100,6 +101,11 @@ def handle_command(logline: LogLine, conversation_history: MessageHistory) -> Me
 
     elif has_command(prompt, '!gh'):
         handle_gh_command(user, is_team=is_team)
+
+    elif has_command(prompt, config.CUSTOM_MODEL_COMMAND):
+        if config.ENABLE_CUSTOM_MODEL:
+            if not any([thread.name == "custom" for thread in threading.enumerate()]):
+                threading.Thread(target=handle_custom_model_command, args=(user, is_team, prompt), daemon=True, name="custom").start()
 
     # console echo commands start
     elif prompt.strip() == "!gpt_stop":
