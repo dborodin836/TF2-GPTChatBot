@@ -176,6 +176,7 @@ def get_console_logline() -> typing.Generator:
     Opens a log file for Team Fortress 2 and yields tuples containing user prompts and usernames.
     """
     for line in follow_tail(config.TF2_LOGFILE_PATH):
+        line = line[23:]
 
         if config.ENABLE_STATS:
             stats_regexes(line)

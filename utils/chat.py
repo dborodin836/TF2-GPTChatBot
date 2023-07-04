@@ -105,7 +105,7 @@ def handle_command(logline: LogLine, conversation_history: MessageHistory) -> Me
     elif has_command(prompt, config.CUSTOM_MODEL_COMMAND):
         if config.ENABLE_CUSTOM_MODEL:
             if not any([thread.name == "custom" for thread in threading.enumerate()]):
-                threading.Thread(target=handle_custom_model_command, args=(prompt,), daemon=True, name="custom").start()
+                threading.Thread(target=handle_custom_model_command, args=(user, is_team, prompt), daemon=True, name="custom").start()
 
     # console echo commands start
     elif prompt.strip() == "!gpt_stop":
