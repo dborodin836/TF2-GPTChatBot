@@ -28,6 +28,7 @@
     - [How to deal with spammers?](#how-to-deal-with-spammers)
     - [Program has stopped working and I are unable to type in the chat, but I can still see messages in the program window, what can I do?](#program-has-stopped-working-and-i-are-unable-to-type-in-the-chat-but-i-can-still-see-messages-in-the-program-window-what-can-i-do)
     - [Other Source Engine games](#other-source-engine-games)
+    - [TF2 Bot Detector Cooperation](#tf2-bot-detector-cooperation-tf2bd)
 
 ## Running Using Binary
 
@@ -86,7 +87,7 @@ RTD_MODE = 0
 3. Add the following options:
 
 ```
--rpt -usercon -ip 0.0.0.0 +rcon_password password +net_start
+-rpt -usercon +ip 0.0.0.0 +rcon_password password +hostport 42465 +con_timestamp 1 +net_start
 ```
 
 ### 4. Launch Team Fortress 2
@@ -183,7 +184,7 @@ RTD_MODE = 0
 3. Add the following options:
 
 ```
--rpt -usercon -ip 0.0.0.0 +rcon_password password +net_start
+-rpt -usercon +ip 0.0.0.0 +rcon_password password +hostport 42465 +con_timestamp 1 +net_start
 ```
 
 ### 7. Launch Team Fortress 2
@@ -421,6 +422,18 @@ If you have any helpful information on how to deal with this issue, I would appr
 
 TF2-GPTChatBot currently doesn't support other games on the Source Engine, it is possible for it to be supported in
 the future. At the moment, I am not aware of any limitations that could pose a problem.
+
+### TF2 Bot Detector Cooperation (TF2BD)
+
+To successfully launch the applications, you need to start TF2-GptChatBot and TF2 Bot Detector
+ (do **NOT** launch TF2 via TF2BD). Set the following launch parameters in Steam: 
+
+```
+-rpt -high -usercon +developer 1 +contimes 0 +sv_rcon_whitelist_address 127.0.0.1 +sv_quota_stringcmdspersecond 1000000 +alias cl_reload_localization_files +ip 0.0.0.0 +rcon_password password +hostport 42465 +con_timestamp 1 +net_start +con_timestamp 1 -condebug
+```
+And then launch TF2 through Steam.
+
+_NOTE: TF2BD may partially work without setting the launch parameters, but some features may not function properly._
 
 ## Contributing
 
