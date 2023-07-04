@@ -12,6 +12,16 @@ from utils.types import LogLine, Player
 MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120
 
+TF2BD_WRAPPER_CHARS = ['\u200e', '\u200d', '\ufeff', '\u200b', '\u200f', '\u202c', '\u2060', '\u200c']
+try:
+    TF2BD_WRAPPER_FOLDER_EXIST = os.path.exists(os.path.join(
+        os.path.dirname(config.TF2_LOGFILE_PATH),
+        'custom/aaaaaaaaaa_loadfirst_tf2_bot_detector')
+    )
+except AttributeError:
+    # Nothing bad will happen if we set this to True
+    TF2BD_WRAPPER_FOLDER_EXIST = True
+
 
 def get_chunks(string: str, maxlength: int) -> typing.Generator:
     """
@@ -104,6 +114,10 @@ def follow_tail(file_path: str) -> typing.Generator:
 
 
 def parse_line(line: str) -> LogLine:
+    if TF2BD_WRAPPER_FOLDER_EXIST:
+        for char in TF2BD_WRAPPER_CHARS:
+            line = line.replace(char, '')
+
     parts = line.split(" :  ")
     is_team_mes = '(TEAM)' in line
     username = parts[0].replace('(TEAM)', '', 1).removeprefix("*DEAD*").strip()
@@ -176,6 +190,7 @@ def get_console_logline() -> typing.Generator:
     Opens a log file for Team Fortress 2 and yields tuples containing user prompts and usernames.
     """
     for line in follow_tail(config.TF2_LOGFILE_PATH):
+        # Remove timestamp
         line = line[23:]
 
         if config.ENABLE_STATS:
