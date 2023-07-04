@@ -13,6 +13,7 @@ from utils.chat import parse_console_logs_and_build_conversation_history
 from utils.tf_statistics import StatsData
 from services.source_game import get_status
 from utils.bot_state import switch_state_hotkey_handler
+from config import config
 
 
 def status_command_sender():
@@ -37,7 +38,8 @@ def run_threads():
     threading.Thread(target=parse_console_logs_and_build_conversation_history, daemon=True).start()
     threading.Thread(target=gpt3_cmd_handler, daemon=True).start()
     threading.Thread(target=switch_state_hotkey_handler, daemon=True).start()
-    threading.Thread(target=status_command_sender, daemon=True).start()
+    if config.ENABLE_STATS:
+        threading.Thread(target=status_command_sender, daemon=True).start()
     threading.Thread(target=get_my_data, daemon=True).start()
 
     log_window.pack()
