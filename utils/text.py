@@ -13,10 +13,14 @@ MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120
 
 TF2BD_WRAPPER_CHARS = ['\u200e', '\u200d', '\ufeff', '\u200b', '\u200f', '\u202c', '\u2060', '\u200c']
-TF2BD_WRAPPER_FOLDER_EXIST = os.path.exists(os.path.join(
-    os.path.dirname(config.TF2_LOGFILE_PATH),
-    'custom/aaaaaaaaaa_loadfirst_tf2_bot_detector')
-)
+try:
+    TF2BD_WRAPPER_FOLDER_EXIST = os.path.exists(os.path.join(
+        os.path.dirname(config.TF2_LOGFILE_PATH),
+        'custom/aaaaaaaaaa_loadfirst_tf2_bot_detector')
+    )
+except AttributeError:
+    # Nothing bad will happen if we set this to True
+    TF2BD_WRAPPER_FOLDER_EXIST = True
 
 
 def get_chunks(string: str, maxlength: int) -> typing.Generator:
