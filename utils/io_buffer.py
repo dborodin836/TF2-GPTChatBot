@@ -22,6 +22,6 @@ def print_buffered_config_innit_messages() -> None:
 
     if get_io_string_size(BUFFERED_CONFIG_INIT_LOG_MESSAGES) > 0:
         for line in BUFFERED_CONFIG_INIT_LOG_MESSAGES:
-            print(line, end='')
+            print(line, end='\n')
     else:
-        print("Ready to use!")
+        print("Config file looks good!")

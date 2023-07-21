@@ -8,7 +8,7 @@ BANNED_PLAYERS = set()
 BANS_FILE = 'bans.json'
 
 
-def load_banned_players() -> set:
+async def load_banned_players() -> set:
     """
     Loads the set of banned players.
     """
@@ -21,6 +21,7 @@ def load_banned_players() -> set:
         banned_players = set()
         print(f'File {BANS_FILE} could not be found.')
 
+    print(f"Loaded {len(banned_players)} player bans.")
     return banned_players
 
 

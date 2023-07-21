@@ -11,7 +11,11 @@ def check_for_updates() -> None:
     """
     Checks if there's a new release of a GitHub repository available.
     """
-    response = requests.get(GITHUB_API_REPO_LINK)
+    try:
+        response = requests.get(GITHUB_API_REPO_LINK)
+    except Exception as e:
+        print(f"Failed to check for updates! [{e}]")
+        return
 
     data = json.loads(response.content)
     latest_version = data['tag_name']

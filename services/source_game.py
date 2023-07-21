@@ -1,5 +1,5 @@
+import asyncio
 import time
-import sys
 import re
 
 from rcon import WrongPassword
@@ -22,7 +22,7 @@ def get_username() -> str:
         return name
 
 
-def check_connection():
+def check_rcon_connection():
     """
     Continuously tries to login to a remote RCON server using the provided credentials until a
     successful connection is established. If a connection is refused, the function will wait for
@@ -30,6 +30,7 @@ def check_connection():
     """
     while True:
         try:
+            print("Trying to establish connection with game...")
             login()
         except ConnectionRefusedError:
             print("Couldn't connect! Retrying in 4 second...")
@@ -39,14 +40,14 @@ def check_connection():
             break
 
 
-def get_status():
+async def get_status() -> str:
     while True:
         try:
             with Client(config.RCON_HOST, config.RCON_PORT, passwd=config.RCON_PASSWORD) as client:
                 response = client.run('cmd status')
                 return response
         except ConnectionRefusedError:
-            time.sleep(2)
+            await asyncio.sleep(2)
 
 
 def login() -> None:
@@ -58,10 +59,14 @@ def login() -> None:
             client.login(config.RCON_PASSWORD)
         except WrongPassword:
             print("Passwords do not match!")
-            sys.exit(1)
 
 
-def send_say_command_to_tf2(message: str, team_chat: bool = False) -> None:
+async def send_cmd(cmd: str) -> None:
+    with Client(config.RCON_HOST, config.RCON_PORT, passwd=config.RCON_PASSWORD) as client:
+        client.run(cmd)
+
+
+async def send_say_command_to_game(message: str, team_chat: bool = False) -> None:
     """
     Sends a "say" command to a Team Fortress 2 server using RCON protocol.
     """
@@ -74,13 +79,12 @@ def send_say_command_to_tf2(message: str, team_chat: bool = False) -> None:
         message = message[:config.HARD_COMPLETION_LIMIT] + '...'
 
     chunks = get_chunks(" ".join(message.split()), chunks_size)
-    cmd: str = ' '
 
+    cmd: str = ' '
     for chunk in chunks:
         if team_chat:
             cmd += f'say_team "{chunk}";wait 1300;'
         else:
             cmd += f'say "{chunk}";wait 1300;'
 
-    with Client(config.RCON_HOST, config.RCON_PORT, passwd=config.RCON_PASSWORD) as client:
-        client.run(cmd)
+    asyncio.create_task(send_cmd(cmd))

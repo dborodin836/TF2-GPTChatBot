@@ -1,3 +1,4 @@
+import asyncio
 import codecs
 import re
 import os
@@ -80,32 +81,32 @@ def add_prompts_by_flags(user_prompt: str) -> str:
     return result.strip()
 
 
-def follow_tail(file_path: str) -> typing.Generator:
+async def follow_tail(file_path: str) -> typing.Generator:
     """
     Follows the tail of a file, yielding new lines as they are added.
     """
     first_call = True
     while True:
         try:
-            with codecs.open(file_path, encoding='utf-8', errors='ignore') as input:
+            with codecs.open(file_path, encoding='utf-8', errors='ignore') as input_:
                 if first_call:
-                    input.seek(0, 2)
+                    input_.seek(0, 2)
                     first_call = False
-                latest_data = input.read()
+                latest_data = input_.read()
                 while True:
                     if '\n' not in latest_data:
-                        latest_data += input.read()
+                        latest_data += input_.read()
                         if '\n' not in latest_data:
                             yield ''
                             if not os.path.isfile(file_path):
                                 break
-                            time.sleep(0.1)
+                            await asyncio.sleep(0.15)
                             continue
                     latest_lines = latest_data.split('\n')
                     if latest_data[-1] != '\n':
                         latest_data = latest_lines[-1]
                     else:
-                        latest_data = input.read()
+                        latest_data = input_.read()
                     for line in latest_lines[:-1]:
                         yield line + '\n'
         except Exception as e:
@@ -185,7 +186,7 @@ def stats_regexes(line: str):
         StatsData.process_kill_bind(user)
 
 
-def get_console_logline() -> typing.Generator:
+async def get_console_logline() -> typing.Generator:
     """
     Opens a log file for Team Fortress 2 and yields tuples containing user prompts and usernames.
     """

@@ -1,5 +1,5 @@
 from utils.commands import print_help_command
-from utils.bot_state import start_bot, stop_bot, get_bot_state
+from utils.bot_state import start_bot, stop_bot, is_bot_running
 
 
 def test_print_help_command(capsys):
@@ -16,17 +16,17 @@ def test_print_help_command(capsys):
 
 def test_start_bot():
     start_bot()
-    assert get_bot_state() is True
+    assert is_bot_running() is True
 
 
 def test_stop_bot():
     stop_bot()
-    assert get_bot_state() is False
+    assert is_bot_running() is False
 
 
 def test_get_bot_state():
     start_bot()
-    assert get_bot_state() is True
+    assert is_bot_running() is True
 
     stop_bot()
-    assert get_bot_state() is False
+    assert is_bot_running() is False

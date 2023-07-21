@@ -1,3 +1,4 @@
+import asyncio
 import sys
 import time
 import tkinter as tk
@@ -152,7 +153,7 @@ def handle_gui_console_commands(command: str) -> None:
         print_help_command()
 
 
-def gpt3_cmd_handler() -> None:
+async def gpt3_cmd_handler() -> None:
     while True:
         if PROMPTS_QUEUE.qsize() != 0:
             prompt = PROMPTS_QUEUE.get()
@@ -162,4 +163,4 @@ def gpt3_cmd_handler() -> None:
             except openai.error.RateLimitError:
                 print("Rate Limited! Try again later.")
         else:
-            time.sleep(2)
+            await asyncio.sleep(2)

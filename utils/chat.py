@@ -1,20 +1,22 @@
 import queue
 import time
 import threading
+import asyncio
 
 from config import config
 from services.chatgpt import handle_cgpt_request, handle_gpt_request
 from services.github import check_for_updates
-from services.source_game import check_connection, send_say_command_to_tf2, get_username
+from services.source_game import check_rcon_connection, send_say_command_to_game, get_username
 from utils.bans import unban_player, ban_player, load_banned_players, is_banned_username
 from utils.commands import handle_rtd_command, handle_gh_command, handle_custom_model_command
-from utils.bot_state import start_bot, stop_bot, get_bot_state
+from utils.bot_state import start_bot, stop_bot, is_bot_running
 from utils.prompt import load_prompts
 from utils.text import get_console_logline
 from utils.types import LogLine
 from utils.logs import log_message
 from utils.types import MessageHistory
 from utils.io_buffer import print_buffered_config_innit_messages
+from aio import get_loop
 
 PROMPTS_QUEUE: queue.Queue = queue.Queue()
 
@@ -28,10 +30,7 @@ def set_host_username() -> None:
     print(f"Hello '{config.HOST_USERNAME}'!")
 
 
-def setup() -> None:
-    """
-    Initializes the program.
-    """
+def print_logo() -> None:
     print(r"""
       _____ _____ ____        ____ ____ _____ ____ _           _   ____        _   
      |_   _|  ___|___ \      / ___|  _ \_   _/ ___| |__   __ _| |_| __ )  ___ | |_ 
@@ -41,15 +40,24 @@ def setup() -> None:
 
     """)
 
+
+def setup() -> None:
+    """
+    Initializes the program.
+    """
+    print_logo()
+
     check_for_updates()
-    check_connection()
-    set_host_username()
-    load_prompts()
-    load_banned_players()
     print_buffered_config_innit_messages()
+    check_rcon_connection()
+
+    asyncio.create_task(load_prompts())
+    asyncio.create_task(load_banned_players())
+
+    set_host_username()
 
 
-def parse_console_logs_and_build_conversation_history() -> None:
+async def parse_console_logs_and_build_conversation_history() -> None:
     """
     Processes the console logs and builds a conversation history, filters banned usernames.
     """
@@ -58,54 +66,56 @@ def parse_console_logs_and_build_conversation_history() -> None:
     setup()
 
     for logline in get_console_logline():
-        if not get_bot_state():
+        if not is_bot_running():
             continue
         if is_banned_username(logline.username):
             continue
-        conversation_history = handle_command(logline, conversation_history)
+        conversation_history = await handle_command(logline, conversation_history)
 
 
-def has_command(prompt: str, command: str) -> bool:
+def has_command_in_string(prompt: str, command: str) -> bool:
     """
     Check if given command matches with the beginning of the given prompt in a non-case-sensitive manner.
     """
     return prompt.strip().lower().startswith(command.lower())
 
 
-def handle_command(logline: LogLine, conversation_history: MessageHistory) -> MessageHistory:
+async def handle_command(logline: LogLine, conversation_history: MessageHistory) -> MessageHistory:
     prompt = logline.prompt
     user = logline.username
     is_team = logline.is_team_message
 
-    if has_command(prompt, config.GPT_COMMAND):
+    if has_command_in_string(prompt, config.GPT_COMMAND):
         if prompt.removeprefix(config.GPT_COMMAND).strip() == "":
-            time.sleep(1)
-            send_say_command_to_tf2("Hello there! I am ChatGPT, a ChatGPT plugin integrated into"
-                                    " Team Fortress 2. Ask me anything!", team_chat=is_team)
+            await asyncio.sleep(1)
+            asyncio.create_task(send_say_command_to_game(
+                "Hello there! I am ChatGPT, a ChatGPT plugin integrated into"
+                " Team Fortress 2. Ask me anything!", team_chat=is_team))
             log_message('GPT3', user, prompt.strip())
             return conversation_history
 
         handle_gpt_request(user, prompt.removeprefix(config.GPT_COMMAND).strip(),
                            is_team=is_team)
 
-    elif has_command(prompt, config.CHATGPT_COMMAND):
+    elif has_command_in_string(prompt, config.CHATGPT_COMMAND):
         return handle_cgpt_request(user, prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
                                    conversation_history, is_team=is_team)
 
-    elif has_command(prompt, config.CLEAR_CHAT_COMMAND):
+    elif has_command_in_string(prompt, config.CLEAR_CHAT_COMMAND):
         log_message("CHAT", user, "CLEARING CHAT")
         return []
 
-    elif has_command(prompt, config.RTD_COMMAND):
+    elif has_command_in_string(prompt, config.RTD_COMMAND):
         handle_rtd_command(user, is_team=is_team)
 
-    elif has_command(prompt, '!gh'):
+    elif has_command_in_string(prompt, '!gh'):
         handle_gh_command(user, is_team=is_team)
 
-    elif has_command(prompt, config.CUSTOM_MODEL_COMMAND):
+    elif has_command_in_string(prompt, config.CUSTOM_MODEL_COMMAND):
         if config.ENABLE_CUSTOM_MODEL:
             if not any([thread.name == "custom" for thread in threading.enumerate()]):
-                threading.Thread(target=handle_custom_model_command, args=(user, is_team, prompt), daemon=True, name="custom").start()
+                threading.Thread(target=handle_custom_model_command, args=(user, is_team, prompt),
+                                 daemon=True, name="custom").start()
 
     # console echo commands start
     elif prompt.strip() == "!gpt_stop":

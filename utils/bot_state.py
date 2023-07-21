@@ -18,18 +18,18 @@ def stop_bot() -> None:
     log_cmd_message("BOT STOPPED")
 
 
-def get_bot_state() -> bool:
+def is_bot_running() -> bool:
     return _BOT_RUNNING
 
 
 def switch_state() -> None:
-    if get_bot_state():
+    if is_bot_running():
         stop_bot()
     else:
         start_bot()
 
 
-def switch_state_hotkey_handler() -> None:
+async def switch_state_hotkey_handler() -> None:
     while True:
         keyboard.wait(SWITCH_STATE_HOTKEY)
         switch_state()

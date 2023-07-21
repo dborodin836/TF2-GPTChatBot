@@ -2,49 +2,44 @@ from config import init_config
 # This is required due to config used in imported modules
 init_config()
 
-import time
 import sys
-import tkinter as tk
 import threading
-import contextlib
+import time
+import tkinter as tk
+import asyncio
 
-from gui.log_window import LogWindow, CustomOutput, gpt3_cmd_handler
+# Global reference to loop allows access from different environments.
+from gui.log_window import CustomOutput, LogWindow
 from utils.chat import parse_console_logs_and_build_conversation_history
-from utils.tf_statistics import StatsData
-from services.source_game import get_status
-from utils.bot_state import switch_state_hotkey_handler
-from config import config
+from aio import aio_main, get_loop
 
 
-def status_command_sender():
-    with contextlib.suppress(Exception):
-        while True:
-            get_status()
-            time.sleep(20)
-
-
-def get_my_data():
-    import keyboard
-    while True:
-        keyboard.wait("F10")
-        print(StatsData.get_data())
-
-
-def run_threads():
+def tk_main():
     root = tk.Tk()
     log_window = LogWindow(root)
     sys.stdout = CustomOutput(log_window)
 
-    threading.Thread(target=parse_console_logs_and_build_conversation_history, daemon=True).start()
-    threading.Thread(target=gpt3_cmd_handler, daemon=True).start()
-    threading.Thread(target=switch_state_hotkey_handler, daemon=True).start()
-    if config.ENABLE_STATS:
-        threading.Thread(target=status_command_sender, daemon=True).start()
-    threading.Thread(target=get_my_data, daemon=True).start()
+    # The asyncio loop must start before the tkinter event loop.
+    while not get_loop():
+        time.sleep(0)
+
+    asyncio.run_coroutine_threadsafe(parse_console_logs_and_build_conversation_history(), get_loop())
 
     log_window.pack()
     root.mainloop()
 
 
+def main():
+    aio_initiate_shutdown = threading.Event()
+    aio_thread = threading.Thread(target=aio_main, args=(aio_initiate_shutdown,))
+    aio_thread.start()
+
+    tk_main()
+
+    # Close the asyncio permanent loop and join the thread in which it runs.
+    aio_initiate_shutdown.set()
+    aio_thread.join()
+
+
 if __name__ == '__main__':
-    run_threads()
+    sys.exit(main())

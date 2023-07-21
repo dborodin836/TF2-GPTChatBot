@@ -1,10 +1,11 @@
+import asyncio
 import re
 import time
 
 import openai
 import hashlib
 from config import config
-from services.source_game import send_say_command_to_tf2
+from services.source_game import send_say_command_to_game
 from utils.logs import log_message, log_cmd_message
 from utils.text import add_prompts_by_flags
 from utils.types import MessageHistory
@@ -54,7 +55,7 @@ def handle_cgpt_request(username: str, user_prompt: str, conversation_history: M
     if response:
         conversation_history.append({"role": "assistant", "content": response})
         log_message("GPT3", username, ' '.join(response.split()))
-        send_say_command_to_tf2(response, is_team)
+        asyncio.create_task(send_say_command_to_game(response, is_team))
 
     return conversation_history
 
@@ -77,7 +78,7 @@ def handle_gpt_request(username: str, user_prompt: str, is_team: bool = False) -
 
     if response:
         log_message("GPT3", username, ' '.join(response.split()))
-        send_say_command_to_tf2(response, is_team)
+        send_say_command_to_game(response, is_team)
 
 
 def get_response(conversation_history: MessageHistory, username: str) -> str | None:

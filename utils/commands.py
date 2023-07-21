@@ -4,7 +4,7 @@ import time
 import requests
 
 from config import config, RTDModes
-from services.source_game import send_say_command_to_tf2
+from services.source_game import send_say_command_to_game
 from utils.logs import log_cmd_message, log_message
 
 RICKROLL_LINK = "youtu.be/dQw4w9WgXcQ"
@@ -14,7 +14,7 @@ GITHUB_LINK = "bit.ly/tf2-gpt3"
 def handle_gh_command(username: str, is_team: bool = False) -> None:
     log_cmd_message(f"User '{username}' GET GH LINK")
     time.sleep(1)
-    send_say_command_to_tf2(f"GitHub: {GITHUB_LINK}", is_team)
+    send_say_command_to_game(f"GitHub: {GITHUB_LINK}", is_team)
 
 
 def handle_rtd_command(username: str, is_team: bool = False) -> None:
@@ -26,14 +26,14 @@ def handle_rtd_command(username: str, is_team: bool = False) -> None:
     if config.RTD_MODE == RTDModes.RICKROLL.value:
         log_cmd_message("RICKROLLED!!11!!")
         time.sleep(1)
-        send_say_command_to_tf2(f"[RTD] {username} rolled: {RICKROLL_LINK}")
+        send_say_command_to_game(f"[RTD] {username} rolled: {RICKROLL_LINK}")
     elif config.RTD_MODE == RTDModes.RANDOM_MEME.value:
         with open('vids.txt', 'r') as file:
             # Reads all lines and removes 'https://'
             lines = list(map(lambda x: x.removeprefix('https://').strip(), file.readlines()))
         time.sleep(1)
         log_cmd_message(f"[RTD] {username} rolled: {random.choice(lines)}")
-        send_say_command_to_tf2(f"[RTD] {username} rolled: {random.choice(lines)}", is_team)
+        send_say_command_to_game(f"[RTD] {username} rolled: {random.choice(lines)}", is_team)
 
 
 def print_help_command():
@@ -93,7 +93,7 @@ def handle_custom_model_command(user, is_team, prompt):
         if response.status_code == 200:
             result = response.json()['results'][0]['text']
             log_message('CUSTOM', user, result)
-            send_say_command_to_tf2(result, is_team)
+            send_say_command_to_game(result, is_team)
 
     except Exception as e:
         print(e)
