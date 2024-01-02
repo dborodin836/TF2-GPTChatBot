@@ -69,6 +69,8 @@ def has_command(prompt: str, command: str) -> bool:
     """
     Check if given command matches with the beginning of the given prompt in a non-case-sensitive manner.
     """
+    # TODO: if statements has to be ordered specifically to work properly
+    #       ie. !gpt4 -> !gpt4p, !gpt4p will never be triggered
     return prompt.strip().lower().startswith(command.lower())
 
 
@@ -86,11 +88,21 @@ def handle_command(logline: LogLine, conversation_history: MessageHistory) -> Me
             return conversation_history
 
         handle_gpt_request(user, prompt.removeprefix(config.GPT_COMMAND).strip(),
-                           is_team=is_team)
+                           model="gpt-3.5-turbo", is_team=is_team)
 
     elif has_command(prompt, config.CHATGPT_COMMAND):
         return handle_cgpt_request(user, prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
-                                   conversation_history, is_team=is_team)
+                                   conversation_history, is_team=is_team, model="gpt-3.5-turbo")
+
+    elif has_command(prompt, "!gpt4l"):
+        if config.GPT4_ADMIN_ONLY and config.HOST_USERNAME == user or not config.GPT4_ADMIN_ONLY:
+            return handle_cgpt_request(user, prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
+                                       conversation_history, is_team=is_team, model="gpt-4")
+
+    elif has_command(prompt, "!gpt4"):
+        if config.GPT4_ADMIN_ONLY and config.HOST_USERNAME == user or not config.GPT4_ADMIN_ONLY:
+            return handle_cgpt_request(user, prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
+                                       conversation_history, is_team=is_team, model="gpt-4-1106-preview")
 
     elif has_command(prompt, config.CLEAR_CHAT_COMMAND):
         log_message("CHAT", user, "CLEARING CHAT")
@@ -105,7 +117,8 @@ def handle_command(logline: LogLine, conversation_history: MessageHistory) -> Me
     elif has_command(prompt, config.CUSTOM_MODEL_COMMAND):
         if config.ENABLE_CUSTOM_MODEL:
             if not any([thread.name == "custom" for thread in threading.enumerate()]):
-                threading.Thread(target=handle_custom_model_command, args=(user, is_team, prompt), daemon=True, name="custom").start()
+                threading.Thread(target=handle_custom_model_command, args=(user, is_team, prompt), daemon=True,
+                                 name="custom").start()
 
     # console echo commands start
     elif prompt.strip() == "!gpt_stop":
