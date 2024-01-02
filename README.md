@@ -15,7 +15,7 @@
 - [Usage](#usage)
     - [GUI Commands](#gui-commands)
     - [Chat Commands](#chat-commands)
-        - [!gpt3](#-gpt3)
+        - [!gpt3, !gpt4, !gpt4l](#gpt3--gpt4--gpt4l)
         - [!cgpt](#-cgpt)
         - [!clear](#-clear)
         - [!rtd](#-rtd)
@@ -222,7 +222,13 @@ pyinstaller --onefile --clean -n TF2-GPTChatBot -w --icon icon.ico --add-data "i
 
 Commands can be changed in `config.ini` file.
 
-#### !gpt3
+#### !gpt3 & !gpt4 & !gpt4l
+
+Model used for !gpt3: `gpt-3.5-turbo`
+
+Model used for !gpt4: `gpt-4-1106-preview`
+
+Model used for !gpt4l: `gpt-4`
 
 ```
 Command: !gpt3 [roleplay options] [\l long] [prompt]
@@ -252,7 +258,7 @@ Prompt:
 `\stats` Must be enabled in `config.ini`. Also, you must set a [Steam Web API Key](https://steamcommunity.com/dev/apikey).
 
 
-#### !gpt3 Usage examples
+#### !gpt Usage examples
 
 ```
 !gpt3 What is the meaning of life?
@@ -265,6 +271,8 @@ response: Oy, laddie! Yer lookin' for some advice? Well, let me tell ye, blastin
 ```
 
 #### !cgpt
+
+Used model: `gpt-3.5-turbo`
 
 ```
 Command: !cgpt [roleplay options] [\l long] [prompt]
