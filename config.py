@@ -46,6 +46,7 @@ class Config(BaseModel):
     CHATGPT_COMMAND: str
     CLEAR_CHAT_COMMAND: str
     RTD_COMMAND: str
+    GPT4_ADMIN_ONLY: bool
 
     RCON_HOST: str
     RCON_PASSWORD: str
