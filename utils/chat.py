@@ -120,20 +120,4 @@ def handle_command(logline: LogLine, conversation_history: MessageHistory) -> Me
                 threading.Thread(target=handle_custom_model_command, args=(user, is_team, prompt), daemon=True,
                                  name="custom").start()
 
-    # console echo commands start
-    elif prompt.strip() == "!gpt_stop":
-        stop_bot()
-
-    elif prompt.strip() == "!gpt_start":
-        start_bot()
-
-    elif prompt.strip().startswith("ban "):
-        name = prompt.removeprefix("ban ").strip()
-        ban_player(name)
-
-    elif prompt.strip().startswith("unban "):
-        name = prompt.removeprefix("unban ").strip()
-        unban_player(name)
-    # console echo commands end
-
     return conversation_history
