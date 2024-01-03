@@ -1,9 +1,68 @@
-import codecs
-import os
-from typing import Literal
+import sys
 from datetime import datetime as dt
 
-DATE = None
+from loguru import logger
+
+FORMAT_LINE_MAIN = "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} | {message}"
+FORMAT_LINE_GUI = "{time:YYYY-MM-DD HH:mm:ss.SSS} | {message}"
+
+main_logger = logger.bind(name="main")
+gui_logger = logger.bind(name="gui")
+combo_logger = logger.bind(name="combo")
+
+
+class LoggerDontExist(Exception):
+    ...
+
+
+def get_logger(name: str):
+    if name == "main":
+        return main_logger
+    elif name == "gui":
+        return gui_logger
+    elif name == "combo":
+        return combo_logger
+    else:
+        raise LoggerDontExist("Specified logger doesn't exist!")
+
+
+def make_name_filter(name):
+    def filter(record):
+        return record["extra"].get("name") == name
+
+    return filter
+
+
+def setup_loggers():
+    main_logger.remove()
+    gui_logger.remove()
+    combo_logger.remove()
+
+    main_logger.add(
+        "logs/log-{time:YYYY-MM-DD}.log",
+        mode="a",
+        format=FORMAT_LINE_MAIN,
+        level="DEBUG",
+        filter=make_name_filter("main"),
+    )
+
+    gui_logger.add(sys.stdout, format="{message}", filter=make_name_filter("gui"))
+    gui_logger.add(
+        "logs/log-gui-{time:YYYY-MM-DD}.log",
+        mode="a",
+        format=FORMAT_LINE_GUI,
+        level="DEBUG",
+        filter=make_name_filter("gui"),
+    )
+
+    combo_logger.add(
+        "logs/log-{time:YYYY-MM-DD}.log",
+        mode="a",
+        format=FORMAT_LINE_MAIN,
+        level="DEBUG",
+        filter=make_name_filter("combo"),
+    )
+    combo_logger.add(sys.stdout, format="{message}", filter=make_name_filter("combo"))
 
 
 def get_time_stamp() -> str:
@@ -13,30 +72,14 @@ def get_time_stamp() -> str:
     return f"{dt.now().strftime('%H:%M:%S')}"
 
 
-def log_message(message_type: Literal["CHAT", "GPT3", "CUSTOM"], username: str, user_prompt: str) -> None:
+def log_gui_model_message(message_type: str, username: str, user_prompt: str) -> None:
     """
     Logs a message with the current timestamp, message type, username, user_id, and prompt text.
     """
     log_msg = f"[{get_time_stamp()}] ({message_type}) User: '{username}' --- '{user_prompt}'"
-    print(log_msg)
+    gui_logger.info(log_msg)
 
 
-def log_cmd_message(message: str) -> None:
+def log_gui_general_message(message: str) -> None:
     log_msg = f"[{get_time_stamp()}] -- {message}"
-    print(log_msg)
-
-
-def log_to_file(message: str, path: str = None) -> None:
-    """
-    Appends the given message to a log file with a timestamp.
-    """
-    global DATE
-    if DATE is None:
-        DATE = dt.now().strftime('%Y-%m-%d_%H-%M-%S')
-
-    if not os.path.exists("logs"):
-        os.makedirs("logs")
-
-    filename = path or f"logs/log_{DATE}.txt"
-    with codecs.open(filename, "a", encoding="utf-8") as f:
-        f.write(message)
+    gui_logger.info(log_msg)

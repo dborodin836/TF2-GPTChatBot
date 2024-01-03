@@ -1,30 +1,33 @@
+import os
 import sys
 import time
 import tkinter as tk
 from tkinter.ttk import Checkbutton
 
 import openai
-from ttkbootstrap import Style
 import ttkbootstrap as ttk
+from ttkbootstrap import Style
 
 from services.chatgpt import send_gpt_completion_request
-from utils.bans import list_banned_players, unban_player, ban_player
+from utils.bans import ban_player, list_banned_players, unban_player
+from utils.bot_state import start_bot, stop_bot
 from utils.chat import PROMPTS_QUEUE
 from utils.commands import print_help_command
-from utils.bot_state import start_bot, stop_bot
-from utils.logs import log_to_file
-from config import config
+from utils.logs import get_logger
 
 PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
+
+gui_logger = get_logger("gui")
+main_logger = get_logger("main")
 
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
-    import os
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
         base_path = sys._MEIPASS
-    except Exception:
+    except Exception as e:
+        main_logger.warning(f"Running from source. [{e}]")
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)
@@ -92,7 +95,7 @@ class LogWindow(tk.Frame):
         if text.strip == "":
             return
 
-        print(f'> {text}')
+        gui_logger.info(f'> {text}')
 
         handle_gui_console_commands(text)
 
@@ -116,8 +119,6 @@ class CustomOutput:
 
     def write(self, message):
         self.window.update_logs(message)
-        if config.ENABLE_LOGS:
-            log_to_file(message)
 
     def flush(self):
         ...
@@ -159,8 +160,10 @@ def gpt3_cmd_handler() -> None:
             try:
                 response = send_gpt_completion_request([{"role": "user", "content": prompt}], "admin",
                                                        model="gpt-3.5-turbo")
-                print(f"GPT3> {response}")
+                gui_logger.info(f"GPT3> {response}")
             except openai.error.RateLimitError:
-                print("Rate Limited! Try again later.")
+                gui_logger.warning("Rate Limited! Try again later.")
+            except Exception as e:
+                main_logger.error(f"Unhandled exception from request from gui. [{e}]")
         else:
             time.sleep(2)

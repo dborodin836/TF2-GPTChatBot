@@ -1,25 +1,25 @@
-from utils.text import has_cyrillic, get_chunks, get_chunk_size, add_prompts_by_flags
+from utils.text import add_prompts_by_flags, get_chunk_size, get_chunks, has_cyrillic
 
 MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120
 
 
 def test_has_cyrillic():
-    assert has_cyrillic('Привет, мир!') is True
-    assert has_cyrillic('Hello, world!') is False
+    assert has_cyrillic("Привет, мир!") is True
+    assert has_cyrillic("Hello, world!") is False
 
 
 def test_get_chunks():
     string = "Hello world, how are you doing today?"
     maxlength = 10
-    expected_output = ['Hello', 'world, how', 'are you', 'doing', 'today?']
+    expected_output = ["Hello", "world, how", "are you", "doing", "today?"]
 
     for item in get_chunks(string, maxlength):
         assert len(item) <= maxlength
 
     assert list(get_chunks(string, maxlength)) == expected_output
 
-    assert ' '.join(get_chunks(string, maxlength)) == string
+    assert " ".join(get_chunks(string, maxlength)) == string
 
 
 def test_get_chunk_size_with_cyrillic_text():

@@ -74,9 +74,6 @@ HARD_COMPLETION_LIMIT=250
 ENABLE_STATS=0
 STEAM_WEBAPI_KEY=********************************
 
-[DEV]
-ENABLE_LOGS=0
-
 [FUN]
 RTD_MODE = 0
 ```
@@ -171,9 +168,6 @@ HARD_COMPLETION_LIMIT=250
 [STATS]
 ENABLE_STATS=0
 STEAM_WEBAPI_KEY=********************************
-
-[DEV]
-ENABLE_LOGS=0
 
 [FUN]
 RTD_MODE = 0
