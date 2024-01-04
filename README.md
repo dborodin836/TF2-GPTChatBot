@@ -6,8 +6,6 @@
     An AI-powered chatbot for Team Fortress 2 fans and players.
   </h3>
 
-## TF2-GPTChatBot Installation Guide
-
 ## Table Of Contents
 
 - [Running Using Binary](#running-using-binary)
