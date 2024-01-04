@@ -18,12 +18,12 @@ def check_for_updates() -> None:
     main_logger.info(f"Checking for updates... App version - {config.APP_VERSION}")
     try:
         response = requests.get(GITHUB_API_REPO_LINK)
+        data = json.loads(response.content)
     except Exception as e:
         gui_logger.info("Failed to check for updates.")
         main_logger.error(f"Failed to fetch latest version. [{e}]")
         return
 
-    data = json.loads(response.content)
     latest_version = data["tag_name"]
 
     main_logger.info(f"Latest version on GitHub - {latest_version}")
