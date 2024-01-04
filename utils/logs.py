@@ -39,6 +39,12 @@ def setup_loggers():
     combo_logger.remove()
 
     main_logger.add(
+        sys.__stdout__,
+        format=FORMAT_LINE_MAIN,
+        level="DEBUG",
+        filter=make_name_filter("main"),
+    )
+    main_logger.add(
         "logs/log-{time:YYYY-MM-DD}.log",
         mode="a",
         format=FORMAT_LINE_MAIN,
@@ -55,6 +61,7 @@ def setup_loggers():
         filter=make_name_filter("gui"),
     )
 
+    combo_logger.add(sys.stdout, format="{message}", filter=make_name_filter("combo"))
     combo_logger.add(
         "logs/log-{time:YYYY-MM-DD}.log",
         mode="a",
@@ -62,7 +69,6 @@ def setup_loggers():
         level="DEBUG",
         filter=make_name_filter("combo"),
     )
-    combo_logger.add(sys.stdout, format="{message}", filter=make_name_filter("combo"))
 
 
 def get_time_stamp() -> str:

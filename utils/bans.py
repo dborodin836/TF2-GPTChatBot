@@ -54,6 +54,11 @@ def unban_player(username: str) -> None:
         log_gui_general_message(f"USER '{username}' WAS NOT BANNED!")
         main_logger.debug(f"{username} was not banned, cancelling.")
 
+
+def get_banned_players() -> set:
+    return BANNED_PLAYERS
+
+
 def ban_player(username: str) -> None:
     """
     Adds a player to the set of banned players.

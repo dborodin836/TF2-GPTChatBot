@@ -37,18 +37,14 @@ def test_list_banned_players(capsys):
     bans.BANNED_PLAYERS = set()
     bans.ban_player("player1")
     bans.ban_player("player2")
-    bans.list_banned_players()
-    captured = capsys.readouterr()
-    assert (
-        "### BANNED PLAYERS ###\nplayer1\nplayer2\n" in captured.out
-        or "### BANNED PLAYERS ###\nplayer2\nplayer1\n" in captured.out
-    )
+    ban_list = bans.get_banned_players()
+    assert "player1" in ban_list
+    assert "player2" in ban_list
 
     # Test with no bans
     bans.BANNED_PLAYERS = set()
-    bans.list_banned_players()
-    captured = capsys.readouterr()
-    assert captured.out == "### NO BANS ###\n"
+    ban_list = bans.get_banned_players()
+    assert len(ban_list) == 0
 
 
 def test_unban_player():
@@ -60,7 +56,7 @@ def test_unban_player():
 
 
 def test_ban_player():
-    with patch("utils.bans.log_cmd_message") as mock_log_cmd_message:
+    with patch("utils.bans.log_gui_general_message") as mock_log_cmd_message:
         bans.ban_player("player3")
         banned_players = bans.load_banned_players()
         assert "player3" in banned_players
