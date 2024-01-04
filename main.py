@@ -1,19 +1,25 @@
 from config import init_config
+
 # This is required due to config used in imported modules
 init_config()
 
-import time
-import sys
-import tkinter as tk
-import threading
 import contextlib
+import sys
+import threading
+import time
+import tkinter as tk
 
-from gui.log_window import LogWindow, CustomOutput, gpt3_cmd_handler
-from utils.chat import parse_console_logs_and_build_conversation_history
-from utils.tf_statistics import StatsData
+import keyboard
+
+from config import config
+from gui.log_window import CustomOutput, LogWindow, gpt3_cmd_handler
 from services.source_game import get_status
 from utils.bot_state import switch_state_hotkey_handler
-from config import config
+from utils.chat import parse_console_logs_and_build_conversation_history
+from utils.logs import get_logger, setup_loggers
+from utils.tf_statistics import StatsData
+
+gui_logger = get_logger("gui")
 
 
 def status_command_sender():
@@ -24,16 +30,17 @@ def status_command_sender():
 
 
 def get_my_data():
-    import keyboard
     while True:
         keyboard.wait("F10")
-        print(StatsData.get_data())
+        gui_logger.info(StatsData.get_data())
 
 
 def run_threads():
     root = tk.Tk()
     log_window = LogWindow(root)
     sys.stdout = CustomOutput(log_window)
+
+    setup_loggers()
 
     threading.Thread(target=parse_console_logs_and_build_conversation_history, daemon=True).start()
     threading.Thread(target=gpt3_cmd_handler, daemon=True).start()
@@ -46,5 +53,5 @@ def run_threads():
     root.mainloop()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_threads()

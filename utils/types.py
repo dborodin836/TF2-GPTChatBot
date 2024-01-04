@@ -10,6 +10,16 @@ class Message(TypedDict):
 
 MessageHistory = List[Message]
 
+BufferedMessageType = Literal["GUI", "LOG", "BOTH"]
+BufferedMessageLevel = Literal["TRACE", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+
+
+class BufferedMessage(NamedTuple):
+    type: BufferedMessageType
+    level: BufferedMessageLevel
+    message: str
+    fail_startup: bool
+
 
 class SteamHoursApiUrlID64(NamedTuple):
     url: str
@@ -20,6 +30,7 @@ class LogLine(NamedTuple):
     """
     Represents a line from a log file.
     """
+
     prompt: str
     username: str
     is_team_message: bool

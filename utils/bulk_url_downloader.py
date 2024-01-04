@@ -1,14 +1,14 @@
-from typing import List, Tuple, Any
+from queue import Queue
+from threading import Thread, local
+from typing import Any, List, Tuple
 
 import requests
 from requests.sessions import Session
-from threading import Thread, local
-from queue import Queue
 
 from utils.types import SteamHoursApiUrlID64
 
 
-class BulkSteamGameDetailsUrlDownloader():
+class BulkSteamGameDetailsUrlDownloader:
     q = Queue(maxsize=0)
     results: List = []
     thread_local = local()
@@ -18,7 +18,7 @@ class BulkSteamGameDetailsUrlDownloader():
         self.urls = urls
 
     def _get_session(self) -> Session:
-        if not hasattr(self.thread_local, 'session'):
+        if not hasattr(self.thread_local, "session"):
             self.thread_local.session = requests.Session()
         return self.thread_local.session
 

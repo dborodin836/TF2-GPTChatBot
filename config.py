@@ -1,24 +1,41 @@
 import configparser
 import os
 import re
+import sys
+import tkinter as tk
 from enum import IntEnum
 from os.path import exists
+from queue import Queue
+from tkinter import messagebox
 
 import pydantic
 from pydantic import BaseModel, validator
-from io import StringIO
-import tkinter as tk
-from tkinter import messagebox
-import sys
 
-CONFIG_FILE = 'config.ini'
+from utils.types import BufferedMessage, BufferedMessageLevel, BufferedMessageType
+
+CONFIG_FILE = "config.ini"
 OPENAI_API_KEY_RE_PATTERN = r"sk-[a-zA-Z0-9]{48}"
 WEB_API_KEY_RE_PATTERN = r"[a-zA-Z0-9]{32}"
-BUFFERED_CONFIG_INIT_LOG_MESSAGES = StringIO()
+CONFIG_INIT_MESSAGES_QUEUE: Queue[BufferedMessage] = Queue()
 
 
-def buffered_print(message: str) -> None:
-    BUFFERED_CONFIG_INIT_LOG_MESSAGES.write(message)
+def buffered_message(
+    message: str,
+    type_: BufferedMessageType = "GUI",
+    level: BufferedMessageLevel = "INFO",
+    fail_startup: bool = False,
+) -> None:
+    CONFIG_INIT_MESSAGES_QUEUE.put(
+        BufferedMessage(type=type_, level=level, message=message, fail_startup=fail_startup)
+    )
+
+
+def buffered_fail_message(
+    message: str,
+    type_: BufferedMessageType = "GUI",
+    level: BufferedMessageLevel = "INFO",
+):
+    buffered_message(message, type_, level, fail_startup=True)
 
 
 class RTDModes(IntEnum):
@@ -32,8 +49,8 @@ class RTDModes(IntEnum):
 
 
 class Config(BaseModel):
-    APP_VERSION: str = '1.2.1'
-    HOST_USERNAME: str = ''
+    APP_VERSION: str = "1.2.1"
+    HOST_USERNAME: str = ""
     TOS_VIOLATION: bool
 
     TF2_LOGFILE_PATH: str
@@ -57,40 +74,41 @@ class Config(BaseModel):
 
     RTD_MODE: int
 
-    ENABLE_LOGS: bool
-
     ENABLE_CUSTOM_MODEL: bool
     CUSTOM_MODEL_HOST: str
     CUSTOM_MODEL_COMMAND: str
 
-    @validator('OPENAI_API_KEY')
+    @validator("OPENAI_API_KEY")
     def api_key_pattern_match(cls, v):
         if not re.fullmatch(OPENAI_API_KEY_RE_PATTERN, v):
-            buffered_print("API key not set or invalid! Check documentation and edit "
-                           "config.ini file.")
+            buffered_fail_message("API key not set or invalid!", type_="BOTH", level="ERROR")
         return v
 
-    @validator('STEAM_WEBAPI_KEY')
+    @validator("STEAM_WEBAPI_KEY")
     def steam_webapi_key_pattern_match(cls, v, values):
         if not values["ENABLE_STATS"]:
             return v
 
         if not re.fullmatch(WEB_API_KEY_RE_PATTERN, v):
-            buffered_print("STEAM WEB API key not set or invalid! Check documentation and edit "
-                           "config.ini file.")
+            buffered_fail_message(
+                "STEAM WEB API key not set or invalid!", type_="BOTH", level="ERROR"
+            )
         return v
 
-    @validator('RTD_MODE')
+    @validator("RTD_MODE")
     def rtd_mode_is_valid_enum(cls, v):
         if not RTDModes.has_value(v):
-            buffered_print(
-                f"Invalid RTD_MODE value! Expected one of {[mode.value for mode in RTDModes]}.")
+            buffered_fail_message(
+                f"Invalid RTD_MODE value! Expected one of {[mode.value for mode in RTDModes]}.",
+                type_="BOTH",
+                level="ERROR",
+            )
         return v
 
-    @validator('TF2_LOGFILE_PATH')
+    @validator("TF2_LOGFILE_PATH")
     def is_logfile_path_exists(cls, v):
         if not os.path.exists(os.path.dirname(v)):
-            buffered_print("Non-valid logfile path!")
+            buffered_fail_message("Non-valid logfile path!", type_="BOTH", level="ERROR")
         return v
 
 
@@ -99,24 +117,28 @@ config: Config | None = None
 
 def init_config():
     if not exists(CONFIG_FILE):
-        buffered_print(f"Couldn't find '{CONFIG_FILE}' file.")
+        buffered_fail_message("Config file is missing.", "LOG", level="ERROR")
+        buffered_fail_message(f"Couldn't find '{CONFIG_FILE}' file.", type_="BOTH", level="ERROR")
 
     try:
+        buffered_message("Starting parsing config file.", "LOG", level="INFO")
         configparser_config = configparser.ConfigParser()
         configparser_config.read(CONFIG_FILE)
 
-        config_dict = {key.upper(): value for section in configparser_config.sections() for key, value
-                       in
-                       configparser_config.items(section)}
+        config_dict = {
+            key.upper(): value
+            for section in configparser_config.sections()
+            for key, value in configparser_config.items(section)
+        }
         global config
         config = Config(**config_dict)
-    except pydantic.ValidationError:
+    except (pydantic.ValidationError, Exception) as e:
         # Create a Tkinter window
         root = tk.Tk()
         root.withdraw()
 
         # Show error message
-        messagebox.showerror("Error", "An error occurred. Check config file.")
+        messagebox.showerror("Error", f"An error occurred. Check config file. [{e}]")
 
         # Close the window
         root.destroy()
