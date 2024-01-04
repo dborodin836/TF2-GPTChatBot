@@ -39,12 +39,6 @@ def setup_loggers():
     combo_logger.remove()
 
     main_logger.add(
-        sys.__stdout__,
-        format=FORMAT_LINE_MAIN,
-        level="DEBUG",
-        filter=make_name_filter("main"),
-    )
-    main_logger.add(
         "logs/log-{time:YYYY-MM-DD}.log",
         mode="a",
         format=FORMAT_LINE_MAIN,
