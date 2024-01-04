@@ -24,7 +24,7 @@
 - [Known Issues](#known-issues)
     - [Nickname Limitations](#nickname-limitations)
 - [FAQ](#faq)
-    - [Can I receive a VAC ban for using this?](can-i-receive-a-VAC-ban-for-using-this?)
+    - [Can I receive a VAC ban for using this?](#can-i-receive-a-VAC-ban-for-using-this?)
     - [How to deal with spammers?](#how-to-deal-with-spammers)
     - [Program has stopped working and I are unable to type in the chat, but I can still see messages in the program window, what can I do?](#program-has-stopped-working-and-i-are-unable-to-type-in-the-chat-but-i-can-still-see-messages-in-the-program-window-what-can-i-do)
     - [Other Source Engine games](#other-source-engine-games)

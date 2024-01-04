@@ -44,7 +44,7 @@ def setup_loggers():
         format=FORMAT_LINE_MAIN,
         level="DEBUG",
         filter=make_name_filter("main"),
-        retention="week",
+        retention="1 week",
         rotation="50 MB"
     )
 
@@ -55,7 +55,7 @@ def setup_loggers():
         format=FORMAT_LINE_GUI,
         level="DEBUG",
         filter=make_name_filter("gui"),
-        retention="week",
+        retention="1 week",
         rotation="50 MB"
     )
 
@@ -66,7 +66,7 @@ def setup_loggers():
         format=FORMAT_LINE_MAIN,
         level="DEBUG",
         filter=make_name_filter("combo"),
-        retention="week",
+        retention="1 week",
         rotation="50 MB"
     )
 
