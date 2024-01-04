@@ -39,17 +39,13 @@ def setup_loggers():
     combo_logger.remove()
 
     main_logger.add(
-        sys.__stdout__,
-        format=FORMAT_LINE_MAIN,
-        level="DEBUG",
-        filter=make_name_filter("main"),
-    )
-    main_logger.add(
         "logs/log-{time:YYYY-MM-DD}.log",
         mode="a",
         format=FORMAT_LINE_MAIN,
         level="DEBUG",
         filter=make_name_filter("main"),
+        retention="week",
+        rotation="50 MB"
     )
 
     gui_logger.add(sys.stdout, format="{message}", filter=make_name_filter("gui"))
@@ -59,6 +55,8 @@ def setup_loggers():
         format=FORMAT_LINE_GUI,
         level="DEBUG",
         filter=make_name_filter("gui"),
+        retention="week",
+        rotation="50 MB"
     )
 
     combo_logger.add(sys.stdout, format="{message}", filter=make_name_filter("combo"))
@@ -68,6 +66,8 @@ def setup_loggers():
         format=FORMAT_LINE_MAIN,
         level="DEBUG",
         filter=make_name_filter("combo"),
+        retention="week",
+        rotation="50 MB"
     )
 
 
