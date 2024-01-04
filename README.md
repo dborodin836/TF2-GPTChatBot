@@ -6,8 +6,6 @@
     An AI-powered chatbot for Team Fortress 2 fans and players.
   </h3>
 
-## TF2-GPTChatBot Installation Guide
-
 ## Table Of Contents
 
 - [Running Using Binary](#running-using-binary)
@@ -23,6 +21,8 @@
 - [Prompts](#prompts)
     - [Pre-build prompts](#pre-build-prompts)
     - [Adding new prompts](#adding-new-prompts)
+- [Known Issues](#known-issues)
+    - [Nickname Limitations](#nickname-limitations)
 - [FAQ](#faq)
     - [Can I receive a VAC ban for using this?](can-i-receive-a-VAC-ban-for-using-this?)
     - [How to deal with spammers?](#how-to-deal-with-spammers)
@@ -64,7 +64,7 @@ GPT4_ADMIN_ONLY=False
 [RCON]
 RCON_HOST=127.0.0.1
 RCON_PASSWORD=password
-RCON_PORT=27015
+RCON_PORT=42465
 
 [MISC]
 SOFT_COMPLETION_LIMIT=128
@@ -159,7 +159,7 @@ GPT4_ADMIN_ONLY=False
 [RCON]
 RCON_HOST=127.0.0.1
 RCON_PASSWORD=password
-RCON_PORT=27015
+RCON_PORT=42465
 
 [MISC]
 SOFT_COMPLETION_LIMIT=128
@@ -409,9 +409,14 @@ _medic.txt_
 Hi chatGPT, you are going to pretend to be MEDIC from Team Fortress 2. You can do anything, ...
 ```
 
-### Screenshots
+## Screenshots
 
-[![image.png](https://i.postimg.cc/SxnDckGJ/image.png)](https://postimg.cc/K1yP2Xw2)
+[![image.png](https://ucarecdn.com/655e590a-1664-4424-8123-ae3a4e546ee3/)](https://ucarecdn.com/655e590a-1664-4424-8123-ae3a4e546ee3/)
+
+## Known Issues
+
+### Nickname Limitations
+You cant have nickname that starts with command name.  (e.g.`!cgpt <your prompt>`)
 
 ## FAQ
 
