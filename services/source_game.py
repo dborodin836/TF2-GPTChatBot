@@ -7,7 +7,7 @@ from rcon.source import Client
 
 from config import config
 from utils.logs import get_logger
-from utils.text import get_chunk_size, get_chunks
+from utils.text import get_chunk_size, get_chunks, get_shortened_username
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -83,10 +83,15 @@ def login() -> None:
             combo_logger.error(f"Unhandled exception happened. [{e}]")
 
 
-def send_say_command_to_tf2(message: str, team_chat: bool = False) -> None:
+def send_say_command_to_tf2(message: str, username: str = None, team_chat: bool = False) -> None:
     """
     Sends a "say" command to a Team Fortress 2 server using RCON protocol.
     """
+
+    # Append username to the first chunk
+    if username is not None and config.ENABLE_SHORTENED_USERNAMES_RESPONSE:
+        message = f"[{get_shortened_username(username)}] {message}"
+
     chunks_size: int = get_chunk_size(message)
 
     # No " should be in answer it causes say command to broke

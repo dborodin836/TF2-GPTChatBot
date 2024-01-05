@@ -87,7 +87,7 @@ def handle_command(logline: LogLine, conversation_history: MessageHistory) -> Me
             time.sleep(1)
             send_say_command_to_tf2(
                 "Hello there! I am ChatGPT, a ChatGPT plugin integrated into"
-                " Team Fortress 2. Ask me anything!",
+                " Team Fortress 2. Ask me anything!", username=None,
                 team_chat=is_team,
             )
             log_gui_model_message("gpt-3.5-turbo", user, prompt.strip())

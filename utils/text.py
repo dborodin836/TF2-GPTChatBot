@@ -55,6 +55,12 @@ def get_chunks(string: str, maxlength: int) -> typing.Generator:
     yield string[start:]
 
 
+def get_shortened_username(username: str) -> str:
+    if len(username) > config.SHORTENED_USERNAME_LENGTH:
+        return username[:config.SHORTENED_USERNAME_LENGTH] + ".."
+    return username
+
+
 def has_cyrillic(text: str) -> bool:
     """
     Checks if a string contains any Cyrillic characters.
@@ -89,9 +95,9 @@ def add_prompts_by_flags(user_prompt: str) -> str:
 
     if r"\stats" in args and config.ENABLE_STATS:
         result = (
-            f" {StatsData.get_data()} Based on this data answer following question. "
-            + result
-            + " Ignore unknown data."
+                f" {StatsData.get_data()} Based on this data answer following question. "
+                + result
+                + " Ignore unknown data."
         )
         result = result.replace(r"\stats", "")
 
@@ -173,7 +179,7 @@ def get_minutes_from_str(time_str: str) -> int:
 def stats_regexes(line: str):
     # Parsing user line from status command
     if matches := re.search(
-        r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*", line
+            r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*", line
     ):
         time_on_server = matches.groups()[2]
 
