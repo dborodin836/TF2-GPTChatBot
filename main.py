@@ -13,7 +13,7 @@ import keyboard
 
 from config import config
 from gui.log_window import CustomOutput, LogWindow, gpt3_cmd_handler
-from services.source_game import get_status
+from services.source_game import get_status, message_queue_handler
 from utils.bot_state import switch_state_hotkey_handler
 from utils.chat import parse_console_logs_and_build_conversation_history
 from utils.logs import get_logger, setup_loggers
@@ -48,6 +48,7 @@ def run_threads():
     if config.ENABLE_STATS:
         threading.Thread(target=status_command_sender, daemon=True).start()
     threading.Thread(target=get_my_data, daemon=True).start()
+    threading.Thread(target=message_queue_handler, daemon=True).start()
 
     log_window.pack()
     root.mainloop()

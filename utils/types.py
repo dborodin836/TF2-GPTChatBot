@@ -14,6 +14,11 @@ BufferedMessageType = Literal["GUI", "LOG", "BOTH"]
 BufferedMessageLevel = Literal["TRACE", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
+class QueuedMessage(NamedTuple):
+    text: str
+    is_team_chat: bool
+
+
 class BufferedMessage(NamedTuple):
     type: BufferedMessageType
     level: BufferedMessageLevel

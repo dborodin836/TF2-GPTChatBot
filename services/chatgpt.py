@@ -75,13 +75,13 @@ def handle_cgpt_request(
     return conversation_history
 
 
-def handle_gpt_request(username: str, user_prompt: str, model: str, is_team: bool = False) -> None:
+def handle_gpt_request(username: str, user_prompt: str, model: str, is_team_chat: bool = False) -> None:
     """
     This function is called when the user wants to send a message to the AI chatbot. It logs the
     user's message, and sends a request to GPT-3 to generate a response. Finally, the function
     sends the generated response to the TF2 game.
     """
-    log_gui_model_message("GPT3", username, user_prompt)
+    log_gui_model_message(model, username, user_prompt)
 
     message = add_prompts_by_flags(user_prompt)
 
@@ -94,7 +94,7 @@ def handle_gpt_request(username: str, user_prompt: str, model: str, is_team: boo
     if response:
         main_logger.info(f"Got response for user {username}. Response: {response}")
         log_gui_model_message(model, username, " ".join(response.split()))
-        send_say_command_to_tf2(response, username, is_team)
+        send_say_command_to_tf2(response, username, is_team_chat)
 
 
 def get_response(conversation_history: MessageHistory, username: str, model) -> str | None:

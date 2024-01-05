@@ -88,7 +88,7 @@ def handle_command(logline: LogLine, conversation_history: MessageHistory) -> Me
             send_say_command_to_tf2(
                 "Hello there! I am ChatGPT, a ChatGPT plugin integrated into"
                 " Team Fortress 2. Ask me anything!", username=None,
-                team_chat=is_team,
+                is_team_chat=is_team,
             )
             log_gui_model_message("gpt-3.5-turbo", user, prompt.strip())
             main_logger.info(f"Empty '{config.GPT_COMMAND}' command from user '{user}'.")
@@ -100,7 +100,7 @@ def handle_command(logline: LogLine, conversation_history: MessageHistory) -> Me
             user,
             prompt.removeprefix(config.GPT_COMMAND).strip(),
             model="gpt-3.5-turbo",
-            is_team=is_team,
+            is_team_chat=is_team,
         )
 
     elif has_command(prompt, config.CHATGPT_COMMAND):

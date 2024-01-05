@@ -24,7 +24,7 @@ def handle_gh_command(username: str, is_team: bool = False) -> None:
     else:
         msg = f"GitHub: {GITHUB_LINK}"
 
-    send_say_command_to_tf2(msg, team_chat=is_team)
+    send_say_command_to_tf2(msg, is_team_chat=is_team)
 
 
 def handle_rtd_command(username: str, is_team: bool = False) -> None:
@@ -47,7 +47,7 @@ def handle_rtd_command(username: str, is_team: bool = False) -> None:
 
         time.sleep(1)
         log_gui_general_message(f"[RTD] {username} rolled: {random.choice(lines)}")
-        send_say_command_to_tf2(f"[RTD] {username} rolled: {random.choice(lines)}", team_chat=is_team)
+        send_say_command_to_tf2(f"[RTD] {username} rolled: {random.choice(lines)}", is_team_chat=is_team)
 
 
 def print_help_command():
@@ -111,7 +111,7 @@ def handle_custom_model_command(user, is_team, prompt):
         if response.status_code == 200:
             result = response.json()["results"][0]["text"]
             log_gui_model_message("CUSTOM", user, result)
-            send_say_command_to_tf2(result, team_chat=is_team)
+            send_say_command_to_tf2(result, is_team_chat=is_team)
 
     except Exception as e:
         main_logger.error(f"Failed to get responce from custom model. [{e}]")

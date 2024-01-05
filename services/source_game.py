@@ -1,17 +1,43 @@
 import re
 import sys
 import time
+import queue
+from typing import Generator
 
 from rcon import WrongPassword
 from rcon.source import Client
 
 from config import config
 from utils.logs import get_logger
-from utils.text import get_chunk_size, get_chunks, get_shortened_username
+from utils.text import get_chunk_size, split_into_chunks, get_shortened_username
+from utils.types import QueuedMessage
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
 combo_logger = get_logger("combo")
+
+message_queue = queue.Queue()
+
+
+def message_queue_handler() -> None:
+    while True:
+        if not message_queue.empty():
+            queued_message: QueuedMessage = message_queue.get()
+            main_logger.trace(f"Retrieved message '{queued_message.text}' from queue")
+
+            if queued_message.is_team_chat:
+                cmd = f'say_team "{queued_message.text}";'
+            else:
+                cmd = f'say "{queued_message.text}";'
+
+            with Client(config.RCON_HOST, config.RCON_PORT, passwd=config.RCON_PASSWORD) as client:
+                try:
+                    client.run(cmd)
+                except Exception as e:
+                    main_logger.error(f"Unhandled exception happened. [{e}]")
+            time.sleep(config.DELAY_BETWEEN_MESSAGES)
+        else:
+            time.sleep(0.5)
 
 
 def get_username() -> str:
@@ -83,36 +109,51 @@ def login() -> None:
             combo_logger.error(f"Unhandled exception happened. [{e}]")
 
 
-def send_say_command_to_tf2(message: str, username: str = None, team_chat: bool = False) -> None:
-    """
-    Sends a "say" command to a Team Fortress 2 server using RCON protocol.
-    """
-
+def format_say_message(message: str, username: str = None) -> str:
     # Append username to the first chunk
     if username is not None and config.ENABLE_SHORTENED_USERNAMES_RESPONSE:
         message = f"[{get_shortened_username(username)}] {message}"
 
-    chunks_size: int = get_chunk_size(message)
-
     # No " should be in answer it causes say command to broke
     message = message.replace('"', "")
 
+    # Strip the message if needed
     if len(message) > config.HARD_COMPLETION_LIMIT:
         main_logger.warning(
             f"Message is longer than Hard Limit [{len(message)}]. Limit is {config.HARD_COMPLETION_LIMIT}.")
         message = message[: config.HARD_COMPLETION_LIMIT] + "..."
 
-    chunks = get_chunks(" ".join(message.split()), chunks_size)
+    return message
+
+
+def get_chunks(message: str) -> Generator:
+    chunks_size: int = get_chunk_size(message)
+    chunks = split_into_chunks(" ".join(message.split()), chunks_size)
+    return chunks
+
+
+def form_say_command(message: str, is_team_chat: bool):
+    chunks = get_chunks(message)
     cmd: str = " "
 
     for chunk in chunks:
-        if team_chat:
+        if is_team_chat:
             cmd += f'say_team "{chunk}";wait 1300;'
         else:
             cmd += f'say "{chunk}";wait 1300;'
 
-        with Client(config.RCON_HOST, config.RCON_PORT, passwd=config.RCON_PASSWORD) as client:
-            try:
-                client.run(cmd)
-            except Exception as e:
-                main_logger.error(f"Unhandled exception happened. [{e}]")
+    return cmd
+
+
+def send_say_command_to_tf2(message: str, username: str = None, is_team_chat: bool = False) -> None:
+    """
+    Sends a "say" command to a Team Fortress 2 server using RCON protocol.
+    """
+    message = format_say_message(message, username)
+
+    msg_chunks = get_chunks(message)
+
+    for msg_chunk in msg_chunks:
+        main_logger.trace(f'Adding message "{msg_chunk}" to queue.')
+        queued_message = QueuedMessage(text=msg_chunk, is_team_chat=is_team_chat)
+        message_queue.put(queued_message)

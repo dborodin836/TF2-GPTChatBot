@@ -41,7 +41,7 @@ except Exception as e:
     TF2BD_WRAPPER_FOLDER_EXIST = True
 
 
-def get_chunks(string: str, maxlength: int) -> typing.Generator:
+def split_into_chunks(string: str, maxlength: int) -> typing.Generator:
     """
     This function splits a string into chunks of a maximum length, with each chunk ending at the
     last space character before the maximum length.
