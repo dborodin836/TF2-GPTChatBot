@@ -3,6 +3,7 @@ import os
 import re
 import time
 import typing
+from string import Template
 
 from config import config
 from utils.logs import get_logger
@@ -56,9 +57,18 @@ def split_into_chunks(string: str, maxlength: int) -> typing.Generator:
 
 
 def get_shortened_username(username: str) -> str:
+    template = Template(config.SHORTENED_USERNAMES_FORMAT)
+
     if len(username) > config.SHORTENED_USERNAME_LENGTH:
-        return username[:config.SHORTENED_USERNAME_LENGTH] + ".."
-    return username
+        username = username[:config.SHORTENED_USERNAME_LENGTH] + ".."
+
+    try:
+        result = template.safe_substitute(username=username)
+    except Exception as e:
+        main_logger.error(f"Failed to substitute template [{e}].")
+        result = ""
+
+    return result
 
 
 def has_cyrillic(text: str) -> bool:

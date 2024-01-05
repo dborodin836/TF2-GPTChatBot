@@ -112,7 +112,7 @@ def login() -> None:
 def format_say_message(message: str, username: str = None) -> str:
     # Append username to the first chunk
     if username is not None and config.ENABLE_SHORTENED_USERNAMES_RESPONSE:
-        message = f"[{get_shortened_username(username)}] {message}"
+        message = f"{get_shortened_username(username)}{message}"
 
     # No " should be in answer it causes say command to broke
     message = message.replace('"', "")

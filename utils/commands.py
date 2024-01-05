@@ -20,7 +20,7 @@ def handle_gh_command(username: str, is_team: bool = False) -> None:
     time.sleep(1)
 
     if config.ENABLE_SHORTENED_USERNAMES_RESPONSE:
-        msg = f"[{get_shortened_username(username)}] GitHub: {GITHUB_LINK}"
+        msg = f"{get_shortened_username(username)}GitHub: {GITHUB_LINK}"
     else:
         msg = f"GitHub: {GITHUB_LINK}"
 

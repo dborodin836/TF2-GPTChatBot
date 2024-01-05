@@ -99,6 +99,16 @@ class Config(BaseModel):
             )
         return v
 
+    @validator("SHORTENED_USERNAMES_FORMAT")
+    def is_username_in_template_string(cls, v):
+        if not "$username" in v:
+            buffered_fail_message(
+                f"'SHORTENED_USERNAMES_FORMAT' setting does not contain '$username' ({v}).",
+                type_="BOTH",
+                level="ERROR",
+            )
+        return v
+
     @validator("RTD_MODE")
     def rtd_mode_is_valid_enum(cls, v):
         if not RTDModes.has_value(v):
