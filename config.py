@@ -49,7 +49,7 @@ class RTDModes(IntEnum):
 
 
 class Config(BaseModel):
-    APP_VERSION: str = "1.2.1"
+    APP_VERSION: str = "1.3.0"
     HOST_USERNAME: str = ""
     TOS_VIOLATION: bool
 
