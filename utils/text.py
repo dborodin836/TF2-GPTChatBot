@@ -112,7 +112,7 @@ def add_prompts_by_flags(user_prompt: str) -> str:
         result = result.replace(r"\stats", "")
 
     if r"\l" not in args:
-        result += f" Answer in less than {config.SOFT_COMPLETION_LIMIT} chars!"
+        result += f" Answer in less than {config.SOFT_COMPLETION_LIMIT} chars! {config.CUSTOM_PROMPT}"
     result = result.replace(r"\l", "")
 
     return result.strip()
