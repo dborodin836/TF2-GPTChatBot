@@ -5,7 +5,7 @@ import time
 from config import config
 from services.chatgpt import handle_cgpt_request, handle_gpt_request
 from services.github import check_for_updates
-from services.source_game import check_connection, get_username, send_say_command_to_tf2
+from services.source_game import check_connection, get_username, send_say_command_to_tf2, q_manager
 from utils.bans import is_banned_username, load_banned_players
 from utils.bot_state import get_bot_state
 from utils.commands import handle_custom_model_command, handle_gh_command, handle_rtd_command
@@ -82,13 +82,17 @@ def handle_command(logline: LogLine, conversation_history: MessageHistory) -> Me
     user = logline.username
     is_team = logline.is_team_message
 
+    awaited_msg = q_manager.get_awaited_msg()
+    if awaited_msg is not None and awaited_msg in prompt and user == config.HOST_USERNAME:
+        q_manager.unlock_queue()
+
     if has_command(prompt, config.GPT_COMMAND):
         if prompt.removeprefix(config.GPT_COMMAND).strip() == "":
             time.sleep(1)
             send_say_command_to_tf2(
                 "Hello there! I am ChatGPT, a ChatGPT plugin integrated into"
-                " Team Fortress 2. Ask me anything!",
-                team_chat=is_team,
+                " Team Fortress 2. Ask me anything!", username=None,
+                is_team_chat=is_team,
             )
             log_gui_model_message("gpt-3.5-turbo", user, prompt.strip())
             main_logger.info(f"Empty '{config.GPT_COMMAND}' command from user '{user}'.")
@@ -100,7 +104,7 @@ def handle_command(logline: LogLine, conversation_history: MessageHistory) -> Me
             user,
             prompt.removeprefix(config.GPT_COMMAND).strip(),
             model="gpt-3.5-turbo",
-            is_team=is_team,
+            is_team_chat=is_team,
         )
 
     elif has_command(prompt, config.CHATGPT_COMMAND):

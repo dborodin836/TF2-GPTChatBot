@@ -20,10 +20,10 @@ CONFIG_INIT_MESSAGES_QUEUE: Queue[BufferedMessage] = Queue()
 
 
 def buffered_message(
-    message: str,
-    type_: BufferedMessageType = "GUI",
-    level: BufferedMessageLevel = "INFO",
-    fail_startup: bool = False,
+        message: str,
+        type_: BufferedMessageType = "GUI",
+        level: BufferedMessageLevel = "INFO",
+        fail_startup: bool = False,
 ) -> None:
     CONFIG_INIT_MESSAGES_QUEUE.put(
         BufferedMessage(type=type_, level=level, message=message, fail_startup=fail_startup)
@@ -31,9 +31,9 @@ def buffered_message(
 
 
 def buffered_fail_message(
-    message: str,
-    type_: BufferedMessageType = "GUI",
-    level: BufferedMessageLevel = "INFO",
+        message: str,
+        type_: BufferedMessageType = "GUI",
+        level: BufferedMessageLevel = "INFO",
 ):
     buffered_message(message, type_, level, fail_startup=True)
 
@@ -71,12 +71,18 @@ class Config(BaseModel):
 
     SOFT_COMPLETION_LIMIT: int
     HARD_COMPLETION_LIMIT: int
+    ENABLE_SHORTENED_USERNAMES_RESPONSE: bool
+    SHORTENED_USERNAMES_FORMAT: str
+    SHORTENED_USERNAME_LENGTH: int
+    DELAY_BETWEEN_MESSAGES: float
 
     RTD_MODE: int
 
     ENABLE_CUSTOM_MODEL: bool
     CUSTOM_MODEL_HOST: str
     CUSTOM_MODEL_COMMAND: str
+
+    CONFIRMABLE_QUEUE: bool
 
     @validator("OPENAI_API_KEY")
     def api_key_pattern_match(cls, v):
@@ -92,6 +98,16 @@ class Config(BaseModel):
         if not re.fullmatch(WEB_API_KEY_RE_PATTERN, v):
             buffered_fail_message(
                 "STEAM WEB API key not set or invalid!", type_="BOTH", level="ERROR"
+            )
+        return v
+
+    @validator("SHORTENED_USERNAMES_FORMAT")
+    def is_username_in_template_string(cls, v):
+        if not "$username" in v:
+            buffered_fail_message(
+                f"'SHORTENED_USERNAMES_FORMAT' setting does not contain '$username' ({v}).",
+                type_="BOTH",
+                level="ERROR",
             )
         return v
 

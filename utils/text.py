@@ -3,6 +3,7 @@ import os
 import re
 import time
 import typing
+from string import Template
 
 from config import config
 from utils.logs import get_logger
@@ -41,7 +42,7 @@ except Exception as e:
     TF2BD_WRAPPER_FOLDER_EXIST = True
 
 
-def get_chunks(string: str, maxlength: int) -> typing.Generator:
+def split_into_chunks(string: str, maxlength: int) -> typing.Generator:
     """
     This function splits a string into chunks of a maximum length, with each chunk ending at the
     last space character before the maximum length.
@@ -53,6 +54,21 @@ def get_chunks(string: str, maxlength: int) -> typing.Generator:
         yield string[start:end]
         start = end + 1
     yield string[start:]
+
+
+def get_shortened_username(username: str) -> str:
+    template = Template(config.SHORTENED_USERNAMES_FORMAT)
+
+    if len(username) > config.SHORTENED_USERNAME_LENGTH:
+        username = username[:config.SHORTENED_USERNAME_LENGTH] + ".."
+
+    try:
+        result = template.safe_substitute(username=username)
+    except Exception as e:
+        main_logger.error(f"Failed to substitute template [{e}].")
+        result = ""
+
+    return result
 
 
 def has_cyrillic(text: str) -> bool:
@@ -89,9 +105,9 @@ def add_prompts_by_flags(user_prompt: str) -> str:
 
     if r"\stats" in args and config.ENABLE_STATS:
         result = (
-            f" {StatsData.get_data()} Based on this data answer following question. "
-            + result
-            + " Ignore unknown data."
+                f" {StatsData.get_data()} Based on this data answer following question. "
+                + result
+                + " Ignore unknown data."
         )
         result = result.replace(r"\stats", "")
 
@@ -173,7 +189,7 @@ def get_minutes_from_str(time_str: str) -> int:
 def stats_regexes(line: str):
     # Parsing user line from status command
     if matches := re.search(
-        r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*", line
+            r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*", line
     ):
         time_on_server = matches.groups()[2]
 

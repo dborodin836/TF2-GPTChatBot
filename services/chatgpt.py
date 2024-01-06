@@ -31,7 +31,7 @@ def is_violated_tos(message: str) -> bool:
 
 
 def send_gpt_completion_request(
-    conversation_history: MessageHistory, username: str, model: str
+        conversation_history: MessageHistory, username: str, model: str
 ) -> str:
     openai.api_key = config.OPENAI_API_KEY
 
@@ -44,11 +44,11 @@ def send_gpt_completion_request(
 
 
 def handle_cgpt_request(
-    username: str,
-    user_prompt: str,
-    conversation_history: MessageHistory,
-    model,
-    is_team: bool = False,
+        username: str,
+        user_prompt: str,
+        conversation_history: MessageHistory,
+        model,
+        is_team: bool = False,
 ) -> MessageHistory:
     """
     This function is called when the user wants to send a message to the AI chatbot. It logs the
@@ -70,18 +70,18 @@ def handle_cgpt_request(
     if response:
         conversation_history.append({"role": "assistant", "content": response})
         log_gui_model_message(model.upper(), username, " ".join(response.split()))
-        send_say_command_to_tf2(response, is_team)
+        send_say_command_to_tf2(response, username, is_team)
 
     return conversation_history
 
 
-def handle_gpt_request(username: str, user_prompt: str, model: str, is_team: bool = False) -> None:
+def handle_gpt_request(username: str, user_prompt: str, model: str, is_team_chat: bool = False) -> None:
     """
     This function is called when the user wants to send a message to the AI chatbot. It logs the
     user's message, and sends a request to GPT-3 to generate a response. Finally, the function
     sends the generated response to the TF2 game.
     """
-    log_gui_model_message("GPT3", username, user_prompt)
+    log_gui_model_message(model, username, user_prompt)
 
     message = add_prompts_by_flags(user_prompt)
 
@@ -92,9 +92,9 @@ def handle_gpt_request(username: str, user_prompt: str, model: str, is_team: boo
     response = get_response([{"role": "user", "content": message}], username, model)
 
     if response:
-        main_logger.info(f"Got response for user {username}. Response: {response}")
+        main_logger.info(f"Got response for user {username}. Response: {' '.join(response.split())}")
         log_gui_model_message(model, username, " ".join(response.split()))
-        send_say_command_to_tf2(response, is_team)
+        send_say_command_to_tf2(response, username, is_team_chat)
 
 
 def get_response(conversation_history: MessageHistory, username: str, model) -> str | None:
