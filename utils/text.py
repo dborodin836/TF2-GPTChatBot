@@ -160,7 +160,15 @@ def parse_line(line: str) -> LogLine:
         for char in TF2BD_WRAPPER_CHARS:
             line = line.replace(char, "")
 
-    parts = line.split(" :  ")
+    # Fixes issue #80
+    # Valve servers use 2 spaces after the colon symbol, but some servers use one.
+    # Default:                          Modified:
+    # <username>_:__<message>           <username>_:_<message>
+    if " :  " in line:
+        parts = line.split(" :  ")
+    else:
+        parts = line.split(" : ")
+
     is_team_mes = "(TEAM)" in line
     username = parts[0].replace("(TEAM)", "", 1).removeprefix("*DEAD*").strip()
 
