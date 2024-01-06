@@ -92,7 +92,7 @@ def handle_gpt_request(username: str, user_prompt: str, model: str, is_team_chat
     response = get_response([{"role": "user", "content": message}], username, model)
 
     if response:
-        main_logger.info(f"Got response for user {username}. Response: {response}")
+        main_logger.info(f"Got response for user {username}. Response: {' '.join(response.split())}")
         log_gui_model_message(model, username, " ".join(response.split()))
         send_say_command_to_tf2(response, username, is_team_chat)
 

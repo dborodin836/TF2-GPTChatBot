@@ -5,7 +5,7 @@ import time
 from config import config
 from services.chatgpt import handle_cgpt_request, handle_gpt_request
 from services.github import check_for_updates
-from services.source_game import check_connection, get_username, send_say_command_to_tf2
+from services.source_game import check_connection, get_username, send_say_command_to_tf2, q_manager
 from utils.bans import is_banned_username, load_banned_players
 from utils.bot_state import get_bot_state
 from utils.commands import handle_custom_model_command, handle_gh_command, handle_rtd_command
@@ -81,6 +81,10 @@ def handle_command(logline: LogLine, conversation_history: MessageHistory) -> Me
     prompt = logline.prompt
     user = logline.username
     is_team = logline.is_team_message
+
+    awaited_msg = q_manager.get_awaited_msg()
+    if awaited_msg is not None and awaited_msg in prompt and user == config.HOST_USERNAME:
+        q_manager.unlock_queue()
 
     if has_command(prompt, config.GPT_COMMAND):
         if prompt.removeprefix(config.GPT_COMMAND).strip() == "":
