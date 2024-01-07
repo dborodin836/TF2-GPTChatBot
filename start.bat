@@ -1,15 +1,10 @@
-@echo off
-@rem TODO: Create venv and pip install -r requirements on initial installation.
+@rem TODO: One-click installer.
 set VENV_DIR=%cd%\venv
 
 if not exist %VENV_DIR% (
 	py -m venv venv || ( echo. && echo Failed to create venv. && goto end )
 	py -m pip install -r requirements.txt || ( echo. && echo Failed to install requirements. && goto end )
 )
-
-if not exist "%VENV_DIR%\pyvenv.cfg" ( echo. && Venv is empty. && goto end )
-
-
 
 call "venv\scripts\activate"
 py main.py
