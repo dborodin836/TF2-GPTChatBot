@@ -1,3 +1,4 @@
+@echo off
 @rem TODO: One-click installer.
 set VENV_DIR=%cd%\venv
 
