@@ -64,6 +64,8 @@ class Config(BaseModel):
     CLEAR_CHAT_COMMAND: str
     RTD_COMMAND: str
     GPT4_ADMIN_ONLY: bool
+    
+    CUSTOM_PROMPT: str
 
     RCON_HOST: str
     RCON_PASSWORD: str
@@ -139,7 +141,7 @@ def init_config():
     try:
         buffered_message("Starting parsing config file.", "LOG", level="INFO")
         configparser_config = configparser.ConfigParser()
-        configparser_config.read(CONFIG_FILE)
+        configparser_config.read(CONFIG_FILE, encoding="utf-8")
 
         config_dict = {
             key.upper(): value
