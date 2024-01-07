@@ -1,9 +1,11 @@
 @echo off
+setlocal enabledelayedexpansion
 @rem check if venv folder exists, if not, install.
-set venv = %cd%/venv
-if exist %venv% (
-  call "venv/scripts/activate"
+set "VENV=%cd%/venv"
+if exist !VENV! (
+  call "!VENV!/scripts/activate"
 ) else (
   call python one_click.py
+  goto :eof
 )
 py main.py
