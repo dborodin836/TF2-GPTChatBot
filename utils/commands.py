@@ -6,13 +6,15 @@ import requests
 from config import RTDModes, config
 from services.source_game import send_say_command_to_tf2
 from utils.logs import get_logger, log_gui_general_message, log_gui_model_message
-from utils.text import get_shortened_username
+from utils.text import get_shortened_username, add_prompts_by_flags
+from utils.types import MessageHistory, Message
 
 RICKROLL_LINK = "youtu.be/dQw4w9WgXcQ"
 GITHUB_LINK = "bit.ly/tf2-gpt3"
 
 main_logger = get_logger("main")
-gui_logger = get_logger("main")
+gui_logger = get_logger("gui")
+combo_logger = get_logger("combo")
 
 
 def handle_gh_command(username: str, is_team: bool = False) -> None:
@@ -67,51 +69,67 @@ def print_help_command():
     )
 
 
-def handle_custom_model_command(user, is_team, prompt):
-    log_gui_model_message("CUSTOM", user, prompt.strip())
-    uri = f"http://{config.CUSTOM_MODEL_HOST}/api/v1/generate"
+def get_custom_model_response(conversation_history: list[Message]) -> str | None:
+    uri = f"http://{config.CUSTOM_MODEL_HOST}/v1/chat/completions"
 
-    prompt = (
-        f"Below is an instruction that describes a task. Write a response that appropriately completes"
-        f" the request. Write response in less than 128 characters!\n### Instruction:\n"
-        f"{prompt.removeprefix(config.CUSTOM_MODEL_COMMAND).strip()}\n\n### Response:\n"
-    )
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    data = {
+        "mode": "chat",
+        "messages": conversation_history
+    }
 
     try:
-        request = {
-            "prompt": prompt,
-            "max_new_tokens": 150,
-            "do_sample": True,
-            "temperature": 1.3,
-            "top_p": 0.1,
-            "typical_p": 1,
-            "epsilon_cutoff": 0,  # In units of 1e-4
-            "eta_cutoff": 0,  # In units of 1e-4
-            "repetition_penalty": 1.18,
-            "top_k": 40,
-            "min_length": 0,
-            "no_repeat_ngram_size": 0,
-            "num_beams": 1,
-            "penalty_alpha": 0,
-            "length_penalty": 1,
-            "early_stopping": False,
-            "mirostat_mode": 0,
-            "mirostat_tau": 5,
-            "mirostat_eta": 0.1,
-            "seed": -1,
-            "add_bos_token": True,
-            "truncation_length": 2048,
-            "ban_eos_token": False,
-            "skip_special_tokens": True,
-            "stopping_strings": [],
-        }
-
-        response = requests.post(uri, json=request)
-
-        if response.status_code == 200:
-            result = response.json()["results"][0]["text"]
-            log_gui_model_message("CUSTOM", user, result)
-            send_say_command_to_tf2(result, is_team_chat=is_team)
-
+        response = requests.post(uri, headers=headers, json=data, verify=False)
     except Exception as e:
-        main_logger.error(f"Failed to get responce from custom model. [{e}]")
+        combo_logger.error(f"Failed to get response from the text-generation-webui server. [{e}]")
+        return
+
+    if response.status_code == 200:
+        try:
+            data = response.json()['choices'][0]['message']['content']
+            return data
+        except Exception as e:
+            combo_logger.error(f"Failed to parse data from server [{e}].")
+    elif response.status_code == 500:
+        combo_logger.error(f"There's error on the text-generation-webui server. [HTTP 500]")
+
+    return None
+
+
+def handle_custom_model_command(
+        username: str,
+        user_prompt: str,
+        is_team: bool = False
+) -> None:
+    log_gui_model_message("CUSTOM", username, user_prompt.strip())
+
+    message = add_prompts_by_flags(user_prompt)
+
+    response = get_custom_model_response([{"role": "user", "content": message}, ])
+
+    if response:
+        log_gui_model_message("CUSTOM", username, response.strip())
+        send_say_command_to_tf2(response, username, is_team)
+
+
+def handle_custom_model_chat_command(
+        username: str,
+        user_prompt: str,
+        conversation_history: MessageHistory,
+        is_team: bool = False
+) -> MessageHistory:
+    log_gui_model_message("CUSTOM CHAT", username, user_prompt.strip())
+
+    message = add_prompts_by_flags(user_prompt)
+    conversation_history.append({"role": "user", "content": message})
+    response = get_custom_model_response(conversation_history)
+
+    if response:
+        conversation_history.append({"role": "assistant", "content": response})
+        log_gui_model_message("CUSTOM CHAT", username, response.strip())
+        send_say_command_to_tf2(response, username, is_team)
+
+    return conversation_history

@@ -83,6 +83,7 @@ class Config(BaseModel):
     ENABLE_CUSTOM_MODEL: bool
     CUSTOM_MODEL_HOST: str
     CUSTOM_MODEL_COMMAND: str
+    CUSTOM_MODEL_CHAT_COMMAND: str
 
     CONFIRMABLE_QUEUE: bool
 

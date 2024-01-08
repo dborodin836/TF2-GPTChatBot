@@ -61,7 +61,7 @@ def handle_cgpt_request(
 
     if not config.TOS_VIOLATION and is_violated_tos(message) and config.HOST_USERNAME != username:
         gui_logger.error(f"Request '{user_prompt}' violates OPENAI TOS. Skipping...")
-        return MessageHistory
+        return conversation_history
 
     conversation_history.append({"role": "user", "content": message})
 
