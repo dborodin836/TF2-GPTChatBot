@@ -9,4 +9,3 @@ if exist !VENV! (
   goto :eof
 )
 py main.py
-pause
