@@ -9,3 +9,4 @@ ttkbootstrap==1.10.1
 docutils-stubs==0.0.22
 keyboard==0.13.5
 loguru==0.7.2
+ordered_set==4.1.0

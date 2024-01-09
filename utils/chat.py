@@ -1,24 +1,82 @@
 import queue
-import time
+from typing import Optional
 
+from ordered_set import OrderedSet
+
+from commands.common import handle_clear
+from commands.openai import gpt3_handler, handle_cgpt, h_gpt4, h_gpt4l
+from commands.custom_model import handle_custom_model, handle_custom_chat
 from config import config
-from services.chatgpt import handle_cgpt_request, handle_gpt_request
 from services.github import check_for_updates
-from services.source_game import check_connection, get_username, send_say_command_to_tf2, q_manager
+from services.source_game import check_connection, get_username, q_manager
 from utils.bans import is_banned_username, load_banned_players
 from utils.bot_state import get_bot_state
-from utils.commands import handle_custom_model_chat_command, handle_gh_command, handle_rtd_command, \
-    handle_custom_model_command
+from commands.rtd import handle_rtd_command
+from commands.github import handle_gh_command
 from utils.io_buffer import print_buffered_config_innit_messages
-from utils.logs import get_logger, log_gui_model_message
+from utils.logs import get_logger, get_time_stamp
 from utils.prompt import load_prompts
 from utils.text import get_console_logline
-from utils.types import LogLine, MessageHistory
+from utils.types import LogLine
 
 PROMPTS_QUEUE: queue.Queue = queue.Queue()
 
 gui_logger = get_logger("gui")
 main_logger = get_logger("main")
+combo_logger = get_logger("combo")
+
+
+class ModificationOfSetKey(Exception):
+    pass
+
+
+class DeletionOfSetKey(Exception):
+    pass
+
+
+class SetOnceDictionary(dict):
+    def __setitem__(self, key, value):
+        if self.get(key, None) is not None:
+            raise ModificationOfSetKey("You cannot modify value after setting it.")
+        super().__setitem__(key, value)
+
+    def __delitem__(self, key):
+        raise DeletionOfSetKey("You cannot delete value after setting it.")
+
+
+class CommandController:
+
+    def __init__(self, initializer_config: dict = None) -> None:
+        self.__tasks = OrderedSet()
+        self.__named_commands_registry: SetOnceDictionary[str, callable] = SetOnceDictionary()
+        self.__shared = dict()
+
+        if initializer_config is not None:
+            self.__shared.update(initializer_config)
+
+    def register_command(self, name: str, function: callable) -> None:
+        self.__named_commands_registry[name] = function
+
+    def register_task(self, function: callable):
+        self.__tasks.add(function)
+
+    def process_line(self, logline: LogLine):
+        for task in self.__tasks:
+            task(logline)
+
+        command_name = logline.prompt.strip().split(" ")[0].lower()
+
+        handler: Optional[callable] = self.__named_commands_registry.get(command_name, None)
+        if handler is None:
+            return
+
+        combo_logger.info(f"[{get_time_stamp()}] -- '{command_name}' command from user '{logline.username}'.")
+        return_data = handler(logline, **self.__shared)
+
+        if return_data is not None:
+            combo_logger.error("before" + str(self.__shared))
+            self.__shared.update(return_data)
+            combo_logger.error("after" + str(self.__shared))
 
 
 def set_host_username() -> None:
@@ -56,124 +114,33 @@ def parse_console_logs_and_build_conversation_history() -> None:
     """
     Processes the console logs and builds a conversation history, filters banned usernames.
     """
-    conversation_history: MessageHistory = []
-
     setup()
+
+    controller = CommandController({
+        "CHAT_CONVERSATION_HISTORY": []
+    })
+
+    # TODO: Check what does logline contains, it may contain !gh or smth
+    # Or its in some command handlers
+    controller.register_command("!gh", handle_gh_command)
+    controller.register_command("!gpt4", h_gpt4)
+    controller.register_command("!gpt4l", h_gpt4l)
+    controller.register_command(config.RTD_COMMAND, handle_rtd_command)
+    controller.register_command(config.GPT_COMMAND, gpt3_handler)
+    controller.register_command(config.CHATGPT_COMMAND, handle_cgpt)
+    controller.register_command(config.CLEAR_CHAT_COMMAND, handle_clear)
+    controller.register_command(config.CUSTOM_MODEL_COMMAND, handle_custom_model)
+    controller.register_command(config.CUSTOM_MODEL_CHAT_COMMAND, handle_custom_chat)
 
     for logline in get_console_logline():
         if not get_bot_state():
             continue
         if is_banned_username(logline.username):
             continue
-        conversation_history = handle_command(logline, conversation_history)
+        controller.process_line(logline)
 
 
-def has_command(prompt: str, command: str) -> bool:
-    """
-    Check if given command matches with the beginning of the given prompt in a non-case-sensitive manner.
-    """
-    # TODO: if statements has to be ordered specifically to work properly
-    #       ie. !gpt4 -> !gpt4p, !gpt4p will never be triggered
-    return prompt.strip().lower().startswith(command.lower())
-
-
-def handle_command(logline: LogLine, conversation_history: MessageHistory) -> MessageHistory:
-    prompt = logline.prompt
-    user = logline.username
-    is_team = logline.is_team_message
-
+def unlock_q_task(logline: LogLine, **kwargs):
     awaited_msg = q_manager.get_awaited_msg()
-    if awaited_msg is not None and awaited_msg in prompt and user == config.HOST_USERNAME:
+    if awaited_msg is not None and awaited_msg in logline.prompt and logline.username == config.HOST_USERNAME:
         q_manager.unlock_queue()
-
-    if has_command(prompt, config.GPT_COMMAND):
-        if prompt.removeprefix(config.GPT_COMMAND).strip() == "":
-            time.sleep(1)
-            send_say_command_to_tf2(
-                "Hello there! I am ChatGPT, a ChatGPT plugin integrated into"
-                " Team Fortress 2. Ask me anything!", username=None,
-                is_team_chat=is_team,
-            )
-            log_gui_model_message("gpt-3.5-turbo", user, prompt.strip())
-            main_logger.info(f"Empty '{config.GPT_COMMAND}' command from user '{user}'.")
-            return conversation_history
-
-        main_logger.info(f"'{config.GPT_COMMAND}' command from user '{user}'. "
-                         f"Message: '{prompt.removeprefix(config.GPT_COMMAND).strip()}'")
-        handle_gpt_request(
-            user,
-            prompt.removeprefix(config.GPT_COMMAND).strip(),
-            model="gpt-3.5-turbo",
-            is_team_chat=is_team,
-        )
-
-    elif has_command(prompt, config.CHATGPT_COMMAND):
-        main_logger.info(f"'{config.CHATGPT_COMMAND}' command from user '{user}'. "
-                         f"Message: '{prompt.removeprefix(config.GPT_COMMAND).strip()}'")
-        return handle_cgpt_request(
-            user,
-            prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
-            conversation_history,
-            is_team=is_team,
-            model="gpt-3.5-turbo",
-        )
-
-    elif has_command(prompt, "!gpt4l"):
-        main_logger.info(f"'!gpt4l' command from user '{user}'. "
-                         f"Message: '{prompt.removeprefix(config.GPT_COMMAND).strip()}'")
-        if config.GPT4_ADMIN_ONLY and config.HOST_USERNAME == user or not config.GPT4_ADMIN_ONLY:
-            return handle_cgpt_request(
-                user,
-                prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
-                conversation_history,
-                is_team=is_team,
-                model="gpt-4",
-            )
-
-    elif has_command(prompt, "!gpt4"):
-        main_logger.info(f"'!gpt4' command from user '{user}'. "
-                         f"Message: '{prompt.removeprefix(config.GPT_COMMAND).strip()}'")
-        if config.GPT4_ADMIN_ONLY and config.HOST_USERNAME == user or not config.GPT4_ADMIN_ONLY:
-            return handle_cgpt_request(
-                user,
-                prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
-                conversation_history,
-                is_team=is_team,
-                model="gpt-4-1106-preview",
-            )
-
-    elif has_command(prompt, config.CLEAR_CHAT_COMMAND):
-        main_logger.info(f"'{config.CLEAR_CHAT_COMMAND}' command from user '{user}'.")
-        log_gui_model_message("CHAT", user, "CLEARING CHAT")
-        return []
-
-    elif has_command(prompt, config.RTD_COMMAND):
-        main_logger.info(f"'{config.RTD_COMMAND}' command from user '{user}'.")
-        handle_rtd_command(user, is_team=is_team)
-
-    elif has_command(prompt, "!gh"):
-        main_logger.info(f"'!gh' command from user '{user}'.")
-        handle_gh_command(user, is_team=is_team)
-
-    elif has_command(prompt, config.CUSTOM_MODEL_COMMAND):
-        if config.ENABLE_CUSTOM_MODEL:
-            main_logger.info(f"'{config.CUSTOM_MODEL_COMMAND}' command from user '{user}'. "
-                             f"Message: '{prompt.removeprefix(config.GPT_COMMAND).strip()}'")
-            handle_custom_model_command(
-                user,
-                prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
-                is_team=is_team
-            )
-
-    elif has_command(prompt, config.CUSTOM_MODEL_CHAT_COMMAND):
-        if config.ENABLE_CUSTOM_MODEL:
-            main_logger.info(f"'{config.CUSTOM_MODEL_CHAT_COMMAND}' command from user '{user}'. "
-                             f"Message: '{prompt.removeprefix(config.GPT_COMMAND).strip()}'")
-            return handle_custom_model_chat_command(
-                user,
-                prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
-                conversation_history,
-                is_team=is_team
-            )
-
-    return conversation_history
