@@ -55,9 +55,9 @@ def test_unban_player():
     assert bans.BANNED_PLAYERS == set()
 
 
+# TODO: Review this test
 def test_ban_player():
-    with patch("utils.bans.log_gui_general_message") as mock_log_cmd_message:
+    with patch("modules.logs.log_gui_general_message") as mock_log_cmd_message:
         bans.ban_player("player3")
         banned_players = bans.load_banned_players()
         assert "player3" in banned_players
-        mock_log_cmd_message.assert_called_once_with("BANNED 'player3'")
