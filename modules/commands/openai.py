@@ -1,10 +1,10 @@
 import time
 
 from config import config
-from services.chatgpt import handle_gpt_request, handle_cgpt_request
-from services.source_game import send_say_command_to_tf2
-from utils.logs import log_gui_model_message, get_logger
-from utils.types import LogLine
+from modules.services.chatgpt import handle_gpt_request, handle_cgpt_request
+from modules.services.source_game import send_say_command_to_tf2
+from modules.logs import log_gui_model_message, get_logger
+from modules.types import LogLine
 
 main_logger = get_logger("main")
 

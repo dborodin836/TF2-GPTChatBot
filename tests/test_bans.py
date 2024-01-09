@@ -1,7 +1,7 @@
 import os
 from unittest.mock import patch
 
-from utils import bans
+from modules import bans
 
 # Set up test data
 BANS_FILE = "test_bans.json"

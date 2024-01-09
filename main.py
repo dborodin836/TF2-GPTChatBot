@@ -12,12 +12,12 @@ import tkinter as tk
 import keyboard
 
 from config import config
-from gui.log_window import CustomOutput, LogWindow, gpt3_cmd_handler
-from services.source_game import get_status, message_queue_handler
-from utils.bot_state import switch_state_hotkey_handler
-from utils.chat import parse_console_logs_and_build_conversation_history
-from utils.logs import get_logger, setup_loggers
-from utils.tf_statistics import StatsData
+from modules.gui.log_window import CustomOutput, LogWindow, gpt3_cmd_handler
+from modules.services.source_game import get_status, message_queue_handler
+from modules.bot_state import switch_state_hotkey_handler
+from modules.chat import parse_console_logs_and_build_conversation_history
+from modules.logs import get_logger, setup_loggers
+from modules.tf_statistics import StatsData
 
 gui_logger = get_logger("gui")
 

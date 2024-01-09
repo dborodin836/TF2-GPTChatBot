@@ -1,9 +1,9 @@
 from config import config
-from services.source_game import send_say_command_to_tf2
-from services.textgen_webui import get_custom_model_response
-from utils.logs import get_logger, log_gui_model_message
-from utils.text import add_prompts_by_flags
-from utils.types import LogLine, MessageHistory
+from modules.services.source_game import send_say_command_to_tf2
+from modules.services.textgen_webui import get_custom_model_response
+from modules.logs import get_logger, log_gui_model_message
+from modules.text import add_prompts_by_flags
+from modules.types import LogLine, MessageHistory
 
 main_logger = get_logger("main")
 

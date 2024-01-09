@@ -8,12 +8,11 @@ import openai
 import ttkbootstrap as ttk
 from ttkbootstrap import Style
 
-from services.chatgpt import send_gpt_completion_request
-from utils.bans import ban_player, list_banned_players, unban_player
-from utils.bot_state import start_bot, stop_bot
-from utils.chat import PROMPTS_QUEUE
-from utils.commands import print_help_command
-from utils.logs import get_logger
+from modules.services.chatgpt import send_gpt_completion_request
+from modules.bans import ban_player, list_banned_players, unban_player
+from modules.bot_state import start_bot, stop_bot
+from modules.chat import PROMPTS_QUEUE
+from modules.logs import get_logger
 
 PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
 
@@ -28,9 +27,26 @@ def resource_path(relative_path):
         base_path = sys._MEIPASS
     except Exception as e:
         main_logger.warning(f"Running from source. [{e}]")
-        base_path = os.path.abspath(".")
+        base_path = os.path.abspath("")
 
     return os.path.join(base_path, relative_path)
+
+
+def print_help_command():
+    """
+    Prints the available commands and their descriptions.
+    """
+    gui_logger.info(
+        "### HELP ###",
+        "start - start the bot",
+        "stop - stop the bot",
+        "quit - quit the program",
+        "bans - show all banned players",
+        "ban <username> - ban user by username",
+        "unban <username> - unban user by username",
+        "gpt3 <prompt> - sends a response to GPT3",
+        sep="\n",
+    )
 
 
 class LogWindow(tk.Frame):

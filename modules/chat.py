@@ -1,22 +1,22 @@
 import queue
-from typing import Optional
+from typing import Optional, Callable
 
 from ordered_set import OrderedSet
 
-from commands.common import handle_clear
-from commands.openai import gpt3_handler, handle_cgpt, h_gpt4, h_gpt4l
-from commands.textgen_webui import handle_custom_model, handle_custom_chat
+from modules.commands.common import handle_clear
+from modules.commands.openai import gpt3_handler, handle_cgpt, h_gpt4, h_gpt4l
+from modules.commands.textgen_webui import handle_custom_model, handle_custom_chat
 from config import config
-from services.github import check_for_updates
-from services.source_game import check_connection, get_username, q_manager
-from utils.bans import is_banned_username, load_banned_players
-from utils.bot_state import get_bot_state
-from commands.rtd import handle_rtd_command
-from commands.github import handle_gh_command
-from utils.logs import get_logger, get_time_stamp, print_buffered_config_innit_messages
-from utils.prompt import load_prompts
-from utils.text import get_console_logline
-from utils.types import LogLine
+from modules.services.github import check_for_updates
+from modules.services.source_game import check_connection, get_username, q_manager
+from modules.bans import is_banned_username, load_banned_players
+from modules.bot_state import get_bot_state
+from modules.commands.rtd import handle_rtd_command
+from modules.commands.github import handle_gh_command
+from modules.logs import get_logger, get_time_stamp, print_buffered_config_innit_messages
+from modules.prompt import load_prompts
+from modules.text import get_console_logline
+from modules.types import LogLine
 
 PROMPTS_QUEUE: queue.Queue = queue.Queue()
 
@@ -47,16 +47,16 @@ class CommandController:
 
     def __init__(self, initializer_config: dict = None) -> None:
         self.__tasks = OrderedSet()
-        self.__named_commands_registry: SetOnceDictionary[str, callable] = SetOnceDictionary()
+        self.__named_commands_registry: SetOnceDictionary[str, Callable] = SetOnceDictionary()
         self.__shared = dict()
 
         if initializer_config is not None:
             self.__shared.update(initializer_config)
 
-    def register_command(self, name: str, function: callable) -> None:
+    def register_command(self, name: str, function: Callable) -> None:
         self.__named_commands_registry[name] = function
 
-    def register_task(self, function: callable):
+    def register_task(self, function: Callable):
         self.__tasks.add(function)
 
     def process_line(self, logline: LogLine):
@@ -65,7 +65,7 @@ class CommandController:
 
         command_name = logline.prompt.strip().split(" ")[0].lower()
 
-        handler: Optional[callable] = self.__named_commands_registry.get(command_name, None)
+        handler: Optional[Callable] = self.__named_commands_registry.get(command_name, None)
         if handler is None:
             return
 

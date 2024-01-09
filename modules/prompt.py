@@ -2,7 +2,7 @@ import codecs
 import os
 import sys
 
-from utils.logs import get_logger
+from modules.logs import get_logger
 
 gui_logger = get_logger("gui")
 combo_logger = get_logger("combo")

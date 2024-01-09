@@ -8,9 +8,9 @@ from rcon import WrongPassword
 from rcon.source import Client
 
 from config import config
-from utils.logs import get_logger
-from utils.text import get_chunk_size, split_into_chunks, get_shortened_username, has_cyrillic
-from utils.types import QueuedMessage
+from modules.logs import get_logger
+from modules.text import get_chunk_size, split_into_chunks, get_shortened_username, has_cyrillic
+from modules.types import QueuedMessage
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")

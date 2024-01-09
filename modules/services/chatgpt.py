@@ -5,10 +5,10 @@ import time
 import openai
 
 from config import config
-from services.source_game import send_say_command_to_tf2
-from utils.logs import get_logger, log_gui_general_message, log_gui_model_message
-from utils.text import add_prompts_by_flags
-from utils.types import MessageHistory
+from modules.services.source_game import send_say_command_to_tf2
+from modules.logs import get_logger, log_gui_general_message, log_gui_model_message
+from modules.text import add_prompts_by_flags
+from modules.types import MessageHistory
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")

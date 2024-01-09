@@ -1,5 +1,4 @@
-from utils.bot_state import get_bot_state, start_bot, stop_bot
-from utils.commands import print_help_command
+from modules.bot_state import get_bot_state, start_bot, stop_bot
 
 
 # def test_print_help_command(capsys):

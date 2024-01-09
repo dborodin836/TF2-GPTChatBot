@@ -5,7 +5,7 @@ from typing import Any, List, Tuple
 import requests
 from requests.sessions import Session
 
-from utils.types import SteamHoursApiUrlID64
+from modules.types import SteamHoursApiUrlID64
 
 
 class BulkSteamGameDetailsUrlDownloader:

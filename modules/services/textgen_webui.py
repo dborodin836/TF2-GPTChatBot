@@ -1,8 +1,8 @@
 import requests
 
 from config import config
-from utils.logs import get_logger
-from utils.types import Message
+from modules.logs import get_logger
+from modules.types import Message
 
 main_logger = get_logger("main")
 combo_logger = get_logger("combo")

@@ -1,6 +1,6 @@
 import keyboard
 
-from utils.logs import log_gui_general_message, get_logger
+from modules.logs import log_gui_general_message, get_logger
 
 main_logger = get_logger("main")
 

@@ -6,10 +6,10 @@ import typing
 from string import Template
 
 from config import config
-from utils.logs import get_logger
-from utils.prompt import PROMPTS
-from utils.tf_statistics import StatsData
-from utils.types import LogLine, Player
+from modules.logs import get_logger
+from modules.prompt import PROMPTS
+from modules.tf_statistics import StatsData
+from modules.types import LogLine, Player
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")

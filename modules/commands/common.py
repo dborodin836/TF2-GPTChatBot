@@ -1,4 +1,4 @@
-from utils.types import LogLine
+from modules.types import LogLine
 
 
 def handle_clear(logline: LogLine, **kwargs):

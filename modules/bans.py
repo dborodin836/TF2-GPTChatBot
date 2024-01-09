@@ -2,7 +2,7 @@ import codecs
 import json
 from json import JSONDecodeError
 
-from utils.logs import get_logger, log_gui_general_message
+from modules.logs import get_logger, log_gui_general_message
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
