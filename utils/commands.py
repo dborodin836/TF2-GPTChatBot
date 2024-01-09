@@ -97,6 +97,8 @@ def get_custom_model_response(conversation_history: list[Message]) -> str | None
             combo_logger.error(f"Failed to parse data from server [{e}].")
     elif response.status_code == 500:
         combo_logger.error(f"There's error on the text-generation-webui server. [HTTP 500]")
+    else:
+        main_logger.error(f"Got non-200 status code from the text-generation-webui server. [HTTP {response.status_code}]")
 
     return None
 
