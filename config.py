@@ -1,4 +1,5 @@
 import configparser
+import json
 import os
 import re
 import sys
@@ -7,6 +8,7 @@ from enum import IntEnum
 from os.path import exists
 from queue import Queue
 from tkinter import messagebox
+from typing import Optional
 
 import pydantic
 from pydantic import BaseModel, validator
@@ -64,7 +66,7 @@ class Config(BaseModel):
     CLEAR_CHAT_COMMAND: str
     RTD_COMMAND: str
     GPT4_ADMIN_ONLY: bool
-    
+
     CUSTOM_PROMPT: str
 
     RCON_HOST: str
@@ -86,6 +88,8 @@ class Config(BaseModel):
     CUSTOM_MODEL_CHAT_COMMAND: str
 
     CONFIRMABLE_QUEUE: bool
+
+    CUSTOM_MODEL_SETTINGS: Optional[str | dict]
 
     @validator("OPENAI_API_KEY")
     def api_key_pattern_match(cls, v):
@@ -144,12 +148,18 @@ def init_config():
         configparser_config = configparser.ConfigParser()
         configparser_config.read(CONFIG_FILE, encoding="utf-8")
 
-        config_dict = {
+        config_dict: dict[str, str | None] = {
             key.upper(): value
             for section in configparser_config.sections()
             for key, value in configparser_config.items(section)
         }
         global config
+        try:
+            if config_dict.get("CUSTOM_MODEL_SETTINGS") != "":
+                config_dict["CUSTOM_MODEL_SETTINGS"] = json.loads(config_dict.get("CUSTOM_MODEL_SETTINGS"))
+        except Exception as e:
+            buffered_fail_message(f"CUSTOM_MODEL_SETTINGS is not dict [{e}].", "BOTH", level="ERROR")
+
         config = Config(**config_dict)
     except (pydantic.ValidationError, Exception) as e:
         # Create a Tkinter window

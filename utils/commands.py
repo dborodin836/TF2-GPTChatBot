@@ -81,6 +81,8 @@ def get_custom_model_response(conversation_history: list[Message]) -> str | None
         "messages": conversation_history
     }
 
+    data.update(config.CUSTOM_MODEL_SETTINGS)
+
     try:
         response = requests.post(uri, headers=headers, json=data, verify=False)
     except Exception as e:
