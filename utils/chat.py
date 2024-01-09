@@ -1,5 +1,4 @@
 import queue
-import threading
 import time
 
 from config import config

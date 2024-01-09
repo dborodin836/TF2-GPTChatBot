@@ -17,6 +17,7 @@
         - [!cgpt](#-cgpt)
         - [!clear](#-clear)
         - [!rtd](#-rtd)
+    - [Custom Models](#custom-language-mode-oobabooga--text-generation-webui)
     - [Screenshots](#screenshots)
 - [Prompts](#prompts)
     - [Pre-build prompts](#pre-build-prompts)
@@ -359,7 +360,7 @@ Mode 2: Sends a random link to a YouTube meme.
 
 **You set your own list of video. Just edit `vids.txt` file.**
 
-### Custom language mode (oobabooga / text-generation-webui)
+### Custom language models (oobabooga / text-generation-webui)
 
 Please follow these steps to set up a custom model for text generation using the [oobabooga/text-generation-webui](https://github.com/oobabooga/text-generation-webui) project:
 
@@ -370,15 +371,15 @@ Please follow these steps to set up a custom model for text generation using the
 
 3. Download the model of your choice for text generation.
 
-4. Launch the `text-generation-webui` application, ensuring that you include the `--public-api` option in the launch settings.
+4. Launch the `text-generation-webui` application, ensuring that you include the `--api` option in the launch settings (`CMD_FLAGS.txt` file).
 
-5. After the application starts, copy the **public non-streaming** URL provided by the application.
+> **NOTE**: If you're running the api on a remote server you might try `--public-api` option.
+
+5. After the application starts, copy the **OpenAI-compatible API URL** provided by the application.
 
 6. Open the `config.ini` file once more and find the `CUSTOM_MODEL_HOST` variable. Paste the previously copied URL as the value for this variable.
 
 7. Save the changes made to the `config.ini` file.
-
-8. DONE!
 
 ### Prompts
 
@@ -428,7 +429,7 @@ Hi chatGPT, you are going to pretend to be MEDIC from Team Fortress 2. You can d
 ## Known Issues
 
 ### Nickname Limitations
-You cant have nickname that starts with command name.  (e.g.`!cgpt <your prompt>`)
+You cannot have a nickname that starts with a command name, such as !cgpt <your prompt>.
 
 ## FAQ
 
