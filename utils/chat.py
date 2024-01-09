@@ -5,7 +5,7 @@ from ordered_set import OrderedSet
 
 from commands.common import handle_clear
 from commands.openai import gpt3_handler, handle_cgpt, h_gpt4, h_gpt4l
-from commands.custom_model import handle_custom_model, handle_custom_chat
+from commands.textgen_webui import handle_custom_model, handle_custom_chat
 from config import config
 from services.github import check_for_updates
 from services.source_game import check_connection, get_username, q_manager
@@ -13,8 +13,7 @@ from utils.bans import is_banned_username, load_banned_players
 from utils.bot_state import get_bot_state
 from commands.rtd import handle_rtd_command
 from commands.github import handle_gh_command
-from utils.io_buffer import print_buffered_config_innit_messages
-from utils.logs import get_logger, get_time_stamp
+from utils.logs import get_logger, get_time_stamp, print_buffered_config_innit_messages
 from utils.prompt import load_prompts
 from utils.text import get_console_logline
 from utils.types import LogLine

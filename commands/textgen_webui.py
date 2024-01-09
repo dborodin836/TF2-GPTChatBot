@@ -1,6 +1,6 @@
 from config import config
 from services.source_game import send_say_command_to_tf2
-from utils.commands import get_custom_model_response
+from services.textgen_webui import get_custom_model_response
 from utils.logs import get_logger, log_gui_model_message
 from utils.text import add_prompts_by_flags
 from utils.types import LogLine, MessageHistory
