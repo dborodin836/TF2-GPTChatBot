@@ -13,7 +13,7 @@ htmlcov
 .coverage
 
 # Logs
-log_*
+log_*.txt
 logs/
 
 # Build
