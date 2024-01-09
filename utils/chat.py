@@ -1,5 +1,4 @@
 import queue
-import threading
 import time
 
 from config import config
@@ -8,7 +7,8 @@ from services.github import check_for_updates
 from services.source_game import check_connection, get_username, send_say_command_to_tf2, q_manager
 from utils.bans import is_banned_username, load_banned_players
 from utils.bot_state import get_bot_state
-from utils.commands import handle_custom_model_command, handle_gh_command, handle_rtd_command
+from utils.commands import handle_custom_model_chat_command, handle_gh_command, handle_rtd_command, \
+    handle_custom_model_command
 from utils.io_buffer import print_buffered_config_innit_messages
 from utils.logs import get_logger, log_gui_model_message
 from utils.prompt import load_prompts
@@ -156,15 +156,24 @@ def handle_command(logline: LogLine, conversation_history: MessageHistory) -> Me
         handle_gh_command(user, is_team=is_team)
 
     elif has_command(prompt, config.CUSTOM_MODEL_COMMAND):
-        main_logger.info(f"'{config.CUSTOM_MODEL_COMMAND}' command from user '{user}'. "
-                         f"Message: '{prompt.removeprefix(config.GPT_COMMAND).strip()}'")
         if config.ENABLE_CUSTOM_MODEL:
-            if not any([thread.name == "custom" for thread in threading.enumerate()]):
-                threading.Thread(
-                    target=handle_custom_model_command,
-                    args=(user, is_team, prompt),
-                    daemon=True,
-                    name="custom",
-                ).start()
+            main_logger.info(f"'{config.CUSTOM_MODEL_COMMAND}' command from user '{user}'. "
+                             f"Message: '{prompt.removeprefix(config.GPT_COMMAND).strip()}'")
+            handle_custom_model_command(
+                user,
+                prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
+                is_team=is_team
+            )
+
+    elif has_command(prompt, config.CUSTOM_MODEL_CHAT_COMMAND):
+        if config.ENABLE_CUSTOM_MODEL:
+            main_logger.info(f"'{config.CUSTOM_MODEL_CHAT_COMMAND}' command from user '{user}'. "
+                             f"Message: '{prompt.removeprefix(config.GPT_COMMAND).strip()}'")
+            return handle_custom_model_chat_command(
+                user,
+                prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
+                conversation_history,
+                is_team=is_team
+            )
 
     return conversation_history
