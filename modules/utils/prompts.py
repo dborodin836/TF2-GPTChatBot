@@ -29,7 +29,7 @@ def load_prompts() -> None:
     if getattr(sys, "frozen", False):
         path = os.path.dirname(sys.executable)
     else:
-        path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
     for filename in files:
         with codecs.open(f"{path}/prompts/{filename}", "r", encoding="utf-8") as file:

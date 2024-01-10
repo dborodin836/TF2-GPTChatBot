@@ -8,7 +8,7 @@ import openai
 import ttkbootstrap as ttk
 from ttkbootstrap import Style
 
-from modules.services.chatgpt import send_gpt_completion_request
+from modules.api.openai import send_gpt_completion_request
 from modules.bans import ban_player, list_banned_players, unban_player
 from modules.bot_state import start_bot, stop_bot
 from modules.chat import PROMPTS_QUEUE

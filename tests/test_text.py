@@ -1,4 +1,4 @@
-from modules.text import add_prompts_by_flags, get_chunk_size, split_into_chunks, has_cyrillic
+from modules.utils.text import add_prompts_by_flags, get_chunk_size, split_into_chunks, has_cyrillic
 
 MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120

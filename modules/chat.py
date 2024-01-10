@@ -7,15 +7,15 @@ from modules.commands.common import handle_clear
 from modules.commands.openai import gpt3_handler, handle_cgpt, h_gpt4, h_gpt4l
 from modules.commands.textgen_webui import handle_custom_model, handle_custom_chat
 from config import config
-from modules.services.github import check_for_updates
-from modules.services.source_game import check_connection, get_username, q_manager
+from modules.api.github import check_for_updates
+from modules.servers.tf2 import check_connection, get_username, q_manager
 from modules.bans import is_banned_username, load_banned_players
 from modules.bot_state import get_bot_state
 from modules.commands.rtd import handle_rtd_command
 from modules.commands.github import handle_gh_command
 from modules.logs import get_logger, get_time_stamp, print_buffered_config_innit_messages
-from modules.prompt import load_prompts
-from modules.text import get_console_logline
+from modules.utils.prompts import load_prompts
+from modules.utils.text import get_console_logline
 from modules.types import LogLine
 
 PROMPTS_QUEUE: queue.Queue = queue.Queue()
@@ -46,7 +46,7 @@ class SetOnceDictionary(dict):
 class CommandController:
 
     def __init__(self, initializer_config: dict = None) -> None:
-        self.__tasks = OrderedSet()
+        self.__services = OrderedSet()
         self.__named_commands_registry: SetOnceDictionary[str, Callable] = SetOnceDictionary()
         self.__shared = dict()
 
@@ -56,12 +56,12 @@ class CommandController:
     def register_command(self, name: str, function: Callable) -> None:
         self.__named_commands_registry[name] = function
 
-    def register_task(self, function: Callable):
-        self.__tasks.add(function)
+    def register_service(self, function: Callable):
+        self.__services.add(function)
 
     def process_line(self, logline: LogLine):
-        for task in self.__tasks:
-            task(logline)
+        for task in self.__services:
+            task(logline, self.__shared)
 
         command_name = logline.prompt.strip().split(" ")[0].lower()
 
@@ -126,6 +126,8 @@ def parse_console_logs_and_build_conversation_history() -> None:
     controller.register_command(config.CUSTOM_MODEL_COMMAND, handle_custom_model)
     controller.register_command(config.CUSTOM_MODEL_CHAT_COMMAND, handle_custom_chat)
 
+    controller.register_service(unlock_q_task)
+
     for logline in get_console_logline():
         if not get_bot_state():
             continue
@@ -134,7 +136,7 @@ def parse_console_logs_and_build_conversation_history() -> None:
         controller.process_line(logline)
 
 
-def unlock_q_task(logline: LogLine, **kwargs):
+def unlock_q_task(logline: LogLine, shared_dict: dict):
     awaited_msg = q_manager.get_awaited_msg()
     if awaited_msg is not None and awaited_msg in logline.prompt and logline.username == config.HOST_USERNAME:
         q_manager.unlock_queue()

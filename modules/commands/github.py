@@ -1,8 +1,8 @@
 import time
 
 from config import config
-from modules.services.source_game import send_say_command_to_tf2
-from modules.text import get_shortened_username
+from modules.servers.tf2 import send_say_command_to_tf2
+from modules.utils.text import get_shortened_username
 from modules.types import LogLine
 
 GITHUB_LINK = "bit.ly/tf2-gpt3"

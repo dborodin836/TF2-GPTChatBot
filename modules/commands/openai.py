@@ -1,8 +1,8 @@
 import time
 
 from config import config
-from modules.services.chatgpt import handle_gpt_request, handle_cgpt_request
-from modules.services.source_game import send_say_command_to_tf2
+from modules.api.openai import handle_gpt_request, handle_cgpt_request
+from modules.servers.tf2 import send_say_command_to_tf2
 from modules.logs import log_gui_model_message, get_logger
 from modules.types import LogLine
 

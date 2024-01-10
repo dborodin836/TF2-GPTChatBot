@@ -2,7 +2,7 @@ import random
 import time
 
 from config import config, RTDModes
-from modules.services.source_game import send_say_command_to_tf2
+from modules.servers.tf2 import send_say_command_to_tf2
 from modules.logs import log_gui_general_message, get_logger
 from modules.types import LogLine
 

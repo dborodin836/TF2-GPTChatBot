@@ -7,7 +7,7 @@ from string import Template
 
 from config import config
 from modules.logs import get_logger
-from modules.prompt import PROMPTS
+from modules.utils.prompts import PROMPTS
 from modules.tf_statistics import StatsData
 from modules.types import LogLine, Player
 
