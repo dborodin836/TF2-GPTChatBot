@@ -9,8 +9,8 @@ from modules.commands.openai import gpt3_handler, h_gpt4, h_gpt4l, handle_cgpt
 from modules.commands.rtd import handle_rtd_command
 from modules.commands.textgen_webui import handle_custom_chat, handle_custom_model
 from modules.logs import get_logger, print_buffered_config_innit_messages
-from modules.servers.tf2 import check_connection, get_username, q_manager
-from modules.typing import LogLine
+from modules.servers.tf2 import check_connection, get_username
+from modules.message_queueing import messaging_queue_service
 from modules.utils.prompts import load_prompts
 from modules.utils.text import get_console_logline
 
@@ -70,7 +70,7 @@ def parse_console_logs_and_build_conversation_history() -> None:
     controller.register_command(config.CUSTOM_MODEL_COMMAND, handle_custom_model)
     controller.register_command(config.CUSTOM_MODEL_CHAT_COMMAND, handle_custom_chat)
 
-    controller.register_service(unlock_q_task)
+    controller.register_service(messaging_queue_service)
 
     for logline in get_console_logline():
         if not get_bot_state():
@@ -78,13 +78,3 @@ def parse_console_logs_and_build_conversation_history() -> None:
         if is_banned_username(logline.username):
             continue
         controller.process_line(logline)
-
-
-def unlock_q_task(logline: LogLine, shared_dict: dict):
-    awaited_msg = q_manager.get_awaited_msg()
-    if (
-        awaited_msg is not None
-        and awaited_msg in logline.prompt
-        and logline.username == config.HOST_USERNAME
-    ):
-        q_manager.unlock_queue()
