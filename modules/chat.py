@@ -2,7 +2,7 @@ from config import config
 from modules.api.github import check_for_updates
 from modules.bans import is_banned_username, load_banned_players
 from modules.bot_state import get_bot_state
-from modules.command_controller import CommandController
+from modules.command_controllers import CommandController
 from modules.commands.clear_chat import handle_clear
 from modules.commands.github import handle_gh_command
 from modules.commands.openai import gpt3_handler, h_gpt4, h_gpt4l, handle_cgpt

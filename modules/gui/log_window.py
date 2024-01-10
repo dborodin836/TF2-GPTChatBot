@@ -11,31 +11,42 @@ from ttkbootstrap import Style
 from modules.api.openai import send_gpt_completion_request
 from modules.bans import ban_player, list_banned_players, unban_player
 from modules.bot_state import start_bot, stop_bot
+from modules.command_controllers import GuiCommandController
 from modules.logs import get_logger
 from modules.utils.path import resource_path
 
 PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
-PROMPTS_QUEUE: queue.Queue = queue.Queue()
+GPT3_PROMPTS_QUEUE: queue.Queue = queue.Queue()
 
 gui_logger = get_logger("gui")
 main_logger = get_logger("main")
 
 
-def print_help_command():
-    """
-    Prints the available commands and their descriptions.
-    """
-    gui_logger.info(
-        "### HELP ###",
-        "start - start the bot",
-        "stop - stop the bot",
-        "quit - quit the program",
-        "bans - show all banned players",
-        "ban <username> - ban user by username",
-        "unban <username> - unban user by username",
-        "gpt3 <prompt> - sends a response to GPT3",
-        sep="\n",
-    )
+# TODO: FIX THE COMMANDS
+def h_ban(command, shared_dict):
+    name = command.removeprefix("ban ").strip()
+    ban_player(name)
+
+
+def h_unban(command, shared_dict):
+    name = command.removeprefix("unban ").strip()
+    unban_player(name)
+
+
+def h_gpt3(command, shared_dict):
+    prompt = command.removeprefix("gpt3 ").strip()
+    GPT3_PROMPTS_QUEUE.put(prompt)
+
+
+command_controller = GuiCommandController()
+
+command_controller.register_command("stop", lambda x, y: stop_bot(), "Start the bot.")
+command_controller.register_command("start", lambda x, y: start_bot(), "Stop the bot.")
+command_controller.register_command("ban", h_ban, "Ban user by username. e.g ban <username>")
+command_controller.register_command("unban", h_unban, "Unban user by username. e.g unban <username>")
+command_controller.register_command("gpt3", h_gpt3, "Send a response to GPT3 model. e.g gpt3 <prompt>")
+command_controller.register_command("bans", lambda x, y: list_banned_players(), "Show all banned players.")
+command_controller.register_command("quit", lambda x, y: sys.exit(1), "Quit the program.")
 
 
 class LogWindow(tk.Frame):
@@ -102,7 +113,7 @@ class LogWindow(tk.Frame):
 
         gui_logger.info(f"> {text}")
 
-        handle_gui_console_commands(text)
+        command_controller.process_line(text)
 
         # Clear the additional_text widget after the function is executed
         self.cmd_line.delete("1.0", tk.END)
@@ -129,39 +140,10 @@ class RedirectStdoutToLogWindow:
         ...
 
 
-def handle_gui_console_commands(command: str) -> None:
-    if command.startswith("stop"):
-        stop_bot()
-
-    elif command.startswith("start"):
-        start_bot()
-
-    elif command.startswith("quit"):
-        sys.exit(0)
-
-    elif command.startswith("ban "):
-        name = command.removeprefix("ban ").strip()
-        ban_player(name)
-
-    elif command.startswith("unban "):
-        name = command.removeprefix("unban ").strip()
-        unban_player(name)
-
-    elif command.startswith("gpt3 "):
-        prompt = command.removeprefix("gpt3 ").strip()
-        PROMPTS_QUEUE.put(prompt)
-
-    elif command.startswith("bans"):
-        list_banned_players()
-
-    elif command.startswith("help"):
-        print_help_command()
-
-
 def gpt3_cmd_handler() -> None:
     while True:
-        if PROMPTS_QUEUE.qsize() != 0:
-            prompt = PROMPTS_QUEUE.get()
+        if GPT3_PROMPTS_QUEUE.qsize() != 0:
+            prompt = GPT3_PROMPTS_QUEUE.get()
             try:
                 response = send_gpt_completion_request(
                     [{"role": "user", "content": prompt}], "admin", model="gpt-3.5-turbo"
