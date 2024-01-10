@@ -1,76 +1,26 @@
 import queue
-from typing import Optional, Callable
 
-from ordered_set import OrderedSet
-
-from modules.commands.common import handle_clear
-from modules.commands.openai import gpt3_handler, handle_cgpt, h_gpt4, h_gpt4l
-from modules.commands.textgen_webui import handle_custom_model, handle_custom_chat
 from config import config
 from modules.api.github import check_for_updates
-from modules.servers.tf2 import check_connection, get_username, q_manager
 from modules.bans import is_banned_username, load_banned_players
 from modules.bot_state import get_bot_state
-from modules.commands.rtd import handle_rtd_command
+from modules.command_controller import CommandController
+from modules.commands.common import handle_clear
 from modules.commands.github import handle_gh_command
-from modules.logs import get_logger, get_time_stamp, print_buffered_config_innit_messages
+from modules.commands.openai import gpt3_handler, h_gpt4, h_gpt4l, handle_cgpt
+from modules.commands.rtd import handle_rtd_command
+from modules.commands.textgen_webui import handle_custom_chat, handle_custom_model
+from modules.logs import get_logger, print_buffered_config_innit_messages
+from modules.servers.tf2 import check_connection, get_username, q_manager
+from modules.typing import LogLine
 from modules.utils.prompts import load_prompts
 from modules.utils.text import get_console_logline
-from modules.types import LogLine
 
 PROMPTS_QUEUE: queue.Queue = queue.Queue()
 
 gui_logger = get_logger("gui")
 main_logger = get_logger("main")
 combo_logger = get_logger("combo")
-
-
-class ModificationOfSetKey(Exception):
-    pass
-
-
-class DeletionOfSetKey(Exception):
-    pass
-
-
-class SetOnceDictionary(dict):
-    def __setitem__(self, key, value):
-        if self.get(key, None) is not None:
-            raise ModificationOfSetKey("You cannot modify value after setting it.")
-        super().__setitem__(key, value)
-
-    def __delitem__(self, key):
-        raise DeletionOfSetKey("You cannot delete value after setting it.")
-
-
-class CommandController:
-
-    def __init__(self, initializer_config: dict = None) -> None:
-        self.__services = OrderedSet()
-        self.__named_commands_registry: SetOnceDictionary[str, Callable] = SetOnceDictionary()
-        self.__shared = dict()
-
-        if initializer_config is not None:
-            self.__shared.update(initializer_config)
-
-    def register_command(self, name: str, function: Callable) -> None:
-        self.__named_commands_registry[name] = function
-
-    def register_service(self, function: Callable):
-        self.__services.add(function)
-
-    def process_line(self, logline: LogLine):
-        for task in self.__services:
-            task(logline, self.__shared)
-
-        command_name = logline.prompt.strip().split(" ")[0].lower()
-
-        handler: Optional[Callable] = self.__named_commands_registry.get(command_name, None)
-        if handler is None:
-            return
-
-        combo_logger.info(f"[{get_time_stamp()}] -- '{command_name}' command from user '{logline.username}'.")
-        handler(logline, self.__shared)
 
 
 def set_host_username() -> None:
@@ -110,9 +60,7 @@ def parse_console_logs_and_build_conversation_history() -> None:
     """
     setup()
 
-    controller = CommandController({
-        "CHAT_CONVERSATION_HISTORY": []
-    })
+    controller = CommandController({"CHAT_CONVERSATION_HISTORY": []})
 
     # TODO: Check what does logline contains, it may contain !gh or smth
     # Or its in some command handlers
@@ -138,5 +86,9 @@ def parse_console_logs_and_build_conversation_history() -> None:
 
 def unlock_q_task(logline: LogLine, shared_dict: dict):
     awaited_msg = q_manager.get_awaited_msg()
-    if awaited_msg is not None and awaited_msg in logline.prompt and logline.username == config.HOST_USERNAME:
+    if (
+        awaited_msg is not None
+        and awaited_msg in logline.prompt
+        and logline.username == config.HOST_USERNAME
+    ):
         q_manager.unlock_queue()

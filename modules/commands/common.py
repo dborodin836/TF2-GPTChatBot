@@ -1,4 +1,4 @@
-from modules.types import LogLine
+from modules.typing import LogLine
 
 
 def handle_clear(logline: LogLine, shared_dict: dict):

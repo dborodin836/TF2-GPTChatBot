@@ -21,7 +21,7 @@ main_logger = get_logger("main")
 
 
 def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
+    """Get absolute path to resource, works for dev and for PyInstaller"""
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
         base_path = sys._MEIPASS
@@ -57,10 +57,10 @@ class LogWindow(tk.Frame):
         self.create_widgets()
         self.master.title("TF2-GPTChatBot")
         self.master.resizable(False, False)
-        self.master.iconbitmap(resource_path('icon.ico'))
+        self.master.iconbitmap(resource_path("icon.ico"))
 
         # Set the style to "simplex"
-        style = Style(theme='cosmo')
+        style = Style(theme="cosmo")
         style.configure(".", font=("TkDefaultFont", 11), foreground="black")
         style.configure("TButton", padding=6, relief="flat")
         style.configure("TEntry", padding=6)
@@ -81,7 +81,7 @@ class LogWindow(tk.Frame):
             text=" Stick \n Logs",
             variable=self.toggle_var,
             bootstyle="round-toggle",
-            command=lambda: self.log_text.see(tk.END) if self.toggle_var.get() else None
+            command=lambda: self.log_text.see(tk.END) if self.toggle_var.get() else None,
         )
 
         self.toggle_button.grid(row=1, column=1, padx=(0, 18))
@@ -111,7 +111,7 @@ class LogWindow(tk.Frame):
         if text.strip == "":
             return
 
-        gui_logger.info(f'> {text}')
+        gui_logger.info(f"> {text}")
 
         handle_gui_console_commands(text)
 
@@ -174,8 +174,9 @@ def gpt3_cmd_handler() -> None:
         if PROMPTS_QUEUE.qsize() != 0:
             prompt = PROMPTS_QUEUE.get()
             try:
-                response = send_gpt_completion_request([{"role": "user", "content": prompt}], "admin",
-                                                       model="gpt-3.5-turbo")
+                response = send_gpt_completion_request(
+                    [{"role": "user", "content": prompt}], "admin", model="gpt-3.5-turbo"
+                )
                 gui_logger.info(f"GPT3> {response}")
             except openai.error.RateLimitError:
                 gui_logger.warning("Rate Limited! Try again later.")

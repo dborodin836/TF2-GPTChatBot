@@ -34,10 +34,7 @@ def load_prompts() -> None:
     for filename in files:
         with codecs.open(f"{path}/prompts/{filename}", "r", encoding="utf-8") as file:
             global PROMPTS
-            PROMPTS.append(
-                {
-                    "flag": f"\\{filename.removesuffix('.txt')}",
-                    "prompt": file.read()
-                }
-            )
-    combo_logger.info(f'Loaded {len([f for f in os.listdir("prompts") if f.endswith(".txt")])} models!')
+            PROMPTS.append({"flag": f"\\{filename.removesuffix('.txt')}", "prompt": file.read()})
+    combo_logger.info(
+        f'Loaded {len([f for f in os.listdir("prompts") if f.endswith(".txt")])} models!'
+    )

@@ -7,9 +7,9 @@ from string import Template
 
 from config import config
 from modules.logs import get_logger
-from modules.utils.prompts import PROMPTS
 from modules.tf_statistics import StatsData
-from modules.types import LogLine, Player
+from modules.typing import LogLine, Player
+from modules.utils.prompts import PROMPTS
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -60,7 +60,7 @@ def get_shortened_username(username: str) -> str:
     template = Template(config.SHORTENED_USERNAMES_FORMAT)
 
     if len(username) > config.SHORTENED_USERNAME_LENGTH:
-        username = username[:config.SHORTENED_USERNAME_LENGTH] + ".."
+        username = username[: config.SHORTENED_USERNAME_LENGTH] + ".."
 
     try:
         result = template.safe_substitute(username=username)
@@ -105,14 +105,16 @@ def add_prompts_by_flags(user_prompt: str) -> str:
 
     if r"\stats" in args and config.ENABLE_STATS:
         result = (
-                f" {StatsData.get_data()} Based on this data answer following question. "
-                + result
-                + " Ignore unknown data."
+            f" {StatsData.get_data()} Based on this data answer following question. "
+            + result
+            + " Ignore unknown data."
         )
         result = result.replace(r"\stats", "")
 
     if r"\l" not in args:
-        result += f" Answer in less than {config.SOFT_COMPLETION_LIMIT} chars! {config.CUSTOM_PROMPT}"
+        result += (
+            f" Answer in less than {config.SOFT_COMPLETION_LIMIT} chars! {config.CUSTOM_PROMPT}"
+        )
     result = result.replace(r"\l", "")
 
     return result.strip()
@@ -197,7 +199,7 @@ def get_minutes_from_str(time_str: str) -> int:
 def stats_regexes(line: str):
     # Parsing user line from status command
     if matches := re.search(
-            r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*", line
+        r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*", line
     ):
         time_on_server = matches.groups()[2]
 

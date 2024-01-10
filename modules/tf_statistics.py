@@ -8,7 +8,7 @@ import requests
 from config import config
 from modules.bulk_url_downloader import BulkSteamGameDetailsUrlDownloader
 from modules.logs import get_logger
-from modules.types import Player, SteamHoursApiUrlID64
+from modules.typing import Player, SteamHoursApiUrlID64
 
 STEAMID3_TO_STEAMID64_COEEFICIENT = 76561197960265728
 

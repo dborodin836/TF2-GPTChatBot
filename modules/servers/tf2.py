@@ -1,7 +1,7 @@
+import queue
 import re
 import sys
 import time
-import queue
 from typing import Generator, Optional
 
 from rcon import WrongPassword
@@ -9,8 +9,13 @@ from rcon import WrongPassword
 from config import config
 from modules.logs import get_logger
 from modules.rcon_client import RconClient
-from modules.utils.text import get_chunk_size, split_into_chunks, get_shortened_username, has_cyrillic
-from modules.types import QueuedMessage
+from modules.typing import QueuedMessage
+from modules.utils.text import (
+    get_chunk_size,
+    get_shortened_username,
+    has_cyrillic,
+    split_into_chunks,
+)
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -55,7 +60,7 @@ class ConfirmableQueueManager:
             if not self.queue.empty():
                 queued_message: QueuedMessage = self.queue.queue[0]
                 if has_cyrillic(queued_message.text):
-                    self.awaiting_message = queued_message.text[:len(queued_message.text) // 2]
+                    self.awaiting_message = queued_message.text[: len(queued_message.text) // 2]
                 else:
                     self.awaiting_message = queued_message.text
                 self.is_locked = True
@@ -192,7 +197,8 @@ def format_say_message(message: str, username: str = None) -> str:
     # Strip the message if needed
     if len(message) > config.HARD_COMPLETION_LIMIT:
         main_logger.warning(
-            f"Message is longer than Hard Limit [{len(message)}]. Limit is {config.HARD_COMPLETION_LIMIT}.")
+            f"Message is longer than Hard Limit [{len(message)}]. Limit is {config.HARD_COMPLETION_LIMIT}."
+        )
         message = message[: config.HARD_COMPLETION_LIMIT] + "..."
 
     return message

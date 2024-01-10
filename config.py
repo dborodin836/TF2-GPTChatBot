@@ -13,7 +13,7 @@ from typing import Optional
 import pydantic
 from pydantic import BaseModel, validator
 
-from modules.types import BufferedMessage, BufferedMessageLevel, BufferedMessageType
+from modules.typing import BufferedMessage, BufferedMessageLevel, BufferedMessageType
 
 CONFIG_FILE = "config.ini"
 OPENAI_API_KEY_RE_PATTERN = r"sk-[a-zA-Z0-9]{48}"
@@ -22,10 +22,10 @@ CONFIG_INIT_MESSAGES_QUEUE: Queue[BufferedMessage] = Queue()
 
 
 def buffered_message(
-        message: str,
-        type_: BufferedMessageType = "GUI",
-        level: BufferedMessageLevel = "INFO",
-        fail_startup: bool = False,
+    message: str,
+    type_: BufferedMessageType = "GUI",
+    level: BufferedMessageLevel = "INFO",
+    fail_startup: bool = False,
 ) -> None:
     CONFIG_INIT_MESSAGES_QUEUE.put(
         BufferedMessage(type=type_, level=level, message=message, fail_startup=fail_startup)
@@ -33,9 +33,9 @@ def buffered_message(
 
 
 def buffered_fail_message(
-        message: str,
-        type_: BufferedMessageType = "GUI",
-        level: BufferedMessageLevel = "INFO",
+    message: str,
+    type_: BufferedMessageType = "GUI",
+    level: BufferedMessageLevel = "INFO",
 ):
     buffered_message(message, type_, level, fail_startup=True)
 
@@ -156,9 +156,13 @@ def init_config():
         global config
         try:
             if config_dict.get("CUSTOM_MODEL_SETTINGS") != "":
-                config_dict["CUSTOM_MODEL_SETTINGS"] = json.loads(config_dict.get("CUSTOM_MODEL_SETTINGS"))
+                config_dict["CUSTOM_MODEL_SETTINGS"] = json.loads(
+                    config_dict.get("CUSTOM_MODEL_SETTINGS")
+                )
         except Exception as e:
-            buffered_fail_message(f"CUSTOM_MODEL_SETTINGS is not dict [{e}].", "BOTH", level="ERROR")
+            buffered_fail_message(
+                f"CUSTOM_MODEL_SETTINGS is not dict [{e}].", "BOTH", level="ERROR"
+            )
 
         config = Config(**config_dict)
     except (pydantic.ValidationError, Exception) as e:

@@ -1,10 +1,10 @@
 import random
 import time
 
-from config import config, RTDModes
+from config import RTDModes, config
+from modules.logs import get_logger, log_gui_general_message
 from modules.servers.tf2 import send_say_command_to_tf2
-from modules.logs import log_gui_general_message, get_logger
-from modules.types import LogLine
+from modules.typing import LogLine
 
 RICKROLL_LINK = "youtu.be/dQw4w9WgXcQ"
 
@@ -30,5 +30,7 @@ def handle_rtd_command(logline: LogLine, shared_dict: dict) -> None:
 
         time.sleep(1)
         log_gui_general_message(f"[RTD] {logline.username} rolled: {random.choice(lines)}")
-        send_say_command_to_tf2(f"[RTD] {logline.username} rolled: {random.choice(lines)}",
-                                is_team_chat=logline.is_team_message)
+        send_say_command_to_tf2(
+            f"[RTD] {logline.username} rolled: {random.choice(lines)}",
+            is_team_chat=logline.is_team_message,
+        )

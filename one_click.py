@@ -1,5 +1,5 @@
-import sys
 import subprocess
+import sys
 
 os_name = sys.platform
 
@@ -8,11 +8,11 @@ if os_name.startswith("win"):
         "py -m venv venv",
         "call venv/scripts/activate",
         "pip install -r requirements.txt",
-        "python main.py"
+        "python main.py",
     ]
 else:
     print("Unsupported operating system")
     exit()
 
 # execute the commands in a shell
-subprocess.run(' & '.join(commands), shell=True)
+subprocess.run(" & ".join(commands), shell=True)

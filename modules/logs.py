@@ -5,7 +5,9 @@ from loguru import logger
 
 from config import CONFIG_INIT_MESSAGES_QUEUE
 
-FORMAT_LINE_MAIN = "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} | {message}"
+FORMAT_LINE_MAIN = (
+    "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} | {message}"
+)
 FORMAT_LINE_GUI = "{time:YYYY-MM-DD HH:mm:ss.SSS} | {message}"
 
 main_logger = logger.bind(name="main")
@@ -47,7 +49,7 @@ def setup_loggers():
         level="DEBUG",
         filter=make_name_filter("main"),
         retention="1 week",
-        rotation="50 MB"
+        rotation="50 MB",
     )
 
     gui_logger.add(sys.stdout, format="{message}", filter=make_name_filter("gui"))
@@ -58,7 +60,7 @@ def setup_loggers():
         level="DEBUG",
         filter=make_name_filter("gui"),
         retention="1 week",
-        rotation="50 MB"
+        rotation="50 MB",
     )
 
     combo_logger.add(sys.stdout, format="{message}", filter=make_name_filter("combo"))
@@ -69,7 +71,7 @@ def setup_loggers():
         level="DEBUG",
         filter=make_name_filter("combo"),
         retention="1 week",
-        rotation="50 MB"
+        rotation="50 MB",
     )
 
 
