@@ -1,4 +1,5 @@
 import os
+import queue
 import sys
 import time
 import tkinter as tk
@@ -11,10 +12,10 @@ from ttkbootstrap import Style
 from modules.api.openai import send_gpt_completion_request
 from modules.bans import ban_player, list_banned_players, unban_player
 from modules.bot_state import start_bot, stop_bot
-from modules.chat import PROMPTS_QUEUE
 from modules.logs import get_logger
 
 PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
+PROMPTS_QUEUE: queue.Queue = queue.Queue()
 
 gui_logger = get_logger("gui")
 main_logger = get_logger("main")

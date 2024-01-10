@@ -1,5 +1,3 @@
-import queue
-
 from config import config
 from modules.api.github import check_for_updates
 from modules.bans import is_banned_username, load_banned_players
@@ -15,8 +13,6 @@ from modules.servers.tf2 import check_connection, get_username, q_manager
 from modules.typing import LogLine
 from modules.utils.prompts import load_prompts
 from modules.utils.text import get_console_logline
-
-PROMPTS_QUEUE: queue.Queue = queue.Queue()
 
 gui_logger = get_logger("gui")
 main_logger = get_logger("main")
