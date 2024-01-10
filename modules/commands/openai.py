@@ -9,7 +9,7 @@ from modules.typing import LogLine
 main_logger = get_logger("main")
 
 
-def gpt3_handler(logline: LogLine, shared_dict: dict):
+def handle_gpt3(logline: LogLine, shared_dict: dict):
     if logline.prompt.removeprefix(config.GPT_COMMAND).strip() == "":
         time.sleep(1)
         send_say_command_to_tf2(
@@ -44,7 +44,7 @@ def handle_cgpt(logline: LogLine, shared_dict: dict):
     shared_dict.update({"CHAT_CONVERSATION_HISTORY": conv_his})
 
 
-def h_gpt4(logline: LogLine, shared_dict: dict):
+def handle_gpt4(logline: LogLine, shared_dict: dict):
     if (
         config.GPT4_ADMIN_ONLY
         and config.HOST_USERNAME == logline.username
@@ -58,7 +58,7 @@ def h_gpt4(logline: LogLine, shared_dict: dict):
         )
 
 
-def h_gpt4l(logline: LogLine, shared_dict: dict):
+def handle_gpt4l(logline: LogLine, shared_dict: dict):
     if (
         config.GPT4_ADMIN_ONLY
         and config.HOST_USERNAME == logline.username

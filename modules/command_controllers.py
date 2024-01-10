@@ -22,7 +22,7 @@ class GuiCommandController:
             self.__shared.update(initializer_config)
 
     def register_command(self, name: str, function: Callable, description: str) -> None:
-        self.__named_commands_registry[name] = Command("name", function, description)
+        self.__named_commands_registry[name] = Command(name, function, description)
 
     def process_line(self, line: str):
         command_name = line.strip().split(" ")[0].lower()
@@ -36,8 +36,10 @@ class GuiCommandController:
 
     def help(self, command: str, shared_dict: dict):
         gui_logger.info("### HELP ###")
-        for command in self.__named_commands_registry.keys():
-            gui_logger.info("### HELP ###")
+        max_cmd_length: Command = max(self.__named_commands_registry.values(), key=lambda cmd: len(cmd.name))
+        max_length = len(max_cmd_length.name)
+        for command in self.__named_commands_registry.values():
+            gui_logger.info(f'- {command.name:>{max_length}} | {command.description}')
 
 
 class CommandController:

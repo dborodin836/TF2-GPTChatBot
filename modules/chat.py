@@ -5,8 +5,8 @@ from modules.bot_state import get_bot_state
 from modules.command_controllers import CommandController
 from modules.commands.clear_chat import handle_clear
 from modules.commands.github import handle_gh_command
-from modules.commands.openai import gpt3_handler, h_gpt4, h_gpt4l, handle_cgpt
-from modules.commands.rtd import handle_rtd_command
+from modules.commands.openai import handle_gpt3, handle_gpt4, handle_gpt4l, handle_cgpt
+from modules.commands.rtd import handle_rtd
 from modules.commands.textgen_webui import handle_custom_chat, handle_custom_model
 from modules.logs import get_logger, print_buffered_config_innit_messages
 from modules.servers.tf2 import check_connection, get_username
@@ -61,10 +61,10 @@ def parse_console_logs_and_build_conversation_history() -> None:
     # TODO: Check what does logline contains, it may contain !gh or smth
     # Or its in some command handlers
     controller.register_command("!gh", handle_gh_command)
-    controller.register_command("!gpt4", h_gpt4)
-    controller.register_command("!gpt4l", h_gpt4l)
-    controller.register_command(config.RTD_COMMAND, handle_rtd_command)
-    controller.register_command(config.GPT_COMMAND, gpt3_handler)
+    controller.register_command("!gpt4", handle_gpt4)
+    controller.register_command("!gpt4l", handle_gpt4l)
+    controller.register_command(config.RTD_COMMAND, handle_rtd)
+    controller.register_command(config.GPT_COMMAND, handle_gpt3)
     controller.register_command(config.CHATGPT_COMMAND, handle_cgpt)
     controller.register_command(config.CLEAR_CHAT_COMMAND, handle_clear)
     controller.register_command(config.CUSTOM_MODEL_COMMAND, handle_custom_model)

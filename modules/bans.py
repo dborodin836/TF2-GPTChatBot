@@ -71,7 +71,7 @@ def ban_player(username: str) -> None:
         with codecs.open(BANS_FILE, "w", encoding="utf-8") as f:
             json.dump(list(BANNED_PLAYERS), f)
     else:
-        log_gui_general_message(f"='{username}' ALREADY BANNED")
+        log_gui_general_message(f"'{username}' ALREADY BANNED")
         main_logger.debug(f"{username} already banned.")
 
 
@@ -82,4 +82,6 @@ def list_banned_players() -> None:
     if len(BANNED_PLAYERS) == 0:
         gui_logger.info("### NO BANS ###")
     else:
-        gui_logger.info("### BANNED PLAYERS ###", *list(BANNED_PLAYERS), sep="\n")
+        gui_logger.info("### BANNED PLAYERS ###")
+        for user in list(BANNED_PLAYERS):
+            gui_logger.info(f"- {user}")

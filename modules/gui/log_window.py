@@ -1,52 +1,31 @@
-import queue
 import sys
-import time
 import tkinter as tk
 from tkinter.ttk import Checkbutton
 
-import openai
 import ttkbootstrap as ttk
 from ttkbootstrap import Style
 
-from modules.api.openai import send_gpt_completion_request
-from modules.bans import ban_player, list_banned_players, unban_player
-from modules.bot_state import start_bot, stop_bot
 from modules.command_controllers import GuiCommandController
+from modules.commands.gui.bans import handle_ban, handle_unban, handle_list_bans
+from modules.commands.gui.openai import handle_gpt3
+from modules.commands.gui.state import handle_stop, handle_start
 from modules.logs import get_logger
 from modules.utils.path import resource_path
 
 PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
-GPT3_PROMPTS_QUEUE: queue.Queue = queue.Queue()
 
 gui_logger = get_logger("gui")
 main_logger = get_logger("main")
 
-
-# TODO: FIX THE COMMANDS
-def h_ban(command, shared_dict):
-    name = command.removeprefix("ban ").strip()
-    ban_player(name)
-
-
-def h_unban(command, shared_dict):
-    name = command.removeprefix("unban ").strip()
-    unban_player(name)
-
-
-def h_gpt3(command, shared_dict):
-    prompt = command.removeprefix("gpt3 ").strip()
-    GPT3_PROMPTS_QUEUE.put(prompt)
-
-
 command_controller = GuiCommandController()
 
-command_controller.register_command("stop", lambda x, y: stop_bot(), "Start the bot.")
-command_controller.register_command("start", lambda x, y: start_bot(), "Stop the bot.")
-command_controller.register_command("ban", h_ban, "Ban user by username. e.g ban <username>")
-command_controller.register_command("unban", h_unban, "Unban user by username. e.g unban <username>")
-command_controller.register_command("gpt3", h_gpt3, "Send a response to GPT3 model. e.g gpt3 <prompt>")
-command_controller.register_command("bans", lambda x, y: list_banned_players(), "Show all banned players.")
-command_controller.register_command("quit", lambda x, y: sys.exit(1), "Quit the program.")
+command_controller.register_command("stop", handle_stop, "Start the bot.")
+command_controller.register_command("start", handle_start, "Stop the bot.")
+command_controller.register_command("ban", handle_ban, "Ban user by username. e.g ban <username>")
+command_controller.register_command("unban", handle_unban, "Unban user by username. e.g unban <username>")
+command_controller.register_command("bans", handle_list_bans, "Show all banned players.")
+command_controller.register_command("gpt3", handle_gpt3, "Send a response to GPT3 model. e.g gpt3 <prompt>")
+command_controller.register_command("quit", lambda *args: sys.exit(0), "Quit the program.")
 
 
 class LogWindow(tk.Frame):
@@ -138,20 +117,3 @@ class RedirectStdoutToLogWindow:
 
     def flush(self):
         ...
-
-
-def gpt3_cmd_handler() -> None:
-    while True:
-        if GPT3_PROMPTS_QUEUE.qsize() != 0:
-            prompt = GPT3_PROMPTS_QUEUE.get()
-            try:
-                response = send_gpt_completion_request(
-                    [{"role": "user", "content": prompt}], "admin", model="gpt-3.5-turbo"
-                )
-                gui_logger.info(f"GPT3> {response}")
-            except openai.error.RateLimitError:
-                gui_logger.warning("Rate Limited! Try again later.")
-            except Exception as e:
-                main_logger.error(f"Unhandled exception from request from gui. [{e}]")
-        else:
-            time.sleep(2)

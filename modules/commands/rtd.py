@@ -11,7 +11,7 @@ RICKROLL_LINK = "youtu.be/dQw4w9WgXcQ"
 main_logger = get_logger("main")
 
 
-def handle_rtd_command(logline: LogLine, shared_dict: dict) -> None:
+def handle_rtd(logline: LogLine, shared_dict: dict) -> None:
     """
     Handles the RTD (Roll The Dice) command for the given username.
     If RTD_MODE is set to RICKROLL, the user is rickrolled.
