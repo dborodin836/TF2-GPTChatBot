@@ -1,4 +1,3 @@
-import os
 import queue
 import sys
 import time
@@ -13,24 +12,13 @@ from modules.api.openai import send_gpt_completion_request
 from modules.bans import ban_player, list_banned_players, unban_player
 from modules.bot_state import start_bot, stop_bot
 from modules.logs import get_logger
+from modules.utils.path import resource_path
 
 PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
 PROMPTS_QUEUE: queue.Queue = queue.Queue()
 
 gui_logger = get_logger("gui")
 main_logger = get_logger("main")
-
-
-def resource_path(relative_path):
-    """Get absolute path to resource, works for dev and for PyInstaller"""
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception as e:
-        main_logger.warning(f"Running from source. [{e}]")
-        base_path = os.path.abspath("")
-
-    return os.path.join(base_path, relative_path)
 
 
 def print_help_command():
@@ -130,7 +118,7 @@ class LogWindow(tk.Frame):
             self.cmd_line.insert("1.0", PROMPT_PLACEHOLDER)
 
 
-class CustomOutput:
+class RedirectStdoutToLogWindow:
     def __init__(self, window: LogWindow):
         self.window = window
 

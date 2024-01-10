@@ -14,7 +14,7 @@ import keyboard
 from config import config
 from modules.bot_state import switch_state_hotkey_handler
 from modules.chat import parse_console_logs_and_build_conversation_history
-from modules.gui.log_window import CustomOutput, LogWindow, gpt3_cmd_handler
+from modules.gui.log_window import RedirectStdoutToLogWindow, LogWindow, gpt3_cmd_handler
 from modules.logs import get_logger, setup_loggers
 from modules.servers.tf2 import get_status
 from modules.message_queueing import message_queue_handler
@@ -39,7 +39,7 @@ def get_my_data():
 def run_threads():
     root = tk.Tk()
     log_window = LogWindow(root)
-    sys.stdout = CustomOutput(log_window)
+    sys.stdout = RedirectStdoutToLogWindow(log_window)
 
     setup_loggers()
 
