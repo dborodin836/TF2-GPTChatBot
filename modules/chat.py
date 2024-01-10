@@ -70,12 +70,7 @@ class CommandController:
             return
 
         combo_logger.info(f"[{get_time_stamp()}] -- '{command_name}' command from user '{logline.username}'.")
-        return_data = handler(logline, **self.__shared)
-
-        if return_data is not None:
-            combo_logger.error("before" + str(self.__shared))
-            self.__shared.update(return_data)
-            combo_logger.error("after" + str(self.__shared))
+        handler(logline, self.__shared)
 
 
 def set_host_username() -> None:

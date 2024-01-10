@@ -9,7 +9,7 @@ from modules.types import LogLine
 main_logger = get_logger("main")
 
 
-def gpt3_handler(logline: LogLine, **kwargs):
+def gpt3_handler(logline: LogLine, shared_dict: dict):
     if logline.prompt.removeprefix(config.GPT_COMMAND).strip() == "":
         time.sleep(1)
         send_say_command_to_tf2(
@@ -30,19 +30,18 @@ def gpt3_handler(logline: LogLine, **kwargs):
     )
 
 
-def handle_cgpt(logline: LogLine, **kwargs):
+def handle_cgpt(logline: LogLine, shared_dict: dict):
     conv_his = handle_cgpt_request(
         logline.username,
         logline.prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
-        kwargs["CHAT_CONVERSATION_HISTORY"],
+        shared_dict["CHAT_CONVERSATION_HISTORY"],
         is_team=logline.is_team_message,
         model="gpt-3.5-turbo",
     )
-    kwargs.update({"CHAT_CONVERSATION_HISTORY": conv_his})
-    return kwargs
+    shared_dict.update({"CHAT_CONVERSATION_HISTORY": conv_his})
 
 
-def h_gpt4(logline: LogLine, **kwargs):
+def h_gpt4(logline: LogLine, shared_dict: dict):
     if config.GPT4_ADMIN_ONLY and config.HOST_USERNAME == logline.username or not config.GPT4_ADMIN_ONLY:
         handle_gpt_request(
             logline.username,
@@ -52,7 +51,7 @@ def h_gpt4(logline: LogLine, **kwargs):
         )
 
 
-def h_gpt4l(logline: LogLine, **kwargs):
+def h_gpt4l(logline: LogLine, shared_dict: dict):
     if config.GPT4_ADMIN_ONLY and config.HOST_USERNAME == logline.username or not config.GPT4_ADMIN_ONLY:
         handle_gpt_request(
             logline.username,

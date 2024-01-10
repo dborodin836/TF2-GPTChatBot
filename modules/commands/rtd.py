@@ -10,7 +10,8 @@ RICKROLL_LINK = "youtu.be/dQw4w9WgXcQ"
 
 main_logger = get_logger("main")
 
-def handle_rtd_command(logline: LogLine, **kwargs) -> None:
+
+def handle_rtd_command(logline: LogLine, shared_dict: dict) -> None:
     """
     Handles the RTD (Roll The Dice) command for the given username.
     If RTD_MODE is set to RICKROLL, the user is rickrolled.
@@ -29,4 +30,5 @@ def handle_rtd_command(logline: LogLine, **kwargs) -> None:
 
         time.sleep(1)
         log_gui_general_message(f"[RTD] {logline.username} rolled: {random.choice(lines)}")
-        send_say_command_to_tf2(f"[RTD] {logline.username} rolled: {random.choice(lines)}", is_team_chat=logline.is_team_message)
+        send_say_command_to_tf2(f"[RTD] {logline.username} rolled: {random.choice(lines)}",
+                                is_team_chat=logline.is_team_message)

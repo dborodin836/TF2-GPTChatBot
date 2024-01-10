@@ -8,7 +8,7 @@ from modules.types import LogLine, MessageHistory
 main_logger = get_logger("main")
 
 
-def handle_custom_model(logline: LogLine, **kwargs):
+def handle_custom_model(logline: LogLine, shared_dict: dict):
     if config.ENABLE_CUSTOM_MODEL:
         main_logger.info(f"'{config.CUSTOM_MODEL_COMMAND}' command from user '{logline.username}'. "
                          f"Message: '{logline.prompt.removeprefix(config.GPT_COMMAND).strip()}'")
@@ -19,17 +19,16 @@ def handle_custom_model(logline: LogLine, **kwargs):
         )
 
 
-def handle_custom_chat(logline: LogLine, **kwargs):
+def handle_custom_chat(logline: LogLine, shared_dict: dict):
     if config.ENABLE_CUSTOM_MODEL:
         ch = handle_custom_model_chat_command(
             logline.username,
             logline.prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
-            kwargs["CHAT_CONVERSATION_HISTORY"],
+            shared_dict["CHAT_CONVERSATION_HISTORY"],
             is_team=logline.is_team_message
         )
 
-        kwargs.update({"CHAT_CONVERSATION_HISTORY": ch})
-        return kwargs
+        shared_dict.update({"CHAT_CONVERSATION_HISTORY": ch})
 
 
 def handle_custom_model_command(
