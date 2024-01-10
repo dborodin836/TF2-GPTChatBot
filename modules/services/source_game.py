@@ -5,10 +5,10 @@ import queue
 from typing import Generator, Optional
 
 from rcon import WrongPassword
-from rcon.source import Client
 
 from config import config
 from modules.logs import get_logger
+from modules.rcon_client import RconClient
 from modules.text import get_chunk_size, split_into_chunks, get_shortened_username, has_cyrillic
 from modules.types import QueuedMessage
 
@@ -103,7 +103,7 @@ def send_say_cmd(queued_message):
     else:
         cmd = f'say "{queued_message.text}";'
 
-    with Client(config.RCON_HOST, config.RCON_PORT, passwd=config.RCON_PASSWORD) as client:
+    with RconClient() as client:
         try:
             main_logger.debug(f"Sending command [{cmd}]")
             client.run(cmd)
@@ -114,7 +114,7 @@ def send_say_cmd(queued_message):
 
 def get_username() -> str:
     try:
-        with Client(config.RCON_HOST, config.RCON_PORT, passwd=config.RCON_PASSWORD) as client:
+        with RconClient() as client:
             response = client.run("name")
     except Exception as e:
         combo_logger.error(f"Failed to get username. [{e}]")
@@ -151,7 +151,7 @@ def check_connection():
 def get_status():
     while True:
         try:
-            with Client(config.RCON_HOST, config.RCON_PORT, passwd=config.RCON_PASSWORD) as client:
+            with RconClient() as client:
                 response = client.run("cmd status")
                 return response
         except ConnectionRefusedError:
@@ -170,7 +170,7 @@ def login() -> None:
         f"Trying to connect to '{config.RCON_HOST}:{config.RCON_PORT}' with password "
         f"'{config.RCON_PASSWORD[:len(config.RCON_PASSWORD) // 2] + '*' * (len(config.RCON_PASSWORD) // 2)}'"
     )
-    with Client(config.RCON_HOST, config.RCON_PORT, passwd=config.RCON_PASSWORD) as client:
+    with RconClient() as client:
         try:
             client.login(config.RCON_PASSWORD)
         except WrongPassword:
