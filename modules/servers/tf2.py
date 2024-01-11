@@ -1,7 +1,6 @@
 import re
 import sys
 import time
-from typing import Generator
 
 from rcon import WrongPassword
 
@@ -11,9 +10,8 @@ from modules.message_queueing import message_queue
 from modules.rcon_client import RconClient
 from modules.typing import QueuedMessage
 from modules.utils.text import (
-    get_chunk_size,
     get_shortened_username,
-    split_into_chunks,
+    get_chunks,
 )
 
 main_logger = get_logger("main")
@@ -79,15 +77,16 @@ def login() -> None:
         f"Trying to connect to '{config.RCON_HOST}:{config.RCON_PORT}' with password "
         f"'{config.RCON_PASSWORD[:len(config.RCON_PASSWORD) // 2] + '*' * (len(config.RCON_PASSWORD) // 2)}'"
     )
-    with RconClient() as client:
-        try:
+
+    try:
+        with RconClient() as client:
             client.login(config.RCON_PASSWORD)
-        except WrongPassword:
-            combo_logger.critical("Passwords do not match!")
-            time.sleep(4)
-            sys.exit(1)
-        except Exception as e:
-            combo_logger.error(f"Unhandled exception happened. [{e}]")
+    except WrongPassword:
+        combo_logger.critical("Passwords do not match!")
+        time.sleep(4)
+        sys.exit(1)
+    except Exception as e:
+        combo_logger.error(f"Unhandled exception happened. [{e}]")
 
 
 def format_say_message(message: str, username: str = None) -> str:
@@ -106,25 +105,6 @@ def format_say_message(message: str, username: str = None) -> str:
         message = message[: config.HARD_COMPLETION_LIMIT] + "..."
 
     return message
-
-
-def get_chunks(message: str) -> Generator:
-    chunks_size: int = get_chunk_size(message)
-    chunks = split_into_chunks(" ".join(message.split()), chunks_size)
-    return chunks
-
-
-def form_say_command(message: str, is_team_chat: bool):
-    chunks = get_chunks(message)
-    cmd: str = " "
-
-    for chunk in chunks:
-        if is_team_chat:
-            cmd += f'say_team "{chunk}";wait 1300;'
-        else:
-            cmd += f'say "{chunk}";wait 1300;'
-
-    return cmd
 
 
 def send_say_command_to_tf2(message: str, username: str = None, is_team_chat: bool = False) -> None:

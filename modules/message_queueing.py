@@ -4,7 +4,6 @@ from typing import Optional
 
 from config import config
 from modules.rcon_client import RconClient
-
 from modules.typing import QueuedMessage, LogLine
 from modules.utils.text import has_cyrillic
 from modules.logs import get_logger
