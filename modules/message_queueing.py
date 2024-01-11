@@ -112,7 +112,6 @@ def messaging_queue_service(logline: LogLine, shared_dict: dict):
     if (
             awaited_msg is not None
             and awaited_msg in logline.prompt
-            and logline.username == config.HOST_USERNAME
     ):
         confirmable_queue_manager.unlock_queue()
 
