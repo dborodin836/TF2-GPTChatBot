@@ -6,38 +6,17 @@ import sys
 import tkinter as tk
 from enum import IntEnum
 from os.path import exists
-from queue import Queue
 from tkinter import messagebox
 from typing import Optional
 
 import pydantic
 from pydantic import BaseModel, validator
 
-from modules.typing import BufferedMessage, BufferedMessageLevel, BufferedMessageType
+from modules.utils.buffered_messages import buffered_message, buffered_fail_message
 
 CONFIG_FILE = "config.ini"
 OPENAI_API_KEY_RE_PATTERN = r"sk-[a-zA-Z0-9]{48}"
 WEB_API_KEY_RE_PATTERN = r"[a-zA-Z0-9]{32}"
-CONFIG_INIT_MESSAGES_QUEUE: Queue[BufferedMessage] = Queue()
-
-
-def buffered_message(
-    message: str,
-    type_: BufferedMessageType = "GUI",
-    level: BufferedMessageLevel = "INFO",
-    fail_startup: bool = False,
-) -> None:
-    CONFIG_INIT_MESSAGES_QUEUE.put(
-        BufferedMessage(type=type_, level=level, message=message, fail_startup=fail_startup)
-    )
-
-
-def buffered_fail_message(
-    message: str,
-    type_: BufferedMessageType = "GUI",
-    level: BufferedMessageLevel = "INFO",
-):
-    buffered_message(message, type_, level, fail_startup=True)
 
 
 class RTDModes(IntEnum):
