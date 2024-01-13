@@ -76,7 +76,6 @@ class ConfirmableQueueManager:
         return self.awaiting_message
 
 
-# TODO: Weird function location
 def send_say_cmd(queued_message):
     if queued_message.is_team_chat:
         cmd = f'say_team "{queued_message.text}";'

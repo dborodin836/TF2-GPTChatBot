@@ -56,7 +56,6 @@ def test_unban_player():
     assert bans_manager.banned_usernames == set()
 
 
-# TODO: Review this test
 def test_ban_player():
     with patch("modules.logs.log_gui_general_message") as mock_log_cmd_message:
         bans_manager.ban_player("player3")
