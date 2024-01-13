@@ -41,18 +41,27 @@ def check_connection():
     successful connection is established. If a connection is refused, the function will wait for
     4 seconds and then try again.
     """
-    while True:
+    connected = False
+    while not connected:
+        main_logger.debug(
+            f"Trying to connect to '{config.RCON_HOST}:{config.RCON_PORT}' with password "
+            f"'{config.RCON_PASSWORD[:len(config.RCON_PASSWORD) // 2] + '*' * (len(config.RCON_PASSWORD) // 2)}'"
+        )
+
         try:
-            login()
+            with RconClient() as client:
+                connected = client.login(passwd=config.RCON_PASSWORD)
+        except WrongPassword:
+            combo_logger.critical("Passwords do not match!")
+            time.sleep(4)
+            sys.exit(1)
         except ConnectionRefusedError:
             combo_logger.warning("Couldn't connect! Retrying in 4 second...")
             time.sleep(4)
         except Exception as e:
-            combo_logger.critical(f"Unknown exception occurred. Retrying in 8 seconds... [{e}]")
+            combo_logger.error(f"Unhandled exception happened. [{e}]")
             time.sleep(8)
-        else:
-            combo_logger.info("Successfully connected!")
-            break
+    combo_logger.info("Successfully connected!")
 
 
 def get_status():
@@ -67,26 +76,6 @@ def get_status():
         except Exception as e:
             main_logger.warning(f"Failed to fetch status. [{e}]")
             time.sleep(2)
-
-
-def login() -> None:
-    """
-    Attempts to log in to a remote RCON server using the provided credentials.
-    """
-    main_logger.debug(
-        f"Trying to connect to '{config.RCON_HOST}:{config.RCON_PORT}' with password "
-        f"'{config.RCON_PASSWORD[:len(config.RCON_PASSWORD) // 2] + '*' * (len(config.RCON_PASSWORD) // 2)}'"
-    )
-
-    try:
-        with RconClient() as client:
-            client.login(config.RCON_PASSWORD)
-    except WrongPassword:
-        combo_logger.critical("Passwords do not match!")
-        time.sleep(4)
-        sys.exit(1)
-    except Exception as e:
-        combo_logger.error(f"Unhandled exception happened. [{e}]")
 
 
 def format_say_message(message: str, username: str = None) -> str:

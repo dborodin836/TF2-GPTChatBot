@@ -36,7 +36,7 @@ class LogWindow(tk.Frame):
         self.create_widgets()
         self.master.title("TF2-GPTChatBot")
         self.master.resizable(False, False)
-        self.master.iconbitmap(resource_path("icon.ico"))
+        # self.master.iconbitmap(resource_path("icon.ico"))
 
         # Set the style to "simplex"
         style = Style(theme="cosmo")

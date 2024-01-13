@@ -40,6 +40,7 @@ def keyboard_on_press(key):
 
 def run_threads():
     root = tk.Tk()
+    root.iconphoto(False, tk.PhotoImage(file='icon.png'))
     log_window = LogWindow(root)
     sys.stdout = RedirectStdoutToLogWindow(log_window)
 
