@@ -3,23 +3,23 @@ from config import init_config
 # This is required due to config used in imported modules
 init_config()
 
+import contextlib
 import sys
 import threading
-import tkinter as tk
-import contextlib
 import time
+import tkinter as tk
 
 from pynput import keyboard
 
 from config import config
+from modules.bot_state import state_manager
 from modules.chat import parse_console_logs_and_build_conversation_history
-from modules.gui.log_window import RedirectStdoutToLogWindow, LogWindow
 from modules.commands.gui.openai import gpt3_cmd_handler
+from modules.gui.log_window import LogWindow, RedirectStdoutToLogWindow
 from modules.logs import get_logger, setup_loggers
 from modules.message_queueing import message_queue_handler
-from modules.tf_statistics import StatsData
-from modules.bot_state import state_manager
 from modules.servers.tf2 import get_status
+from modules.tf_statistics import StatsData
 
 gui_logger = get_logger("gui")
 
@@ -40,7 +40,7 @@ def keyboard_on_press(key):
 
 def run_threads():
     root = tk.Tk()
-    root.iconphoto(False, tk.PhotoImage(file='icon.png'))
+    root.iconphoto(False, tk.PhotoImage(file="icon.png"))
     log_window = LogWindow(root)
     sys.stdout = RedirectStdoutToLogWindow(log_window)
 

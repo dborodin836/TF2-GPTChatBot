@@ -1,4 +1,4 @@
-from typing import List, Literal, NamedTuple, TypedDict, Callable
+from typing import Callable, List, Literal, NamedTuple, TypedDict
 
 from pydantic import BaseModel
 

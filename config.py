@@ -12,7 +12,7 @@ from typing import Optional
 import pydantic
 from pydantic import BaseModel, validator
 
-from modules.utils.buffered_messages import buffered_message, buffered_fail_message
+from modules.utils.buffered_messages import buffered_fail_message, buffered_message
 
 CONFIG_FILE = "config.ini"
 OPENAI_API_KEY_RE_PATTERN = r"sk-[a-zA-Z0-9]{48}"

@@ -1,7 +1,7 @@
 from queue import Queue
 
 from modules.logs import get_logger
-from modules.typing import BufferedMessage, BufferedMessageType, BufferedMessageLevel
+from modules.typing import BufferedMessage, BufferedMessageLevel, BufferedMessageType
 
 CONFIG_INIT_MESSAGES_QUEUE: Queue[BufferedMessage] = Queue()
 

@@ -17,7 +17,7 @@ class BansManager:
 
     def load_banned_players(self):
         """
-            Loads the set of banned players.
+        Loads the set of banned players.
         """
         try:
             with codecs.open(self.__bans_filename, "r", encoding="utf-8") as file:

@@ -9,10 +9,7 @@ from modules.logs import get_logger
 from modules.message_queueing import message_queue
 from modules.rcon_client import RconClient
 from modules.typing import QueuedMessage
-from modules.utils.text import (
-    get_shortened_username,
-    get_chunks,
-)
+from modules.utils.text import get_chunks, get_shortened_username
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")

@@ -4,7 +4,7 @@ from ordered_set import OrderedSet
 
 from modules.logs import get_logger, get_time_stamp
 from modules.set_once_dict import SetOnceDictionary
-from modules.typing import LogLine, Command
+from modules.typing import Command, LogLine
 
 combo_logger = get_logger("combo")
 gui_logger = get_logger("gui")
@@ -16,7 +16,9 @@ class GuiCommandController:
         self.__shared = dict()
 
         if not disable_help:
-            self.__named_commands_registry.update({"help": Command("help", self.help, "Prints this message.")})
+            self.__named_commands_registry.update(
+                {"help": Command("help", self.help, "Prints this message.")}
+            )
 
         if initializer_config is not None:
             self.__shared.update(initializer_config)
@@ -36,10 +38,12 @@ class GuiCommandController:
 
     def help(self, command: str, shared_dict: dict):
         gui_logger.info("### HELP ###")
-        max_cmd_length: Command = max(self.__named_commands_registry.values(), key=lambda cmd: len(cmd.name))
+        max_cmd_length: Command = max(
+            self.__named_commands_registry.values(), key=lambda cmd: len(cmd.name)
+        )
         max_length = len(max_cmd_length.name)
         for command in self.__named_commands_registry.values():
-            gui_logger.info(f'- {command.name:>{max_length}} | {command.description}')
+            gui_logger.info(f"- {command.name:>{max_length}} | {command.description}")
 
 
 class CommandController:

@@ -5,13 +5,13 @@ from modules.bot_state import state_manager
 from modules.command_controllers import CommandController
 from modules.commands.clear_chat import handle_clear
 from modules.commands.github import handle_gh_command
-from modules.commands.openai import handle_gpt3, handle_gpt4, handle_gpt4l, handle_cgpt
+from modules.commands.openai import handle_cgpt, handle_gpt3, handle_gpt4, handle_gpt4l
 from modules.commands.rtd import handle_rtd
 from modules.commands.textgen_webui import handle_custom_chat, handle_custom_model
 from modules.logs import get_logger
-from modules.utils.buffered_messages import print_buffered_config_innit_messages
-from modules.servers.tf2 import check_connection, set_host_username
 from modules.message_queueing import messaging_queue_service
+from modules.servers.tf2 import check_connection, set_host_username
+from modules.utils.buffered_messages import print_buffered_config_innit_messages
 from modules.utils.prompts import load_prompts
 from modules.utils.text import get_console_logline
 

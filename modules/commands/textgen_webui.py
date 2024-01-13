@@ -13,10 +13,15 @@ def handle_custom_model(logline: LogLine, shared_dict: dict):
         f"'{config.CUSTOM_MODEL_COMMAND}' command from user '{logline.username}'. "
         f"Message: '{logline.prompt.removeprefix(config.GPT_COMMAND).strip()}'"
     )
-    log_gui_model_message("CUSTOM", logline.username,
-                          logline.prompt.removeprefix(config.CUSTOM_MODEL_COMMAND).strip())
+    log_gui_model_message(
+        "CUSTOM",
+        logline.username,
+        logline.prompt.removeprefix(config.CUSTOM_MODEL_COMMAND).strip(),
+    )
 
-    message = add_prompts_by_flags(logline.prompt, enable_soft_limit=config.ENABLE_SOFT_LIMIT_FOR_CUSTOM_MODEL)
+    message = add_prompts_by_flags(
+        logline.prompt, enable_soft_limit=config.ENABLE_SOFT_LIMIT_FOR_CUSTOM_MODEL
+    )
 
     response = get_custom_model_response(
         [
@@ -32,8 +37,11 @@ def handle_custom_model(logline: LogLine, shared_dict: dict):
 def handle_custom_chat(logline: LogLine, shared_dict: dict):
     conversation_history = shared_dict["CHAT_CONVERSATION_HISTORY"]
 
-    log_gui_model_message("CUSTOM CHAT", logline.username,
-                          logline.prompt.removeprefix(config.CUSTOM_MODEL_CHAT_COMMAND).strip())
+    log_gui_model_message(
+        "CUSTOM CHAT",
+        logline.username,
+        logline.prompt.removeprefix(config.CUSTOM_MODEL_CHAT_COMMAND).strip(),
+    )
 
     message = add_prompts_by_flags(logline.prompt)
     conversation_history.append({"role": "user", "content": message})

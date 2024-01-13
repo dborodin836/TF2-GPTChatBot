@@ -32,7 +32,8 @@ TF2BD_WRAPPER_CHARS = [
 try:
     TF2BD_WRAPPER_FOLDER_EXIST = os.path.exists(
         os.path.join(
-            os.path.dirname(config.TF2_LOGFILE_PATH), "custom/aaaaaaaaaa_loadfirst_tf2_bot_detector"
+            os.path.dirname(config.TF2_LOGFILE_PATH),
+            "custom/aaaaaaaaaa_loadfirst_tf2_bot_detector",
         )
     )
 except AttributeError:
@@ -155,7 +156,8 @@ def parse_line(line: str) -> LogLine:
 def stats_regexes(line: str):
     # Parsing user line from status command
     if matches := re.search(
-            r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*", line
+        r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*",
+        line,
     ):
         time_on_server = matches.groups()[2]
 
@@ -247,9 +249,9 @@ def add_prompts_by_flags(user_prompt: str, enable_soft_limit: bool = True) -> st
 
     if r"\stats" in args and config.ENABLE_STATS:
         result = (
-                f" {StatsData.get_data()} Based on this data answer following question. "
-                + result
-                + " Ignore unknown data."
+            f" {StatsData.get_data()} Based on this data answer following question. "
+            + result
+            + " Ignore unknown data."
         )
         result = result.replace(r"\stats", "")
 

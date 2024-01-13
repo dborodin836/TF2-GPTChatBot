@@ -241,7 +241,11 @@ class StatsData:
         new_players = cls._update_tf2_hours(new_players)
         new_players = cls._update_vac_hours(new_players, steam_bans_data)
 
-        return {"map": cls.map_name, "server_address": cls.server_ip, "players": new_players}
+        return {
+            "map": cls.map_name,
+            "server_address": cls.server_ip,
+            "players": new_players,
+        }
 
     @staticmethod
     def _get_melee_kill_percentage(player: Player) -> str:

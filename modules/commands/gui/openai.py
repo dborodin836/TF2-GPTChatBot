@@ -23,7 +23,9 @@ def gpt3_cmd_handler() -> None:
             prompt = GPT3_PROMPTS_QUEUE.get()
             try:
                 response = send_gpt_completion_request(
-                    [{"role": "user", "content": prompt}], "admin", model="gpt-3.5-turbo"
+                    [{"role": "user", "content": prompt}],
+                    "admin",
+                    model="gpt-3.5-turbo",
                 )
                 gui_logger.info(f"GPT3> {response}")
             except openai.error.RateLimitError:

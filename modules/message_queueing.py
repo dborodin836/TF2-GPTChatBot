@@ -3,10 +3,10 @@ import time
 from typing import Optional
 
 from config import config
-from modules.rcon_client import RconClient
-from modules.typing import QueuedMessage, LogLine
-from modules.utils.text import has_cyrillic
 from modules.logs import get_logger
+from modules.rcon_client import RconClient
+from modules.typing import LogLine, QueuedMessage
+from modules.utils.text import has_cyrillic
 
 message_queue = queue.Queue()
 
@@ -107,10 +107,7 @@ def message_queue_handler() -> None:
 
 def messaging_queue_service(logline: LogLine, shared_dict: dict):
     awaited_msg = confirmable_queue_manager.get_awaited_msg()
-    if (
-            awaited_msg is not None
-            and awaited_msg in logline.prompt
-    ):
+    if awaited_msg is not None and awaited_msg in logline.prompt:
         confirmable_queue_manager.unlock_queue()
 
 
