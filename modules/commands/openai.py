@@ -9,7 +9,7 @@ from modules.typing import LogLine
 main_logger = get_logger("main")
 
 
-def handle_gpt3(logline: LogLine, shared_dict: dict):
+def handle_gpt3(logline: LogLine, shared_dict: dict) -> None:
     if logline.prompt.removeprefix(config.GPT_COMMAND).strip() == "":
         time.sleep(1)
         send_say_command_to_tf2(
@@ -20,6 +20,7 @@ def handle_gpt3(logline: LogLine, shared_dict: dict):
         )
         log_gui_model_message("gpt-3.5-turbo", logline.username, logline.prompt.strip())
         main_logger.info(f"Empty '{config.GPT_COMMAND}' command from user '{logline.username}'.")
+        return
 
     main_logger.info(
         f"'{config.GPT_COMMAND}' command from user '{logline.username}'. "
