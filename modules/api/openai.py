@@ -1,5 +1,4 @@
 import hashlib
-import re
 import time
 
 import openai
@@ -8,7 +7,7 @@ from config import config
 from modules.logs import get_logger, log_gui_general_message, log_gui_model_message
 from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import MessageHistory
-from modules.utils.text import add_prompts_by_flags
+from modules.utils.text import add_prompts_by_flags, remove_hashtags
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -129,11 +128,3 @@ def get_response(conversation_history: MessageHistory, username: str, model) -> 
     if attempts == max_attempts:
         log_gui_general_message("Max number of attempts reached! Try again later!")
         main_logger(f"Max number of attempts reached. [{max_attempts}/{max_attempts}]")
-
-
-def remove_hashtags(text: str) -> str:
-    """
-    Removes hashtags from a given string.
-    """
-    cleaned_text = re.sub(r"#\w+", "", text).strip()
-    return cleaned_text

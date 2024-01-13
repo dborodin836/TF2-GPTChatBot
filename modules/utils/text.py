@@ -265,3 +265,11 @@ def get_chunks(message: str) -> Generator:
     chunks_size: int = get_chunk_size(message)
     chunks = split_into_chunks(" ".join(message.split()), chunks_size)
     return chunks
+
+
+def remove_hashtags(text: str) -> str:
+    """
+    Removes hashtags from a given string.
+    """
+    cleaned_text = re.sub(r"#\w+", "", text).strip()
+    return cleaned_text
