@@ -39,6 +39,7 @@ class Config(BaseModel):
 
     ENABLE_STATS: bool
     STEAM_WEBAPI_KEY: str
+    DISABLE_KEYBOARD_BINDINGS: bool
 
     GPT_COMMAND: str
     CHATGPT_COMMAND: str

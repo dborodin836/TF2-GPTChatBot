@@ -50,7 +50,8 @@ def run_threads():
     if config.ENABLE_STATS:
         threading.Thread(target=status_command_sender, daemon=True).start()
     threading.Thread(target=message_queue_handler, daemon=True).start()
-    keyboard.Listener(on_press=keyboard_on_press).start()
+    if not config.DISABLE_KEYBOARD_BINDINGS:
+        keyboard.Listener(on_press=keyboard_on_press).start()
 
     log_window.pack()
     root.mainloop()
