@@ -123,7 +123,20 @@ class Config(BaseModel):
         return v
 
 
-config: Config | None = None
+config: Optional[Config] = None
+
+
+def show_error_window(err):
+    # Create a Tkinter window
+    root = tk.Tk()
+    root.withdraw()
+
+    # Show error message
+    messagebox.showerror("Error", f"An error occurred. Check config file. [{err}]")
+
+    # Close the window
+    root.destroy()
+    sys.exit(1)
 
 
 def init_config():
@@ -154,13 +167,4 @@ def init_config():
 
         config = Config(**config_dict)
     except (pydantic.ValidationError, Exception) as e:
-        # Create a Tkinter window
-        root = tk.Tk()
-        root.withdraw()
-
-        # Show error message
-        messagebox.showerror("Error", f"An error occurred. Check config file. [{e}]")
-
-        # Close the window
-        root.destroy()
-        sys.exit(1)
+        show_error_window(e)
