@@ -1,9 +1,9 @@
-from modules.bot_state import stop_bot, start_bot
+from modules.bot_state import state_manager
 
 
 def handle_stop(command, shared_dict):
-    stop_bot()
+    state_manager.stop_bot()
 
 
 def handle_start(command, shared_dict):
-    start_bot()
+    state_manager.start_bot()

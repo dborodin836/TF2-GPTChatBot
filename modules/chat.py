@@ -1,7 +1,7 @@
 from config import config
 from modules.api.github import check_for_updates
 from modules.bans import bans_manager
-from modules.bot_state import get_bot_state
+from modules.bot_state import state_manager
 from modules.command_controllers import CommandController
 from modules.commands.clear_chat import handle_clear
 from modules.commands.github import handle_gh_command
@@ -62,7 +62,7 @@ def parse_console_logs_and_build_conversation_history() -> None:
     controller.register_service(messaging_queue_service)
 
     for logline in get_console_logline():
-        if not get_bot_state():
+        if not state_manager.bot_running:
             continue
         if bans_manager.is_banned_username(logline.username):
             continue
