@@ -7,7 +7,7 @@ from config import config
 from modules.logs import get_logger, log_gui_general_message, log_gui_model_message
 from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import MessageHistory
-from modules.utils.text import add_prompts_by_flags, remove_hashtags
+from modules.utils.text import remove_hashtags, add_prompts_by_flags
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")

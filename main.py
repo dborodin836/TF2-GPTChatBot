@@ -3,23 +3,23 @@ from config import init_config
 # This is required due to config used in imported modules
 init_config()
 
-import contextlib
 import sys
 import threading
-import time
 import tkinter as tk
+import contextlib
+import time
 
-import keyboard
+from pynput import keyboard
 
 from config import config
-from modules.bot_state import switch_state_hotkey_handler
 from modules.chat import parse_console_logs_and_build_conversation_history
 from modules.gui.log_window import RedirectStdoutToLogWindow, LogWindow
 from modules.commands.gui.openai import gpt3_cmd_handler
 from modules.logs import get_logger, setup_loggers
-from modules.servers.tf2 import get_status
 from modules.message_queueing import message_queue_handler
 from modules.tf_statistics import StatsData
+from modules.bot_state import state_manager
+from modules.servers.tf2 import get_status
 
 gui_logger = get_logger("gui")
 
@@ -31,9 +31,10 @@ def status_command_sender():
             time.sleep(20)
 
 
-def get_my_data():
-    while True:
-        keyboard.wait("F10")
+def keyboard_on_press(key):
+    if key == keyboard.Key.f11:
+        state_manager.switch_state()
+    elif key == keyboard.Key.f10:
         gui_logger.info(StatsData.get_data())
 
 
@@ -46,11 +47,10 @@ def run_threads():
 
     threading.Thread(target=parse_console_logs_and_build_conversation_history, daemon=True).start()
     threading.Thread(target=gpt3_cmd_handler, daemon=True).start()
-    threading.Thread(target=switch_state_hotkey_handler, daemon=True).start()
     if config.ENABLE_STATS:
         threading.Thread(target=status_command_sender, daemon=True).start()
-    threading.Thread(target=get_my_data, daemon=True).start()
     threading.Thread(target=message_queue_handler, daemon=True).start()
+    keyboard.Listener(on_press=keyboard_on_press).start()
 
     log_window.pack()
     root.mainloop()

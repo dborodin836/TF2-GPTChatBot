@@ -1,4 +1,9 @@
 import datetime
+import time
+
+from modules.logs import get_logger
+
+main_logger = get_logger("main")
 
 
 def get_date(epoch: int, relative_epoch_time: int = None) -> str:
@@ -31,3 +36,17 @@ def get_date(epoch: int, relative_epoch_time: int = None) -> str:
         )
     )
     return f"{age_years} years {age_months} months {age_days} days"
+
+
+def get_minutes_from_str(time_str: str) -> int:
+    try:
+        struct_time = time.strptime(time_str, "%H:%M:%S")
+        tm = struct_time.tm_hour * 60 + struct_time.tm_min
+    except ValueError:
+        struct_time = time.strptime(time_str, "%M:%S")
+        tm = struct_time.tm_min
+    except Exception as e:
+        main_logger.warning(f"Unhandled error while parsing time happened. ({e})")
+        tm = 0
+
+    return tm

@@ -1,11 +1,7 @@
-import keyboard
-
 from modules.logs import get_logger, log_gui_general_message
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
-
-SWITCH_STATE_HOTKEY = "F11"
 
 
 class StateManager:
@@ -30,9 +26,3 @@ class StateManager:
 
 
 state_manager = StateManager()
-
-
-def switch_state_hotkey_handler() -> None:
-    while True:
-        keyboard.wait(SWITCH_STATE_HOTKEY)
-        state_manager.switch_state()

@@ -11,6 +11,7 @@ from modules.logs import get_logger
 from modules.tf_statistics import StatsData
 from modules.typing import LogLine, Player
 from modules.utils.prompts import PROMPTS
+from modules.utils.time import get_minutes_from_str
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -89,38 +90,6 @@ def get_chunk_size(text: str) -> int:
     return MAX_LENGTH_OTHER
 
 
-def add_prompts_by_flags(user_prompt: str) -> str:
-    """
-    Adds prompts to a user prompt based on the flags provided in the prompt.
-    """
-    #  This args var also contains user prompt lul
-    args = user_prompt.split(" ")
-    result = ""
-
-    for item in PROMPTS:
-        if item["flag"] in args:
-            result += item["prompt"]
-            user_prompt = user_prompt.replace(item["flag"], "")
-
-    result += user_prompt.strip()
-
-    if r"\stats" in args and config.ENABLE_STATS:
-        result = (
-            f" {StatsData.get_data()} Based on this data answer following question. "
-            + result
-            + " Ignore unknown data."
-        )
-        result = result.replace(r"\stats", "")
-
-    if r"\l" not in args:
-        result += (
-            f" Answer in less than {config.SOFT_COMPLETION_LIMIT} chars! {config.CUSTOM_PROMPT}"
-        )
-    result = result.replace(r"\l", "")
-
-    return result.strip()
-
-
 def follow_tail(file_path: str) -> typing.Generator:
     """
     Follows the tail of a file, yielding new lines as they are added.
@@ -181,20 +150,6 @@ def parse_line(line: str) -> LogLine:
         prompt = parts[-1]
 
     return LogLine(prompt, username, is_team_mes)
-
-
-def get_minutes_from_str(time_str: str) -> int:
-    try:
-        struct_time = time.strptime(time_str, "%H:%M:%S")
-        tm = struct_time.tm_hour * 60 + struct_time.tm_min
-    except ValueError:
-        struct_time = time.strptime(time_str, "%M:%S")
-        tm = struct_time.tm_min
-    except Exception as e:
-        main_logger.warning(f"Unhandled error while parsing time happened. ({e})")
-        tm = 0
-
-    return tm
 
 
 def stats_regexes(line: str):
@@ -273,3 +228,35 @@ def remove_hashtags(text: str) -> str:
     """
     cleaned_text = re.sub(r"#\w+", "", text).strip()
     return cleaned_text
+
+
+def add_prompts_by_flags(user_prompt: str) -> str:
+    """
+    Adds prompts to a user prompt based on the flags provided in the prompt.
+    """
+    #  This args var also contains user prompt lul
+    args = user_prompt.split(" ")
+    result = ""
+
+    for item in PROMPTS:
+        if item["flag"] in args:
+            result += item["prompt"]
+            user_prompt = user_prompt.replace(item["flag"], "")
+
+    result += user_prompt.strip()
+
+    if r"\stats" in args and config.ENABLE_STATS:
+        result = (
+            f" {StatsData.get_data()} Based on this data answer following question. "
+            + result
+            + " Ignore unknown data."
+        )
+        result = result.replace(r"\stats", "")
+
+    if r"\l" not in args:
+        result += (
+            f" Answer in less than {config.SOFT_COMPLETION_LIMIT} chars! {config.CUSTOM_PROMPT}"
+        )
+    result = result.replace(r"\l", "")
+
+    return result.strip()
