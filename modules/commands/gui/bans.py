@@ -1,15 +1,21 @@
-from modules.bans import ban_player, unban_player, list_banned_players
+from modules.bans import bans_manager
+from modules.logs import get_logger
+
+gui_logger = get_logger("gui")
 
 
 def handle_ban(command, shared_dict):
-    name = command.removeprefix("ban ").strip()
-    ban_player(name)
+    username = command.removeprefix("ban ").strip()
+    bans_manager.ban_player(username)
 
 
 def handle_unban(command, shared_dict):
     name = command.removeprefix("unban ").strip()
-    unban_player(name)
+    bans_manager.unban_player(name)
 
 
 def handle_list_bans(command, shared_dict):
-    list_banned_players()
+    if len(bans_manager.banned_usernames) == 0:
+        gui_logger.info("### NO BANS ###")
+    else:
+        gui_logger.info("### BANNED PLAYERS ###", *list(bans_manager.banned_usernames), sep="\n")

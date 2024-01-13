@@ -119,3 +119,12 @@ def send_say_command_to_tf2(message: str, username: str = None, is_team_chat: bo
         main_logger.trace(f'Adding message "{msg_chunk}" to queue.')
         queued_message = QueuedMessage(text=msg_chunk, is_team_chat=is_team_chat)
         message_queue.put(queued_message)
+
+
+def set_host_username() -> None:
+    """
+    Sets the username in config.
+    """
+    username = get_username()
+    config.HOST_USERNAME = username
+    gui_logger.info(f"Hello '{config.HOST_USERNAME}'!")
