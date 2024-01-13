@@ -54,7 +54,7 @@ def handle_cgpt_request(
     user's message, and sends a request to GPT-3 to generate a response. Finally, the function
     sends the generated response to the TF2 game.
     """
-    log_gui_model_message(model.upper(), username, user_prompt)
+    log_gui_model_message(model, username, user_prompt)
 
     message = add_prompts_by_flags(user_prompt)
 

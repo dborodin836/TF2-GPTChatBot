@@ -29,7 +29,7 @@ def handle_gpt3(logline: LogLine, shared_dict: dict) -> None:
     handle_gpt_request(
         logline.username,
         logline.prompt.removeprefix(config.GPT_COMMAND).strip(),
-        model="gpt-3.5-turbo",
+        model=config.GPT3_MODEL,
         is_team_chat=logline.is_team_message,
     )
 
@@ -40,7 +40,7 @@ def handle_cgpt(logline: LogLine, shared_dict: dict):
         logline.prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
         shared_dict["CHAT_CONVERSATION_HISTORY"],
         is_team=logline.is_team_message,
-        model="gpt-3.5-turbo",
+        model=config.GPT3_CHAT_MODEL,
     )
     shared_dict.update({"CHAT_CONVERSATION_HISTORY": conv_his})
 
@@ -54,7 +54,7 @@ def handle_gpt4(logline: LogLine, shared_dict: dict):
         handle_gpt_request(
             logline.username,
             logline.prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
-            model="gpt-4-1106-preview",
+            model=config.GPT4_MODEL,
             is_team_chat=logline.is_team_message,
         )
 
@@ -68,6 +68,6 @@ def handle_gpt4l(logline: LogLine, shared_dict: dict):
         handle_gpt_request(
             logline.username,
             logline.prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
-            model="gpt-4",
+            model=config.GPT4L_MODEL,
             is_team_chat=logline.is_team_message,
         )

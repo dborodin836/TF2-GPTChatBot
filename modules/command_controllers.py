@@ -67,7 +67,4 @@ class CommandController:
         if handler is None:
             return
 
-        combo_logger.info(
-            f"[{get_time_stamp()}] -- '{command_name}' command from user '{logline.username}'."
-        )
         handler(logline, self.__shared)

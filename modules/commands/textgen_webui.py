@@ -9,34 +9,14 @@ main_logger = get_logger("main")
 
 
 def handle_custom_model(logline: LogLine, shared_dict: dict):
-    if config.ENABLE_CUSTOM_MODEL:
-        main_logger.info(
-            f"'{config.CUSTOM_MODEL_COMMAND}' command from user '{logline.username}'. "
-            f"Message: '{logline.prompt.removeprefix(config.GPT_COMMAND).strip()}'"
-        )
-        handle_custom_model_command(
-            logline.username,
-            logline.prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
-            is_team=logline.is_team_message,
-        )
+    main_logger.info(
+        f"'{config.CUSTOM_MODEL_COMMAND}' command from user '{logline.username}'. "
+        f"Message: '{logline.prompt.removeprefix(config.GPT_COMMAND).strip()}'"
+    )
+    log_gui_model_message("CUSTOM", logline.username,
+                          logline.prompt.removeprefix(config.CUSTOM_MODEL_COMMAND).strip())
 
-
-def handle_custom_chat(logline: LogLine, shared_dict: dict):
-    if config.ENABLE_CUSTOM_MODEL:
-        ch = handle_custom_model_chat_command(
-            logline.username,
-            logline.prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
-            shared_dict["CHAT_CONVERSATION_HISTORY"],
-            is_team=logline.is_team_message,
-        )
-
-        shared_dict.update({"CHAT_CONVERSATION_HISTORY": ch})
-
-
-def handle_custom_model_command(username: str, user_prompt: str, is_team: bool = False) -> None:
-    log_gui_model_message("CUSTOM", username, user_prompt.strip())
-
-    message = add_prompts_by_flags(user_prompt)
+    message = add_prompts_by_flags(logline.prompt, enable_soft_limit=config.ENABLE_SOFT_LIMIT_FOR_CUSTOM_MODEL)
 
     response = get_custom_model_response(
         [
@@ -45,22 +25,22 @@ def handle_custom_model_command(username: str, user_prompt: str, is_team: bool =
     )
 
     if response:
-        log_gui_model_message("CUSTOM", username, response.strip())
-        send_say_command_to_tf2(response, username, is_team)
+        log_gui_model_message("CUSTOM", logline.username, response.strip())
+        send_say_command_to_tf2(response, logline.username, logline.is_team_message)
 
 
-def handle_custom_model_chat_command(
-    username: str, user_prompt: str, conversation_history: MessageHistory, is_team: bool = False
-) -> MessageHistory:
-    log_gui_model_message("CUSTOM CHAT", username, user_prompt.strip())
+def handle_custom_chat(logline: LogLine, shared_dict: dict):
+    conversation_history = shared_dict["CHAT_CONVERSATION_HISTORY"]
 
-    message = add_prompts_by_flags(user_prompt)
+    log_gui_model_message("CUSTOM CHAT", logline.username,
+                          logline.prompt.removeprefix(config.CUSTOM_MODEL_CHAT_COMMAND).strip())
+
+    message = add_prompts_by_flags(logline.prompt)
     conversation_history.append({"role": "user", "content": message})
     response = get_custom_model_response(conversation_history)
 
     if response:
         conversation_history.append({"role": "assistant", "content": response})
-        log_gui_model_message("CUSTOM CHAT", username, response.strip())
-        send_say_command_to_tf2(response, username, is_team)
-
-    return conversation_history
+        log_gui_model_message("CUSTOM CHAT", logline.username, response.strip())
+        send_say_command_to_tf2(response, logline.username, logline.is_team_message)
+        shared_dict.update({"CHAT_CONVERSATION_HISTORY": conversation_history})

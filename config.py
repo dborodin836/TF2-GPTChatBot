@@ -40,6 +40,13 @@ class Config(BaseModel):
     ENABLE_STATS: bool
     STEAM_WEBAPI_KEY: str
     DISABLE_KEYBOARD_BINDINGS: bool
+    GPT4_COMMAND: str
+    GPT4_LEGACY_COMMAND: str
+
+    GPT3_MODEL: str
+    GPT3_CHAT_MODEL: str
+    GPT4_MODEL: str
+    GPT4L_MODEL: str
 
     GPT_COMMAND: str
     CHATGPT_COMMAND: str
@@ -59,6 +66,7 @@ class Config(BaseModel):
     SHORTENED_USERNAMES_FORMAT: str
     SHORTENED_USERNAME_LENGTH: int
     DELAY_BETWEEN_MESSAGES: float
+    ENABLE_SOFT_LIMIT_FOR_CUSTOM_MODEL: bool
 
     RTD_MODE: int
 

@@ -155,7 +155,7 @@ def parse_line(line: str) -> LogLine:
 def stats_regexes(line: str):
     # Parsing user line from status command
     if matches := re.search(
-        r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*", line
+            r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*", line
     ):
         time_on_server = matches.groups()[2]
 
@@ -230,7 +230,7 @@ def remove_hashtags(text: str) -> str:
     return cleaned_text
 
 
-def add_prompts_by_flags(user_prompt: str) -> str:
+def add_prompts_by_flags(user_prompt: str, enable_soft_limit: bool = True) -> str:
     """
     Adds prompts to a user prompt based on the flags provided in the prompt.
     """
@@ -247,13 +247,13 @@ def add_prompts_by_flags(user_prompt: str) -> str:
 
     if r"\stats" in args and config.ENABLE_STATS:
         result = (
-            f" {StatsData.get_data()} Based on this data answer following question. "
-            + result
-            + " Ignore unknown data."
+                f" {StatsData.get_data()} Based on this data answer following question. "
+                + result
+                + " Ignore unknown data."
         )
         result = result.replace(r"\stats", "")
 
-    if r"\l" not in args:
+    if r"\l" not in args and enable_soft_limit:
         result += (
             f" Answer in less than {config.SOFT_COMPLETION_LIMIT} chars! {config.CUSTOM_PROMPT}"
         )
