@@ -45,44 +45,15 @@
 
 ### 2. Edit the configuration file:
 
-Edit configuration file named config.ini and set the required configuration variables in GENERAL section, such as API
+Edit configuration file named config.ini and set the required configuration variables in `GENERAL` section, such as API
 keys and file paths. You can leave the rest as it is.
-
-Here's an example of what the config file might look like:
 
 ```
 [GENERAL]
 TF2_LOGFILE_PATH=H:\Programs\Steam\steamapps\common\Team Fortress 2\tf\console.log
 OPENAI_API_KEY=sk-************************************************
 
-[COMMANDS]
-GPT_COMMAND=!gpt3
-CHATGPT_COMMAND=!cgpt
-CLEAR_CHAT_COMMAND=!clear
-RTD_COMMAND=!rtd
-GPT4_ADMIN_ONLY=False
-
-[RCON]
-RCON_HOST=127.0.0.1
-RCON_PASSWORD=password
-RCON_PORT=42465
-
-[MISC]
-SOFT_COMPLETION_LIMIT=128
-HARD_COMPLETION_LIMIT=250
-TOS_VIOLATION = 0
-
-[STATS]
-ENABLE_STATS=0
-STEAM_WEBAPI_KEY=********************************
-
-[TEXT-GENERATION-PUBLIC-API]
-ENABLE_CUSTOM_MODEL=0
-CUSTOM_MODEL_COMMAND=!ai
-CUSTOM_MODEL_HOST=your-uri-here.trycloudflare.com
-
-[FUN]
-RTD_MODE = 0
+...
 ```
 
 ### 3. Add launch options to TF2 on Steam:
@@ -149,41 +120,13 @@ pip install -r requirements.txt
 Edit configuration file named config.ini and set the required configuration variables in GENERAL section, such as API
 keys and file paths. You can leave the rest as it is.
 
-Here's an example of what the config file might look like:
 
 ```
 [GENERAL]
 TF2_LOGFILE_PATH=H:\Programs\Steam\steamapps\common\Team Fortress 2\tf\console.log
 OPENAI_API_KEY=sk-************************************************
 
-[COMMANDS]
-GPT_COMMAND=!gpt3
-CHATGPT_COMMAND=!cgpt
-CLEAR_CHAT_COMMAND=!clear
-RTD_COMMAND=!rtd
-GPT4_ADMIN_ONLY=False
-
-[RCON]
-RCON_HOST=127.0.0.1
-RCON_PASSWORD=password
-RCON_PORT=42465
-
-[MISC]
-SOFT_COMPLETION_LIMIT=128
-HARD_COMPLETION_LIMIT=250
-TOS_VIOLATION = 0
-
-[STATS]
-ENABLE_STATS=0
-STEAM_WEBAPI_KEY=********************************
-
-[TEXT-GENERATION-PUBLIC-API]
-ENABLE_CUSTOM_MODEL=0
-CUSTOM_MODEL_COMMAND=!ai
-CUSTOM_MODEL_HOST=your-uri-here.trycloudflare.com
-
-[FUN]
-RTD_MODE = 0
+...
 ```
 
 ### 6. Add launch options to TF2 on Steam:
@@ -211,7 +154,7 @@ _**NOTE: You can create your own executable using this command**_
 Windows:
 
 ```sh
-pyinstaller --onefile --clean -n TF2-GPTChatBot -w --icon icon.ico --add-data "icon.ico;." main.py 
+pyinstaller --onefile --clean -n TF2-GPTChatBot --icon icon.ico -w --add-data "icon.png;." main.py
 ```
 
 ## Usage
