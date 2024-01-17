@@ -70,7 +70,7 @@ def handle_cgpt_request(
 
     if response:
         conversation_history.append({"role": "assistant", "content": response})
-        log_gui_model_message(model.upper(), username, " ".join(response.split()))
+        log_gui_model_message(model, username, " ".join(response.split()))
         send_say_command_to_tf2(response, username, is_team)
 
     return conversation_history
