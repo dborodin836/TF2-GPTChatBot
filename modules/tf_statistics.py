@@ -1,4 +1,3 @@
-import datetime
 import time
 from statistics import mean
 from typing import List
@@ -6,11 +5,11 @@ from typing import List
 import requests
 
 from config import config
-from utils.bulk_url_downloader import BulkSteamGameDetailsUrlDownloader
-from utils.logs import get_logger
-from utils.types import Player, SteamHoursApiUrlID64
-
-STEAMID3_TO_STEAMID64_COEEFICIENT = 76561197960265728
+from modules.bulk_url_downloader import BulkSteamGameDetailsUrlDownloader
+from modules.logs import get_logger
+from modules.typing import Player, SteamHoursApiUrlID64
+from modules.utils.steam import steamid3_to_steamid64
+from modules.utils.time import get_date
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -96,54 +95,6 @@ MELEE_WEAPONS_KILL_IDS = {
     "sharp_dresser",
     "spy_cicle",
 }
-
-
-def steamid3_to_steamid64(steamid3: str) -> int:
-    """
-    This function converts a SteamID3 ([U:X:XXXXXXX]) string to a SteamID64 (XXXXXXXXXXXXXXXXX) integer and returns it.
-    It removes any square bracket characters, extracts the numerical identifier, calculates the SteamID64 by adding
-    a pre-defined constant, and returns it.
-    """
-    for ch in ["[", "]"]:
-        if ch in steamid3:
-            steamid3 = steamid3.replace(ch, "")
-
-    steamid3_split = steamid3.split(":")
-    steamid64 = int(steamid3_split[2]) + STEAMID3_TO_STEAMID64_COEEFICIENT
-
-    return steamid64
-
-
-def get_date(epoch: int, relative_epoch_time: int = None) -> str:
-    account_created_date = datetime.date.fromtimestamp(epoch)
-
-    if relative_epoch_time is not None:
-        current_date = datetime.date.fromtimestamp(relative_epoch_time)
-    else:
-        current_date = datetime.date.today()
-
-    age_months = (
-        current_date.month
-        - account_created_date.month
-        - (current_date.day < account_created_date.day)
-    )
-    if age_months < 0:
-        age_months += 12
-    age_days = (current_date - account_created_date.replace(year=current_date.year)).days
-    # Get the age tuple in years, months, and days
-    age = datetime.timedelta(days=age_days)
-    age_years, remainder_days = divmod(age.days, 365)
-    age_months, remainder_days = divmod(remainder_days, 30)
-    age_days = remainder_days
-    age_years = (
-        current_date.year
-        - account_created_date.year
-        - (
-            (current_date.month, current_date.day)
-            < (account_created_date.month, account_created_date.day)
-        )
-    )
-    return f"{age_years} years {age_months} months {age_days} days"
 
 
 class StatsData:
@@ -290,7 +241,11 @@ class StatsData:
         new_players = cls._update_tf2_hours(new_players)
         new_players = cls._update_vac_hours(new_players, steam_bans_data)
 
-        return {"map": cls.map_name, "server_address": cls.server_ip, "players": new_players}
+        return {
+            "map": cls.map_name,
+            "server_address": cls.server_ip,
+            "players": new_players,
+        }
 
     @staticmethod
     def _get_melee_kill_percentage(player: Player) -> str:

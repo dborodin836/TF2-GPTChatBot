@@ -1,36 +1,35 @@
-import os
 import sys
-import time
 import tkinter as tk
 from tkinter.ttk import Checkbutton
 
-import openai
 import ttkbootstrap as ttk
 from ttkbootstrap import Style
 
-from services.chatgpt import send_gpt_completion_request
-from utils.bans import ban_player, list_banned_players, unban_player
-from utils.bot_state import start_bot, stop_bot
-from utils.chat import PROMPTS_QUEUE
-from utils.commands import print_help_command
-from utils.logs import get_logger
+from modules.command_controllers import GuiCommandController
+from modules.commands.gui.bans import handle_ban, handle_list_bans, handle_unban
+from modules.commands.gui.openai import handle_gpt3
+from modules.commands.gui.state import handle_start, handle_stop
+from modules.logs import get_logger
+from modules.utils.path import resource_path
 
 PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
 
 gui_logger = get_logger("gui")
 main_logger = get_logger("main")
 
+command_controller = GuiCommandController()
 
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception as e:
-        main_logger.warning(f"Running from source. [{e}]")
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
+command_controller.register_command("stop", handle_stop, "Start the bot.")
+command_controller.register_command("start", handle_start, "Stop the bot.")
+command_controller.register_command("ban", handle_ban, "Ban user by username. e.g ban <username>")
+command_controller.register_command(
+    "unban", handle_unban, "Unban user by username. e.g unban <username>"
+)
+command_controller.register_command("bans", handle_list_bans, "Show all banned players.")
+command_controller.register_command(
+    "gpt3", handle_gpt3, "Send a response to GPT3 model. e.g gpt3 <prompt>"
+)
+command_controller.register_command("quit", lambda *args: sys.exit(0), "Quit the program.")
 
 
 class LogWindow(tk.Frame):
@@ -41,10 +40,10 @@ class LogWindow(tk.Frame):
         self.create_widgets()
         self.master.title("TF2-GPTChatBot")
         self.master.resizable(False, False)
-        self.master.iconbitmap(resource_path('icon.ico'))
+        # self.master.iconbitmap(resource_path("icon.ico"))
 
         # Set the style to "simplex"
-        style = Style(theme='cosmo')
+        style = Style(theme="cosmo")
         style.configure(".", font=("TkDefaultFont", 11), foreground="black")
         style.configure("TButton", padding=6, relief="flat")
         style.configure("TEntry", padding=6)
@@ -65,7 +64,7 @@ class LogWindow(tk.Frame):
             text=" Stick \n Logs",
             variable=self.toggle_var,
             bootstyle="round-toggle",
-            command=lambda: self.log_text.see(tk.END) if self.toggle_var.get() else None
+            command=lambda: self.log_text.see(tk.END) if self.toggle_var.get() else None,
         )
 
         self.toggle_button.grid(row=1, column=1, padx=(0, 18))
@@ -95,9 +94,9 @@ class LogWindow(tk.Frame):
         if text.strip == "":
             return
 
-        gui_logger.info(f'> {text}')
+        gui_logger.info(f"> {text}")
 
-        handle_gui_console_commands(text)
+        command_controller.process_line(text)
 
         # Clear the additional_text widget after the function is executed
         self.cmd_line.delete("1.0", tk.END)
@@ -113,7 +112,7 @@ class LogWindow(tk.Frame):
             self.cmd_line.insert("1.0", PROMPT_PLACEHOLDER)
 
 
-class CustomOutput:
+class RedirectStdoutToLogWindow:
     def __init__(self, window: LogWindow):
         self.window = window
 
@@ -122,48 +121,3 @@ class CustomOutput:
 
     def flush(self):
         ...
-
-
-def handle_gui_console_commands(command: str) -> None:
-    if command.startswith("stop"):
-        stop_bot()
-
-    elif command.startswith("start"):
-        start_bot()
-
-    elif command.startswith("quit"):
-        sys.exit(0)
-
-    elif command.startswith("ban "):
-        name = command.removeprefix("ban ").strip()
-        ban_player(name)
-
-    elif command.startswith("unban "):
-        name = command.removeprefix("unban ").strip()
-        unban_player(name)
-
-    elif command.startswith("gpt3 "):
-        prompt = command.removeprefix("gpt3 ").strip()
-        PROMPTS_QUEUE.put(prompt)
-
-    elif command.startswith("bans"):
-        list_banned_players()
-
-    elif command.startswith("help"):
-        print_help_command()
-
-
-def gpt3_cmd_handler() -> None:
-    while True:
-        if PROMPTS_QUEUE.qsize() != 0:
-            prompt = PROMPTS_QUEUE.get()
-            try:
-                response = send_gpt_completion_request([{"role": "user", "content": prompt}], "admin",
-                                                       model="gpt-3.5-turbo")
-                gui_logger.info(f"GPT3> {response}")
-            except openai.error.RateLimitError:
-                gui_logger.warning("Rate Limited! Try again later.")
-            except Exception as e:
-                main_logger.error(f"Unhandled exception from request from gui. [{e}]")
-        else:
-            time.sleep(2)

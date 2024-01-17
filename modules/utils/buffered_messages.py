@@ -1,8 +1,31 @@
-from config import CONFIG_INIT_MESSAGES_QUEUE
-from utils.logs import get_logger
+from queue import Queue
 
-gui_logger = get_logger("gui")
+from modules.logs import get_logger
+from modules.typing import BufferedMessage, BufferedMessageLevel, BufferedMessageType
+
+CONFIG_INIT_MESSAGES_QUEUE: Queue[BufferedMessage] = Queue()
+
 main_logger = get_logger("main")
+gui_logger = get_logger("gui")
+
+
+def buffered_message(
+    message: str,
+    type_: BufferedMessageType = "GUI",
+    level: BufferedMessageLevel = "INFO",
+    fail_startup: bool = False,
+) -> None:
+    CONFIG_INIT_MESSAGES_QUEUE.put(
+        BufferedMessage(type=type_, level=level, message=message, fail_startup=fail_startup)
+    )
+
+
+def buffered_fail_message(
+    message: str,
+    type_: BufferedMessageType = "GUI",
+    level: BufferedMessageLevel = "INFO",
+):
+    buffered_message(message, type_, level, fail_startup=True)
 
 
 def print_buffered_config_innit_messages() -> None:

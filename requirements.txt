@@ -1,4 +1,4 @@
-rcon==2.3.9
+rcon==2.4.4
 openai==0.27.2
 pyinstaller==6.3.0
 pytest==7.3.0
@@ -7,5 +7,6 @@ pydantic==1.10.7
 requests==2.31.0
 ttkbootstrap==1.10.1
 docutils-stubs==0.0.22
-keyboard==0.13.5
 loguru==0.7.2
+ordered_set==4.1.0
+pynput==1.7.6

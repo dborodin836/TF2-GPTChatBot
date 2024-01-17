@@ -1,4 +1,4 @@
-from utils.tf_statistics import get_date
+from modules.utils.time import get_date
 
 
 def test_epoch_time():

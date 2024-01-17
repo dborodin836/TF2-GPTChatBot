@@ -1,4 +1,4 @@
-from typing import List, Literal, NamedTuple, TypedDict
+from typing import Callable, List, Literal, NamedTuple, TypedDict
 
 from pydantic import BaseModel
 
@@ -12,6 +12,12 @@ MessageHistory = List[Message]
 
 BufferedMessageType = Literal["GUI", "LOG", "BOTH"]
 BufferedMessageLevel = Literal["TRACE", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+
+
+class Command(NamedTuple):
+    name: str
+    function: Callable
+    description: str
 
 
 class QueuedMessage(NamedTuple):

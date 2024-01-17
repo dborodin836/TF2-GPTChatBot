@@ -2,7 +2,7 @@ import codecs
 import os
 import sys
 
-from utils.logs import get_logger
+from modules.logs import get_logger
 
 gui_logger = get_logger("gui")
 combo_logger = get_logger("combo")
@@ -29,15 +29,12 @@ def load_prompts() -> None:
     if getattr(sys, "frozen", False):
         path = os.path.dirname(sys.executable)
     else:
-        path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
     for filename in files:
         with codecs.open(f"{path}/prompts/{filename}", "r", encoding="utf-8") as file:
             global PROMPTS
-            PROMPTS.append(
-                {
-                    "flag": f"\\{filename.removesuffix('.txt')}",
-                    "prompt": file.read()
-                }
-            )
-    combo_logger.info(f'Loaded {len([f for f in os.listdir("prompts") if f.endswith(".txt")])} models!')
+            PROMPTS.append({"flag": f"\\{filename.removesuffix('.txt')}", "prompt": file.read()})
+    combo_logger.info(
+        f'Loaded {len([f for f in os.listdir("prompts") if f.endswith(".txt")])} models!'
+    )

@@ -3,12 +3,14 @@ from datetime import datetime as dt
 
 from loguru import logger
 
-FORMAT_LINE_MAIN = "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} | {message}"
+FORMAT_LINE_MAIN = (
+    "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} | {message}"
+)
 FORMAT_LINE_GUI = "{time:YYYY-MM-DD HH:mm:ss.SSS} | {message}"
 
-main_logger = logger.bind(name="main")
-gui_logger = logger.bind(name="gui")
-combo_logger = logger.bind(name="combo")
+__main_logger = logger.bind(name="main")
+__gui_logger = logger.bind(name="gui")
+__combo_logger = logger.bind(name="combo")
 
 
 class LoggerDontExist(Exception):
@@ -17,11 +19,11 @@ class LoggerDontExist(Exception):
 
 def get_logger(name: str):
     if name == "main":
-        return main_logger
+        return __main_logger
     elif name == "gui":
-        return gui_logger
+        return __gui_logger
     elif name == "combo":
-        return combo_logger
+        return __combo_logger
     else:
         raise LoggerDontExist("Specified logger doesn't exist!")
 
@@ -34,40 +36,40 @@ def make_name_filter(name):
 
 
 def setup_loggers():
-    main_logger.remove()
-    gui_logger.remove()
-    combo_logger.remove()
+    __main_logger.remove()
+    __gui_logger.remove()
+    __combo_logger.remove()
 
-    main_logger.add(
+    __main_logger.add(
         "logs/log-{time:YYYY-MM-DD}.log",
         mode="a",
         format=FORMAT_LINE_MAIN,
         level="DEBUG",
         filter=make_name_filter("main"),
         retention="1 week",
-        rotation="50 MB"
+        rotation="50 MB",
     )
 
-    gui_logger.add(sys.stdout, format="{message}", filter=make_name_filter("gui"))
-    gui_logger.add(
+    __gui_logger.add(sys.stdout, format="{message}", filter=make_name_filter("gui"))
+    __gui_logger.add(
         "logs/log-gui-{time:YYYY-MM-DD}.log",
         mode="a",
         format=FORMAT_LINE_GUI,
         level="DEBUG",
         filter=make_name_filter("gui"),
         retention="1 week",
-        rotation="50 MB"
+        rotation="50 MB",
     )
 
-    combo_logger.add(sys.stdout, format="{message}", filter=make_name_filter("combo"))
-    combo_logger.add(
+    __combo_logger.add(sys.stdout, format="{message}", filter=make_name_filter("combo"))
+    __combo_logger.add(
         "logs/log-{time:YYYY-MM-DD}.log",
         mode="a",
         format=FORMAT_LINE_MAIN,
         level="DEBUG",
         filter=make_name_filter("combo"),
         retention="1 week",
-        rotation="50 MB"
+        rotation="50 MB",
     )
 
 
@@ -83,9 +85,9 @@ def log_gui_model_message(message_type: str, username: str, user_prompt: str) ->
     Logs a message with the current timestamp, message type, username, user_id, and prompt text.
     """
     log_msg = f"[{get_time_stamp()}] ({message_type}) User: '{username}' --- '{user_prompt}'"
-    gui_logger.info(log_msg)
+    __gui_logger.info(log_msg)
 
 
 def log_gui_general_message(message: str) -> None:
     log_msg = f"[{get_time_stamp()}] -- {message}"
-    gui_logger.info(log_msg)
+    __gui_logger.info(log_msg)

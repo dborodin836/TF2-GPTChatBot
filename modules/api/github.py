@@ -3,7 +3,7 @@ import json
 import requests
 
 from config import config
-from utils.logs import get_logger
+from modules.logs import get_logger
 
 GITHUB_API_REPO_LINK = "https://api.github.com/repos/dborodin836/TF2-GPTChatBot/releases/latest"
 

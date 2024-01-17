@@ -6,38 +6,17 @@ import sys
 import tkinter as tk
 from enum import IntEnum
 from os.path import exists
-from queue import Queue
 from tkinter import messagebox
 from typing import Optional
 
 import pydantic
 from pydantic import BaseModel, validator
 
-from utils.types import BufferedMessage, BufferedMessageLevel, BufferedMessageType
+from modules.utils.buffered_messages import buffered_fail_message, buffered_message
 
 CONFIG_FILE = "config.ini"
 OPENAI_API_KEY_RE_PATTERN = r"sk-[a-zA-Z0-9]{48}"
 WEB_API_KEY_RE_PATTERN = r"[a-zA-Z0-9]{32}"
-CONFIG_INIT_MESSAGES_QUEUE: Queue[BufferedMessage] = Queue()
-
-
-def buffered_message(
-        message: str,
-        type_: BufferedMessageType = "GUI",
-        level: BufferedMessageLevel = "INFO",
-        fail_startup: bool = False,
-) -> None:
-    CONFIG_INIT_MESSAGES_QUEUE.put(
-        BufferedMessage(type=type_, level=level, message=message, fail_startup=fail_startup)
-    )
-
-
-def buffered_fail_message(
-        message: str,
-        type_: BufferedMessageType = "GUI",
-        level: BufferedMessageLevel = "INFO",
-):
-    buffered_message(message, type_, level, fail_startup=True)
 
 
 class RTDModes(IntEnum):
@@ -60,6 +39,14 @@ class Config(BaseModel):
 
     ENABLE_STATS: bool
     STEAM_WEBAPI_KEY: str
+    DISABLE_KEYBOARD_BINDINGS: bool
+    GPT4_COMMAND: str
+    GPT4_LEGACY_COMMAND: str
+
+    GPT3_MODEL: str
+    GPT3_CHAT_MODEL: str
+    GPT4_MODEL: str
+    GPT4L_MODEL: str
 
     GPT_COMMAND: str
     CHATGPT_COMMAND: str
@@ -79,6 +66,7 @@ class Config(BaseModel):
     SHORTENED_USERNAMES_FORMAT: str
     SHORTENED_USERNAME_LENGTH: int
     DELAY_BETWEEN_MESSAGES: float
+    ENABLE_SOFT_LIMIT_FOR_CUSTOM_MODEL: bool
 
     RTD_MODE: int
 
@@ -135,7 +123,20 @@ class Config(BaseModel):
         return v
 
 
-config: Config | None = None
+config: Optional[Config] = None
+
+
+def show_error_window(err):
+    # Create a Tkinter window
+    root = tk.Tk()
+    root.withdraw()
+
+    # Show error message
+    messagebox.showerror("Error", f"An error occurred. Check config file. [{err}]")
+
+    # Close the window
+    root.destroy()
+    sys.exit(1)
 
 
 def init_config():
@@ -156,19 +157,14 @@ def init_config():
         global config
         try:
             if config_dict.get("CUSTOM_MODEL_SETTINGS") != "":
-                config_dict["CUSTOM_MODEL_SETTINGS"] = json.loads(config_dict.get("CUSTOM_MODEL_SETTINGS"))
+                config_dict["CUSTOM_MODEL_SETTINGS"] = json.loads(
+                    config_dict.get("CUSTOM_MODEL_SETTINGS")
+                )
         except Exception as e:
-            buffered_fail_message(f"CUSTOM_MODEL_SETTINGS is not dict [{e}].", "BOTH", level="ERROR")
+            buffered_fail_message(
+                f"CUSTOM_MODEL_SETTINGS is not dict [{e}].", "BOTH", level="ERROR"
+            )
 
         config = Config(**config_dict)
     except (pydantic.ValidationError, Exception) as e:
-        # Create a Tkinter window
-        root = tk.Tk()
-        root.withdraw()
-
-        # Show error message
-        messagebox.showerror("Error", f"An error occurred. Check config file. [{e}]")
-
-        # Close the window
-        root.destroy()
-        sys.exit(1)
+        show_error_window(e)
