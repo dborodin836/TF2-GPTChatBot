@@ -2,8 +2,8 @@ from config import config
 from modules.api.textgen_webui import get_custom_model_response
 from modules.logs import get_logger, log_gui_model_message
 from modules.servers.tf2 import send_say_command_to_tf2
-from modules.typing import LogLine, MessageHistory
-from modules.utils.text import add_prompts_by_flags
+from modules.typing import LogLine, MessageHistory, Message
+from modules.utils.text import get_system_message
 
 main_logger = get_logger("main")
 
@@ -19,13 +19,15 @@ def handle_custom_model(logline: LogLine, shared_dict: dict):
         logline.prompt.removeprefix(config.CUSTOM_MODEL_COMMAND).strip(),
     )
 
-    message = add_prompts_by_flags(
+    user_message = logline.prompt
+    sys_message = get_system_message(
         logline.prompt, enable_soft_limit=config.ENABLE_SOFT_LIMIT_FOR_CUSTOM_MODEL
     )
 
     response = get_custom_model_response(
         [
-            {"role": "user", "content": message},
+            {"role": "user", "content": user_message},
+            sys_message
         ]
     )
 
@@ -43,8 +45,10 @@ def handle_custom_chat(logline: LogLine, shared_dict: dict):
         logline.prompt.removeprefix(config.CUSTOM_MODEL_CHAT_COMMAND).strip(),
     )
 
-    message = add_prompts_by_flags(logline.prompt)
-    conversation_history.append({"role": "user", "content": message})
+    sys_message = get_system_message(logline.prompt)
+
+    conversation_history.append({"role": "user", "content": logline.prompt})
+    conversation_history.append(sys_message)
     response = get_custom_model_response(conversation_history)
 
     if response:

@@ -7,7 +7,7 @@ from config import config
 from modules.logs import get_logger, log_gui_general_message, log_gui_model_message
 from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import MessageHistory
-from modules.utils.text import add_prompts_by_flags, remove_hashtags
+from modules.utils.text import get_system_message, remove_hashtags, remove_args
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -58,13 +58,15 @@ def handle_cgpt_request(
     """
     log_gui_model_message(model, username, user_prompt)
 
-    message = add_prompts_by_flags(user_prompt)
+    user_message = remove_args(user_prompt)
+    sys_message = get_system_message(user_prompt)
 
-    if not config.TOS_VIOLATION and is_violated_tos(message) and config.HOST_USERNAME != username:
+    if not config.TOS_VIOLATION and is_violated_tos(user_message) and config.HOST_USERNAME != username:
         gui_logger.error(f"Request '{user_prompt}' violates OPENAI TOS. Skipping...")
         return conversation_history
 
-    conversation_history.append({"role": "user", "content": message})
+    conversation_history.append({"role": "user", "content": user_message})
+    conversation_history.append(sys_message)
 
     response = get_response(conversation_history, username, model)
 
@@ -86,15 +88,21 @@ def handle_gpt_request(
     """
     log_gui_model_message(model, username, user_prompt)
 
-    message = add_prompts_by_flags(user_prompt)
+    user_message = remove_args(user_prompt)
+    sys_message = get_system_message(user_prompt)
 
-    if not config.TOS_VIOLATION and is_violated_tos(message) and config.HOST_USERNAME != username:
+    if not config.TOS_VIOLATION and is_violated_tos(user_message) and config.HOST_USERNAME != username:
         gui_logger.warning(
             f"Request '{user_prompt}' by user {username} violates OPENAI TOS. Skipping..."
         )
         return
 
-    response = get_response([{"role": "user", "content": message}], username, model)
+    payload = [
+        sys_message,
+        {"role": "user", "content": user_message},
+    ]
+
+    response = get_response(payload, username, model)
 
     if response:
         main_logger.info(

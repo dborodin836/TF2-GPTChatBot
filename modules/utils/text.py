@@ -9,7 +9,7 @@ from typing import Generator
 from config import config
 from modules.logs import get_logger
 from modules.tf_statistics import StatsData
-from modules.typing import LogLine, Player
+from modules.typing import LogLine, Player, Message
 from modules.utils.prompts import PROMPTS
 from modules.utils.time import get_minutes_from_str
 
@@ -156,8 +156,8 @@ def parse_line(line: str) -> LogLine:
 def stats_regexes(line: str):
     # Parsing user line from status command
     if matches := re.search(
-        r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*",
-        line,
+            r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*",
+            line,
     ):
         time_on_server = matches.groups()[2]
 
@@ -232,33 +232,55 @@ def remove_hashtags(text: str) -> str:
     return cleaned_text
 
 
-def add_prompts_by_flags(user_prompt: str, enable_soft_limit: bool = True) -> str:
+def get_args(prompt: str) -> typing.List[str]:
+    args = prompt.split(" ")
+    result = []
+
+    # Get everything that starts with '\', stop when first item w/o '\' appears.
+    for arg in args:
+        if arg.startswith("\\"):
+            result.append(arg)
+        else:
+            break
+
+    return result
+
+
+def remove_args(prompt: str) -> str:
+    message = prompt.split(" ")
+    result = []
+    args_ended = False
+
+    for item in message:
+        if item.startswith("\\") and not args_ended:
+            continue
+        else:
+            result.append(item)
+
+    return " ".join(result)
+
+
+def get_system_message(user_prompt: str, enable_soft_limit: bool = True) -> Message:
     """
     Adds prompts to a user prompt based on the flags provided in the prompt.
     """
-    #  This args var also contains user prompt lul
-    args = user_prompt.split(" ")
-    result = ""
+    args = get_args(user_prompt)
+    message = ""
 
-    for item in PROMPTS:
-        if item["flag"] in args:
-            result += item["prompt"]
-            user_prompt = user_prompt.replace(item["flag"], "")
-
-    result += user_prompt.strip()
+    for prompt in PROMPTS:
+        if prompt["flag"] in args:
+            message += prompt["prompt"]
 
     if r"\stats" in args and config.ENABLE_STATS:
-        result = (
-            f" {StatsData.get_data()} Based on this data answer following question. "
-            + result
-            + " Ignore unknown data."
+        message = (
+                f" {StatsData.get_data()} Based on this data answer following question. "
+                + message
+                + " Ignore unknown data."
         )
-        result = result.replace(r"\stats", "")
 
     if r"\l" not in args and enable_soft_limit:
-        result += (
+        message += (
             f" Answer in less than {config.SOFT_COMPLETION_LIMIT} chars! {config.CUSTOM_PROMPT}"
         )
-    result = result.replace(r"\l", "")
 
-    return result.strip()
+    return Message(role="system", content=message)
