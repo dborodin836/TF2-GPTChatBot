@@ -270,6 +270,7 @@ def get_system_message(user_prompt: str, enable_soft_limit: bool = True) -> Mess
     for prompt in PROMPTS:
         if prompt["flag"] in args:
             message += prompt["prompt"]
+            break
 
     if r"\stats" in args and config.ENABLE_STATS:
         message = (
