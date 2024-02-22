@@ -9,7 +9,7 @@
  - [Chat](#Chat)
  - [Stats](#Stats)
  - [CUSTOM-MODEL-GENERAL](#CUSTOM-MODEL-GENERAL)
- - [Tips and Tricks (TEXT-GENERATION-WEBUI)](#Tips-and-Tricks-(TEXT-GENERATION-WEBUI))
+ - [Tips and Tricks (TEXT-GENERATION-WEBUI)](#Tips-and-Tricks-TEXT-GENERATION-WEBUI)
 
 ### Introduction 
 
@@ -50,6 +50,9 @@ If you use OPENAI write down your API key in the respected option.
 ### Chat
 
 - Most of these are already explained in the config.ini I will touch on settings that have not yet been explained.
+
+### Misc
+
 - `SOFT_COMPLETION_LIMIT` adds the following string to the user message: `Answer in less than 128 chars!` It should bias the model to write less than required.
 - `HARD_COMPLETION_LIMIT` will truncate the message if it exceeds the 300 chars limit and add "..." at the end of the response. Note that this doesn't truncate the actual AI's message but only the message that is being sent to TF2. Further in the tutorial, I will explain how to truncate the actual message.
 - `TOS_VIOLATION` Affects only !gpt commands. It will ignore all the prompts that violate OPENAI's Terms Of Service.
@@ -64,6 +67,7 @@ If you use OPENAI write down your API key in the respected option.
 - `ENABLE_CUSTOM_MODEL` whether you want to use the custom model or not.
 - `CUSTOM_MODEL_COMMAND` is the command that will trigger the AI.
 - `CUSTOM_MODEL_CHAT_COMMAND` is the command that will trigger the AI and its chat history.
+- `GRETTING` As explained in the config.ini, adds first message as AI. Quite useful when you want the AI speak specific sort of way.
 
 The other stuff is self-explanatory or already explained.
 
@@ -73,3 +77,8 @@ Now let's move on to the tips and tricks.
 
 - You can change the command to be a word, for example, you can change it to "bot" so the AI will trigger every time someone says bot. Or you can change it to a whole secret code? No practical use but funny.
 - All the tinkering revolves around the `CUSTOM_MODEL_SETTINGS` To see all the settings go to the 127.0.0.1:5000/docs it will open up the API documentation of the `text-generation-webui` and open up the v1/chat/completions here are all the settings.
+- One of the useful settings are `preset` so you don't have to type all the settings you want manually, you can just save the preset in the text-generation-webui and import it using this simple option.
+- Remember I talked about the truncating the actual AI's response? The command setting to it is `max_tokens`. Why would you need this if you have `HARD_COMPLETION_LIMIT`? Well when you use the `HARD_COMPLETION_LIMIT` and the user wants the AI continue it will get confused, because it actually already outputted the whole message, it's just the message in tf2 that got cutted down. So that's why I recommend using `max_tokens` instead.
+- `name1` and `name2` also could be useful, `name1` refers to `User`, while `name2` refers to `AI` (Assistant). By default the `name1` is set as "`You`" you can save the session setting in text-generation-webui so the `name1` will always be "`User`", but this might require you to reboot the webui, will get annoying if you change the names a lot.
+- You can change the `mode` but in my tests the `chat` mode worked the best. May vary depending on your model, so experiment with this.
+- You can also use `character` or `instruction_template`. But this also requires the webui to be rebooted if you modified the character's or instruction template's content, it just doesn't update, it will still use the old template for some reason. So instead of that you can type your character's context in the respected `context` setting.
