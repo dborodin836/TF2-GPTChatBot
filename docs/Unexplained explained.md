@@ -40,13 +40,18 @@ TF2_LOGFILE_PATH=C:\Program Files (x86)\Steam\steamapps\common\Team Fortress 2\t
 
 ### Commands
 
-- All the `_COMMAND` options configure the command that will trigger the AI by the users in the in-game chat.
+- All `_COMMAND` options configure the command that triggers the AI in the in-game chat.
 - The `GPT4_ADMIN_ONLY` option restricts the usage of `!gpt4` commands for everyone except the host (you).
 - The `_MODEL` settings are recommended to be left as is, it's the ID of the model that is going to be used.
 
 ### RCON
 
 - Leave these settings as is. Change them only if you changed one of these settings using the TF2's launch options or autoexec.
+- If you want to know what these settings do then here it is:
+- RCON stands for Remote CONsole and it is a feature that allows you to execute commands on a TF2 server from within the game client or from another server.
+- `RCON_HOST` This is the IP address of the server that you want to control with RCON.
+- `RCON_PASSWORD` This is the password that you need to provide to use RCON.
+- `RCON_PORT` This is the port number that the server listens for RCON commands.
 
 ### Chat
 
