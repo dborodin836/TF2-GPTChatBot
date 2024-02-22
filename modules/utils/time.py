@@ -43,10 +43,20 @@ def get_minutes_from_str(time_str: str) -> int:
         struct_time = time.strptime(time_str, "%H:%M:%S")
         tm = struct_time.tm_hour * 60 + struct_time.tm_min
     except ValueError:
-        struct_time = time.strptime(time_str, "%M:%S")
-        tm = struct_time.tm_min
-    except Exception as e:
-        main_logger.warning(f"Unhandled error while parsing time happened. ({e})")
-        tm = 0
-
+        try:
+            struct_time = time.strptime(time_str, "%M:%S")
+            tm = struct_time.tm_min
+        except ValueError:
+            try:
+                struct_time = time.strptime(time_str, "%H")
+                tm = struct_time.tm_hour * 60
+            except ValueError:
+                try:
+                    struct_time = time.strptime(time_str, "%M")
+                    tm = struct_time.tm_min
+                except ValueError:
+                    main_logger.warning(f"Invalid time format: {time_str}")
+                    tm = 0
+    else:
+        main_logger.info(f"Valid time format: {time_str}")
     return tm
