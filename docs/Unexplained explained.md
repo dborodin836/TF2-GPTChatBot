@@ -41,7 +41,7 @@ TF2_LOGFILE_PATH=C:\Program Files (x86)\Steam\steamapps\common\Team Fortress 2\t
 ### Commands
 
 - All the `_COMMAND` options configure the command that will trigger the AI by the users in the in-game chat.
-- `GPT4_ADMIN_ONLY` option restricts the usage of `!gpt4` commands for everyone except the host (you).
+- The `GPT4_ADMIN_ONLY` option restricts the usage of `!gpt4` commands for everyone except the host (you).
 - The `_MODEL` settings are recommended to be left as is, it's the ID of the model that is going to be used.
 
 ### RCON
