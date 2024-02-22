@@ -1,6 +1,15 @@
 ## Table Of Contents
 
 - [Introduction](#Introduction)
+- [Install from source](#Install-from-source)
+- [Config configurations](#Config-configurations)
+ - [General](#General)
+ - [Commands](#Commands)
+ - [RCON](#RCON)
+ - [Chat](#Chat)
+ - [Stats](#Stats)
+ - [CUSTOM-MODEL-GENERAL](#CUSTOM-MODEL-GENERAL)
+ - [Tips and Tricks (TEXT-GENERATION-WEBUI)](#Tips-and-Tricks-(TEXT-GENERATION-WEBUI))
 
 ### Introduction 
 
@@ -8,7 +17,7 @@ So... You bloody self-proclaimed scientist of a merc decided to look into docume
 
 Good, because there we're going to explain how to setup this abomination of a program with no proper GUI and teel some tips and tricks on how to use it! <sub>(No offense)</sub>
 
-Yes, I know how you're feeling right now, scared, scared of all this texts you have to read through, and maybe a bit excited, if you're crazy and touch grass everyday. <sub>(No offense x2)</sub>
+Yes, I know how you're feeling right now, scared, scared of all this text you have to read through, and maybe a bit excited, if you're crazy and touch grass everyday. <sub>(No offense x2)</sub>
 
 ### Install from source
 
@@ -22,7 +31,7 @@ Yes, I know how you're feeling right now, scared, scared of all this texts you h
 
 ### General
 
-- Change the TF2_LOGFILE_PATH file path to the correct one. The default path on most of the machines is:
+- Change the `TF2_LOGFILE_PATH` file path to the correct one. The default path on most of the machines is:
 ```
 TF2_LOGFILE_PATH=C:\Programs (x86)\Steam\steamapps\common\Team Fortress 2\tf\console.log
 ```
@@ -30,9 +39,9 @@ If you use OPENAI write down your API key in the respected option.
 
 ### Commands
 
-- All the _COMMAND options configures the command that will trigger the AI by the users in the in-game chat.
-- GPT4_ADMIN_ONLY option restricts the usage of !gpt4 commands for everyone except the host (you).
-- The _MODEL settings are recommended to be left as is, it's the ID of the model that is going to be used.
+- All the `_COMMAND` options configures the command that will trigger the AI by the users in the in-game chat.
+- `GPT4_ADMIN_ONLY` option restricts the usage of `!gpt4` commands for everyone except the host (you).
+- The `_MODEL` settings are recommended to be left as is, it's the ID of the model that is going to be used.
 
 ### RCON
 
@@ -47,7 +56,7 @@ If you use OPENAI write down your API key in the respected option.
 
 ### Stats
 
-- By enabling stats and setting your `STEAM_WEBAPI_KEY` you will be able to use the \stats flag that will get the information about the current game, all the player's kills and deaths, k/d ratio, time they are on the server, time they are playing on the server and etc. Sadly the score is not included.
+- By enabling stats and setting your `STEAM_WEBAPI_KEY` you will be able to use the \stats flag that will get the information about the current game, all the player's kills and deaths, k/d ratio, time they are playing on the server and etc. Sadly the score is not included.
 
 ### CUSTOM-MODEL-GENERAL
 
@@ -62,5 +71,5 @@ Now let's move on to the tips and tricks.
 
 ## Tips and Tricks (TEXT-GENERATION-WEBUI)
 
-- You can change the command to be a word, for example you can change it to "bot" so the AI will trigger everytime someone says bot. No practical use but funny.
-- All the tinkering revolves around the `CUSTOM_MODEL_SETTINGS`
+- You can change the command to be a word, for example you can change it to "bot" so the AI will trigger everytime someone says bot. Or you can change it to a whole secret code? No practical use but funny.
+- All the tinkering revolves around the `CUSTOM_MODEL_SETTINGS` To see all the settings go to the 127.0.0.1:5000/docs it will open up the API documentation of the `text-generation-webui` open up the v1/chat/completions here are all the settings.
