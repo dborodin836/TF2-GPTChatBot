@@ -48,7 +48,8 @@ def handle_custom_chat(logline: LogLine, shared_dict: dict):
 
     message = add_prompts_by_flags(logline.prompt)
     message = message.removeprefix(config.CUSTOM_MODEL_CHAT_COMMAND).strip()
-    conversation_history.append({"role": "assistant", "content": config.GREETING})
+    if not conversation_history:
+        conversation_history.append({"role": "assistant", "content": config.GREETING})
     conversation_history.append({"role": "user", "content": message})
     response = get_custom_model_response(conversation_history)
 
