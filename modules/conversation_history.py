@@ -31,14 +31,13 @@ class ConversationHistory:
 
     def get_messages_array(self) -> MessageHistory:
         array = [self._get_system_message()]
+
+        if config.GREETING:
+            array.append(Message(role="assistant", content=config.GREETING))
+
         array.extend(self.message_history)
 
-        # Reset
-        self.enable_soft_limit = True
-        self.enable_stats = False
-
-        import pprint
-        pprint.pprint(array)
+        self.reset_turn()
 
         return array
 
@@ -61,6 +60,10 @@ class ConversationHistory:
             self.enable_stats = True
 
         self.message_history.append(Message(role="user", content=user_message))
+
+    def reset_turn(self):
+        self.enable_soft_limit = True
+        self.enable_stats = False
 
     def reset(self):
         self.custom_prompt = ""

@@ -5,6 +5,7 @@ import openai
 
 from modules.api.openai import send_gpt_completion_request
 from modules.logs import get_logger
+from modules.typing import Message
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -23,7 +24,7 @@ def gpt3_cmd_handler() -> None:
             prompt = GPT3_PROMPTS_QUEUE.get()
             try:
                 response = send_gpt_completion_request(
-                    [{"role": "user", "content": prompt}],
+                    [Message(role="user", content=prompt)],
                     "admin",
                     model="gpt-3.5-turbo",
                 )
