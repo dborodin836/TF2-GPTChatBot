@@ -11,7 +11,7 @@ main_logger = get_logger("main")
 def handle_custom_model(logline: LogLine, shared_dict: dict):
     main_logger.info(
         f"'{config.CUSTOM_MODEL_COMMAND}' command from user '{logline.username}'. "
-        f"Message: '{logline.prompt.removeprefix(config.GPT_COMMAND).strip()}'"
+        f"Message: '{logline.prompt.removeprefix(config.CUSTOM_MODEL_COMMAND).strip()}'"
     )
     log_gui_model_message(
         "CUSTOM",
@@ -24,10 +24,13 @@ def handle_custom_model(logline: LogLine, shared_dict: dict):
         logline.prompt, enable_soft_limit=config.ENABLE_SOFT_LIMIT_FOR_CUSTOM_MODEL
     )
 
+    message = message.removeprefix(config.CUSTOM_MODEL_COMMAND).strip()
+
     response = get_custom_model_response(
         [
+            sys_message,
+            {"role": "assistant", "content": config.GREETING},
             {"role": "user", "content": user_message},
-            sys_message
         ]
     )
 
@@ -46,8 +49,12 @@ def handle_custom_chat(logline: LogLine, shared_dict: dict):
     )
 
     sys_message = get_system_message(logline.prompt)
-
-    conversation_history.append({"role": "user", "content": logline.prompt})
+    message = add_prompts_by_flags(logline.prompt)
+    message = message.removeprefix(config.CUSTOM_MODEL_CHAT_COMMAND).strip()
+    # TODO: fix required
+    if not conversation_history:
+        conversation_history.append({"role": "assistant", "content": config.GREETING})
+    conversation_history.append({"role": "user", "content": message})
     conversation_history.append(sys_message)
     response = get_custom_model_response(conversation_history)
 

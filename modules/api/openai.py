@@ -63,6 +63,9 @@ def handle_cgpt_request(
         gui_logger.error(f"Request '{user_prompt}' violates OPENAI TOS. Skipping...")
         return conversation_history
 
+    # TODO: fix required
+    if not conversation_history:
+          conversation_history.append(Message(role="assistant", content=config.GREETING))
     conversation_history.add_user_message_from_prompt(user_prompt)
 
     response = get_response(conversation_history.get_messages_array(), username, model)
@@ -93,10 +96,11 @@ def handle_gpt_request(
             f"Request '{user_prompt}' by user {username} violates OPENAI TOS. Skipping..."
         )
         return
-
+      
     payload = [
         sys_message,
-        {"role": "user", "content": user_message},
+        Message(role="assistant", content=config.GREETING),
+        Message(role="user", content=user_message),
     ]
 
     response = get_response(payload, username, model)
