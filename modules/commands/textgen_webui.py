@@ -1,9 +1,9 @@
 from config import config
 from modules.api.textgen_webui import get_custom_model_response
+from modules.conversation_history import ConversationHistory
 from modules.logs import get_logger, log_gui_model_message
 from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import LogLine, Message
-from modules.conversation_history import ConversationHistory
 from modules.utils.text import get_system_message
 
 main_logger = get_logger("main")
@@ -29,7 +29,7 @@ def handle_custom_model(logline: LogLine, shared_dict: dict):
         [
             sys_message,
             Message(role="assistant", content=config.GREETING),
-            Message(role="user", content=user_message)
+            Message(role="user", content=user_message),
         ]
     )
 

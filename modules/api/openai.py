@@ -4,11 +4,11 @@ import time
 import openai
 
 from config import config
+from modules.conversation_history import ConversationHistory
 from modules.logs import get_logger, log_gui_general_message, log_gui_model_message
 from modules.servers.tf2 import send_say_command_to_tf2
-from modules.typing import MessageHistory, Message
-from modules.conversation_history import ConversationHistory
-from modules.utils.text import get_system_message, remove_hashtags, remove_args
+from modules.typing import Message, MessageHistory
+from modules.utils.text import get_system_message, remove_args, remove_hashtags
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -59,7 +59,11 @@ def handle_cgpt_request(
     log_gui_model_message(model, username, user_prompt)
 
     user_message = remove_args(user_prompt)
-    if not config.TOS_VIOLATION and is_violated_tos(user_message) and config.HOST_USERNAME != username:
+    if (
+        not config.TOS_VIOLATION
+        and is_violated_tos(user_message)
+        and config.HOST_USERNAME != username
+    ):
         gui_logger.error(f"Request '{user_prompt}' violates OPENAI TOS. Skipping...")
         return conversation_history
 
@@ -88,12 +92,16 @@ def handle_gpt_request(
     user_message = remove_args(user_prompt)
     sys_message = get_system_message(user_prompt)
 
-    if not config.TOS_VIOLATION and is_violated_tos(user_message) and config.HOST_USERNAME != username:
+    if (
+        not config.TOS_VIOLATION
+        and is_violated_tos(user_message)
+        and config.HOST_USERNAME != username
+    ):
         gui_logger.warning(
             f"Request '{user_prompt}' by user {username} violates OPENAI TOS. Skipping..."
         )
         return
-      
+
     payload = [
         sys_message,
         Message(role="assistant", content=config.GREETING),

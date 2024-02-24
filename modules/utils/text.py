@@ -9,7 +9,7 @@ from typing import Generator
 from config import config
 from modules.logs import get_logger
 from modules.tf_statistics import StatsData
-from modules.typing import LogLine, Player, Message
+from modules.typing import LogLine, Message, Player
 from modules.utils.prompts import PROMPTS
 from modules.utils.time import get_minutes_from_str
 
@@ -156,8 +156,8 @@ def parse_line(line: str) -> LogLine:
 def stats_regexes(line: str):
     # Parsing user line from status command
     if matches := re.search(
-            r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*",
-            line,
+        r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*",
+        line,
     ):
         time_on_server = matches.groups()[2]
 
@@ -274,9 +274,9 @@ def get_system_message(user_prompt: str, enable_soft_limit: bool = True) -> Mess
 
     if r"\stats" in args and config.ENABLE_STATS:
         message = (
-                f" {StatsData.get_data()} Based on this data answer following question. "
-                + message
-                + " Ignore unknown data."
+            f" {StatsData.get_data()} Based on this data answer following question. "
+            + message
+            + " Ignore unknown data."
         )
 
     if r"\l" not in args and enable_soft_limit:

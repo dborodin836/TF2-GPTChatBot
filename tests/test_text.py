@@ -1,10 +1,5 @@
 from modules.typing import Message
-from modules.utils.text import (
-    get_system_message,
-    get_chunk_size,
-    has_cyrillic,
-    split_into_chunks,
-)
+from modules.utils.text import get_chunk_size, get_system_message, has_cyrillic, split_into_chunks
 
 MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120

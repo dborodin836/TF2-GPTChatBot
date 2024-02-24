@@ -1,8 +1,8 @@
 from config import config
 from modules.tf_statistics import StatsData
-from modules.typing import MessageHistory, Message
+from modules.typing import Message, MessageHistory
 from modules.utils.prompts import PROMPTS
-from modules.utils.text import remove_args, get_args
+from modules.utils.text import get_args, remove_args
 
 
 class ConversationHistory:
@@ -24,7 +24,9 @@ class ConversationHistory:
             sys_msg.append(config.CUSTOM_PROMPT)
 
         if self.enable_stats:
-            sys_msg.insert(0, f"{StatsData.get_data()} Based on this data answer following question.")
+            sys_msg.insert(
+                0, f"{StatsData.get_data()} Based on this data answer following question."
+            )
             sys_msg.append("Ignore unknown data.")
 
         return Message(role="system", content=" ".join(sys_msg))
@@ -44,7 +46,9 @@ class ConversationHistory:
     def add_assistant_message(self, message: Message) -> None:
         self.message_history.append(message)
 
-    def add_user_message_from_prompt(self, user_prompt: str, enable_soft_limit: bool = True) -> None:
+    def add_user_message_from_prompt(
+        self, user_prompt: str, enable_soft_limit: bool = True
+    ) -> None:
         user_message = remove_args(user_prompt)
         args = get_args(user_prompt)
 
