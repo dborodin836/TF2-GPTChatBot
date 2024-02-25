@@ -1,6 +1,7 @@
 ## Table Of Contents
 
 - [Introduction](#Introduction)
+  - [TL:DR](#TL-DR)
   - [Running from Source](#running-from-source)
 - [Config configurations](#Config-configurations)
   - [General](#General)
@@ -19,6 +20,17 @@ So... You bloody self-proclaimed scientist of a merc decided to look into docume
 Good, because there we're going to explain how to set up this abomination of a program with no proper GUI and tell some tips and tricks on how to use it! <sub>(No offense)</sub>
 
 Yes, I know how you're feeling right now, scared, scared of all this text you have to read through, and maybe a bit excited, if you're crazy and touch grass every day. <sub>(No offense x2)</sub>
+
+### TL:DR
+
+- The document explains how to set up and use the program.
+- If the start.bat script does not work, follow the steps on the main page.
+- Edit the config.ini file to make changes to the program.
+- The RCON settings can be left as is unless you changed them using TF2's launch options or autoexec.
+- The chat settings are mostly self-explanatory, but `SOFT_COMPLETION_LIMIT` and `HARD_COMPLETION_LIMIT` are useful for limiting the AI's message length.
+- Enabling stats and setting your STEAM_WEBAPI_KEY allows you to use the \stats flag to get information about the current game and players.
+- The `CUSTOM-MODEL-GENERAL` settings are explained in the document and can be customized as needed.
+- Tips and tricks include changing the command to trigger the AI and using the preset setting to save time etc.
 
 ### Running from Source
 
