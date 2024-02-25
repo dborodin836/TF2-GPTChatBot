@@ -11,7 +11,7 @@
   - [Misc](#misc)
   - [Stats](#stats)
   - [CUSTOM-MODEL-GENERAL](#custom-model-general)
- - [Tips and Tricks (TEXT-GENERATION-WEBUI)](#tips-and-tricks-text-generation-webui)
+ - [BONUS DUCKS!](#tips-and-tricks-text-generation-webui)
 
 ## Introduction 
 
