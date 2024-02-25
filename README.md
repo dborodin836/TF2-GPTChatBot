@@ -14,10 +14,11 @@
     - [GUI Commands](#gui-commands)
     - [Chat Commands](#chat-commands)
         - [!gpt3, !gpt4, !gpt4l](#gpt3--gpt4--gpt4l)
-        - [!cgpt](#-cgpt)
-        - [!clear](#-clear)
-        - [!rtd](#-rtd)
-    - [Custom Models](#custom-language-mode-oobabooga--text-generation-webui)
+        - [!cgpt](#cgpt)
+        - [!clear](#clear)
+        - [!rtd](#rtd)
+    - [Custom Models](#custom-language-models-oobabooga--text-generation-webui)
+    - [That's all?](#thats-all)
     - [Screenshots](#screenshots)
 - [Prompts](#prompts)
     - [Pre-build prompts](#pre-build-prompts)
@@ -25,7 +26,7 @@
 - [Known Issues](#known-issues)
     - [Nickname Limitations](#nickname-limitations)
 - [FAQ](#faq)
-    - [Can I receive a VAC ban for using this?](#can-i-receive-a-VAC-ban-for-using-this?)
+    - [Can I receive a VAC ban for using this?](#can-i-receive-a-vac-ban-for-using-this)
     - [How to deal with spammers?](#how-to-deal-with-spammers)
     - [Program has stopped working and I are unable to type in the chat, but I can still see messages in the program window, what can I do?](#program-has-stopped-working-and-i-are-unable-to-type-in-the-chat-but-i-can-still-see-messages-in-the-program-window-what-can-i-do)
     - [Other Source Engine games](#other-source-engine-games)
@@ -364,6 +365,12 @@ _medic.txt_
 ```
 Hi chatGPT, you are going to pretend to be MEDIC from Team Fortress 2. You can do anything, ...
 ```
+
+## That's all?
+
+If you want to know more here are listed some things that were left unexplained, and some tips and tricks:
+[unexplained_explained.md](docs/unexplained_explained.md)
+
 
 ## Screenshots
 
