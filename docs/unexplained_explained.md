@@ -1,17 +1,17 @@
 ## Table Of Contents
 
-- [Introduction](#Introduction)
-  - [TL:DR](#TL-DR)
+- [Introduction](#introduction)
+  - [TL:DR](#tldr)
   - [Running from Source](#running-from-source)
-- [Config configurations](#Config-configurations)
-  - [General](#General)
-  - [Commands](#Commands)
-  - [RCON](#RCON)
-  - [Chat](#Chat)
-  - [Misc](#Misc)
-  - [Stats](#Stats)
-  - [CUSTOM-MODEL-GENERAL](#CUSTOM-MODEL-GENERAL)
- - [Tips and Tricks (TEXT-GENERATION-WEBUI)](#Tips-and-Tricks-TEXT-GENERATION-WEBUI)
+- [Config configurations](#config-configurations)
+  - [General](#general)
+  - [Commands](#commands)
+  - [RCON](#rcon)
+  - [Chat](#chat)
+  - [Misc](#misc)
+  - [Stats](#stats)
+  - [CUSTOM-MODEL-GENERAL](#custom-model-general)
+ - [Tips and Tricks (TEXT-GENERATION-WEBUI)](#tips-and-tricks-text-generation-webui)
 
 ## Introduction 
 
