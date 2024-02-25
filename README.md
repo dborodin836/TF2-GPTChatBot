@@ -18,6 +18,7 @@
         - [!clear](#-clear)
         - [!rtd](#-rtd)
     - [Custom Models](#custom-language-mode-oobabooga--text-generation-webui)
+    - [That's all?](#that's-all?)
     - [Screenshots](#screenshots)
 - [Prompts](#prompts)
     - [Pre-build prompts](#pre-build-prompts)
