@@ -10,3 +10,6 @@ docutils-stubs==0.0.22
 loguru==0.7.2
 ordered_set==4.1.0
 pynput==1.7.6
+fastapi==0.110.0
+websockets==12.0
+uvicorn==0.27.1

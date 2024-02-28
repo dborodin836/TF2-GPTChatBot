@@ -1,3 +1,5 @@
+import uvicorn
+
 from config import init_config
 
 # This is required due to config used in imported modules
@@ -20,6 +22,7 @@ from modules.logs import get_logger, setup_loggers
 from modules.message_queueing import message_queue_handler
 from modules.servers.tf2 import get_status
 from modules.tf_statistics import StatsData
+from modules.server import app
 
 gui_logger = get_logger("gui")
 
@@ -42,6 +45,7 @@ def run_threads():
     root = tk.Tk()
     root.iconphoto(False, tk.PhotoImage(file="icon.png"))
     log_window = LogWindow(root)
+    threading.Thread(target=uvicorn.run, daemon=True, args=(app,)).start()
     sys.stdout = RedirectStdoutToLogWindow(log_window)
 
     setup_loggers()

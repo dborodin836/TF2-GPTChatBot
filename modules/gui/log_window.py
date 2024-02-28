@@ -1,4 +1,5 @@
 import sys
+import asyncio
 import tkinter as tk
 from tkinter.ttk import Checkbutton
 
@@ -10,7 +11,7 @@ from modules.commands.gui.bans import handle_ban, handle_list_bans, handle_unban
 from modules.commands.gui.openai import handle_gpt3
 from modules.commands.gui.state import handle_start, handle_stop
 from modules.logs import get_logger
-from modules.utils.path import resource_path
+from modules.server import manager
 
 PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
 
@@ -116,8 +117,9 @@ class RedirectStdoutToLogWindow:
     def __init__(self, window: LogWindow):
         self.window = window
 
-    def write(self, message):
+    def write(self, message: str):
         self.window.update_logs(message)
+        asyncio.run(manager.broadcast(message))
 
     def flush(self):
         ...
