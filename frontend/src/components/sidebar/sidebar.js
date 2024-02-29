@@ -14,10 +14,10 @@ import {Link} from 'react-router-dom';
 
 export function DefaultSidebar() {
     return (
-        <Card className="h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
-            <List>
-                <Link to="/">
-                    <ListItem>
+        <Card className="h-[calc(100vh-2rem)] w-full max-w-[12rem] m-4 shadow-xl shadow-blue-gray-900/5">
+            <List className="w-32">
+                <Link className="w-32" to="/">
+                    <ListItem className="w-40 h-12">
                         <ListItemPrefix>
                             <PresentationChartBarIcon className="h-5 w-5"/>
                         </ListItemPrefix>
@@ -25,8 +25,8 @@ export function DefaultSidebar() {
                     </ListItem>
                 </Link>
 
-                <Link to="/settings">
-                    <ListItem>
+                <Link className="w-32" to="/settings">
+                    <ListItem className="w-40 h-12">
                         <ListItemPrefix>
                             <Cog6ToothIcon className="h-5 w-5"/>
                         </ListItemPrefix>
@@ -34,8 +34,8 @@ export function DefaultSidebar() {
                     </ListItem>
                 </Link>
 
-                <Link to="/about">
-                    <ListItem>
+                <Link className="w-32" to="/about">
+                    <ListItem className="w-40 h-12">
                         <ListItemPrefix>
                             <UserCircleIcon className="h-5 w-5"/>
                         </ListItemPrefix>

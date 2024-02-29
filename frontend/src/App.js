@@ -11,11 +11,13 @@ function App() {
             <div className="flex-none">
                 <DefaultSidebar/>
             </div>
-            <Routes>
-                <Route path="/" element={<PageHome/>}/>
-                <Route path="/settings" element={<PageSettings/>}/>
-                <Route path="/about" element={<PageAbout/>}/>
-            </Routes>
+            <div className="flex-1 shadow-md rounded-xl ml-7 m-4 mt-0">
+                <Routes>
+                    <Route path="/" element={<PageHome/>}/>
+                    <Route path="/settings" element={<PageSettings/>}/>
+                    <Route path="/about" element={<PageAbout/>}/>
+                </Routes>
+            </div>
         </div>
     )
 }
