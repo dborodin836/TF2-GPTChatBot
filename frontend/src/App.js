@@ -1,8 +1,9 @@
 import './App.css';
 import {DefaultSidebar} from "./components/sidebar/sidebar";
-import {LogsArea} from "./components/log-area/logs-area";
-import {CommandPrompt} from "./components/command-prompt/command-prompt";
-import {StickyLogsToggle} from "./components/sticky-logs-toggle/sticky-logs-toggle";
+import {Route, Routes} from 'react-router-dom';
+import {PageHome} from "./components/page-home/page-home";
+import {PageSettings} from "./components/page-settings/page-settings";
+import {PageAbout} from "./components/page-about/page-about";
 
 function App() {
     return (
@@ -10,17 +11,11 @@ function App() {
             <div className="flex-none">
                 <DefaultSidebar/>
             </div>
-            <div className="flex-1 overflow-hidden">
-                <div>
-                    <LogsArea/>
-                </div>
-                <div>
-                    <CommandPrompt/>
-                </div>
-                {/*<div className="p-4 left-4">*/}
-                {/*    <StickyLogsToggle/>*/}
-                {/*</div>*/}
-            </div>
+            <Routes>
+                <Route path="/" element={<PageHome/>}/>
+                <Route path="/settings" element={<PageSettings/>}/>
+                <Route path="/about" element={<PageAbout/>}/>
+            </Routes>
         </div>
     )
 }
