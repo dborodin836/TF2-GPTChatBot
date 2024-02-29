@@ -24,8 +24,8 @@ export function CommandPrompt() {
                 console.error('Error:', error);
             })
             .finally(() => {
-            setCommand(''); // Reset command string here
-        });
+                setCommand(''); // Reset command string here
+            });
     };
 
     return (
@@ -43,10 +43,9 @@ export function CommandPrompt() {
                 size="sm"
                 color={command ? "gray" : "blue-gray"}
                 disabled={!command}
-                className="right-1 rounded"
+                className="rounded"
                 onClick={handleSubmit}
-            >
-                Send
+            >Send
             </Button>
         </div>
     );
