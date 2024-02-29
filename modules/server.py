@@ -1,7 +1,21 @@
+import asyncio
+
 from fastapi import FastAPI, WebSocket
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.websockets import WebSocketDisconnect
 
+from modules.gui.controller import command_controller
+from pydantic import BaseModel
+
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class ConnectionManager:
@@ -23,16 +37,25 @@ class ConnectionManager:
             await connection.send_text(message)
 
 
-manager = ConnectionManager()
+connection_manager = ConnectionManager()
+
+
+class Command(BaseModel):
+    text: str
+
+
+@app.post("/cmd")
+async def handle_command(command: Command):
+    await asyncio.to_thread(command_controller.process_line, command.text)
 
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    await manager.connect(websocket)
+    await connection_manager.connect(websocket)
     try:
         while True:
             # Here you can also receive messages
             data = await websocket.receive_text()
             await websocket.send_text(data)
     except WebSocketDisconnect:
-        manager.disconnect(websocket)
+        connection_manager.disconnect(websocket)
