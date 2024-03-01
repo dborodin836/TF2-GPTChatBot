@@ -35,6 +35,12 @@ export function CommandPrompt() {
                 value={command}
                 onChange={(e) => setCommand(e.target.value)}
                 className="pr-20"
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' && command) {
+                        e.preventDefault();
+                        handleSubmit(e);
+                    }
+                }}
                 containerProps={{
                     className: "min-w-0",
                 }}
