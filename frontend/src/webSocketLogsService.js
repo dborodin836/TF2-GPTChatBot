@@ -11,7 +11,9 @@ ws.onmessage = (event) => {
     if (!textarea) {return}
     let shouldScroll = Math.abs((textarea.scrollHeight - textarea.offsetHeight) - textarea.scrollTop) <= 80;
     if (shouldScroll) {
-        textarea.scrollTop = textarea.scrollHeight;
+        setTimeout(() => {
+            textarea.scrollTop = textarea.scrollHeight;
+        }, 1)
     }
 
     subscribers.forEach((callback) => callback(logs));
