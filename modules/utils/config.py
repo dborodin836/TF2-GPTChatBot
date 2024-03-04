@@ -1,6 +1,7 @@
 import codecs
 import configparser
 from typing import List
+import pprint
 
 from config import config
 from modules.logs import get_logger
@@ -67,3 +68,8 @@ def get_value_config(values: List):
             gui_logger.warning(f"Setting {val} doesn't exist.")
         except Exception as e:
             gui_logger.warning(f"Error occurred [{e}]")
+
+
+def dump_config():
+    string = pprint.pformat(config.dict(), indent=2, width=180)
+    gui_logger.info(string)

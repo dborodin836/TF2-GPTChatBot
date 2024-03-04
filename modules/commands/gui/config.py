@@ -1,5 +1,6 @@
 from modules.logs import get_logger
 from modules.utils.config import (
+    dump_config,
     get_value_config,
     load_config,
     reload_config,
@@ -59,6 +60,9 @@ def handle_config(command, shared_dict):
             gui_logger.warning("You didn't provide any setting to get.")
             return
         get_value_config(args)
+
+    elif operation == "dump":
+        dump_config()
 
     else:
         gui_logger.warning(f"Unknown command config {operation}")

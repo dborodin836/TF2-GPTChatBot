@@ -12,6 +12,7 @@ config_command_description = """Commands to manipulate config file.
    - get <name> ... - get value(s) from the config
    - save <filename> - write current session config to a file
    - load <filename> - load config from disk
+   - dump - prints whole config to console
 """
 
 command_controller = GuiCommandController()
