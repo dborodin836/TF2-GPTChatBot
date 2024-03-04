@@ -1,5 +1,5 @@
 from modules.logs import get_logger
-from modules.utils.config import reload_config, get_value_config, set_value_config, load_config
+from modules.utils.config import reload_config, get_value_config, set_value_config, load_config, save_config
 
 gui_logger = get_logger("gui")
 
@@ -26,7 +26,11 @@ def handle_config(command, shared_dict):
         load_config(args[0])
 
     elif operation == "save":
-        ...
+        if len(args) == 0:
+            gui_logger.warning("You didn't provide filename.")
+            return
+
+        save_config(args[0])
 
     elif operation == "set":
         if len(args) == 0:

@@ -9,8 +9,8 @@ from modules.commands.gui.config import handle_config
 config_command_description = """Commands to manipulate config file.
    - reload - reloads config file from disk
    - set <name>=<value> ... - set value(s) in config (session)
-   - get <name> ... - get value(s) in config
-   - save <filename> - write current session config to file
+   - get <name> ... - get value(s) from the config
+   - save <filename> - write current session config to a file
    - load <filename> - load config from disk
 """
 
