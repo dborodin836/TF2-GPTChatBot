@@ -10,9 +10,6 @@ export function PageHome() {
             <div>
                 <CommandPrompt/>
             </div>
-            {/*<div className="p-4 left-4">*/}
-            {/*    <StickyLogsToggle/>*/}
-            {/*</div>*/}
         </div>
     );
 }
