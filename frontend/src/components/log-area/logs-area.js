@@ -11,8 +11,13 @@ export function LogsArea() {
         // When message is received, append it to the logs state
         ws.onmessage = (event) => {
             setLogs((currentLogs) => `${currentLogs}${event.data}`);
-            var textarea = document.getElementById('textarea_logs');
-            textarea.scrollTop = textarea.scrollHeight;
+            const textarea = document.getElementById('textarea_logs');
+            let shouldScroll = Math.abs((textarea.scrollHeight - textarea.offsetHeight) - textarea.scrollTop) <= 80;
+
+            if (shouldScroll) {
+                textarea.scrollTop = textarea.scrollHeight;
+            }
+
         };
 
         // Clean up function to close WebSocket connection when the component unmounts
