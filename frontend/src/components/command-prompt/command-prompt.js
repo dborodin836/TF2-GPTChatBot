@@ -29,7 +29,7 @@ export function CommandPrompt() {
     };
 
     return (
-        <div className="flex flex-1 w-full flex-row gap-6 p-4">
+        <div className="flex flex-1 w-full max-h-[60px] flex-row gap-6 p-4">
             <Input
                 label="Type your commands here... Or start with 'help' command"
                 value={command}
@@ -49,7 +49,7 @@ export function CommandPrompt() {
                 size="sm"
                 color={command ? "gray" : "blue-gray"}
                 disabled={!command}
-                className="rounded"
+                className="rounded min-h-[40px]"
                 onClick={handleSubmit}
             >Send
             </Button>

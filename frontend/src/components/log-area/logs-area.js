@@ -18,9 +18,9 @@ export function LogsArea() {
     }, []);
 
     return (
-        <div className="flex flex-1 w-full flex-col gap-6 p-4">
+        <div className="flex flex-1 w-full gap-6 p-4">
             <Textarea
-                className="min-w-[95%] min-h-[80vh] selection:bg-gray-400 selection:text-white"
+                className="min-w-[95%] selection:bg-gray-400 selection:text-white"
                 size="lg"
                 label="App logs"
                 value={logs}
