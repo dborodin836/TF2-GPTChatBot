@@ -1,5 +1,11 @@
 from modules.logs import get_logger
-from modules.utils.config import reload_config, get_value_config, set_value_config, load_config, save_config
+from modules.utils.config import (
+    get_value_config,
+    load_config,
+    reload_config,
+    save_config,
+    set_value_config,
+)
 
 gui_logger = get_logger("gui")
 

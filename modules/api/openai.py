@@ -6,7 +6,7 @@ import openai
 from config import config
 from modules.logs import get_logger, log_gui_general_message, log_gui_model_message
 from modules.servers.tf2 import send_say_command_to_tf2
-from modules.typing import MessageHistory, Message
+from modules.typing import Message, MessageHistory
 from modules.utils.text import add_prompts_by_flags, remove_hashtags
 
 main_logger = get_logger("main")
@@ -97,10 +97,11 @@ def handle_gpt_request(
         )
         return
 
-    response = get_response([
-        Message(role="assistant", content=config.GREETING),
-        Message(role="user", content=message)
-    ], username, model)
+    response = get_response(
+        [Message(role="assistant", content=config.GREETING), Message(role="user", content=message)],
+        username,
+        model,
+    )
 
     if response:
         main_logger.info(

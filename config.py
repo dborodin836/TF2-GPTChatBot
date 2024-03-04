@@ -179,7 +179,9 @@ def init_config(filename: str = None) -> None:
 
     if not exists(config_file_path):
         buffered_fail_message("Config file is missing.", "LOG", level="ERROR")
-        buffered_fail_message(f"Couldn't find '{config_file_path}' file.", type_="BOTH", level="ERROR")
+        buffered_fail_message(
+            f"Couldn't find '{config_file_path}' file.", type_="BOTH", level="ERROR"
+        )
 
     try:
         buffered_message("Starting parsing config file.", "LOG", level="INFO")

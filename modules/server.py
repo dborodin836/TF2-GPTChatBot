@@ -2,10 +2,10 @@ import asyncio
 
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from starlette.websockets import WebSocketDisconnect
 
 from modules.gui.controller import command_controller
-from pydantic import BaseModel
 
 app = FastAPI()
 

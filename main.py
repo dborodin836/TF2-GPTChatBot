@@ -3,13 +3,13 @@ from config import init_config
 # This is required due to config used in imported modules
 init_config()
 
-import uvicorn
 import contextlib
 import sys
 import threading
 import time
 import tkinter as tk
 
+import uvicorn
 from pynput import keyboard
 
 from config import config
@@ -19,9 +19,9 @@ from modules.commands.gui.openai import gpt3_cmd_handler
 from modules.gui.log_window import LogWindow, RedirectStdoutToLogWindow
 from modules.logs import get_logger, setup_loggers
 from modules.message_queueing import message_queue_handler
+from modules.server import app
 from modules.servers.tf2 import get_status
 from modules.tf_statistics import StatsData
-from modules.server import app
 
 gui_logger = get_logger("gui")
 

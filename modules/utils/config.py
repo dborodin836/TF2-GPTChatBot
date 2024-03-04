@@ -1,6 +1,6 @@
 import codecs
-from typing import List
 import configparser
+from typing import List
 
 from config import config
 from modules.logs import get_logger
@@ -8,11 +8,7 @@ from modules.logs import get_logger
 gui_logger = get_logger("gui")
 
 INI_CONFIG_FILE_HEADER = "TF2-GPT-CHATBOT-CONFIG"
-DROP_KEYS = (
-    "APP_VERSION",
-    "CONFIG_NAME",
-    "HOST_USERNAME"
-)
+DROP_KEYS = ("APP_VERSION", "CONFIG_NAME", "HOST_USERNAME")
 
 
 def reload_config():

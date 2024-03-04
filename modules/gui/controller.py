@@ -2,9 +2,9 @@ import sys
 
 from modules.command_controllers import GuiCommandController
 from modules.commands.gui.bans import handle_ban, handle_list_bans, handle_unban
+from modules.commands.gui.config import handle_config
 from modules.commands.gui.openai import handle_gpt3
 from modules.commands.gui.state import handle_start, handle_stop
-from modules.commands.gui.config import handle_config
 
 config_command_description = """Commands to manipulate config file.
    - reload - reloads config file from disk
