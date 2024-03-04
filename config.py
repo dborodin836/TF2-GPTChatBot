@@ -31,6 +31,7 @@ class RTDModes(IntEnum):
 
 class Config(BaseModel):
     APP_VERSION: str = "1.3.0"
+    CONFIG_NAME: str
     HOST_USERNAME: str = ""
     TOS_VIOLATION: bool
 
@@ -79,6 +80,35 @@ class Config(BaseModel):
     CONFIRMABLE_QUEUE: bool
 
     CUSTOM_MODEL_SETTINGS: Optional[str | dict]
+
+    def load_from_file(self, filename: str = None):
+        config_file = filename or CONFIG_FILE
+
+        if not exists(CONFIG_FILE):
+            raise Exception("File doesn't exist.")
+
+        configparser_config = configparser.ConfigParser()
+        configparser_config.read(config_file, encoding="utf-8")
+
+        config_dict: dict[str, str | None] = {
+            key.upper(): value
+            for section in configparser_config.sections()
+            for key, value in configparser_config.items(section)
+        }
+
+        try:
+            if config_dict.get("CUSTOM_MODEL_SETTINGS") != "":
+                config_dict["CUSTOM_MODEL_SETTINGS"] = json.loads(
+                    config_dict.get("CUSTOM_MODEL_SETTINGS")
+                )
+        except Exception as e:
+            raise Exception(f"CUSTOM_MODEL_SETTINGS is not dict [{e}].")
+
+        # Set loaded config filename
+        config_dict["CONFIG_NAME"] = config_file
+
+        for k, v in config_dict.items():
+            self.__setattr__(k, v)
 
     @validator("OPENAI_API_KEY")
     def api_key_pattern_match(cls, v):
@@ -140,15 +170,17 @@ def show_error_window(err):
     sys.exit(1)
 
 
-def init_config():
+def init_config(filename: str = None) -> None:
+    config_file = filename or CONFIG_FILE
+
     if not exists(CONFIG_FILE):
         buffered_fail_message("Config file is missing.", "LOG", level="ERROR")
-        buffered_fail_message(f"Couldn't find '{CONFIG_FILE}' file.", type_="BOTH", level="ERROR")
+        buffered_fail_message(f"Couldn't find '{config_file}' file.", type_="BOTH", level="ERROR")
 
     try:
         buffered_message("Starting parsing config file.", "LOG", level="INFO")
         configparser_config = configparser.ConfigParser()
-        configparser_config.read(CONFIG_FILE, encoding="utf-8")
+        configparser_config.read(config_file, encoding="utf-8")
 
         config_dict: dict[str, str | None] = {
             key.upper(): value
@@ -165,6 +197,9 @@ def init_config():
             buffered_fail_message(
                 f"CUSTOM_MODEL_SETTINGS is not dict [{e}].", "BOTH", level="ERROR"
             )
+
+        # Set loaded config filename
+        config_dict["CONFIG_NAME"] = config_file
 
         config = Config(**config_dict)
     except (pydantic.ValidationError, Exception) as e:

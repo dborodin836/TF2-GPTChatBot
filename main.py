@@ -1,10 +1,9 @@
-import uvicorn
-
 from config import init_config
 
 # This is required due to config used in imported modules
 init_config()
 
+import uvicorn
 import contextlib
 import sys
 import threading
@@ -45,6 +44,7 @@ def run_threads():
     root = tk.Tk()
     root.iconphoto(False, tk.PhotoImage(file="icon.png"))
     log_window = LogWindow(root)
+
     threading.Thread(target=uvicorn.run, daemon=True, args=(app,)).start()
     sys.stdout = RedirectStdoutToLogWindow(log_window)
 
