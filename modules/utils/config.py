@@ -9,6 +9,7 @@ gui_logger = get_logger("gui")
 def reload_config():
     try:
         config.load_from_file(config.CONFIG_NAME)
+        gui_logger.info("Config reloaded successfully.")
     except Exception as e:
         gui_logger.warning(f"Failed to reload config file [{e}]")
 
@@ -16,6 +17,7 @@ def reload_config():
 def load_config(filename: str):
     try:
         config.load_from_file(filename)
+        gui_logger.info("Config loaded successfully.")
     except Exception as e:
         gui_logger.warning(f"Failed to load config file [{e}]")
 

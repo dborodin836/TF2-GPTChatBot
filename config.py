@@ -14,7 +14,7 @@ from pydantic import BaseModel, validator
 
 from modules.utils.buffered_messages import buffered_fail_message, buffered_message
 
-CONFIG_FILE = "config.ini"
+DEAFAULT_CONFIG_FILE = "config.ini"
 OPENAI_API_KEY_RE_PATTERN = r"sk-[a-zA-Z0-9]{48}"
 WEB_API_KEY_RE_PATTERN = r"[a-zA-Z0-9]{32}"
 
@@ -82,13 +82,15 @@ class Config(BaseModel):
     CUSTOM_MODEL_SETTINGS: Optional[str | dict]
 
     def load_from_file(self, filename: str = None):
-        config_file = filename or CONFIG_FILE
+        config_file = filename or DEAFAULT_CONFIG_FILE
+        # TODO: redo with pathlib
+        config_file_path = "cfg/" + config_file
 
-        if not exists(CONFIG_FILE):
+        if not exists(config_file_path):
             raise Exception("File doesn't exist.")
 
         configparser_config = configparser.ConfigParser()
-        configparser_config.read(config_file, encoding="utf-8")
+        configparser_config.read(config_file_path, encoding="utf-8")
 
         config_dict: dict[str, str | None] = {
             key.upper(): value
@@ -171,16 +173,18 @@ def show_error_window(err):
 
 
 def init_config(filename: str = None) -> None:
-    config_file = filename or CONFIG_FILE
+    config_file = filename or DEAFAULT_CONFIG_FILE
+    # TODO: redo with pathlib
+    config_file_path = "cfg/" + config_file
 
-    if not exists(CONFIG_FILE):
+    if not exists(config_file_path):
         buffered_fail_message("Config file is missing.", "LOG", level="ERROR")
-        buffered_fail_message(f"Couldn't find '{config_file}' file.", type_="BOTH", level="ERROR")
+        buffered_fail_message(f"Couldn't find '{config_file_path}' file.", type_="BOTH", level="ERROR")
 
     try:
         buffered_message("Starting parsing config file.", "LOG", level="INFO")
         configparser_config = configparser.ConfigParser()
-        configparser_config.read(config_file, encoding="utf-8")
+        configparser_config.read(config_file_path, encoding="utf-8")
 
         config_dict: dict[str, str | None] = {
             key.upper(): value
