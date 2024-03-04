@@ -1,29 +1,20 @@
 import React, {useState, useEffect} from 'react';
 import {Textarea} from "@material-tailwind/react";
+import {subscribeToLogs} from "../../webSocketLogsService";
 
 export function LogsArea() {
-
     const [logs, setLogs] = useState('');
 
     useEffect(() => {
-        const ws = new WebSocket('ws://127.0.0.1:8000/ws');
+        const unsubscribe = subscribeToLogs(setLogs);
 
-        // When message is received, append it to the logs state
-        ws.onmessage = (event) => {
-            setLogs((currentLogs) => `${currentLogs}${event.data}`);
+        // Scroll to the end on mount
+        setTimeout(() => {
             const textarea = document.getElementById('textarea_logs');
-            let shouldScroll = Math.abs((textarea.scrollHeight - textarea.offsetHeight) - textarea.scrollTop) <= 80;
+            textarea.scrollTop = textarea.scrollHeight;
+        }, 5)
 
-            if (shouldScroll) {
-                textarea.scrollTop = textarea.scrollHeight;
-            }
-
-        };
-
-        // Clean up function to close WebSocket connection when the component unmounts
-        return () => {
-            ws.close();
-        };
+        return unsubscribe;
     }, []);
 
     return (
