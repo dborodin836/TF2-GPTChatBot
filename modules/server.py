@@ -1,11 +1,14 @@
 import asyncio
+from typing import Type, Union
 
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, create_model
+from pydantic.typing import get_type_hints
 from starlette.websockets import WebSocketDisconnect
 
 from modules.gui.controller import command_controller
+from config import config, Config
 
 app = FastAPI()
 
@@ -42,6 +45,42 @@ connection_manager = ConnectionManager()
 
 class Command(BaseModel):
     text: str
+
+
+@app.get("/settings")
+async def handle_get_settings():
+    return config.dict()
+
+
+def create_partial_update_model(base_model: Type[BaseModel]) -> Type[BaseModel]:
+    field_definitions = {}
+    for name, type_hint in get_type_hints(base_model).items():
+        field_definitions[name] = (Union[type_hint, None], None)
+    return create_model('PartialUpdateModel', **field_definitions)
+
+
+# Create partial update model dynamically
+PartialUpdateModel = create_partial_update_model(Config)
+
+
+@app.post("/settings")
+async def handle_update_settings(settings: PartialUpdateModel):
+    update_data = settings.dict()
+    errors = []
+    success = True
+
+    try:
+        for k, v in update_data.items():
+            config.__setattr__(k, v)
+    except Exception as e:
+        success = False
+        errors.append(str(e))
+
+    response = {"status": "ok" if success else "error"}
+    if errors:
+        response.update({"errors": success})
+
+    return response
 
 
 @app.post("/cmd")
