@@ -39,6 +39,14 @@ export function PageSettings() {
         }));
     };
 
+    const handleInputChange = (e) => {
+        const {name, value} = e.target;
+        setSettings(prevSettings => ({
+            ...prevSettings,
+            [name]: value,
+        }));
+    };
+
     return (
         <div className="flex flex-1 max-h-[calc(100vh-2rem)] flex-col text-gray-700 w-full gap-6 p-4 overflow-y-scroll">
             <Card className="p-6">
@@ -56,6 +64,8 @@ export function PageSettings() {
                             }}
                             containerProps={{className: "min-w-[100px]"}}
                             value={settings ? settings.TF2_LOGFILE_PATH : ''}
+                            name="TF2_LOGFILE_PATH"
+                            onChange={handleInputChange}
                         />
                     </div>
                 </div>
@@ -72,6 +82,8 @@ export function PageSettings() {
                             }}
                             containerProps={{className: "min-w-[100px]"}}
                             value={settings ? settings.OPENAI_API_KEY : ''}
+                            name="OPENAI_API_KEY"
+                            onChange={handleInputChange}
                         />
                     </div>
                 </div>
@@ -93,6 +105,8 @@ export function PageSettings() {
                                 }}
                                 containerProps={{className: "min-w-[100px]"}}
                                 value={settings ? settings.RCON_HOST : ''}
+                                name="RCON_HOST"
+                                onChange={handleInputChange}
                             />
                         </div>
                     </div>
@@ -109,6 +123,8 @@ export function PageSettings() {
                                 }}
                                 containerProps={{className: "min-w-[100px]"}}
                                 value={settings ? settings.RCON_PORT : ''}
+                                name="RCON_PORT"
+                                onChange={handleInputChange}
                             />
                         </div>
                     </div>
@@ -127,6 +143,8 @@ export function PageSettings() {
                             }}
                             containerProps={{className: "min-w-[100px]"}}
                             value={settings ? settings.RCON_PASSWORD : ''}
+                            name="RCON_PASSWORD"
+                            onChange={handleInputChange}
                         />
                     </div>
                 </div>
@@ -157,6 +175,8 @@ export function PageSettings() {
                             }}
                             containerProps={{className: "min-w-[100px]"}}
                             value={settings ? settings.STEAM_WEBAPI_KEY : ''}
+                            name="STEAM_WEBAPI_KEY"
+                            onChange={handleInputChange}
                         />
                     </div>
                 </div>
@@ -253,6 +273,8 @@ export function PageSettings() {
                                     }}
                                     containerProps={{className: "min-w-[100px]"}}
                                     value={settings ? settings.GPT_COMMAND : ''}
+                                    name="GPT_COMMAND"
+                                    onChange={handleInputChange}
                                 />
                             </div>
                         </div>
@@ -269,6 +291,8 @@ export function PageSettings() {
                                     }}
                                     containerProps={{className: "min-w-[100px]"}}
                                     value={settings ? settings.GPT3_MODEL : ''}
+                                    name="GPT3_MODEL"
+                                    onChange={handleInputChange}
                                 />
                             </div>
                         </div>
@@ -287,6 +311,8 @@ export function PageSettings() {
                                     }}
                                     containerProps={{className: "min-w-[100px]"}}
                                     value={settings ? settings.CHATGPT_COMMAND : ''}
+                                    name="CHATGPT_COMMAND"
+                                    onChange={handleInputChange}
                                 />
                             </div>
                         </div>
@@ -303,6 +329,8 @@ export function PageSettings() {
                                     }}
                                     containerProps={{className: "min-w-[100px]"}}
                                     value={settings ? settings.GPT3_CHAT_MODEL : ''}
+                                    name="GPT3_CHAT_MODEL"
+                                    onChange={handleInputChange}
                                 />
                             </div>
                         </div>
@@ -321,6 +349,8 @@ export function PageSettings() {
                                     }}
                                     containerProps={{className: "min-w-[100px]"}}
                                     value={settings ? settings.GPT4_COMMAND : ''}
+                                    name="GPT4_COMMAND"
+                                    onChange={handleInputChange}
                                 />
                             </div>
                         </div>
@@ -337,6 +367,8 @@ export function PageSettings() {
                                     }}
                                     containerProps={{className: "min-w-[100px]"}}
                                     value={settings ? settings.GPT4_MODEL : ''}
+                                    name="GPT4_MODEL"
+                                    onChange={handleInputChange}
                                 />
                             </div>
                         </div>
@@ -355,6 +387,8 @@ export function PageSettings() {
                                     }}
                                     containerProps={{className: "min-w-[100px]"}}
                                     value={settings ? settings.GPT4_LEGACY_COMMAND : ''}
+                                    name="GPT4_LEGACY_COMMAND"
+                                    onChange={handleInputChange}
                                 />
                             </div>
                         </div>
@@ -371,6 +405,8 @@ export function PageSettings() {
                                     }}
                                     containerProps={{className: "min-w-[100px]"}}
                                     value={settings ? settings.GPT4L_MODEL : ''}
+                                    name="GPT4L_MODEL"
+                                    onChange={handleInputChange}
                                 />
                             </div>
                         </div>
