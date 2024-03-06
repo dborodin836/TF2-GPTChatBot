@@ -49,6 +49,7 @@ export function PageSettings() {
 
     return (
         <div className="flex flex-1 max-h-[calc(100vh-2rem)] flex-col text-gray-700 w-full gap-6 p-4 overflow-y-scroll">
+            {/* Required */}
             <Card className="p-6">
                 <Typography className="mb-3" variant="h2">Required Settings</Typography>
                 <hr className="mb-3"/>
@@ -89,6 +90,7 @@ export function PageSettings() {
                 </div>
             </Card>
 
+            {/* RCON */}
             <Card className="p-6">
                 <Typography className="mb-3" variant="h2">RCON Settings</Typography>
                 <hr className="mb-3"/>
@@ -150,112 +152,7 @@ export function PageSettings() {
                 </div>
             </Card>
 
-            <Card className="p-6">
-                <Typography className="mb-3" variant="h2">Stats Settings</Typography>
-
-                <hr className="mb-3"/>
-
-                <div className="ml-1 mb-3">
-                    <Switch label="Enable Stats Module"
-                            checked={settings?.ENABLE_STATS || false}
-                            onChange={toggleEnableStats}/>
-                </div>
-
-                <hr className="mb-3"/>
-
-                <div className="mb-3 w-[100%]">
-                    <label
-                        className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
-                    >Steam WebAPI Key</label>
-                    <div className="w-72 min-w-[100%]">
-                        <Input
-                            className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
-                            labelProps={{
-                                className: "hidden",
-                            }}
-                            containerProps={{className: "min-w-[100px]"}}
-                            value={settings ? settings.STEAM_WEBAPI_KEY : ''}
-                            name="STEAM_WEBAPI_KEY"
-                            onChange={handleInputChange}
-                        />
-                    </div>
-                </div>
-            </Card>
-
-            <Card className="p-6">
-                <Typography className="mb-3" variant="h2">RTD Settings</Typography>
-
-                <hr className="mb-3"/>
-
-                <Typography className="mb-3" variant="h4">RTD Mode</Typography>
-                <div className="w-[100%]">
-                    <div className="flex gap-8">
-                        <Radio
-                            name="description"
-                            label={
-                                <div>
-                                    <Typography color="blue-gray" className="font-medium">
-                                        Disabled
-                                    </Typography>
-                                    <Typography variant="small" color="gray" className="font-normal">
-                                        Disable module functionality.
-                                    </Typography>
-                                </div>
-                            }
-                            checked={settings?.RTD_MODE === 0 || false}
-                            onChange={() => {
-                                handleRTDModeChange(0)
-                            }}
-                            containerProps={{
-                                className: "-mt-5",
-                            }}
-                        />
-                        <Radio
-                            name="description"
-                            label={
-                                <div>
-                                    <Typography color="blue-gray" className="font-medium">
-                                        RickRoll
-                                    </Typography>
-                                    <Typography variant="small" color="gray" className="font-normal">
-                                        Sends the RickRoll link (<a target="_blank" rel="noreferrer"
-                                                                    className="font-medium text-green-500 dark:text-green-blue-600 hover:underline"
-                                                                    href="https://youtu.be/dQw4w9WgXcQ">youtu.be/dQw4w9WgXcQ</a>).
-                                    </Typography>
-                                </div>
-                            }
-                            checked={settings?.RTD_MODE === 1 || false}
-                            onChange={() => {
-                                handleRTDModeChange(1)
-                            }}
-                            containerProps={{
-                                className: "-mt-5",
-                            }}
-                        />
-                        <Radio
-                            name="description"
-                            label={
-                                <div>
-                                    <Typography color="blue-gray" className="font-medium">
-                                        Random YouTube Meme
-                                    </Typography>
-                                    <Typography variant="small" color="gray" className="font-normal">
-                                        Sends a random link from vids.txt file.
-                                    </Typography>
-                                </div>
-                            }
-                            checked={settings?.RTD_MODE === 2 || false}
-                            onChange={() => {
-                                handleRTDModeChange(2)
-                            }}
-                            containerProps={{
-                                className: "-mt-5",
-                            }}
-                        />
-                    </div>
-                </div>
-            </Card>
-
+            {/* OpenAI Settings*/}
             <Card className="p-6">
                 <Typography className="mb-3" variant="h2">OpenAI Models & Commands</Typography>
                 <hr className="mb-3"/>
@@ -410,6 +307,114 @@ export function PageSettings() {
                                 />
                             </div>
                         </div>
+                    </div>
+                </div>
+            </Card>
+
+            {/* Stats */}
+            <Card className="p-6">
+                <Typography className="mb-3" variant="h2">Stats Settings</Typography>
+
+                <hr className="mb-3"/>
+
+                <div className="ml-1 mb-3">
+                    <Switch label="Enable Stats Module"
+                            checked={settings?.ENABLE_STATS || false}
+                            onChange={toggleEnableStats}/>
+                </div>
+
+                <hr className="mb-3"/>
+
+                <div className="mb-3 w-[100%]">
+                    <label
+                        className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                    >Steam WebAPI Key</label>
+                    <div className="w-72 min-w-[100%]">
+                        <Input
+                            className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                            labelProps={{
+                                className: "hidden",
+                            }}
+                            containerProps={{className: "min-w-[100px]"}}
+                            value={settings ? settings.STEAM_WEBAPI_KEY : ''}
+                            name="STEAM_WEBAPI_KEY"
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                </div>
+            </Card>
+
+            {/* RTD */}
+            <Card className="p-6">
+                <Typography className="mb-3" variant="h2">RTD Settings</Typography>
+
+                <hr className="mb-3"/>
+
+                <Typography className="mb-3" variant="h4">RTD Mode</Typography>
+                <div className="w-[100%]">
+                    <div className="flex gap-8">
+                        <Radio
+                            name="description"
+                            label={
+                                <div>
+                                    <Typography color="blue-gray" className="font-medium">
+                                        Disabled
+                                    </Typography>
+                                    <Typography variant="small" color="gray" className="font-normal">
+                                        Disable module functionality.
+                                    </Typography>
+                                </div>
+                            }
+                            checked={settings?.RTD_MODE === 0 || false}
+                            onChange={() => {
+                                handleRTDModeChange(0)
+                            }}
+                            containerProps={{
+                                className: "-mt-5",
+                            }}
+                        />
+                        <Radio
+                            name="description"
+                            label={
+                                <div>
+                                    <Typography color="blue-gray" className="font-medium">
+                                        RickRoll
+                                    </Typography>
+                                    <Typography variant="small" color="gray" className="font-normal">
+                                        Sends the RickRoll link (<a target="_blank" rel="noreferrer"
+                                                                    className="font-medium text-green-500 dark:text-green-blue-600 hover:underline"
+                                                                    href="https://youtu.be/dQw4w9WgXcQ">youtu.be/dQw4w9WgXcQ</a>).
+                                    </Typography>
+                                </div>
+                            }
+                            checked={settings?.RTD_MODE === 1 || false}
+                            onChange={() => {
+                                handleRTDModeChange(1)
+                            }}
+                            containerProps={{
+                                className: "-mt-5",
+                            }}
+                        />
+                        <Radio
+                            name="description"
+                            label={
+                                <div>
+                                    <Typography color="blue-gray" className="font-medium">
+                                        Random YouTube Meme
+                                    </Typography>
+                                    <Typography variant="small" color="gray" className="font-normal">
+                                        Sends a random link from vids.txt file.
+                                    </Typography>
+                                </div>
+                            }
+                            checked={settings?.RTD_MODE === 2 || false}
+                            onChange={() => {
+                                handleRTDModeChange(2)
+                            }}
+                            containerProps={{
+                                className: "-mt-5",
+                            }}
+                        />
                     </div>
                 </div>
             </Card>
