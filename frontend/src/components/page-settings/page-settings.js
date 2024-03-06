@@ -1,4 +1,4 @@
-import {Card, Input, Radio, Switch, Typography} from "@material-tailwind/react";
+import {Card, Input, Radio, Switch, Textarea, Typography} from "@material-tailwind/react";
 import React, {useEffect, useState} from "react";
 import {
     ExclamationTriangleIcon
@@ -53,6 +53,13 @@ export function PageSettings() {
         setSettings({
             ...settings,
             TOS_VIOLATION: !settings.TOS_VIOLATION,
+        });
+    }
+
+    const toggleShortenedUsernameResponse = () => {
+        setSettings({
+            ...settings,
+            ENABLE_SHORTENED_USERNAMES_RESPONSE: !settings.ENABLE_SHORTENED_USERNAMES_RESPONSE,
         });
     }
 
@@ -348,6 +355,167 @@ export function PageSettings() {
             </Card>
 
             {/* Chat */}
+            <Card className="p-6">
+                <Typography className="mb-3" variant="h2">Chat</Typography>
+                <hr className="mb-3"/>
+                <div className="flex">
+                    <div className="mb-3 w-[100%]">
+                        <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
+                            Clear Chat Command
+                        </label>
+                        <div className="w-72 min-w-[100%]">
+                            <Input
+                                className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                labelProps={{
+                                    className: "hidden",
+                                }}
+                                containerProps={{className: "min-w-[100px]"}}
+                                value={settings ? settings.CLEAR_CHAT_COMMAND : ''}
+                                name="CLEAR_CHAT_COMMAND"
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="mb-3 ml-3 w-[100%]">
+                        <label
+                            className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                        >Delay Between Messages</label>
+                        <div className="w-72 min-w-[100%]">
+                            <Input
+                                className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                labelProps={{
+                                    className: "hidden",
+                                }}
+                                containerProps={{className: "min-w-[100px]"}}
+                                value={settings ? settings.DELAY_BETWEEN_MESSAGES : ''}
+                                name="DELAY_BETWEEN_MESSAGES"
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex">
+                    <div className="mb-3 w-[100%]">
+                        <label
+                            className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                        >Soft Completion Limit</label>
+                        <div className="w-72 min-w-[100%]">
+                            <Input
+                                className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                labelProps={{
+                                    className: "hidden",
+                                }}
+                                containerProps={{className: "min-w-[100px]"}}
+                                value={settings ? settings.SOFT_COMPLETION_LIMIT : ''}
+                                name="SOFT_COMPLETION_LIMIT"
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="mb-3 ml-3 w-[100%]">
+                        <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
+                            Hard Completion Limit
+                        </label>
+                        <div className="w-72 min-w-[100%]">
+                            <Input
+                                className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                labelProps={{
+                                    className: "hidden",
+                                }}
+                                containerProps={{className: "min-w-[100px]"}}
+                                value={settings ? settings.HARD_COMPLETION_LIMIT : ''}
+                                name="HARD_COMPLETION_LIMIT"
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <Typography className="mb-3 mt-2" variant="h4">Shortened Username Response</Typography>
+                <hr className="mb-3"/>
+
+                <div className="ml-1 mb-3">
+                    <Switch label="Enable Shortened Username Response"
+                            checked={settings?.ENABLE_SHORTENED_USERNAMES_RESPONSE || false}
+                            onChange={toggleShortenedUsernameResponse}/>
+                </div>
+
+                <hr className="mb-3"/>
+
+                <div className="flex">
+                    <div className="mb-3 w-[100%]">
+                        <label
+                            className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                        >Shortened Username Format</label>
+                        <div className="w-72 min-w-[100%]">
+                            <Input
+                                className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                labelProps={{
+                                    className: "hidden",
+                                }}
+                                containerProps={{className: "min-w-[100px]"}}
+                                value={settings ? settings.SHORTENED_USERNAMES_FORMAT : ''}
+                                name="SHORTENED_USERNAMES_FORMAT"
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="mb-3 ml-3 w-[100%]">
+                        <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
+                            Shortened Username Length
+                        </label>
+                        <div className="w-72 min-w-[100%]">
+                            <Input
+                                className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                labelProps={{
+                                    className: "hidden",
+                                }}
+                                containerProps={{className: "min-w-[100px]"}}
+                                value={settings ? settings.SHORTENED_USERNAME_LENGTH : ''}
+                                name="SHORTENED_USERNAME_LENGTH"
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <Typography className="mb-3 mt-2" variant="h4">Behaviour</Typography>
+                <hr className="mb-3"/>
+
+                <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
+                    User Prompt Suffix
+                </label>
+                <Textarea
+                    className="!border mb-3 !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                    size="lg"
+                    id="textarea_logs"
+                    labelProps={{
+                        className: "hidden",
+                    }}
+                    value={settings ? settings.CUSTOM_PROMPT : ''}
+                    name="CUSTOM_PROMPT"
+                    onChange={handleInputChange}
+                />
+
+                <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
+                    AI Greeting Message
+                </label>
+                <Textarea
+                    className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                    size="lg"
+                    id="textarea_logs"
+                    labelProps={{
+                        className: "hidden",
+                    }}
+                    value={settings ? settings.GREETING : ''}
+                    name="GREETING"
+                    onChange={handleInputChange}
+                />
+            </Card>
 
             {/* Textgen Webui */}
 
