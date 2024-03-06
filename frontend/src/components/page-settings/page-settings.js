@@ -163,7 +163,7 @@ export function PageSettings() {
 
                 <hr className="mb-3"/>
 
-                <div className="mb-3 ml-3 w-[100%]">
+                <div className="mb-3 w-[100%]">
                     <label
                         className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                     >Steam WebAPI Key</label>
