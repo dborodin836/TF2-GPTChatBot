@@ -49,6 +49,13 @@ export function PageSettings() {
         });
     }
 
+    const toggleOpenAIModeration = () => {
+        setSettings({
+            ...settings,
+            TOS_VIOLATION: !settings.TOS_VIOLATION,
+        });
+    }
+
     const handleRTDModeChange = (mode) => {
         setSettings((prevSettings) => ({
             ...prevSettings,
@@ -175,7 +182,15 @@ export function PageSettings() {
 
             {/* OpenAI Settings*/}
             <Card className="p-6">
-                <Typography className="mb-3" variant="h2">OpenAI Models & Commands</Typography>
+                <Typography className="mb-3" variant="h2">OpenAI</Typography>
+                <hr className="mb-3"/>
+
+                <div className="ml-1 mb-3">
+                    <Switch label="Enable Message Moderation"
+                            checked={!settings?.TOS_VIOLATION || true}
+                            onChange={toggleOpenAIModeration}/>
+                </div>
+
                 <hr className="mb-3"/>
                 <div className="mb-3">
                     <div className="flex">
@@ -332,9 +347,9 @@ export function PageSettings() {
                 </div>
             </Card>
 
-            {/* Textgen Webui */}
-
             {/* Chat */}
+
+            {/* Textgen Webui */}
 
             {/* Stats */}
             <Card className="p-6">
