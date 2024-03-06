@@ -105,7 +105,7 @@ export function PageSettings() {
 
             {/* RCON */}
             <Card className="p-6">
-                <Typography className="mb-3" variant="h2">RCON Settings</Typography>
+                <Typography className="mb-3" variant="h2">RCON</Typography>
                 <hr className="mb-3"/>
                 <div className="flex">
                     <div className="mb-3 w-[100%]">
@@ -326,12 +326,12 @@ export function PageSettings() {
 
             {/* Stats */}
             <Card className="p-6">
-                <Typography className="mb-3" variant="h2">Stats Settings</Typography>
+                <Typography className="mb-3" variant="h2">Statistics</Typography>
 
                 <hr className="mb-3"/>
 
                 <div className="ml-1 mb-3">
-                    <Switch label="Enable Stats Module"
+                    <Switch label="Enable Statistics Module"
                             checked={settings?.ENABLE_STATS || false}
                             onChange={toggleEnableStats}/>
                 </div>
@@ -359,11 +359,13 @@ export function PageSettings() {
 
             {/* RTD */}
             <Card className="p-6">
-                <Typography className="mb-3" variant="h2">RTD Settings</Typography>
+                <Typography className="mb-3" variant="h2">RTD (Roll The Dice)</Typography>
 
                 <hr className="mb-3"/>
 
-                <Typography className="mb-3" variant="h4">RTD Mode</Typography>
+                <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
+                    RTD Mode
+                </label>
                 <div className="w-[100%]">
                     <div className="flex gap-8">
                         <Radio
