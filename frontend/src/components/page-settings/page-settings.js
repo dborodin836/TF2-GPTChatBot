@@ -156,6 +156,149 @@ export function PageSettings() {
             </Card>
 
             <Card className="p-6">
+                <Typography className="mb-3" variant="h2">OpenAI Models & Commands</Typography>
+                <hr className="mb-3"/>
+                <div className="mb-3">
+                    <div className="flex">
+                        <div className="mb-3 w-[100%]">
+                            <label
+                                className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                            >GPT3 Model Command</label>
+                            <div className="w-72 min-w-[100%]">
+                                <Input
+                                    className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                    labelProps={{
+                                        className: "hidden",
+                                    }}
+                                    containerProps={{className: "min-w-[100px]"}}
+                                    value={settings ? settings.GPT_COMMAND : ''}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="mb-3 ml-3 w-[100%]">
+                            <label
+                                className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                            >GPT3 Model</label>
+                            <div className="w-72 min-w-[100%]">
+                                <Input
+                                    className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                    labelProps={{
+                                        className: "hidden",
+                                    }}
+                                    containerProps={{className: "min-w-[100px]"}}
+                                    value={settings ? settings.GPT3_MODEL : ''}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex">
+                        <div className="mb-3 w-[100%]">
+                            <label
+                                className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                            >Chat Command</label>
+                            <div className="w-72 min-w-[100%]">
+                                <Input
+                                    className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                    labelProps={{
+                                        className: "hidden",
+                                    }}
+                                    containerProps={{className: "min-w-[100px]"}}
+                                    value={settings ? settings.CHATGPT_COMMAND : ''}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="mb-3 ml-3 w-[100%]">
+                            <label
+                                className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                            >Chat Model</label>
+                            <div className="w-72 min-w-[100%]">
+                                <Input
+                                    className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                    labelProps={{
+                                        className: "hidden",
+                                    }}
+                                    containerProps={{className: "min-w-[100px]"}}
+                                    value={settings ? settings.GPT3_CHAT_MODEL : ''}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex">
+                        <div className="mb-3 w-[100%]">
+                            <label
+                                className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                            >GPT4 Model Command</label>
+                            <div className="w-72 min-w-[100%]">
+                                <Input
+                                    className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                    labelProps={{
+                                        className: "hidden",
+                                    }}
+                                    containerProps={{className: "min-w-[100px]"}}
+                                    value={settings ? settings.GPT4_COMMAND : ''}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="mb-3 ml-3 w-[100%]">
+                            <label
+                                className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                            >GPT4 Model</label>
+                            <div className="w-72 min-w-[100%]">
+                                <Input
+                                    className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                    labelProps={{
+                                        className: "hidden",
+                                    }}
+                                    containerProps={{className: "min-w-[100px]"}}
+                                    value={settings ? settings.GPT4_MODEL : ''}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex">
+                        <div className="mb-3 w-[100%]">
+                            <label
+                                className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                            >GPT4 Legacy Model Command</label>
+                            <div className="w-72 min-w-[100%]">
+                                <Input
+                                    className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                    labelProps={{
+                                        className: "hidden",
+                                    }}
+                                    containerProps={{className: "min-w-[100px]"}}
+                                    value={settings ? settings.GPT4_LEGACY_COMMAND : ''}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="mb-3 ml-3 w-[100%]">
+                            <label
+                                className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                            >GPT4 Legacy Model</label>
+                            <div className="w-72 min-w-[100%]">
+                                <Input
+                                    className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                    labelProps={{
+                                        className: "hidden",
+                                    }}
+                                    containerProps={{className: "min-w-[100px]"}}
+                                    value={settings ? settings.GPT4L_MODEL : ''}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Card>
+
+
+            <Card className="p-6">
                 <Typography className="mb-3" variant="h2">TEMPLATE</Typography>
                 <hr className="mb-3"/>
                 <div className="mb-3">
