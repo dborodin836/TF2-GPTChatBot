@@ -1,4 +1,4 @@
-import {Card, Input, Switch, Typography} from "@material-tailwind/react";
+import {Card, Input, Radio, Switch, Typography} from "@material-tailwind/react";
 import React, {useEffect, useState} from "react";
 
 export function PageSettings() {
@@ -30,6 +30,13 @@ export function PageSettings() {
             ...settings,
             ENABLE_STATS: !settings.ENABLE_STATS,
         });
+    };
+
+    const handleRTDModeChange = (mode) => {
+        setSettings((prevSettings) => ({
+            ...prevSettings,
+            RTD_MODE: mode,
+        }));
     };
 
     return (
@@ -150,6 +157,80 @@ export function PageSettings() {
                             }}
                             containerProps={{className: "min-w-[100px]"}}
                             value={settings ? settings.STEAM_WEBAPI_KEY : ''}
+                        />
+                    </div>
+                </div>
+            </Card>
+
+            <Card className="p-6">
+                <Typography className="mb-3" variant="h2">RTD Settings</Typography>
+
+                <hr className="mb-3"/>
+
+                <Typography className="mb-3" variant="h4">RTD Mode</Typography>
+                <div className="w-[100%]">
+                    <div className="flex gap-8">
+                        <Radio
+                            name="description"
+                            label={
+                                <div>
+                                    <Typography color="blue-gray" className="font-medium">
+                                        Disabled
+                                    </Typography>
+                                    <Typography variant="small" color="gray" className="font-normal">
+                                        Disable module functionality.
+                                    </Typography>
+                                </div>
+                            }
+                            checked={settings?.RTD_MODE === 0 || false}
+                            onChange={() => {
+                                handleRTDModeChange(0)
+                            }}
+                            containerProps={{
+                                className: "-mt-5",
+                            }}
+                        />
+                        <Radio
+                            name="description"
+                            label={
+                                <div>
+                                    <Typography color="blue-gray" className="font-medium">
+                                        RickRoll
+                                    </Typography>
+                                    <Typography variant="small" color="gray" className="font-normal">
+                                        Sends the RickRoll link (<a target="_blank" rel="noreferrer"
+                                                                    className="font-medium text-green-500 dark:text-green-blue-600 hover:underline"
+                                                                    href="https://youtu.be/dQw4w9WgXcQ">youtu.be/dQw4w9WgXcQ</a>).
+                                    </Typography>
+                                </div>
+                            }
+                            checked={settings?.RTD_MODE === 1 || false}
+                            onChange={() => {
+                                handleRTDModeChange(1)
+                            }}
+                            containerProps={{
+                                className: "-mt-5",
+                            }}
+                        />
+                        <Radio
+                            name="description"
+                            label={
+                                <div>
+                                    <Typography color="blue-gray" className="font-medium">
+                                        Random YouTube Meme
+                                    </Typography>
+                                    <Typography variant="small" color="gray" className="font-normal">
+                                        Sends a random link from vids.txt file.
+                                    </Typography>
+                                </div>
+                            }
+                            checked={settings?.RTD_MODE === 2 || false}
+                            onChange={() => {
+                                handleRTDModeChange(2)
+                            }}
+                            containerProps={{
+                                className: "-mt-5",
+                            }}
                         />
                     </div>
                 </div>
