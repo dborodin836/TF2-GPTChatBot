@@ -23,7 +23,14 @@ export function PageSettings() {
 
         // Call fetchSettings
         fetchSettings();
-    }, []); // The empty array ensures this effect runs only once after the initial render
+    }, []);
+
+    const toggleEnableStats = () => {
+        setSettings({
+            ...settings,
+            ENABLE_STATS: !settings.ENABLE_STATS,
+        });
+    };
 
     return (
         <div className="flex flex-1 max-h-[calc(100vh-2rem)] flex-col text-gray-700 w-full gap-6 p-4 overflow-y-scroll">
@@ -124,7 +131,9 @@ export function PageSettings() {
                 <hr className="mb-3"/>
 
                 <div className="ml-1 mb-3">
-                    <Switch label="Enable Stats Module TODO: THIS IS BROKEN" />
+                    <Switch label="Enable Stats Module"
+                            checked={settings?.ENABLE_STATS || false}
+                            onChange={toggleEnableStats}/>
                 </div>
 
                 <hr className="mb-3"/>
@@ -145,7 +154,6 @@ export function PageSettings() {
                     </div>
                 </div>
             </Card>
-
 
             <Card className="p-6">
                 <Typography className="mb-3" variant="h2">TEMPLATE</Typography>
