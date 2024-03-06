@@ -61,7 +61,10 @@ export function PageSettings() {
         <div className="flex flex-1 max-h-[calc(100vh-2rem)] flex-col text-gray-700 w-full gap-6 p-4 overflow-y-scroll">
             {/* Required */}
             <Card className="p-6">
-                <Typography className="mb-3" variant="h2">Required Settings</Typography>
+                <Typography className="mb-3" variant="h2">
+                    <span className="flex items-center">
+                          Required Settings <ExclamationTriangleIcon className="h-8 w-8 text-red-500 ml-2 inline-block align-middle"/>
+                    </span></Typography>
                 <hr className="mb-3"/>
                 <div className="mb-3">
                     <label
