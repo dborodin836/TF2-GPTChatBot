@@ -9,6 +9,7 @@ from starlette.websockets import WebSocketDisconnect
 
 from modules.gui.controller import command_controller
 from config import config, Config
+from modules.utils.config import save_config
 
 app = FastAPI()
 
@@ -72,13 +73,14 @@ async def handle_update_settings(settings: PartialUpdateModel):
     try:
         for k, v in update_data.items():
             config.__setattr__(k, v)
+        save_config("config.ini")
     except Exception as e:
         success = False
         errors.append(str(e))
 
     response = {"status": "ok" if success else "error"}
     if errors:
-        response.update({"errors": success})
+        response.update({"errors": errors})
 
     return response
 
