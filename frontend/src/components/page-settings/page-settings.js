@@ -1,5 +1,8 @@
 import {Card, Input, Radio, Switch, Typography} from "@material-tailwind/react";
 import React, {useEffect, useState} from "react";
+import {
+    ExclamationTriangleIcon
+} from "@heroicons/react/24/solid";
 
 export function PageSettings() {
 
@@ -29,6 +32,13 @@ export function PageSettings() {
         setSettings({
             ...settings,
             ENABLE_STATS: !settings.ENABLE_STATS,
+        });
+    };
+
+    const toggleConfirmableQueue = () => {
+        setSettings({
+            ...settings,
+            CONFIRMABLE_QUEUE: !settings.CONFIRMABLE_QUEUE,
         });
     };
 
@@ -419,6 +429,24 @@ export function PageSettings() {
                 </div>
             </Card>
 
+            {/* Experimental */}
+            <Card className="p-6">
+                <Typography className="mb-3" variant="h2">
+                    <span className="flex items-center">
+                      Experimental <ExclamationTriangleIcon className="h-8 w-8 text-yellow-700 ml-2 inline-block align-middle"/>
+                    </span>
+                </Typography>
+
+                <hr className="mb-3"/>
+
+                <div className="ml-1 mb-3">
+                    <Switch label="Enable Confirmable Queue"
+                            checked={settings?.CONFIRMABLE_QUEUE || false}
+                            onChange={toggleConfirmableQueue}/>
+                </div>
+
+                <hr className="mb-3"/>
+            </Card>
 
             <Card className="p-6">
                 <Typography className="mb-3" variant="h2">TEMPLATE</Typography>
