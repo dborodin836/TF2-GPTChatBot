@@ -26,7 +26,7 @@ export function PageSettings() {
     }, []); // The empty array ensures this effect runs only once after the initial render
 
     return (
-        <div className="flex flex-1 flex-col text-gray-700 w-full gap-6 p-4">
+        <div className="flex flex-1 max-h-[calc(100vh-2rem)] flex-col text-gray-700 w-full gap-6 p-4 overflow-y-scroll">
             <Card className="p-6">
                 <Typography className="mb-3" variant="h2">Required Settings</Typography>
                 <hr className="mb-3"/>
