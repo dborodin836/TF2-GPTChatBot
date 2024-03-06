@@ -20,12 +20,15 @@ export function LogsArea() {
     return (
         <div className="flex flex-1 w-full gap-6 p-4">
             <Textarea
-                className="min-w-[95%] selection:bg-gray-400 selection:text-white"
+                className="min-w-[95%] selection:bg-gray-400 selection:text-white !border !border-gray-300"
                 size="lg"
                 label="App logs"
                 value={logs}
                 id="textarea_logs"
                 readOnly
+                labelProps={{
+                    className: "hidden",
+                }}
             />
         </div>
     );
