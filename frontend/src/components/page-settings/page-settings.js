@@ -42,6 +42,13 @@ export function PageSettings() {
         });
     };
 
+    const toggleKeyboardBindings = () => {
+        setSettings({
+            ...settings,
+            DISABLE_KEYBOARD_BINDINGS: !settings.DISABLE_KEYBOARD_BINDINGS,
+        });
+    }
+
     const handleRTDModeChange = (mode) => {
         setSettings((prevSettings) => ({
             ...prevSettings,
@@ -63,7 +70,8 @@ export function PageSettings() {
             <Card className="p-6">
                 <Typography className="mb-3" variant="h2">
                     <span className="flex items-center">
-                          Required Settings <ExclamationTriangleIcon className="h-8 w-8 text-red-500 ml-2 inline-block align-middle"/>
+                          Required Settings <ExclamationTriangleIcon
+                        className="h-8 w-8 text-red-500 ml-2 inline-block align-middle"/>
                     </span></Typography>
                 <hr className="mb-3"/>
                 <div className="mb-3">
@@ -324,6 +332,10 @@ export function PageSettings() {
                 </div>
             </Card>
 
+            {/* Textgen Webui */}
+
+            {/* Chat */}
+
             {/* Stats */}
             <Card className="p-6">
                 <Typography className="mb-3" variant="h2">Statistics</Typography>
@@ -434,11 +446,27 @@ export function PageSettings() {
                 </div>
             </Card>
 
+            {/* Miscellaneous */}
+            <Card className="p-6">
+                <Typography className="mb-3" variant="h2">Miscellaneous</Typography>
+
+                <hr className="mb-3"/>
+
+                <div className="ml-1 mb-3">
+                    <Switch label="Disable Keyboard Bindings"
+                            checked={settings?.DISABLE_KEYBOARD_BINDINGS || false}
+                            onChange={toggleKeyboardBindings}/>
+                </div>
+
+                <hr className="mb-3"/>
+            </Card>
+
             {/* Experimental */}
             <Card className="p-6">
                 <Typography className="mb-3" variant="h2">
                     <span className="flex items-center">
-                      Experimental <ExclamationTriangleIcon className="h-8 w-8 text-yellow-700 ml-2 inline-block align-middle"/>
+                      Experimental <ExclamationTriangleIcon
+                        className="h-8 w-8 text-yellow-700 ml-2 inline-block align-middle"/>
                     </span>
                 </Typography>
 
@@ -453,41 +481,6 @@ export function PageSettings() {
                 <hr className="mb-3"/>
             </Card>
 
-            <Card className="p-6">
-                <Typography className="mb-3" variant="h2">TEMPLATE</Typography>
-                <hr className="mb-3"/>
-                <div className="mb-3">
-                    <label
-                        className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
-                    >console.log file location</label>
-                    <div className="w-72 min-w-[100%]">
-                        <Input
-                            className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
-                            labelProps={{
-                                className: "hidden",
-                            }}
-                            containerProps={{className: "min-w-[100px]"}}
-                            value={settings ? settings.TF2_LOGFILE_PATH : ''}
-                        />
-                    </div>
-                </div>
-
-                <div className="mb-3">
-                    <label
-                        className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
-                    >OpenAI API Key</label>
-                    <div className="w-72 min-w-[100%]">
-                        <Input
-                            className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
-                            labelProps={{
-                                className: "hidden",
-                            }}
-                            containerProps={{className: "min-w-[100px]"}}
-                            value={settings ? settings.OPENAI_API_KEY : ''}
-                        />
-                    </div>
-                </div>
-            </Card>
         </div>
     );
 }
