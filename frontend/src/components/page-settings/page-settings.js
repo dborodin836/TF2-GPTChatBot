@@ -129,27 +129,27 @@ export function PageSettings() {
         <>
             <Card className="flex border rounded-none shadow-none flex-row p-4 gap-6">
                 <div role="button" onClick={submitSettings} tabIndex="0"
-                     className="flex items-center w-32 hover:border-green-500 border-2 p-3 rounded-lg text-start leading-tight transition-all hover:bg-teal-50 hover:bg-opacity-80 active:bg-teal-50 active:bg-opacity-80 hover:text-green-700 active:text-green-700 outline-none">
+                     className="flex items-center w-51 hover:border-green-500 border-2 p-3 rounded-lg text-start leading-tight transition-all hover:bg-teal-50 hover:bg-opacity-80 active:bg-teal-50 active:bg-opacity-80 hover:text-green-700 active:text-green-700 outline-none">
                     <div className="grid place-items-center mr-4">
                         <CheckIcon className="h-5 w-5"/>
                     </div>
-                    Save
+                    Save Changes
                 </div>
 
                 <div role="button" tabIndex="0"
-                     className="flex items-center w-32 hover:border-blue-500 border-2 p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-light-blue-900 active:text-light-blue-900 outline-none">
-                    <div className="grid place-items-center mr-4">
-                        <ArrowPathIcon className="h-5 w-5"/>
-                    </div>
-                    Default
-                </div>
-
-                <div role="button" tabIndex="0"
-                     className="flex items-center w-32 hover:border-red-500 border-2 p-3 rounded-lg text-start leading-tight transition-all hover:bg-red-50 hover:bg-opacity-80 active:bg-red-50 active:bg-opacity-80 hover:text-red-900 active:text-red-900 outline-none">
+                     className="flex items-center w-51 hover:border-red-500 border-2 p-3 rounded-lg text-start leading-tight transition-all hover:bg-red-50 hover:bg-opacity-80 active:bg-red-50 active:bg-opacity-80 hover:text-red-900 active:text-red-900 outline-none">
                     <div className="grid place-items-center mr-4">
                         <XMarkIcon className="h-5 w-5"/>
                     </div>
-                    Cancel
+                    Discard Changes
+                </div>
+
+                <div role="button" tabIndex="0"
+                     className="flex items-center w-51 hover:border-blue-500 border-2 p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-light-blue-900 active:text-light-blue-900 outline-none">
+                    <div className="grid place-items-center mr-4">
+                        <ArrowPathIcon className="h-5 w-5"/>
+                    </div>
+                    Restore Defaults
                 </div>
             </Card>
 
