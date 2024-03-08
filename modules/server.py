@@ -8,7 +8,7 @@ from pydantic.typing import get_type_hints
 from starlette.websockets import WebSocketDisconnect
 
 from modules.gui.controller import command_controller
-from config import config, Config
+from config import config, Config, read_config_from_file
 from modules.utils.config import save_config
 
 app = FastAPI()
@@ -48,11 +48,6 @@ class Command(BaseModel):
     text: str
 
 
-@app.get("/settings")
-async def handle_get_settings():
-    return config.dict()
-
-
 def create_partial_update_model(base_model: Type[BaseModel]) -> Type[BaseModel]:
     field_definitions = {}
     for name, type_hint in get_type_hints(base_model).items():
@@ -62,6 +57,17 @@ def create_partial_update_model(base_model: Type[BaseModel]) -> Type[BaseModel]:
 
 # Create partial update model dynamically
 PartialUpdateModel = create_partial_update_model(Config)
+
+
+@app.get("/settings")
+async def handle_get_settings():
+    return config.dict()
+
+
+@app.get("/settings/default")
+async def handle_get_settings():
+    cfg = Config(**read_config_from_file("default.ini"))
+    return cfg.dict()
 
 
 @app.post("/settings")

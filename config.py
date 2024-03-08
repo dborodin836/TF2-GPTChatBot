@@ -7,7 +7,7 @@ import tkinter as tk
 from enum import IntEnum
 from os.path import exists
 from tkinter import messagebox
-from typing import Optional
+from typing import Optional, Dict
 
 import pydantic
 from pydantic import BaseModel, validator
@@ -27,6 +27,37 @@ class RTDModes(IntEnum):
     @classmethod
     def has_value(cls, value):
         return value in {x.value for x in iter(RTDModes)}
+
+
+def read_config_from_file(filename: str) -> Dict:
+    config_file = filename or DEAFAULT_CONFIG_FILE
+    # TODO: redo with pathlib
+    config_file_path = "cfg/" + config_file
+
+    if not exists(config_file_path):
+        raise Exception("File doesn't exist.")
+
+    configparser_config = configparser.ConfigParser()
+    configparser_config.read(config_file_path, encoding="utf-8")
+
+    config_dict: dict[str, str | None] = {
+        key.upper(): value
+        for section in configparser_config.sections()
+        for key, value in configparser_config.items(section)
+    }
+
+    try:
+        if config_dict.get("CUSTOM_MODEL_SETTINGS") != "":
+            config_dict["CUSTOM_MODEL_SETTINGS"] = json.loads(
+                config_dict.get("CUSTOM_MODEL_SETTINGS")
+            )
+    except Exception as e:
+        raise Exception(f"CUSTOM_MODEL_SETTINGS is not dict [{e}].")
+
+    # Set loaded config filename
+    config_dict["CONFIG_NAME"] = config_file
+
+    return config_dict
 
 
 class Config(BaseModel):
@@ -81,33 +112,8 @@ class Config(BaseModel):
 
     CUSTOM_MODEL_SETTINGS: Optional[str | dict]
 
-    def load_from_file(self, filename: str = None):
-        config_file = filename or DEAFAULT_CONFIG_FILE
-        # TODO: redo with pathlib
-        config_file_path = "cfg/" + config_file
-
-        if not exists(config_file_path):
-            raise Exception("File doesn't exist.")
-
-        configparser_config = configparser.ConfigParser()
-        configparser_config.read(config_file_path, encoding="utf-8")
-
-        config_dict: dict[str, str | None] = {
-            key.upper(): value
-            for section in configparser_config.sections()
-            for key, value in configparser_config.items(section)
-        }
-
-        try:
-            if config_dict.get("CUSTOM_MODEL_SETTINGS") != "":
-                config_dict["CUSTOM_MODEL_SETTINGS"] = json.loads(
-                    config_dict.get("CUSTOM_MODEL_SETTINGS")
-                )
-        except Exception as e:
-            raise Exception(f"CUSTOM_MODEL_SETTINGS is not dict [{e}].")
-
-        # Set loaded config filename
-        config_dict["CONFIG_NAME"] = config_file
+    def load_from_file(self, filename: str = None) -> None:
+        config_dict = read_config_from_file(filename)
 
         for k, v in config_dict.items():
             self.__setattr__(k, v)

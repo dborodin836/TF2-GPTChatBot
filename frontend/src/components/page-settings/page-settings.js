@@ -27,6 +27,20 @@ export function PageSettings() {
         }
     };
 
+    const fetchDefaultSettings = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/settings/default');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setSettings(data);
+            console.log(data);
+        } catch (error) {
+            console.error("Failed to fetch default settings:", error);
+        }
+    };
+
     useEffect(() => {
         fetchSettings();
     }, []);
@@ -146,7 +160,7 @@ export function PageSettings() {
                     Discard Changes
                 </div>
 
-                <div role="button" tabIndex="0"
+                <div role="button" onClick={fetchDefaultSettings} tabIndex="0"
                      className="flex items-center w-51 hover:border-blue-500 border-2 p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-light-blue-900 active:text-light-blue-900 outline-none">
                     <div className="grid place-items-center mr-4">
                         <ArrowPathIcon className="h-5 w-5"/>
