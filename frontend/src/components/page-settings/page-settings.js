@@ -13,25 +13,27 @@ export function PageSettings() {
 
     const [settings, setSettings] = useState(null);
 
-    useEffect(() => {
-        // Function to fetch settings
-        const fetchSettings = async () => {
-            try {
-                const response = await fetch('http://127.0.0.1:8000/settings');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                setSettings(data);
-                console.log(data);
-            } catch (error) {
-                console.error("Failed to fetch settings:", error);
+    const fetchSettings = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/settings');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        };
+            const data = await response.json();
+            setSettings(data);
+            console.log(data);
+        } catch (error) {
+            console.error("Failed to fetch settings:", error);
+        }
+    };
 
-        // Call fetchSettings
+    useEffect(() => {
         fetchSettings();
     }, []);
+
+    const discardChanges = () => {
+        fetchSettings();
+    }
 
     const submitSettings = async () => {
         // Ensure there are settings to submit
@@ -136,7 +138,7 @@ export function PageSettings() {
                     Save Changes
                 </div>
 
-                <div role="button" tabIndex="0"
+                <div role="button" onClick={discardChanges} tabIndex="0"
                      className="flex items-center w-51 hover:border-red-500 border-2 p-3 rounded-lg text-start leading-tight transition-all hover:bg-red-50 hover:bg-opacity-80 active:bg-red-50 active:bg-opacity-80 hover:text-red-900 active:text-red-900 outline-none">
                     <div className="grid place-items-center mr-4">
                         <XMarkIcon className="h-5 w-5"/>
