@@ -9,8 +9,10 @@ let mainWindow;
 const createWindow = () => {
     // Configure the main window
     mainWindow = new BrowserWindow({
-        width: 800,
+        width: 960,
         height: 600,
+        minWidth: 960,
+        minHeight: 600,
         webPreferences: {
             nodeIntegration: true, // Enable Node.js integration
             enableRemoteModule: true, // Enable remote module
