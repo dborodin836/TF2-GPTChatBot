@@ -4,10 +4,11 @@ import time
 import openai
 
 from config import config
+from modules.conversation_history import ConversationHistory
 from modules.logs import get_logger, log_gui_general_message, log_gui_model_message
 from modules.servers.tf2 import send_say_command_to_tf2
-from modules.typing import MessageHistory, Message
-from modules.utils.text import add_prompts_by_flags, remove_hashtags
+from modules.typing import Message, MessageHistory
+from modules.utils.text import get_system_message, remove_args, remove_hashtags
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -47,32 +48,31 @@ def send_gpt_completion_request(
 def handle_cgpt_request(
     username: str,
     user_prompt: str,
-    conversation_history: MessageHistory,
+    conversation_history: ConversationHistory,
     model,
     is_team: bool = False,
-) -> MessageHistory:
+) -> ConversationHistory:
     """
     This function is called when the user wants to send a message to the AI chatbot. It logs the
-    user's message, and sends a request to GPT-3 to generate a response. Finally, the function
-    sends the generated response to the TF2 game.
+    user's message, and sends a request to generate a response.
     """
     log_gui_model_message(model, username, user_prompt)
 
-    message = add_prompts_by_flags(user_prompt)
-
-    if not config.TOS_VIOLATION and is_violated_tos(message) and config.HOST_USERNAME != username:
+    user_message = remove_args(user_prompt)
+    if (
+        not config.TOS_VIOLATION
+        and is_violated_tos(user_message)
+        and config.HOST_USERNAME != username
+    ):
         gui_logger.error(f"Request '{user_prompt}' violates OPENAI TOS. Skipping...")
         return conversation_history
 
-    if not conversation_history:
-        conversation_history.append(Message(role="assistant", content=config.GREETING))
+    conversation_history.add_user_message_from_prompt(user_prompt)
 
-    conversation_history.append({"role": "user", "content": message})
-
-    response = get_response(conversation_history, username, model)
+    response = get_response(conversation_history.get_messages_array(), username, model)
 
     if response:
-        conversation_history.append({"role": "assistant", "content": response})
+        conversation_history.add_assistant_message(Message(role="assistant", content=response))
         log_gui_model_message(model, username, " ".join(response.split()))
         send_say_command_to_tf2(response, username, is_team)
 
@@ -89,18 +89,26 @@ def handle_gpt_request(
     """
     log_gui_model_message(model, username, user_prompt)
 
-    message = add_prompts_by_flags(user_prompt)
+    user_message = remove_args(user_prompt)
+    sys_message = get_system_message(user_prompt)
 
-    if not config.TOS_VIOLATION and is_violated_tos(message) and config.HOST_USERNAME != username:
+    if (
+        not config.TOS_VIOLATION
+        and is_violated_tos(user_message)
+        and config.HOST_USERNAME != username
+    ):
         gui_logger.warning(
             f"Request '{user_prompt}' by user {username} violates OPENAI TOS. Skipping..."
         )
         return
 
-    response = get_response([
+    payload = [
+        sys_message,
         Message(role="assistant", content=config.GREETING),
-        Message(role="user", content=message)
-    ], username, model)
+        Message(role="user", content=user_message),
+    ]
+
+    response = get_response(payload, username, model)
 
     if response:
         main_logger.info(

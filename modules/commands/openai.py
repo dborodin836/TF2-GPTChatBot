@@ -18,7 +18,7 @@ def handle_gpt3(logline: LogLine, shared_dict: dict) -> None:
             username=None,
             is_team_chat=logline.is_team_message,
         )
-        log_gui_model_message("gpt-3.5-turbo", logline.username, logline.prompt.strip())
+        log_gui_model_message(config.GPT3_MODEL, logline.username, logline.prompt.strip())
         main_logger.info(f"Empty '{config.GPT_COMMAND}' command from user '{logline.username}'.")
         return
 

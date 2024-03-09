@@ -1,9 +1,5 @@
-from modules.utils.text import (
-    add_prompts_by_flags,
-    get_chunk_size,
-    has_cyrillic,
-    split_into_chunks,
-)
+from modules.typing import Message
+from modules.utils.text import get_chunk_size, get_system_message, has_cyrillic, split_into_chunks
 
 MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120
@@ -39,7 +35,7 @@ def test_get_chunk_size_with_non_cyrillic_text():
     assert get_chunk_size(text) == MAX_LENGTH_OTHER
 
 
-def test_add_prompts_by_flags():
-    expected_output = "Please enter your name"
-    result = add_prompts_by_flags(r"\l Please enter your name")
+def test_get_system_message():
+    expected_output = Message(role="system", content="")
+    result = get_system_message(r"\l Please enter your name")
     assert result == expected_output

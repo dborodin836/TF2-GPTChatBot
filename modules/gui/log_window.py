@@ -10,7 +10,6 @@ from modules.commands.gui.bans import handle_ban, handle_list_bans, handle_unban
 from modules.commands.gui.openai import handle_gpt3
 from modules.commands.gui.state import handle_start, handle_stop
 from modules.logs import get_logger
-from modules.utils.path import resource_path
 
 PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
 
