@@ -3,7 +3,7 @@
   "author": "dborodin836",
   "version": "1.3.0",
   "private": true,
-  "homepage": "https://github.com/dborodin836/TF2-GPTChatBot",
+  "homepage": "./",
   "license": "GNU General Public License v3.0",
   "main": "public/electron.js",
   "repository": {
@@ -27,9 +27,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start-electron": "electron .",
-    "build": "react-scripts build",
-    "build-prod": "cross-env cross-env REACT_APP_ELECTRON=true react-scripts build",
+    "electron": "cross-env REACT_APP_DEV=true electron .",
+    "electron:prod": "cross-env REACT_APP_DEV=false electron .",
+    "build": "cross-env REACT_APP_ELECTRON=true react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

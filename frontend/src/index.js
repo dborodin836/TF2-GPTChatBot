@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, HashRouter} from 'react-router-dom';
 import {ThemeProvider} from "@material-tailwind/react";
 
-const Router = process.env.REACT_APP_ELECTRON ? HashRouter : BrowserRouter;
+const Router = process.env.REACT_APP_ELECTRON === 'true' ? HashRouter : BrowserRouter;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
