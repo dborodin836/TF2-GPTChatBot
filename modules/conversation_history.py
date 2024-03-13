@@ -6,10 +6,11 @@ from modules.utils.text import get_args, remove_args
 
 
 class ConversationHistory:
-    custom_prompt: str = ""
-    enable_soft_limit: bool = True
-    enable_stats: bool = False
-    message_history: MessageHistory = list()
+    def __init__(self):
+        self.custom_prompt: str = ""
+        self.enable_soft_limit: bool = True
+        self.enable_stats: bool = False
+        self.message_history: MessageHistory = list()
 
     def _get_system_message(self) -> Message:
         sys_msg = []

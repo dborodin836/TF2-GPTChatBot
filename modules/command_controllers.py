@@ -1,13 +1,47 @@
 from typing import Callable, Optional
 
+import pydantic
 from ordered_set import OrderedSet
+from pydantic import BaseModel, BaseConfig
 
-from modules.logs import get_logger, get_time_stamp
+from modules.conversation_history import ConversationHistory
+from modules.logs import get_logger
 from modules.set_once_dict import SetOnceDictionary
 from modules.typing import Command, LogLine
 
+main_logger = get_logger("main")
 combo_logger = get_logger("combo")
 gui_logger = get_logger("gui")
+
+
+class ChatConversationHistory(BaseModel):
+    GLOBAL = ConversationHistory()
+
+    def set_conversation_history_by_name(self, username: str, conv_history: ConversationHistory) -> None:
+        attr_name = self._get_conv_history_attr_name(username)
+
+        setattr(self, attr_name, conv_history)
+
+    def get_conversation_history_by_name(self, username: str) -> ConversationHistory:
+        attr_name = self._get_conv_history_attr_name(username)
+
+        if hasattr(self, attr_name):
+            return getattr(self, attr_name)
+        else:
+            main_logger.info(f"Conversation history for username '{username}' doesn't exist. Creating...")
+            setattr(self, attr_name, ConversationHistory())
+            return getattr(self, attr_name)
+
+    def _get_conv_history_attr_name(self, username: str) -> str:
+        return f"USER_{username}_CH"
+
+    class Config(BaseConfig):
+        extra = "allow"
+        arbitrary_types_allowed = "allow"
+
+
+class InitializerConfig(BaseModel):
+    CHAT_CONVERSATION_HISTORY: ChatConversationHistory = pydantic.Field(default_factory=ChatConversationHistory)
 
 
 class GuiCommandController:
@@ -47,13 +81,13 @@ class GuiCommandController:
 
 
 class CommandController:
-    def __init__(self, initializer_config: dict = None) -> None:
+    def __init__(self, initializer_config: InitializerConfig = None) -> None:
         self.__services = OrderedSet()
         self.__named_commands_registry: SetOnceDictionary[str, Callable] = SetOnceDictionary()
-        self.__shared = dict()
+        self.__shared = InitializerConfig()
 
         if initializer_config is not None:
-            self.__shared.update(initializer_config)
+            self.__shared.__dict__.update(initializer_config)
 
     def register_command(self, name: str, function: Callable) -> None:
         self.__named_commands_registry[name] = function

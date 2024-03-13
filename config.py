@@ -52,6 +52,7 @@ class Config(BaseModel):
     CHATGPT_COMMAND: str
     CLEAR_CHAT_COMMAND: str
     RTD_COMMAND: str
+    GLOBAL_CHAT_COMMAND: str
     GPT4_ADMIN_ONLY: bool
 
     CUSTOM_PROMPT: str
@@ -74,6 +75,7 @@ class Config(BaseModel):
     CUSTOM_MODEL_HOST: str
     CUSTOM_MODEL_COMMAND: str
     CUSTOM_MODEL_CHAT_COMMAND: str
+    GLOBAL_CUSTOM_CHAT_COMMAND: str
     GREETING: str
 
     CONFIRMABLE_QUEUE: bool

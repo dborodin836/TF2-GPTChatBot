@@ -2,13 +2,12 @@ from config import config
 from modules.api.github import check_for_updates
 from modules.bans import bans_manager
 from modules.bot_state import state_manager
-from modules.command_controllers import CommandController
+from modules.command_controllers import CommandController, InitializerConfig
 from modules.commands.clear_chat import handle_clear
 from modules.commands.github import handle_gh_command
-from modules.commands.openai import handle_cgpt, handle_gpt3, handle_gpt4, handle_gpt4l
+from modules.commands.openai import handle_user_chat, handle_gpt3, handle_gpt4, handle_gpt4l, handle_global_chat
 from modules.commands.rtd import handle_rtd
-from modules.commands.textgen_webui import handle_custom_chat, handle_custom_model
-from modules.conversation_history import ConversationHistory
+from modules.commands.textgen_webui import handle_custom_user_chat, handle_custom_model, handle_custom_global_chat
 from modules.logs import get_logger
 from modules.message_queueing import messaging_queue_service
 from modules.servers.tf2 import check_connection, set_host_username
@@ -48,7 +47,7 @@ def parse_console_logs_and_build_conversation_history() -> None:
     """
     setup()
 
-    controller = CommandController({"CHAT_CONVERSATION_HISTORY": ConversationHistory()})
+    controller = CommandController(InitializerConfig())
 
     # Commands
     controller.register_command("!gh", handle_gh_command)
@@ -56,11 +55,13 @@ def parse_console_logs_and_build_conversation_history() -> None:
     controller.register_command(config.GPT4_LEGACY_COMMAND, handle_gpt4l)
     controller.register_command(config.RTD_COMMAND, handle_rtd)
     controller.register_command(config.GPT_COMMAND, handle_gpt3)
-    controller.register_command(config.CHATGPT_COMMAND, handle_cgpt)
+    controller.register_command(config.CHATGPT_COMMAND, handle_user_chat)
     controller.register_command(config.CLEAR_CHAT_COMMAND, handle_clear)
+    controller.register_command(config.GLOBAL_CHAT_COMMAND, handle_global_chat)
     if config.ENABLE_CUSTOM_MODEL:
         controller.register_command(config.CUSTOM_MODEL_COMMAND, handle_custom_model)
-        controller.register_command(config.CUSTOM_MODEL_CHAT_COMMAND, handle_custom_chat)
+        controller.register_command(config.CUSTOM_MODEL_CHAT_COMMAND, handle_custom_user_chat)
+        controller.register_command(config.GLOBAL_CUSTOM_CHAT_COMMAND, handle_custom_global_chat)
 
     # Services
     controller.register_service(messaging_queue_service)
