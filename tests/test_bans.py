@@ -1,32 +1,28 @@
 import os
-from unittest.mock import patch
+import tempfile
+
+import pytest
 
 from modules.bans import BansManager
 
-# Set up test data
-BANS_FILE = "test_bans.json"
-TEST_BANNED_PLAYERS = {"player1", "player2"}
 
-bans_manager = BansManager(bans_file=BANS_FILE)
+@pytest.fixture
+def temp_ban_file():
+    # Create a temporary file and get its name
+    fd, path = tempfile.mkstemp()
 
+    # Pre-test setup: Close the file descriptor as we don't need it
+    os.close(fd)
 
-def setup_module(module):
-    # Create a test bans file
-    with open(BANS_FILE, "w") as f:
-        f.write('["player1", "player2"]')
-    bans_manager.load_banned_players()
+    # Provide the temporary file path to the test
+    yield path
 
-
-def teardown_module(module):
-    # Delete the test bans file
-    os.remove(BANS_FILE)
+    # Post-test teardown: Remove the temporary file
+    os.remove(path)
 
 
-def test_load_banned_players():
-    assert bans_manager.banned_usernames == TEST_BANNED_PLAYERS
-
-
-def test_is_banned_username():
+def test_is_banned_username(temp_ban_file):
+    bans_manager = BansManager(temp_ban_file)
     bans_manager.banned_usernames = set()
     bans_manager.ban_player("player1")
     bans_manager.ban_player("player2")
@@ -34,7 +30,8 @@ def test_is_banned_username():
     assert bans_manager.is_banned_username("player3") is False
 
 
-def test_list_banned_players(capsys):
+def test_list_banned_players(capsys, temp_ban_file):
+    bans_manager = BansManager(temp_ban_file)
     bans_manager.banned_usernames = set()
     bans_manager.ban_player("player1")
     bans_manager.ban_player("player2")
@@ -48,7 +45,9 @@ def test_list_banned_players(capsys):
     assert len(ban_list) == 0
 
 
-def test_unban_player():
+def test_unban_player(temp_ban_file):
+    bans_manager = BansManager(temp_ban_file)
+    bans_manager.banned_usernames = set()
     assert bans_manager.banned_usernames == set()
     bans_manager.ban_player("test1")
     assert bans_manager.banned_usernames == {"test1"}
@@ -56,8 +55,25 @@ def test_unban_player():
     assert bans_manager.banned_usernames == set()
 
 
-def test_ban_player():
-    with patch("modules.logs.log_gui_general_message") as mock_log_cmd_message:
-        bans_manager.ban_player("player3")
-        bans_manager.load_banned_players()
-        assert "player3" in bans_manager.banned_usernames
+def test_ban_player(temp_ban_file):
+    bans_manager = BansManager(temp_ban_file)
+    bans_manager.ban_player("player3")
+    bans_manager.load_banned_players()
+    assert "player3" in bans_manager.banned_usernames
+
+
+def test_ban_twice(temp_ban_file):
+    bans_manager = BansManager(temp_ban_file)
+    bans_manager.ban_player("player")
+    bans_manager.load_banned_players()
+    bans_manager.ban_player("player")
+    assert "player" in bans_manager.banned_usernames
+
+
+def test_unban_twice(temp_ban_file):
+    bans_manager = BansManager(temp_ban_file)
+    bans_manager.ban_player("player")
+    bans_manager.load_banned_players()
+    bans_manager.unban_player("player")
+    bans_manager.unban_player("player")
+    assert "player" not in bans_manager.banned_usernames

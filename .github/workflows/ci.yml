@@ -28,3 +28,6 @@ jobs:
 
       - name: Run pytest
         run: pytest . --cov .
+
+      - name: Run pytest (Random)
+        run: pytest . --random-order --count 10 --capture=no --cov .
