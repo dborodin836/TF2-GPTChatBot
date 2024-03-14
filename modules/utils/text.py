@@ -9,7 +9,7 @@ from typing import Generator
 from config import config
 from modules.logs import get_logger
 from modules.tf_statistics import StatsData
-from modules.typing import LogLine, Player
+from modules.typing import LogLine, Message, Player
 from modules.utils.prompts import PROMPTS
 from modules.utils.time import get_minutes_from_str
 
@@ -156,8 +156,8 @@ def parse_line(line: str) -> LogLine:
 def stats_regexes(line: str):
     # Parsing user line from status command
     if matches := re.search(
-        r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*",
-        line,
+            r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*",
+            line,
     ):
         time_on_server = matches.groups()[2]
 
@@ -232,33 +232,87 @@ def remove_hashtags(text: str) -> str:
     return cleaned_text
 
 
-def add_prompts_by_flags(user_prompt: str, enable_soft_limit: bool = True) -> str:
+def get_args(prompt: str) -> typing.List[str]:
+    in_quote = None  # Track the type of quote we're inside (None, single ', or double ")
+    current_arg = ''
+    result = []
+    escape_next = False  # Flag to indicate the next character is escaped
+
+    for char in prompt:
+        if escape_next:
+            current_arg += char
+            escape_next = False
+        elif char == '\\':  # Detect backslash
+            if current_arg and not current_arg.startswith("\\"):
+                # If current_arg doesn't start with \, reset it. Prepare for new arg.
+                current_arg = char
+            else:
+                if not in_quote:
+                    # If not in a quote, handle correctly as start of new arg or part of escaping
+                    if current_arg:
+                        result.append(current_arg)
+                        current_arg = char
+                    else:
+                        current_arg += char
+                else:
+                    # Inside quotes, just add it
+                    current_arg += char
+        elif char in ['"', "'"]:  # Toggle in_quote state for both ' and "
+            if char == in_quote:  # Exiting the quote
+                in_quote = None
+            elif not in_quote:  # Entering a quote
+                in_quote = char
+            current_arg += char
+        elif char == ' ' and not in_quote:
+            if current_arg:
+                if current_arg.startswith("\\"):  # Ensure arg starts with a backslash
+                    result.append(current_arg)
+                current_arg = ''
+        else:
+            current_arg += char
+
+    if current_arg and current_arg.startswith("\\"):  # Check for the last argument
+        result.append(current_arg)
+
+    return result
+
+
+def remove_args(prompt: str) -> str:
+    message = prompt.split(" ")
+    result = []
+    args_ended = False
+
+    for item in message:
+        if item.startswith("\\") and not args_ended:
+            continue
+        else:
+            result.append(item)
+
+    return " ".join(result)
+
+
+def get_system_message(user_prompt: str, enable_soft_limit: bool = True) -> Message:
     """
     Adds prompts to a user prompt based on the flags provided in the prompt.
     """
-    #  This args var also contains user prompt lul
-    args = user_prompt.split(" ")
-    result = ""
+    args = get_args(user_prompt)
+    message = ""
 
-    for item in PROMPTS:
-        if item["flag"] in args:
-            result += item["prompt"]
-            user_prompt = user_prompt.replace(item["flag"], "")
-
-    result += user_prompt.strip()
+    for prompt in PROMPTS:
+        if prompt["flag"] in args:
+            message += prompt["prompt"]
+            break
 
     if r"\stats" in args and config.ENABLE_STATS:
-        result = (
+        message = (
             f" {StatsData.get_data()} Based on this data answer following question. "
-            + result
+            + message
             + " Ignore unknown data."
         )
-        result = result.replace(r"\stats", "")
 
     if r"\l" not in args and enable_soft_limit:
-        result += (
+        message += (
             f" Answer in less than {config.SOFT_COMPLETION_LIMIT} chars! {config.CUSTOM_PROMPT}"
         )
-    result = result.replace(r"\l", "")
 
-    return result.strip()
+    return Message(role="system", content=message)

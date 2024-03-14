@@ -55,14 +55,14 @@ class ConfirmableQueueManager:
                 else:
                     self.awaiting_message = queued_message.text
                 self.is_locked = True
-                main_logger.debug("Locking queue")
+                main_logger.trace("Locking queue")
                 self.last_confirmed_message = time.time()
                 send_say_cmd(queued_message)
             else:
                 time.sleep(0.5)
 
     def unlock_queue(self) -> None:
-        main_logger.debug("Unlocking queue")
+        main_logger.trace("Unlocking queue")
         self.queue.get()
         time.time()
         self.awaiting_message = None

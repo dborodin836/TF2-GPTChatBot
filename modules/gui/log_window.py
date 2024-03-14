@@ -99,9 +99,8 @@ class RedirectStdoutToLogWindow:
     def __init__(self, window: LogWindow):
         self.window = window
 
-    def write(self, message: str):
+    def write(self, message):
         self.window.update_logs(message)
         asyncio.run(connection_manager.broadcast(message))
-
     def flush(self):
         ...
