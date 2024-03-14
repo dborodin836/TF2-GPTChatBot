@@ -102,5 +102,6 @@ class RedirectStdoutToLogWindow:
     def write(self, message):
         self.window.update_logs(message)
         asyncio.run(connection_manager.broadcast(message))
+
     def flush(self):
         ...
