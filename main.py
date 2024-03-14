@@ -17,7 +17,7 @@ from config import config
 from modules.bot_state import state_manager
 from modules.chat import parse_console_logs_and_build_conversation_history
 from modules.commands.gui.openai import gpt3_cmd_handler
-from modules.gui.log_window import LogWindow, RedirectStdoutToLogWindow
+from modules.gui.log_window import LogWindow, RedirectStdoutToLogWindow, CopyStdoutToSocket
 from modules.logs import get_logger, setup_loggers
 from modules.message_queueing import message_queue_handler
 from modules.server import app
@@ -54,11 +54,12 @@ def run_common_threads():
 
 def run_threads(args: argparse.Namespace):
     if args.web_server:
-        print("Starting in web server mode.")
         threading.Thread(target=uvicorn.run, daemon=True, args=(app,)).start()
 
     if args.no_gui:
-        print("Running without GUI.")
+        sys.stdout = CopyStdoutToSocket()
+        setup_loggers()
+        run_common_threads()
         parse_console_logs_and_build_conversation_history()
     else:
         root = tk.Tk()
@@ -83,8 +84,4 @@ if __name__ == "__main__":
     parser.add_argument('--web-server', action='store_true',
                         help='Start the application in web server mode.')
 
-    print(parser.parse_args())
     run_threads(parser.parse_args())
-
-    # TODO: no display to server with --no-gui
-    # TODO: frontend sending /settings twice

@@ -1,4 +1,5 @@
 import asyncio
+import sys
 import tkinter as tk
 from tkinter.ttk import Checkbutton
 
@@ -93,6 +94,18 @@ class LogWindow(tk.Frame):
         # Show the placeholder text when the additional_text widget loses focus and is empty
         if not self.cmd_line.get("1.0", tk.END).strip():
             self.cmd_line.insert("1.0", PROMPT_PLACEHOLDER)
+
+
+class CopyStdoutToSocket:
+    def write(self, message):
+        sys.__stdout__.write(message)
+        asyncio.run(connection_manager.broadcast(message))
+
+    def flush(self):
+        sys.__stdout__.flush()
+
+    def isatty(self):
+        return False
 
 
 class RedirectStdoutToLogWindow:
