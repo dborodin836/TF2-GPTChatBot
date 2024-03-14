@@ -333,44 +333,6 @@ export function PageSettings() {
                             <div className="mb-3 w-[100%]">
                                 <label
                                     className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
-                                >Chat Command</label>
-                                <div className="w-72 min-w-[100%]">
-                                    <Input
-                                        className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
-                                        labelProps={{
-                                            className: "hidden",
-                                        }}
-                                        containerProps={{className: "min-w-[100px]"}}
-                                        value={settings ? settings.CHATGPT_COMMAND : ''}
-                                        name="CHATGPT_COMMAND"
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="mb-3 ml-3 w-[100%]">
-                                <label
-                                    className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
-                                >Chat Model</label>
-                                <div className="w-72 min-w-[100%]">
-                                    <Input
-                                        className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
-                                        labelProps={{
-                                            className: "hidden",
-                                        }}
-                                        containerProps={{className: "min-w-[100px]"}}
-                                        value={settings ? settings.GPT3_CHAT_MODEL : ''}
-                                        name="GPT3_CHAT_MODEL"
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex">
-                            <div className="mb-3 w-[100%]">
-                                <label
-                                    className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                                 >GPT4 Model Command</label>
                                 <div className="w-72 min-w-[100%]">
                                     <Input
@@ -437,6 +399,62 @@ export function PageSettings() {
                                         containerProps={{className: "min-w-[100px]"}}
                                         value={settings ? settings.GPT4L_MODEL : ''}
                                         name="GPT4L_MODEL"
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex">
+                            <div className="mb-3 w-[100%]">
+                                <label
+                                    className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                                >Global Chat Command</label>
+                                <div className="w-72 min-w-[100%]">
+                                    <Input
+                                        className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                        labelProps={{
+                                            className: "hidden",
+                                        }}
+                                        containerProps={{className: "min-w-[100px]"}}
+                                        value={settings ? settings.GLOBAL_CHAT_COMMAND : ''}
+                                        name="GLOBAL_CHAT_COMMAND"
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="mb-3 ml-3 w-[100%]">
+                                <label
+                                    className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                                >Private Chat Command</label>
+                                <div className="w-72 min-w-[100%]">
+                                    <Input
+                                        className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                        labelProps={{
+                                            className: "hidden",
+                                        }}
+                                        containerProps={{className: "min-w-[100px]"}}
+                                        value={settings ? settings.CHATGPT_COMMAND : ''}
+                                        name="CHATGPT_COMMAND"
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="mb-3 ml-3 w-[100%]">
+                                <label
+                                    className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                                >Chat Model</label>
+                                <div className="w-72 min-w-[100%]">
+                                    <Input
+                                        className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                        labelProps={{
+                                            className: "hidden",
+                                        }}
+                                        containerProps={{className: "min-w-[100px]"}}
+                                        value={settings ? settings.GPT3_CHAT_MODEL : ''}
+                                        name="GPT3_CHAT_MODEL"
                                         onChange={handleInputChange}
                                     />
                                 </div>
@@ -649,7 +667,7 @@ export function PageSettings() {
                         <div className="mb-3 ml-3 w-[100%]">
                             <label
                                 className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
-                            >Custom Model Chat Command</label>
+                            >Private Chat Command</label>
                             <div className="w-72 min-w-[100%]">
                                 <Input
                                     className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
@@ -659,6 +677,24 @@ export function PageSettings() {
                                     containerProps={{className: "min-w-[100px]"}}
                                     value={settings ? settings.CUSTOM_MODEL_CHAT_COMMAND : ''}
                                     name="CUSTOM_MODEL_CHAT_COMMAND"
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="mb-3 ml-3 w-[100%]">
+                            <label
+                                className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                            >Global Chat Command</label>
+                            <div className="w-72 min-w-[100%]">
+                                <Input
+                                    className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                    labelProps={{
+                                        className: "hidden",
+                                    }}
+                                    containerProps={{className: "min-w-[100px]"}}
+                                    value={settings ? settings.GLOBAL_CUSTOM_CHAT_COMMAND : ''}
+                                    name="GLOBAL_CUSTOM_CHAT_COMMAND"
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -684,7 +720,7 @@ export function PageSettings() {
                     </div>
 
                     <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
-                        Cutom Model Settings
+                    Cutom Model Settings
                     </label>
                     <Textarea
                         className="!border mb-3 !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
