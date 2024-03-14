@@ -2,6 +2,7 @@ import random
 import time
 
 from config import RTDModes, config
+from modules.command_controllers import InitializerConfig
 from modules.logs import get_logger, log_gui_general_message
 from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import LogLine
@@ -11,7 +12,7 @@ RICKROLL_LINK = "youtu.be/dQw4w9WgXcQ"
 main_logger = get_logger("main")
 
 
-def handle_rtd(logline: LogLine, shared_dict: dict) -> None:
+def handle_rtd(logline: LogLine, shared_dict: InitializerConfig) -> None:
     """
     Handles the RTD (Roll The Dice) command for the given username.
     If RTD_MODE is set to RICKROLL, the user is rickrolled.

@@ -13,8 +13,8 @@
 - [Usage](#usage)
     - [GUI Commands](#gui-commands)
     - [Chat Commands](#chat-commands)
-        - [!gpt3, !gpt4, !gpt4l](#gpt3--gpt4--gpt4l)
-        - [!cgpt](#cgpt)
+        - [!gpt3, !gpt4, !gpt4l, !ai](#gpt3--gpt4--gpt4l--ai)
+        - [!cgpt, !chat, !pc, !pcc](#cgpt--chat--pc--pcc)
         - [!clear](#clear)
         - [!rtd](#rtd)
     - [Custom Models](#custom-language-models-oobabooga--text-generation-webui)
@@ -121,7 +121,6 @@ pip install -r requirements.txt
 Edit configuration file named config.ini and set the required configuration variables in GENERAL section, such as API
 keys and file paths. You can leave the rest as it is.
 
-
 ```
 [GENERAL]
 TF2_LOGFILE_PATH=H:\Programs\Steam\steamapps\common\Team Fortress 2\tf\console.log
@@ -175,13 +174,16 @@ pyinstaller --onefile --clean -n TF2-GPTChatBot --icon icon.ico -w --add-data "i
 
 Commands can be changed in `config.ini` file.
 
-#### !gpt3 & !gpt4 & !gpt4l
+#### !gpt3 & !gpt4 & !gpt4l & !ai
 
 Model used for !gpt3: `gpt-3.5-turbo`
 
 Model used for !gpt4: `gpt-4-1106-preview`
 
 Model used for !gpt4l: `gpt-4`
+
+Unlike other commands, the `!ai` command utilizes a custom model, as detailed in
+the [Custom Models](#custom-language-models-oobabooga--text-generation-webui) section.
 
 ```
 Command: !gpt3 [roleplay options] [\l long] [prompt]
@@ -208,8 +210,8 @@ Prompt:
   A required argument specifying the text prompt for generating text.
 ```
 
-`\stats` Must be enabled in `config.ini`. Also, you must set a [Steam Web API Key](https://steamcommunity.com/dev/apikey).
-
+`\stats` Must be enabled in `config.ini`. Also, you must set
+a [Steam Web API Key](https://steamcommunity.com/dev/apikey).
 
 #### !gpt Usage examples
 
@@ -223,9 +225,15 @@ response: Oy, laddie! Yer lookin' for some advice? Well, let me tell ye, blastin
           always a fine solution! Just remember to always have a bottle of scrumpy on hand, and never trust a Spy.
 ```
 
-#### !cgpt
+#### !cgpt & !chat & !pc & !pcc
 
-Used model: `gpt-3.5-turbo`
+Model used for !cgpt & !pc: `gpt-3.5-turbo`
+
+The commands `!pc` (Private Chat) and `!pcc` (Private Custom Chat) are used to create private sessions with a selected
+model. This is in contrast to the `!cgpt` command, which allows for interactions that anyone can join.
+
+Unlike other commands, the `!pcc` and `!chat` commands utilize a custom model (
+see [Custom Models](#custom-language-models-oobabooga--text-generation-webui)).
 
 ```
 Command: !cgpt [roleplay options] [\l long] [prompt]
@@ -255,8 +263,8 @@ Prompt:
   A required argument specifying the text prompt for generating text.
 ```
 
-`\stats` Must be enabled in `config.ini`. Also, you must set a [Steam Web API Key](https://steamcommunity.com/dev/apikey).
-
+`\stats` Must be enabled in `config.ini`. Also, you must set
+a [Steam Web API Key](https://steamcommunity.com/dev/apikey).
 
 #### !cgpt Usage examples
 
@@ -276,8 +284,15 @@ Command: !clear
 
 Description: Clears the chat history.
 
-This command takes no arguments or options. Simply type !clear in the chat to clear the history. Be careful, this action 
-cannot be undone.
+Options are not required and can be used in any combination.
+
+Calling without arguments clears own private chat history for any user.
+
+Global Option (admin only):
+  \global  Clears global chat history.
+  
+User Option (admin only):
+  \user='username'  Clears private chat history for the specified user.
 ```
 
 #### !rtd
@@ -306,22 +321,25 @@ Mode 2: Sends a random link to a YouTube meme.
 
 ### Custom language models (oobabooga / text-generation-webui)
 
-Please follow these steps to set up a custom model for text generation using the [oobabooga/text-generation-webui](https://github.com/oobabooga/text-generation-webui) project:
+Please follow these steps to set up a custom model for text generation using
+the [oobabooga/text-generation-webui](https://github.com/oobabooga/text-generation-webui) project:
 
 1. Open the `config.ini` file and set the `ENABLE_CUSTOM_MODEL` variable to `1`.
 
-2. Next, install the `oobabooga/text-generation-webui` using installer. You can find the installation instructions 
+2. Next, install the `oobabooga/text-generation-webui` using installer. You can find the installation instructions
    easily in the README.md file of that repository.
 
 3. Download the model of your choice for text generation.
 
-4. Launch the `text-generation-webui` application, ensuring that you include the `--api` option in the launch settings (`CMD_FLAGS.txt` file).
+4. Launch the `text-generation-webui` application, ensuring that you include the `--api` option in the launch
+   settings (`CMD_FLAGS.txt` file).
 
 > **NOTE**: If you're running the api on a remote server you might try `--public-api` option.
 
 5. After the application starts, copy the **OpenAI-compatible API URL** provided by the application.
 
-6. Open the `config.ini` file once more and find the `CUSTOM_MODEL_HOST` variable. Paste the previously copied URL as the value for this variable.
+6. Open the `config.ini` file once more and find the `CUSTOM_MODEL_HOST` variable. Paste the previously copied URL as
+   the value for this variable.
 
 7. Save the changes made to the `config.ini` file.
 
@@ -371,7 +389,6 @@ Hi chatGPT, you are going to pretend to be MEDIC from Team Fortress 2. You can d
 If you want to know more here are listed some things that were left unexplained, and some tips and tricks:
 [unexplained_explained.md](docs/unexplained_explained.md)
 
-
 ## Screenshots
 
 [![image.png](https://ucarecdn.com/655e590a-1664-4424-8123-ae3a4e546ee3/)](https://ucarecdn.com/655e590a-1664-4424-8123-ae3a4e546ee3/)
@@ -379,6 +396,7 @@ If you want to know more here are listed some things that were left unexplained,
 ## Known Issues
 
 ### Nickname Limitations
+
 You cannot have a nickname that starts with a command name, such as !cgpt <your prompt>.
 
 ## FAQ
@@ -419,11 +437,12 @@ the future. At the moment, I am not aware of any limitations that could pose a p
 ### TF2 Bot Detector Cooperation (TF2BD)
 
 To successfully launch the applications, you need to start TF2-GptChatBot and TF2 Bot Detector
- (do **NOT** launch TF2 via TF2BD). Set the following launch parameters in Steam: 
+(do **NOT** launch TF2 via TF2BD). Set the following launch parameters in Steam:
 
 ```
 -rpt -high -usercon +developer 1 +contimes 0 +sv_rcon_whitelist_address 127.0.0.1 +sv_quota_stringcmdspersecond 1000000 +alias cl_reload_localization_files +ip 0.0.0.0 +rcon_password password +hostport 42465 +con_timestamp 1 +net_start +con_timestamp 1 -condebug
 ```
+
 And then launch TF2 through Steam.
 
 _NOTE: TF2BD may partially work without setting the launch parameters, but some features may not function properly._

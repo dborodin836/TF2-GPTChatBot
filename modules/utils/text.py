@@ -156,8 +156,8 @@ def parse_line(line: str) -> LogLine:
 def stats_regexes(line: str):
     # Parsing user line from status command
     if matches := re.search(
-        r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*",
-        line,
+            r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*",
+            line,
     ):
         time_on_server = matches.groups()[2]
 
@@ -233,15 +233,46 @@ def remove_hashtags(text: str) -> str:
 
 
 def get_args(prompt: str) -> typing.List[str]:
-    args = prompt.split(" ")
+    in_quote = None  # Track the type of quote we're inside (None, single ', or double ")
+    current_arg = ''
     result = []
+    escape_next = False  # Flag to indicate the next character is escaped
 
-    # Get everything that starts with '\', stop when first item w/o '\' appears.
-    for arg in args:
-        if arg.startswith("\\"):
-            result.append(arg)
+    for char in prompt:
+        if escape_next:
+            current_arg += char
+            escape_next = False
+        elif char == '\\':  # Detect backslash
+            if current_arg and not current_arg.startswith("\\"):
+                # If current_arg doesn't start with \, reset it. Prepare for new arg.
+                current_arg = char
+            else:
+                if not in_quote:
+                    # If not in a quote, handle correctly as start of new arg or part of escaping
+                    if current_arg:
+                        result.append(current_arg)
+                        current_arg = char
+                    else:
+                        current_arg += char
+                else:
+                    # Inside quotes, just add it
+                    current_arg += char
+        elif char in ['"', "'"]:  # Toggle in_quote state for both ' and "
+            if char == in_quote:  # Exiting the quote
+                in_quote = None
+            elif not in_quote:  # Entering a quote
+                in_quote = char
+            current_arg += char
+        elif char == ' ' and not in_quote:
+            if current_arg:
+                if current_arg.startswith("\\"):  # Ensure arg starts with a backslash
+                    result.append(current_arg)
+                current_arg = ''
         else:
-            break
+            current_arg += char
+
+    if current_arg and current_arg.startswith("\\"):  # Check for the last argument
+        result.append(current_arg)
 
     return result
 
