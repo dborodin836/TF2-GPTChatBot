@@ -14,7 +14,7 @@ combo_logger = get_logger("combo")
 gui_logger = get_logger("gui")
 
 
-class ChatConversationHistory(BaseModel):
+class ChatHistoryManager(BaseModel):
     GLOBAL = ConversationHistory()
 
     def set_conversation_history_by_name(self, username: str, conv_history: ConversationHistory) -> None:
@@ -41,7 +41,7 @@ class ChatConversationHistory(BaseModel):
 
 
 class InitializerConfig(BaseModel):
-    CHAT_CONVERSATION_HISTORY: ChatConversationHistory = pydantic.Field(default_factory=ChatConversationHistory)
+    CHAT_CONVERSATION_HISTORY: ChatHistoryManager = pydantic.Field(default_factory=ChatHistoryManager)
 
 
 class GuiCommandController:
