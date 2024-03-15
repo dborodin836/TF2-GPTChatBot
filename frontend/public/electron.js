@@ -2,8 +2,15 @@ const path = require('path');
 const {app, BrowserWindow} = require('electron');
 const {spawn} = require('child_process');
 const isDev = process.env.REACT_APP_DEV === 'true';
+let execPath;
 
-let execPath = path.join(__dirname, '..', '..', 'dist', 'TF2-GPTChatBot', 'TF2-GPTChatBot.exe');
+if (isDev) {
+    execPath = path.join(__dirname, '..', '..', 'dist', 'TF2-GPTChatBot', 'TF2-GPTChatBot.exe');
+} else {
+    console.log(__dirname);
+    execPath = path.join(__dirname, '..', '..', '..', 'TF2-GPTChatBot', 'TF2-GPTChatBot.exe');
+}
+
 let launchOptions = ['--web-server', "--no-gui"];
 let childProcess;
 
