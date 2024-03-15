@@ -154,7 +154,7 @@ _**NOTE: You can create your own executable using this command**_
 Windows:
 
 ```sh
-pyinstaller --onefile --clean -n TF2-GPTChatBot --icon icon.ico -w --add-data "icon.png;." main.py
+pyinstaller --clean -n TF2-GPTChatBot --icon icon.ico -w --add-data "icon.png;." main.py
 ```
 
 ## Usage

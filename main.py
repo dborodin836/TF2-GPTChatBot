@@ -55,6 +55,7 @@ def run_common_threads():
 def run_threads(args: argparse.Namespace):
     if args.web_server:
         threading.Thread(target=uvicorn.run, daemon=True, args=(app,)).start()
+        time.sleep(5)
 
     if args.no_gui:
         sys.stdout = CopyStdoutToSocket()
