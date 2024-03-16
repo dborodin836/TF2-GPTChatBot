@@ -51,13 +51,14 @@ def parse_console_logs_and_build_conversation_history() -> None:
 
     # Commands
     controller.register_command("!gh", handle_gh_command)
-    controller.register_command(config.GPT4_COMMAND, handle_gpt4)
-    controller.register_command(config.GPT4_LEGACY_COMMAND, handle_gpt4l)
     controller.register_command(config.RTD_COMMAND, handle_rtd)
-    controller.register_command(config.GPT_COMMAND, handle_gpt3)
-    controller.register_command(config.CHATGPT_COMMAND, handle_user_chat)
     controller.register_command(config.CLEAR_CHAT_COMMAND, handle_clear)
-    controller.register_command(config.GLOBAL_CHAT_COMMAND, handle_global_chat)
+    if config.ENABLE_OPENAI_COMMANDS:
+        controller.register_command(config.GPT4_COMMAND, handle_gpt4)
+        controller.register_command(config.GPT4_LEGACY_COMMAND, handle_gpt4l)
+        controller.register_command(config.CHATGPT_COMMAND, handle_user_chat)
+        controller.register_command(config.GLOBAL_CHAT_COMMAND, handle_global_chat)
+        controller.register_command(config.GPT_COMMAND, handle_gpt3)
     if config.ENABLE_CUSTOM_MODEL:
         controller.register_command(config.CUSTOM_MODEL_COMMAND, handle_custom_model)
         controller.register_command(config.CUSTOM_MODEL_CHAT_COMMAND, handle_custom_user_chat)

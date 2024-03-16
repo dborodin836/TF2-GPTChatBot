@@ -75,6 +75,7 @@ class Config(BaseModel):
     GPT4_COMMAND: str
     GPT4_LEGACY_COMMAND: str
 
+    ENABLE_OPENAI_COMMANDS: bool
     GPT3_MODEL: str
     GPT3_CHAT_MODEL: str
     GPT4_MODEL: str
@@ -216,5 +217,9 @@ def init_config(filename: str = None) -> None:
         config_dict["CONFIG_NAME"] = config_file
 
         config = Config(**config_dict)
+
+        if not config.ENABLE_OPENAI_COMMANDS and not config.ENABLE_CUSTOM_MODEL:
+            buffered_message("You haven't enabled any AI related commands.")
+
     except (pydantic.ValidationError, Exception) as e:
         show_error_window(e)

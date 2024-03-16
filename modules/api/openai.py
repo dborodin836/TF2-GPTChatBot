@@ -136,9 +136,13 @@ def get_response(conversation_history: MessageHistory, username: str, model) -> 
             log_gui_general_message(f"Wasn't able to connect to OpenAI API. Cancelling...")
             main_logger.error(f"APIError happened. [{e}]")
             return
+        except openai.error.AuthenticationError:
+            log_gui_general_message("Your OpenAI api key is invalid.")
+            main_logger.error("OpenAI API key is invalid.")
+            return
         except Exception as e:
             log_gui_general_message(f"Unhandled error happened! Cancelling ({e})")
-            main_logger(f"Unhandled error happened! Cancelling ({e})")
+            main_logger.error(f"Unhandled error happened! Cancelling ({e})")
             return
 
     if attempts == max_attempts:
