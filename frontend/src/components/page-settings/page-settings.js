@@ -104,6 +104,13 @@ export function PageSettings() {
         });
     }
 
+    const toggleOpenAICommands = () => {
+        setSettings({
+            ...settings,
+            ENABLE_OPENAI_COMMANDS: !settings.ENABLE_OPENAI_COMMANDS,
+        });
+    }
+
     const toggleShortenedUsernameResponse = () => {
         setSettings({
             ...settings,
@@ -196,24 +203,6 @@ export function PageSettings() {
                             />
                         </div>
                     </div>
-
-                    <div className="mb-3">
-                        <label
-                            className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
-                        >OpenAI API Key</label>
-                        <div className="w-72 min-w-[100%]">
-                            <Input
-                                className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
-                                labelProps={{
-                                    className: "hidden",
-                                }}
-                                containerProps={{className: "min-w-[100px]"}}
-                                value={settings ? settings.OPENAI_API_KEY : ''}
-                                name="OPENAI_API_KEY"
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                    </div>
                 </Card>
 
                 {/* RCON */}
@@ -284,12 +273,39 @@ export function PageSettings() {
                     <hr className="mb-3"/>
 
                     <div className="ml-1 mb-3">
+                        <Switch label="Enable OpenAI Commands"
+                                checked={settings?.ENABLE_OPENAI_COMMANDS || false}
+                                onChange={toggleOpenAICommands}/>
+                    </div>
+
+                    <hr className="mb-3"/>
+
+                    <div className="ml-1 mb-3">
                         <Switch label="Enable Message Moderation"
                                 checked={!settings?.TOS_VIOLATION || true}
                                 onChange={toggleOpenAIModeration}/>
                     </div>
 
                     <hr className="mb-3"/>
+
+                    <div className="mb-3">
+                        <label
+                            className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
+                        >OpenAI API Key</label>
+                        <div className="w-72 min-w-[100%]">
+                            <Input
+                                className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                labelProps={{
+                                    className: "hidden",
+                                }}
+                                containerProps={{className: "min-w-[100px]"}}
+                                value={settings ? settings.OPENAI_API_KEY : ''}
+                                name="OPENAI_API_KEY"
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                    </div>
+
                     <div className="mb-3">
                         <div className="flex">
                             <div className="mb-3 w-[100%]">
@@ -720,7 +736,7 @@ export function PageSettings() {
                     </div>
 
                     <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
-                    Cutom Model Settings
+                        Cutom Model Settings
                     </label>
                     <Textarea
                         className="!border mb-3 !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
