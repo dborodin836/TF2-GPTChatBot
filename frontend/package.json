@@ -28,7 +28,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "electron": "cross-env REACT_APP_DEV=true electron .",
+    "start:no-browser": "cross-env BROWSER=none react-scripts start",
+    "demo": "concurrently -k -n \"ELCTR,SERVE\" -c \"blue,magenta\" \"npm run electron:demo\" \"npm run start:no-browser\"",
+    "electron": "cross-env REACT_APP_DEV=true REACT_APP_DEVTOOLS=true electron .",
+    "electron:demo": "wait-on tcp:3000 && cross-env REACT_APP_DEV=true electron .",
     "electron:prod": "cross-env REACT_APP_DEV=false electron .",
     "build": "cross-env REACT_APP_ELECTRON=false react-scripts build",
     "build:electron": "cross-env REACT_APP_ELECTRON=true react-scripts build",
@@ -44,13 +47,24 @@
       "!src/**/*",
       "!node_modules/**/*"
     ],
+    "extraFiles": [
+      {
+        "from": "../dist/tf2-gptcb",
+        "to": ".",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
     "productName": "TF2-GPTChatBot",
     "icon": "./build/logo512.png",
     "extraMetadata": {
       "main": "build/electron.js"
     },
     "win": {
-      "target": ["zip"]
+      "target": [
+        "zip"
+      ]
     },
     "extends": null
   },
@@ -73,9 +87,11 @@
     ]
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "electron": "^29.1.1",
     "electron-builder": "^24.13.3",
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^3.4.1",
+    "wait-on": "^7.2.0"
   }
 }

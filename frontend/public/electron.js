@@ -2,21 +2,24 @@ const path = require('path');
 const {app, BrowserWindow} = require('electron');
 const {spawn} = require('child_process');
 const isDev = process.env.REACT_APP_DEV === 'true';
+const devTools = process.env.REACT_APP_DEVTOOLS === 'true';
 let execPath;
+let launchOptions;
+let childProcess;
+let cwd;
 
 if (isDev) {
-    execPath = path.join(__dirname, '..', '..', 'dist', 'TF2-GPTChatBot', 'TF2-GPTChatBot.exe');
+    execPath = path.join(__dirname, '..', '..', '.venv', 'Scripts', 'python.exe');
+    launchOptions = [path.join(__dirname, '..', '..', 'main.py'), '--web-server', "--no-gui"];
+    cwd = path.dirname(path.join(__dirname, '..'));
 } else {
-    console.log(__dirname);
-    execPath = path.join(__dirname, '..', '..', '..', 'TF2-GPTChatBot', 'TF2-GPTChatBot.exe');
+    execPath = path.join(__dirname, '..', '..', '..', 'tf2-gptcb.exe');
+    launchOptions = ['--web-server', "--no-gui"];
+    cwd = path.dirname(execPath);
 }
 
-let launchOptions = ['--web-server', "--no-gui"];
-let childProcess;
-
 function spawnChildProcess() {
-    childProcess = spawn(execPath, launchOptions, {cwd: path.dirname(execPath)});
-    console.log(childProcess.pid)
+    childProcess = spawn(execPath, launchOptions, {cwd: cwd});
 
     childProcess.on('close', (code) => {
         console.log(`child process exited with code ${code}`);
@@ -53,7 +56,7 @@ const createWindow = () => {
     );
 
     // Open DevTools in development mode
-    if (isDev) {
+    if (devTools && isDev) {
         mainWindow.webContents.openDevTools({mode: 'detach'});
     }
 };

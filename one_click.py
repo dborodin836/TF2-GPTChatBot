@@ -5,8 +5,8 @@ os_name = sys.platform
 
 if os_name.startswith("win"):
     commands = [
-        "py -m venv venv",
-        "call venv/scripts/activate",
+        "py -m venv .venv",
+        "call .venv/scripts/activate",
         "pip install -r requirements.txt",
         "python main.py",
     ]
