@@ -69,7 +69,7 @@ def handle_custom_global_chat(logline: LogLine, shared_dict: InitializerConfig):
         logline.prompt.removeprefix(config.CUSTOM_MODEL_CHAT_COMMAND).strip(),
     )
 
-    user_message = logline.prompt.removeprefix(config.CUSTOM_MODEL_CHAT_COMMAND).strip()
+    user_message = logline.prompt.removeprefix(config.GLOBAL_CUSTOM_CHAT_COMMAND).strip()
     conversation_history.add_user_message_from_prompt(user_message)
     response = get_custom_model_response(conversation_history.get_messages_array())
 
