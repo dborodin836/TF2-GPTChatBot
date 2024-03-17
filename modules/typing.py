@@ -37,16 +37,6 @@ class SteamHoursApiUrlID64(NamedTuple):
     steamid64: int
 
 
-class LogLine(NamedTuple):
-    """
-    Represents a line from a log file.
-    """
-
-    prompt: str
-    username: str
-    is_team_message: bool
-
-
 class Player(BaseModel):
     name: str
     steamid3: str
@@ -61,3 +51,14 @@ class Player(BaseModel):
     last_updated: int
     ping_list: List[int] = []
     ping: int = 0
+
+
+class LogLine(NamedTuple):
+    """
+    Represents a line from a log file.
+    """
+
+    prompt: str
+    username: str
+    is_team_message: bool
+    player: Player

@@ -7,6 +7,7 @@ from string import Template
 from typing import Generator
 
 from config import config
+from modules.lobby_manager import lobby_manager
 from modules.logs import get_logger
 from modules.tf_statistics import StatsData
 from modules.typing import LogLine, Message, Player
@@ -128,7 +129,7 @@ def follow_tail(file_path: str) -> typing.Generator:
             yield ""
 
 
-def parse_line(line: str) -> LogLine:
+def parse_line(line: str) -> typing.Optional[LogLine]:
     if TF2BD_WRAPPER_FOLDER_EXIST:
         for char in TF2BD_WRAPPER_CHARS:
             line = line.replace(char, "")
@@ -145,12 +146,19 @@ def parse_line(line: str) -> LogLine:
     is_team_mes = "(TEAM)" in line
     username = parts[0].replace("(TEAM)", "", 1).removeprefix("*DEAD*").strip()
 
+    if not lobby_manager.is_username_exist(username):
+        username = lobby_manager.search_username(username)
+
+    player = lobby_manager.get_player_by_name(username)
+    if player is None:
+        raise Exception(f"Player with username '{username}' not found.")
+
     if len(parts) > 2:
         prompt = " ".join(parts[1:])
     else:
         prompt = parts[-1]
 
-    return LogLine(prompt, username, is_team_mes)
+    return LogLine(prompt, username, is_team_mes, player)
 
 
 def stats_regexes(line: str):
@@ -161,17 +169,18 @@ def stats_regexes(line: str):
     ):
         time_on_server = matches.groups()[2]
 
-        tm = get_minutes_from_str(time_on_server)
+        time_ = get_minutes_from_str(time_on_server)
 
-        d = Player(
+        player = Player(
             name=matches.groups()[0],
-            minutes_on_server=tm,
-            last_updated=tm,
+            minutes_on_server=time_,
+            last_updated=time_,
             steamid3=matches.groups()[1],
             ping=matches.groups()[3],
         )
 
-        StatsData.add_player(d)
+        StatsData.add_player(player)
+        lobby_manager.add_player(player)
 
     # Parsing map name on connection
     elif matches := re.search(r"^Map:\s(\w*)", line):
@@ -209,11 +218,12 @@ def get_console_logline() -> typing.Generator:
         if config.ENABLE_STATS:
             stats_regexes(line)
 
+        res = None
+
         try:
             res = parse_line(line)
         except Exception as e:
             main_logger.warning(f"Unknown error happened while reading chat. [{e}]")
-            res = LogLine("", "", False)
         finally:
             yield res
 

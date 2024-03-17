@@ -68,6 +68,8 @@ def parse_console_logs_and_build_conversation_history() -> None:
     controller.register_service(messaging_queue_service)
 
     for logline in get_console_logline():
+        if logline is None:
+            continue
         if not state_manager.bot_running:
             continue
         if bans_manager.is_banned_username(logline.username):
