@@ -32,6 +32,7 @@ class RTDModes(IntEnum):
 class Config(BaseModel):
     APP_VERSION: str = "1.3.0"
     HOST_USERNAME: str = ""
+    HOST_STEAMID3: str = "[U:X:XXXXXXX]"
     TOS_VIOLATION: bool
 
     TF2_LOGFILE_PATH: str

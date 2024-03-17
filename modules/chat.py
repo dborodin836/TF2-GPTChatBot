@@ -13,6 +13,7 @@ from modules.message_queueing import messaging_queue_service
 from modules.servers.tf2 import check_connection, set_host_username
 from modules.utils.buffered_messages import print_buffered_config_innit_messages
 from modules.utils.prompts import load_prompts
+from modules.utils.steam import set_host_steamid3
 from modules.utils.text import get_console_logline
 
 gui_logger = get_logger("gui")
@@ -37,6 +38,7 @@ def setup() -> None:
     check_for_updates()
     check_connection()
     set_host_username()
+    set_host_steamid3()
     load_prompts()
     print_buffered_config_innit_messages()
 
