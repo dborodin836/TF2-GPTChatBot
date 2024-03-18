@@ -12,7 +12,7 @@ def test_chat_conversation_history_basic():
     assert len(user_chats_keys) == 0
 
     # test creation
-    chm.get_conversation_history_by_name("user1")
+    chm.get_conversation_history("user1")
     user_chats_keys = [x for x in list(chm.__dict__) if x.startswith("USER_")]
     assert len(user_chats_keys) == 1
     assert chm._get_conv_history_attr_name("user1") in user_chats_keys
@@ -25,8 +25,8 @@ def test_chat_conversation_history_isolation():
     assert chm.GLOBAL.message_history == []
 
     # Create 2 user chats
-    cvh1 = chm.get_conversation_history_by_name("user1")
-    cvh2 = chm.get_conversation_history_by_name("user2")
+    cvh1 = chm.get_conversation_history("user1")
+    cvh2 = chm.get_conversation_history("user2")
     user_chats_keys = [x for x in list(chm.__dict__) if x.startswith("USER_")]
     assert len(user_chats_keys) == 2
 

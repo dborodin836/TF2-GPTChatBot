@@ -28,7 +28,7 @@ def status_command_sender():
     with contextlib.suppress(Exception):
         while True:
             get_status()
-            time.sleep(20)
+            time.sleep(10)
 
 
 def keyboard_on_press(key):

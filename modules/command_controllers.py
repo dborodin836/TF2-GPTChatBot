@@ -7,7 +7,7 @@ from pydantic import BaseModel, BaseConfig
 from modules.conversation_history import ConversationHistory
 from modules.logs import get_logger
 from modules.set_once_dict import SetOnceDictionary
-from modules.typing import Command, LogLine
+from modules.typing import Command, LogLine, Player
 
 main_logger = get_logger("main")
 combo_logger = get_logger("combo")
@@ -17,23 +17,23 @@ gui_logger = get_logger("gui")
 class ChatHistoryManager(BaseModel):
     GLOBAL = ConversationHistory()
 
-    def set_conversation_history_by_name(self, username: str, conv_history: ConversationHistory) -> None:
-        attr_name = self._get_conv_history_attr_name(username)
+    def set_conversation_history(self, player: Player, conv_history: ConversationHistory) -> None:
+        attr_name = self._get_conv_history_attr_name(player.steamid64)
 
         setattr(self, attr_name, conv_history)
 
-    def get_conversation_history_by_name(self, username: str) -> ConversationHistory:
-        attr_name = self._get_conv_history_attr_name(username)
+    def get_conversation_history(self, player: Player) -> ConversationHistory:
+        attr_name = self._get_conv_history_attr_name(player.steamid64)
 
         if hasattr(self, attr_name):
             return getattr(self, attr_name)
         else:
-            main_logger.info(f"Conversation history for username '{username}' doesn't exist. Creating...")
+            main_logger.info(f"Conversation history for user '{player.name}' [{player.steamid64}] doesn't exist. Creating...")
             setattr(self, attr_name, ConversationHistory())
             return getattr(self, attr_name)
 
-    def _get_conv_history_attr_name(self, username: str) -> str:
-        return f"USER_{username}_CH"
+    def _get_conv_history_attr_name(self, id64: int) -> str:
+        return f"USER_{id64}_CH"
 
     class Config(BaseConfig):
         extra = "allow"

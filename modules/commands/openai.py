@@ -36,7 +36,7 @@ def handle_gpt3(logline: LogLine, shared_dict: InitializerConfig) -> None:
 
 
 def handle_user_chat(logline: LogLine, shared_dict: InitializerConfig):
-    user_chat = shared_dict.CHAT_CONVERSATION_HISTORY.get_conversation_history_by_name(logline.username)
+    user_chat = shared_dict.CHAT_CONVERSATION_HISTORY.get_conversation_history(logline.player)
 
     conv_his = handle_cgpt_request(
         logline.username,
@@ -45,7 +45,7 @@ def handle_user_chat(logline: LogLine, shared_dict: InitializerConfig):
         is_team=logline.is_team_message,
         model=config.GPT3_CHAT_MODEL,
     )
-    shared_dict.CHAT_CONVERSATION_HISTORY.set_conversation_history_by_name(logline.username, conv_his)
+    shared_dict.CHAT_CONVERSATION_HISTORY.set_conversation_history(logline.player, conv_his)
 
 
 def handle_global_chat(logline: LogLine, shared_dict: InitializerConfig):

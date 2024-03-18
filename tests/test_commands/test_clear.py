@@ -12,7 +12,7 @@ def test_clear(mocker):
     logline = LogLine(username="user1", prompt="!clear", is_team_message=False)
     cfg = InitializerConfig()
 
-    cvh1 = cfg.CHAT_CONVERSATION_HISTORY.get_conversation_history_by_name("user1")
+    cvh1 = cfg.CHAT_CONVERSATION_HISTORY.get_conversation_history("user1")
     cvh1.message_history.append(Message(content="hello", role="user"))
     assert cvh1.message_history == [Message(content="hello", role="user")]
 
@@ -33,15 +33,15 @@ def test_clear_admin(mocker):
     assert cfg.CHAT_CONVERSATION_HISTORY.GLOBAL.message_history != []
 
     # Create chats for users
-    cvh1 = cfg.CHAT_CONVERSATION_HISTORY.get_conversation_history_by_name("user1")
+    cvh1 = cfg.CHAT_CONVERSATION_HISTORY.get_conversation_history("user1")
     cvh1.message_history.append(Message(content="hello from user1", role="user"))
-    cvh2 = cfg.CHAT_CONVERSATION_HISTORY.get_conversation_history_by_name("user2")
+    cvh2 = cfg.CHAT_CONVERSATION_HISTORY.get_conversation_history("user2")
     cvh2.message_history.append(Message(content="hello from user2", role="user"))
     assert cvh1.message_history != []
     assert cvh2.message_history != []
 
     # create chat for admin
-    cvh_admin = cfg.CHAT_CONVERSATION_HISTORY.get_conversation_history_by_name("admin")
+    cvh_admin = cfg.CHAT_CONVERSATION_HISTORY.get_conversation_history("admin")
     cvh_admin.message_history.append(Message(content="hello from admin", role="user"))
     assert cvh_admin.message_history != []
 
@@ -80,9 +80,9 @@ def test_clear_admin_bypass(mocker):
     assert cfg.CHAT_CONVERSATION_HISTORY.GLOBAL.message_history != []
 
     # Create chats for users
-    cvh1 = cfg.CHAT_CONVERSATION_HISTORY.get_conversation_history_by_name("user1")
+    cvh1 = cfg.CHAT_CONVERSATION_HISTORY.get_conversation_history("user1")
     cvh1.message_history.append(Message(content="hello from user1", role="user"))
-    cvh2 = cfg.CHAT_CONVERSATION_HISTORY.get_conversation_history_by_name("user2")
+    cvh2 = cfg.CHAT_CONVERSATION_HISTORY.get_conversation_history("user2")
     cvh2.message_history.append(Message(content="hello from user2", role="user"))
     assert cvh1.message_history != []
     assert cvh2.message_history != []
