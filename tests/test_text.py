@@ -1,3 +1,5 @@
+import modules.utils.text
+from modules.lobby_manager import LobbyManager
 from modules.typing import Message, LogLine
 from modules.utils.text import (
     get_system_message,
@@ -7,6 +9,7 @@ from modules.utils.text import (
     get_args,
     parse_line
 )
+from tests.common import get_player
 
 MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120
@@ -59,21 +62,27 @@ def test_get_args():
     assert get_args(r"\medic \l Hi dude!") == [r"\medic", r"\l"]
 
 
-def test_parse_line_tf2bd():
+def test_parse_line_tf2bd(mocker):
+    lobby_manager = LobbyManager()
+    mocker.patch.object(modules.utils.text, "lobby_manager", lobby_manager)
+
+    pl = get_player("jeff", 1)
+    lobby_manager.add_player(pl)
+
     line = "\u200d\u200d\u200d\u2060\u2060\u200djeff\ufeff\u2060\u200b :  \u200d\u200b\u200b!cgpt 2+2\u2060\u200b\u200b\u2060\ufeff\ufeff"
-    assert parse_line(line) == LogLine(prompt='!cgpt 2+2', username='jeff', is_team_message=False)
+    assert parse_line(line) == LogLine(prompt='!cgpt 2+2', username='jeff', is_team_message=False, player=pl)
 
     line = "(TEAM) jeff :  !cgpt 2+2"
-    assert parse_line(line) == LogLine(prompt='!cgpt 2+2', username='jeff', is_team_message=True)
+    assert parse_line(line) == LogLine(prompt='!cgpt 2+2', username='jeff', is_team_message=True, player=pl)
 
     line = "*DEAD*(TEAM) jeff :  !cgpt 2+2"
-    assert parse_line(line) == LogLine(prompt='!cgpt 2+2', username='jeff', is_team_message=True)
+    assert parse_line(line) == LogLine(prompt='!cgpt 2+2', username='jeff', is_team_message=True, player=pl)
 
     line = "*DEAD*(TEAM) jeff : !cgpt 2+2"
-    assert parse_line(line) == LogLine(prompt='!cgpt 2+2', username='jeff', is_team_message=True)
+    assert parse_line(line) == LogLine(prompt='!cgpt 2+2', username='jeff', is_team_message=True, player=pl)
 
     line = "*DEAD*(TEAM) jeff : !cgpt yo dude help me"
-    assert parse_line(line) == LogLine(prompt='!cgpt yo dude help me', username='jeff', is_team_message=True)
+    assert parse_line(line) == LogLine(prompt='!cgpt yo dude help me', username='jeff', is_team_message=True, player=pl)
 
     # TODO: fix bugs
     # line = "*DEAD*(TEAM) jeff : !cgpt hey : dude"
