@@ -1,4 +1,5 @@
 from modules.typing import Player
+from modules.utils.steam import steamid3_to_steamid64
 
 
 def raise_(ex):
@@ -11,7 +12,8 @@ def get_player(name: str, id: int) -> Player:
         minutes_on_server=0,
         last_updated=0,
         ping=1,
-        steamid3=f"[U:1:{id}]"
+        steamid3=f"[U:1:{id}]",
+        steamid64=steamid3_to_steamid64(f"[U:1:{id}]")
     )
 
 

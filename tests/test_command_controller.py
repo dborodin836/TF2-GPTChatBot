@@ -1,8 +1,10 @@
 from modules.command_controllers import ChatHistoryManager
+from tests.common import get_player
 
 
 def test_chat_conversation_history_basic():
     chm = ChatHistoryManager()
+    pl1 = get_player("user1", 1)
 
     # global chat is empty
     assert chm.GLOBAL.message_history == []
@@ -12,10 +14,10 @@ def test_chat_conversation_history_basic():
     assert len(user_chats_keys) == 0
 
     # test creation
-    chm.get_conversation_history("user1")
+    chm.get_conversation_history(pl1)
     user_chats_keys = [x for x in list(chm.__dict__) if x.startswith("USER_")]
     assert len(user_chats_keys) == 1
-    assert chm._get_conv_history_attr_name("user1") in user_chats_keys
+    assert chm._get_conv_history_attr_name(pl1.steamid64) in user_chats_keys
 
 
 def test_chat_conversation_history_isolation():
@@ -24,9 +26,12 @@ def test_chat_conversation_history_isolation():
     # global chat is empty
     assert chm.GLOBAL.message_history == []
 
+    pl1 = get_player("user1", 1)
+    pl2 = get_player("user2", 2)
+
     # Create 2 user chats
-    cvh1 = chm.get_conversation_history("user1")
-    cvh2 = chm.get_conversation_history("user2")
+    cvh1 = chm.get_conversation_history(pl1)
+    cvh2 = chm.get_conversation_history(pl2)
     user_chats_keys = [x for x in list(chm.__dict__) if x.startswith("USER_")]
     assert len(user_chats_keys) == 2
 
