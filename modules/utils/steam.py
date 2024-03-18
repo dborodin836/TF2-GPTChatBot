@@ -1,4 +1,8 @@
-import winreg
+try:
+    import winreg
+except ModuleNotFoundError:
+    pass
+
 from typing import Optional
 
 from modules.logs import get_logger
