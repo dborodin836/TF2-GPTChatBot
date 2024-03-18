@@ -1,4 +1,5 @@
 from modules.command_controllers import InitializerConfig
+from modules.permissions import is_admin
 from modules.typing import LogLine
 from modules.utils.text import get_args
 from modules.logs import get_logger
@@ -9,7 +10,7 @@ combo_logger = get_logger("combo")
 
 
 def handle_clear(logline: LogLine, shared_dict: InitializerConfig):
-    if logline.username == config.HOST_USERNAME:
+    if is_admin(logline.player):
         args = get_args(logline.prompt.removeprefix(config.CLEAR_CHAT_COMMAND).strip())
 
         if len(args) == 0:

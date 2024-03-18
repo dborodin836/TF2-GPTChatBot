@@ -34,6 +34,7 @@ class Config(BaseModel):
     HOST_USERNAME: str = ""
     HOST_STEAMID3: str = "[U:X:XXXXXXX]"
     TOS_VIOLATION: bool
+    FALLBACK_TO_USERNAME: bool
 
     TF2_LOGFILE_PATH: str
     OPENAI_API_KEY: str
