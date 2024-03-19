@@ -168,8 +168,7 @@ def get_console_logline() -> typing.Generator:
         # Remove timestamp
         line = line[23:]
 
-        if config.ENABLE_STATS:
-            stats_regexes(line)
+        lobby_manager.stats_regexes(line)
 
         res = None
 
@@ -266,7 +265,7 @@ def get_system_message(user_prompt: str, enable_soft_limit: bool = True) -> Mess
             message += prompt["prompt"]
             break
 
-    if r"\stats" in args and config.ENABLE_STATS:
+    if r"\stats" in args:
         message = (
                 f" {lobby_manager.get_data()} Based on this data answer following question. "
                 + message

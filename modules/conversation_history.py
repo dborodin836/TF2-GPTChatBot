@@ -61,7 +61,7 @@ class ConversationHistory:
         if r"\l" in args or not enable_soft_limit:
             self.enable_soft_limit = False
 
-        if r"\stats" in args and config.ENABLE_STATS:
+        if r"\stats" in args:
             self.enable_stats = True
 
         self.message_history.append(Message(role="user", content=user_message))

@@ -48,8 +48,7 @@ def run_threads():
 
     threading.Thread(target=parse_console_logs_and_build_conversation_history, daemon=True).start()
     threading.Thread(target=gpt3_cmd_handler, daemon=True).start()
-    if config.ENABLE_STATS:
-        threading.Thread(target=status_command_sender, daemon=True).start()
+    threading.Thread(target=status_command_sender, daemon=True).start()
     threading.Thread(target=message_queue_handler, daemon=True).start()
     if not config.DISABLE_KEYBOARD_BINDINGS:
         keyboard.Listener(on_press=keyboard_on_press).start()
