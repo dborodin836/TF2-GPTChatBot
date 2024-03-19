@@ -27,7 +27,8 @@ gui_logger = get_logger("gui")
 def status_command_sender():
     with contextlib.suppress(Exception):
         while True:
-            get_status()
+            res = get_status()
+            gui_logger.error(res if res else "NONE")
             time.sleep(10)
 
 

@@ -1,4 +1,4 @@
-from typing import Callable, List, Literal, NamedTuple, TypedDict
+from typing import Callable, List, Literal, NamedTuple, Optional, TypedDict
 
 from pydantic import BaseModel
 
@@ -35,6 +35,32 @@ class BufferedMessage(NamedTuple):
 class SteamHoursApiUrlID64(NamedTuple):
     url: str
     steamid64: int
+
+
+class VACStats(BaseModel):
+    is_VAC_banned: str
+    number_of_bans: str
+    days_since_last_ban: str
+
+
+class PlayerSteamInfo(BaseModel):
+    steamid64: int
+    steam_account_age: str
+    hours_in_team_fortress_2: str
+    country: str
+    real_name: str
+    VAC: Optional[VACStats]
+
+
+class PlayerStats(BaseModel):
+    name: str
+    steam: PlayerSteamInfo
+    deaths: int
+    kills: int
+    melee_crit_percentage: str
+    kill_death_ratio: float
+    avg_ping: int
+    minutes_on_server: int
 
 
 class Player(BaseModel):

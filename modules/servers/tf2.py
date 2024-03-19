@@ -65,7 +65,8 @@ def get_status():
     while True:
         try:
             with RconClient() as client:
-                response = client.run("cmd status")
+                response = client.run("status")
+                gui_logger.error(response)
                 return response
         except ConnectionRefusedError:
             main_logger.warning("Failed to fetch status. Connection refused!")

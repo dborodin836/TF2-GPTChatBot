@@ -145,6 +145,10 @@ def parse_line(line: str) -> typing.Optional[LogLine]:
     is_team_mes = "(TEAM)" in line
     username = parts[0].replace("(TEAM)", "", 1).removeprefix("*DEAD*").strip()
 
+    if username == "":
+        return None
+
+    # TODO: Check logs shit ton of bugs
     if not lobby_manager.is_username_exist(username):
         username = lobby_manager.search_username(username)
 

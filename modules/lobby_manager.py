@@ -8,7 +8,7 @@ import requests
 
 from config import config
 from modules.bulk_url_downloader import BulkSteamGameDetailsUrlDownloader
-from modules.typing import Player, SteamHoursApiUrlID64
+from modules.typing import Player, PlayerStats, SteamHoursApiUrlID64, VACStats
 from modules.logs import get_logger
 from modules.utils.steam import steamid3_to_steamid64
 from modules.utils.time import get_date, get_minutes_from_str
@@ -229,7 +229,7 @@ class LobbyManager:
             main_logger.warning(f"Failed to fetch steam bans data [{e}]")
             return []
 
-    def _update_tf2_hours(self, to_update_players_list):
+    def _update_tf2_hours(self, to_update_players_list: List[PlayerStats]):
         hours_url: List[SteamHoursApiUrlID64] = []
         for player in self.players:
             hours_url.append(
@@ -245,9 +245,9 @@ class LobbyManager:
 
         for response, steamid64 in results_total_game_hours:
             for player in to_update_players_list:
-                if player["steam"]["steamid64"] == steamid64:
+                if player.steam.steamid64 == steamid64:
                     try:
-                        player["steam"]["hours_in_team_fortress_2"] = (
+                        player.steam.hours_in_team_fortress_2 = (
                                 str(round(response["response"]["games"][0]["playtime_forever"] / 60))
                                 + " hours"
                         )
@@ -256,22 +256,22 @@ class LobbyManager:
 
         return to_update_players_list
 
-    def _update_vac_hours(self, to_update_players_list, steam_bans_data):
+    def _update_vac_hours(self, to_update_players_list: List[PlayerStats], steam_bans_data):
         for player_ban_data in steam_bans_data:
             for player in to_update_players_list:
-                if player["steam"]["steamid64"] == player_ban_data.get("SteamId"):
+                if player.steam.steamid64 == player_ban_data.get("SteamId"):
                     try:
                         vac_status = player_ban_data.get("VACBanned", "unknown")
                         number_of_bans = player_ban_data.get("NumberOfVACBans", "unknown")
                         days_since_last_ban = player_ban_data.get("DaysSinceLastBan", "unknown")
 
-                        vac = {
+                        vac = VACStats(**{
                             "is_VAC_banned": vac_status,
                             "number_of_bans": number_of_bans,
                             "days_since_last_ban": days_since_last_ban,
-                        }
+                        })
 
-                        player["steam"]["VAC"] = vac
+                        player.steam.VAC = vac
                     except KeyError as e:
                         main_logger.warning(f"Failed to fetch vac hours [{e}]")
 
@@ -299,8 +299,8 @@ class LobbyManager:
                     country = player_steam_data.get("loccountrycode", "unknown")
                     real_name = player_steam_data.get("realname", "")
 
-                    new_players.append(
-                        {
+                    new_players.append(PlayerStats(
+                        **{
                             "name": player.name,
                             "steam": {
                                 "steamid64": player.steamid64,
@@ -312,11 +312,11 @@ class LobbyManager:
                             "deaths": player.deaths,
                             "kills": player.kills,
                             "melee_crit_percentage": player.melee_crit_kills_percentage,
-                            "k/d": player.kd,
+                            "kill_death_ratio": player.kd,
                             "avg_ping": player.ping,
                             "minutes_on_server": player.minutes_on_server,
                         }
-                    )
+                    ))
 
         new_players = self._update_tf2_hours(new_players)
         new_players = self._update_vac_hours(new_players, steam_bans_data)
