@@ -9,7 +9,6 @@ from typing import Generator
 from config import config
 from modules.lobby_manager import lobby_manager
 from modules.logs import get_logger
-from modules.tf_statistics import StatsData
 from modules.typing import LogLine, Message, Player
 from modules.utils.prompts import PROMPTS
 from modules.utils.time import get_minutes_from_str
@@ -161,52 +160,6 @@ def parse_line(line: str) -> typing.Optional[LogLine]:
     return LogLine(prompt, username, is_team_mes, player)
 
 
-def stats_regexes(line: str):
-    # Parsing user line from status command
-    if matches := re.search(
-            r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*",
-            line,
-    ):
-        time_on_server = matches.groups()[2]
-
-        time_ = get_minutes_from_str(time_on_server)
-
-        player = Player(
-            name=matches.groups()[0],
-            minutes_on_server=time_,
-            last_updated=time_,
-            steamid3=matches.groups()[1],
-            ping=matches.groups()[3],
-        )
-
-        StatsData.add_player(player)
-        lobby_manager.add_player(player)
-
-    # Parsing map name on connection
-    elif matches := re.search(r"^Map:\s(\w*)", line):
-        map_ = matches.groups()[0]
-        StatsData.set_map_name(map_)
-
-    # Parsing server ip
-    elif matches := re.search(r"^udp/ip\s*:\s*((\d*.){4}:\d*)", line):
-        ip = matches.groups()[0]
-        main_logger.info(f"Server ip is [{ip}]")
-        StatsData.set_server_ip(ip)
-
-    # Parsing kill
-    elif matches := re.search(r"^(.*)\skilled\s(.*)\swith\s(\w*).", line):
-        killer = matches.groups()[0]
-        victim = matches.groups()[1]
-        weapon = matches.groups()[2]
-        is_crit = line.strip().endswith("(crit)")
-        StatsData.handle_kill(killer, victim, weapon, is_crit)
-
-    # Parsing suicide
-    elif matches := re.search(r"^(.*)\ssuicided", line):
-        user = matches.groups()[0]
-        StatsData.process_kill_bind(user)
-
-
 def get_console_logline() -> typing.Generator:
     """
     Opens a log file for Team Fortress 2 and yields tuples containing user prompts and usernames.
@@ -315,9 +268,9 @@ def get_system_message(user_prompt: str, enable_soft_limit: bool = True) -> Mess
 
     if r"\stats" in args and config.ENABLE_STATS:
         message = (
-            f" {StatsData.get_data()} Based on this data answer following question. "
-            + message
-            + " Ignore unknown data."
+                f" {lobby_manager.get_data()} Based on this data answer following question. "
+                + message
+                + " Ignore unknown data."
         )
 
     if r"\l" not in args and enable_soft_limit:

@@ -1,5 +1,5 @@
 from config import config
-from modules.tf_statistics import StatsData
+from modules.lobby_manager import lobby_manager
 from modules.typing import Message, MessageHistory
 from modules.utils.prompts import PROMPTS
 from modules.utils.text import get_args, remove_args
@@ -26,7 +26,7 @@ class ConversationHistory:
 
         if self.enable_stats:
             sys_msg.insert(
-                0, f"{StatsData.get_data()} Based on this data answer following question."
+                0, f"{lobby_manager.get_data()} Based on this data answer following question."
             )
             sys_msg.append("Ignore unknown data.")
 

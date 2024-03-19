@@ -19,7 +19,7 @@ from modules.gui.log_window import LogWindow, RedirectStdoutToLogWindow
 from modules.logs import get_logger, setup_loggers
 from modules.message_queueing import message_queue_handler
 from modules.servers.tf2 import get_status
-from modules.tf_statistics import StatsData
+from modules.lobby_manager import lobby_manager
 
 gui_logger = get_logger("gui")
 
@@ -35,7 +35,7 @@ def keyboard_on_press(key):
     if key == keyboard.Key.f11:
         state_manager.switch_state()
     elif key == keyboard.Key.f10:
-        gui_logger.info(StatsData.get_data())
+        gui_logger.info(lobby_manager.get_data())
 
 
 def run_threads():

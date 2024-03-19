@@ -52,6 +52,23 @@ class Player(BaseModel):
     ping_list: List[int] = []
     ping: int = 0
 
+    @property
+    def kd(self):
+        if self.deaths == 0:
+            kd = self.kills
+        else:
+            kd = round(self.kills / self.deaths, 2)
+        return kd
+
+    @property
+    def melee_crit_kills_percentage(self) -> str:
+        if self.melee_kills == 0:
+            return "no data"
+
+        percentage = round(self.crit_melee_kills / self.melee_kills * 100, 2)
+
+        return f"Melee crit kill {self.crit_melee_kills}/{self.melee_kills} ({percentage}%)"
+
 
 class LogLine(NamedTuple):
     """
