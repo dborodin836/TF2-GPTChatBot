@@ -13,7 +13,7 @@ from modules.logs import get_logger
 from modules.utils.steam import steamid3_to_steamid64
 from modules.utils.time import get_date, get_minutes_from_str
 
-main_logger = get_logger("main")
+main_logger = get_logger("combo")
 combo_logger = get_logger("combo")
 
 MELEE_WEAPONS_KILL_IDS = {
@@ -123,6 +123,7 @@ class LobbyManager:
     def __init__(self):
         self.players: List[Player] = list()
         self.server_ip: Optional[str] = None
+        self.map_name: Optional[str] = None
 
     def get_player_by_name(self, username: str) -> Optional[Player]:
         for plr in self.players:
@@ -168,11 +169,11 @@ class LobbyManager:
 
     @property
     def map(self):
-        return self.map
+        return self.map_name
 
     @map.setter
     def map(self, value: str) -> None:
-        self.map = value
+        self.map_name = value
         combo_logger.info(f"MAP CHANGE DETECTED {value}")
         self.reset()
 
@@ -187,9 +188,7 @@ class LobbyManager:
             f"Incremented deaths for a player {player.name}, current value {player.deaths}"
         )
 
-    def handle_kill(
-            self, killer: Player, victim: Player, weapon: str, is_crit: bool
-    ) -> None:
+    def handle_kill(self, killer: Player, victim: Player, weapon: str, is_crit: bool) -> None:
         main_logger.debug(
             f"'{killer.name}' killed '{victim.name} with {weapon} {'crit' if is_crit else ''}'"
         )
