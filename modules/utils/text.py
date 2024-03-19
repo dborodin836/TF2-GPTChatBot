@@ -199,7 +199,7 @@ def stats_regexes(line: str):
         victim = matches.groups()[1]
         weapon = matches.groups()[2]
         is_crit = line.strip().endswith("(crit)")
-        StatsData.process_kill(killer, victim, weapon, is_crit)
+        StatsData.handle_kill(killer, victim, weapon, is_crit)
 
     # Parsing suicide
     elif matches := re.search(r"^(.*)\ssuicided", line):
