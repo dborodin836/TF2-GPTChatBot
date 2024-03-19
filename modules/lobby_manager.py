@@ -180,40 +180,35 @@ class LobbyManager:
         self.players.clear()
         combo_logger.info("RESET PLAYERS")
 
-    # TODO: Player class instead of username?
-    def handle_kill_bind(self, username: str) -> None:
-        main_logger.debug(f"{username} suicided")
-        for player in self.players:
-            if player.name == username:
-                player.deaths += 1
-                main_logger.trace(
-                    f"Incremented deaths for a player {player.name}, current value {player.deaths}"
-                )
-
-    # BROKEN
-    def handle_kill(
-            self, killer_username: str, victim_username: str, weapon: str, is_crit: bool
-    ) -> None:
-        main_logger.debug(
-            f"'{killer_username}' killed '{victim_username} with {weapon} {'crit' if is_crit else ''}'"
+    def handle_kill_bind(self, player: Player) -> None:
+        main_logger.debug(f"{player.name} suicided")
+        player.deaths += 1
+        main_logger.trace(
+            f"Incremented deaths for a player {player.name}, current value {player.deaths}"
         )
 
-        for player in self.players:
-            if player.name == killer_username:
-                if weapon in MELEE_WEAPONS_KILL_IDS:
-                    player.melee_kills += 1
-                    if is_crit:
-                        player.crit_melee_kills += 1
+    def handle_kill(
+            self, killer: Player, victim: Player, weapon: str, is_crit: bool
+    ) -> None:
+        main_logger.debug(
+            f"'{killer.name}' killed '{victim.name} with {weapon} {'crit' if is_crit else ''}'"
+        )
 
-                player.kills += 1
-                main_logger.trace(
-                    f"Incremented kills for a player {player.name}, current value {player.kills}"
-                )
-            elif player.name == victim_username:
-                player.deaths += 1
-                main_logger.trace(
-                    f"Incremented deaths for a player {player.name}, current value {player.deaths}"
-                )
+        # Update killer stats
+        if weapon in MELEE_WEAPONS_KILL_IDS:
+            killer.melee_kills += 1
+            if is_crit:
+                killer.crit_melee_kills += 1
+        killer.kills += 1
+        main_logger.trace(
+            f"Incremented kills for a player {killer.name}, current value {killer.kills}"
+        )
+
+        # Update victim stats
+        victim.deaths += 1
+        main_logger.trace(
+            f"Incremented deaths for a player {victim.name}, current value {victim.deaths}"
+        )
 
     def _get_steam_profiles_data(self, steamids64: List[str]) -> List[dict]:
         try:
@@ -370,12 +365,19 @@ class LobbyManager:
             victim = matches.groups()[1]
             weapon = matches.groups()[2]
             is_crit = line.strip().endswith("(crit)")
-            self.handle_kill(killer, victim, weapon, is_crit)
+
+            plr_killer = self.get_player_by_name(killer)
+            plr_victim = self.get_player_by_name(victim)
+
+            if plr_victim is not None and plr_killer is not None:
+                self.handle_kill(plr_killer, plr_victim, weapon, is_crit)
 
         # Parsing suicide
         elif matches := re.search(r"^(.*)\ssuicided", line):
-            user = matches.groups()[0]
-            self.handle_kill_bind(user)
+            username = matches.groups()[0]
+            player = self.get_player_by_name(username)
+            if player is not None:
+                self.handle_kill_bind(player)
 
 
 lobby_manager = LobbyManager()
