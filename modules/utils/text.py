@@ -144,13 +144,12 @@ def parse_line(line: str) -> typing.Optional[LogLine]:
     if username == "":
         return None
 
-    # TODO: Check logs shit ton of bugs
     if not lobby_manager.is_username_exist(username):
         username = lobby_manager.search_username(username)
 
     player = lobby_manager.get_player_by_name(username)
     if player is None:
-        raise Exception(f"Player with username '{username}' not found.")
+        main_logger.trace(f"Player with username '{username}' not found.")
 
     if len(parts) > 2:
         prompt = " ".join(parts[1:])
@@ -198,7 +197,9 @@ def get_console_logline() -> typing.Generator:
             last_updated = time.time()
             get_status()
 
-        lobby_manager.stats_regexes(line)
+        # Ignore if line is from status command output
+        if lobby_manager.stats_regexes(line):
+            continue
 
         res = None
 

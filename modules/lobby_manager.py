@@ -327,7 +327,8 @@ class LobbyManager:
             "players": new_players,
         }
 
-    def stats_regexes(self, line: str):
+    def stats_regexes(self, line: str) -> bool:
+        """ Return True if any matches. """
         # Parsing user line from status command
         if matches := re.search(
                 r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*",
@@ -377,6 +378,11 @@ class LobbyManager:
             player = self.get_player_by_name(username)
             if player is not None:
                 self.handle_kill_bind(player)
+
+        else:
+            return False
+
+        return True
 
 
 lobby_manager = LobbyManager()
