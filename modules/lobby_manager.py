@@ -190,7 +190,7 @@ class LobbyManager:
 
     def handle_kill(self, killer: Player, victim: Player, weapon: str, is_crit: bool) -> None:
         main_logger.debug(
-            f"'{killer.name}' killed '{victim.name} with {weapon} {'crit' if is_crit else ''}'"
+            f"'{killer.name}' killed '{victim.name}' with '{weapon}' {'crit' if is_crit else ''}"
         )
 
         # Update killer stats

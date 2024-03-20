@@ -9,9 +9,9 @@ from typing import Generator
 from config import config
 from modules.lobby_manager import lobby_manager
 from modules.logs import get_logger
-from modules.typing import LogLine, Message, Player
+from modules.rcon_client import RconClient
+from modules.typing import LogLine, Message
 from modules.utils.prompts import PROMPTS
-from modules.utils.time import get_minutes_from_str
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -129,10 +129,6 @@ def follow_tail(file_path: str) -> typing.Generator:
 
 
 def parse_line(line: str) -> typing.Optional[LogLine]:
-    if TF2BD_WRAPPER_FOLDER_EXIST:
-        for char in TF2BD_WRAPPER_CHARS:
-            line = line.replace(char, "")
-
     # Fixes issue #80
     # Valve servers use 2 spaces after the colon symbol, but some servers use one.
     # Default:                          Modified:
@@ -164,13 +160,43 @@ def parse_line(line: str) -> typing.Optional[LogLine]:
     return LogLine(prompt, username, is_team_mes, player)
 
 
+last_updated: float = 0.0
+max_delay: float = 20
+min_delay: float = 10
+
+
 def get_console_logline() -> typing.Generator:
     """
     Opens a log file for Team Fortress 2 and yields tuples containing user prompts and usernames.
     """
+    global last_updated
+
     for line in follow_tail(config.TF2_LOGFILE_PATH):
         # Remove timestamp
-        line = line[23:]
+        line: str = line[23:]
+
+        # Remove TF2BD chars
+        if TF2BD_WRAPPER_FOLDER_EXIST:
+            for char in TF2BD_WRAPPER_CHARS:
+                line = line.replace(char, "").strip()
+
+        # Send status commands based on events
+        if "Lobby updated" in line:
+            if time.time() - last_updated > min_delay:
+                main_logger.debug("Sending status command on lobby update connection.")
+                last_updated = time.time()
+                get_status()
+
+        if line.endswith("connected"):
+            if time.time() - last_updated > min_delay:
+                main_logger.debug("Sending status command on new player connection.")
+                last_updated = time.time()
+                get_status()
+
+        if time.time() - last_updated > max_delay:
+            main_logger.debug("Max delay between status commands exceeded.")
+            last_updated = time.time()
+            get_status()
 
         lobby_manager.stats_regexes(line)
 
@@ -282,3 +308,16 @@ def get_system_message(user_prompt: str, enable_soft_limit: bool = True) -> Mess
         )
 
     return Message(role="system", content=message)
+
+
+def get_status():
+    while True:
+        try:
+            with RconClient() as client:
+                return client.run("cmd status")
+        except ConnectionRefusedError:
+            main_logger.warning("Failed to fetch status. Connection refused!")
+            time.sleep(2)
+        except Exception as e:
+            main_logger.warning(f"Failed to fetch status. [{e}]")
+            time.sleep(2)

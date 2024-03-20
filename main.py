@@ -3,10 +3,8 @@ from config import init_config
 # This is required due to config used in imported modules
 init_config()
 
-import contextlib
 import sys
 import threading
-import time
 import tkinter as tk
 
 from pynput import keyboard
@@ -18,18 +16,9 @@ from modules.commands.gui.openai import gpt3_cmd_handler
 from modules.gui.log_window import LogWindow, RedirectStdoutToLogWindow
 from modules.logs import get_logger, setup_loggers
 from modules.message_queueing import message_queue_handler
-from modules.servers.tf2 import get_status
 from modules.lobby_manager import lobby_manager
 
 gui_logger = get_logger("gui")
-
-
-def status_command_sender():
-    with contextlib.suppress(Exception):
-        while True:
-            res = get_status()
-            gui_logger.error(res if res else "NONE")
-            time.sleep(10)
 
 
 def keyboard_on_press(key):
@@ -49,7 +38,6 @@ def run_threads():
 
     threading.Thread(target=parse_console_logs_and_build_conversation_history, daemon=True).start()
     threading.Thread(target=gpt3_cmd_handler, daemon=True).start()
-    threading.Thread(target=status_command_sender, daemon=True).start()
     threading.Thread(target=message_queue_handler, daemon=True).start()
     if not config.DISABLE_KEYBOARD_BINDINGS:
         keyboard.Listener(on_press=keyboard_on_press).start()
