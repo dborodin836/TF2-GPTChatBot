@@ -26,6 +26,7 @@ class MockConfig:
     HOST_STEAMID3 = "[U:0:0]"
     CLEAR_CHAT_COMMAND = "!clear"
     FALLBACK_TO_USERNAME = True
+    ENABLE_STATS_LOGS = True
 
     def __init__(
             self,
@@ -35,6 +36,7 @@ class MockConfig:
             host_username=None,
             clear_chat_command=None,
             fallback_to_username=None,
+            enable_stats_logs=None
     ):
         if app_version is not None:
             self.APP_VERSION = app_version
@@ -48,3 +50,5 @@ class MockConfig:
             self.CLEAR_CHAT_COMMAND = clear_chat_command
         if fallback_to_username is not None:
             self.FALLBACK_TO_USERNAME = fallback_to_username
+        if enable_stats_logs is not None:
+            self.ENABLE_STATS_LOGS = enable_stats_logs

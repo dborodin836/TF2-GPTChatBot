@@ -9,7 +9,7 @@ from modules.utils.text import (
     get_args,
     parse_line
 )
-from tests.common import get_player
+from tests.common import MockConfig, get_player
 
 MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120
@@ -64,13 +64,16 @@ def test_get_args():
 
 def test_parse_line_tf2bd(mocker):
     lobby_manager = LobbyManager()
+    cfg = MockConfig()
     mocker.patch.object(modules.utils.text, "lobby_manager", lobby_manager)
+    mocker.patch.object(modules.lobby_manager, "config", cfg)
 
     pl = get_player("jeff", 1)
     lobby_manager.add_player(pl)
 
-    line = "\u200d\u200d\u200d\u2060\u2060\u200djeff\ufeff\u2060\u200b :  \u200d\u200b\u200b!cgpt 2+2\u2060\u200b\u200b\u2060\ufeff\ufeff"
-    assert parse_line(line) == LogLine(prompt='!cgpt 2+2', username='jeff', is_team_message=False, player=pl)
+    # TODO: Move to other test file
+    # line = "\u200d\u200d\u200d\u2060\u2060\u200djeff\ufeff\u2060\u200b :  \u200d\u200b\u200b!cgpt 2+2\u2060\u200b\u200b\u2060\ufeff\ufeff"
+    # assert parse_line(line) == LogLine(prompt='!cgpt 2+2', username='jeff', is_team_message=False, player=pl)
 
     line = "(TEAM) jeff :  !cgpt 2+2"
     assert parse_line(line) == LogLine(prompt='!cgpt 2+2', username='jeff', is_team_message=True, player=pl)

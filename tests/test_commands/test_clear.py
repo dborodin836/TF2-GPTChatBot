@@ -11,6 +11,8 @@ from tests.common import MockConfig, get_player
 def test_clear(mocker):
     conf = MockConfig()
     lobby_manager = LobbyManager()
+    mocker.patch.object(modules.lobby_manager, "config", conf)
+
     pl1 = get_player("user1", 1)
     lobby_manager.add_player(pl1)
 
@@ -36,6 +38,7 @@ def test_clear_admin(mocker):
     mocker.patch.object(modules.commands.clear_chat, "config", conf)
     mocker.patch.object(modules.commands.clear_chat, "lobby_manager", lobby_manager)
     mocker.patch.object(modules.permissions, "config", conf)
+    mocker.patch.object(modules.lobby_manager, "config", conf)
 
     pl_admin = get_player("admin", 0)
     pl1 = get_player("user1", 1)
@@ -96,6 +99,7 @@ def test_clear_admin_bypass(mocker):
     mocker.patch.object(modules.commands.clear_chat, "config", conf)
     mocker.patch.object(modules.commands.clear_chat, "lobby_manager", lobby_manager)
     mocker.patch.object(modules.permissions, "config", conf)
+    mocker.patch.object(modules.lobby_manager, "config", conf)
     cfg = InitializerConfig()
 
     pl1 = get_player("user1", 1)
