@@ -13,8 +13,8 @@ from modules.logs import get_logger
 from modules.utils.steam import steamid3_to_steamid64
 from modules.utils.time import get_date, get_minutes_from_str
 
-main_logger = get_logger("combo")
-combo_logger = get_logger("combo")
+main_logger = get_logger("main")
+gui_logger = get_logger("gui")
 
 MELEE_WEAPONS_KILL_IDS = {
     "skullbat",
@@ -157,15 +157,19 @@ class LobbyManager:
                 player.ping_list.append(new_player.ping)
                 player.ping = round(mean(player.ping_list))
 
-                main_logger.trace(f"Updated players time on server {player.name}")
+                main_logger.trace(f"[STATS] Updated players time on server {player.name}")
                 return
 
         # New player
         new_player.steamid64 = steamid3_to_steamid64(new_player.steamid3)
         self.players.append(new_player)
         main_logger.debug(
-            f"Added new player {new_player.name} with {new_player.minutes_on_server} minutes on server"
+            f"[STATS] Added new player {new_player.name} with {new_player.minutes_on_server} minutes on server"
         )
+        if config.ENABLE_STATS_LOGS:
+            gui_logger.debug(
+                f"[STATS] Added new player {new_player.name} with {new_player.minutes_on_server} minutes on server"
+            )
 
     @property
     def map(self):
@@ -173,25 +177,35 @@ class LobbyManager:
 
     @map.setter
     def map(self, value: str) -> None:
+        main_logger.info(f"[STATS] MAP CHANGE DETECTED {value}")
+        if self.map_name != value and config.ENABLE_STATS_LOGS:
+            gui_logger.info(f"[STATS] MAP CHANGE DETECTED {value}")
         self.map_name = value
-        combo_logger.info(f"MAP CHANGE DETECTED {value}")
         self.reset()
 
     def reset(self) -> None:
         self.players.clear()
-        combo_logger.info("RESET PLAYERS")
+        main_logger.info("[STATS] RESET PLAYERS")
+        if config.ENABLE_STATS_LOGS:
+            gui_logger.info("[STATS] RESET PLAYERS")
 
     def handle_kill_bind(self, player: Player) -> None:
-        main_logger.debug(f"{player.name} suicided")
+        if config.ENABLE_STATS_LOGS:
+            gui_logger.debug(f"[STATS] {player.name} suicided")
         player.deaths += 1
         main_logger.trace(
-            f"Incremented deaths for a player {player.name}, current value {player.deaths}"
+            f"[STATS] Incremented deaths for a player {player.name}, current value {player.deaths}"
         )
 
     def handle_kill(self, killer: Player, victim: Player, weapon: str, is_crit: bool) -> None:
         main_logger.debug(
-            f"'{killer.name}' killed '{victim.name}' with '{weapon}' {'crit' if is_crit else ''}"
+            f"[STATS] '{killer.name}' killed '{victim.name}' with '{weapon}' {'crit' if is_crit else ''}"
         )
+
+        if config.ENABLE_STATS_LOGS:
+            gui_logger.debug(
+                f"[STATS] '{killer.name}' killed '{victim.name}' with '{weapon}' {'crit' if is_crit else ''}"
+            )
 
         # Update killer stats
         if weapon in MELEE_WEAPONS_KILL_IDS:
@@ -200,13 +214,13 @@ class LobbyManager:
                 killer.crit_melee_kills += 1
         killer.kills += 1
         main_logger.trace(
-            f"Incremented kills for a player {killer.name}, current value {killer.kills}"
+            f"[STATS] Incremented kills for a player {killer.name}, current value {killer.kills}"
         )
 
         # Update victim stats
         victim.deaths += 1
         main_logger.trace(
-            f"Incremented deaths for a player {victim.name}, current value {victim.deaths}"
+            f"[STATS] Incremented deaths for a player {victim.name}, current value {victim.deaths}"
         )
 
     def _get_steam_profiles_data(self, steamids64: List[str]) -> List[dict]:
@@ -216,7 +230,7 @@ class LobbyManager:
             ).json()
             return response["response"]["players"]
         except Exception as e:
-            main_logger.warning(f"Failed to fetch steam profiles data [{e}]")
+            main_logger.warning(f"[STATS] Failed to fetch steam profiles data [{e}]")
             return []
 
     def _get_steam_ban_data(self, steamids64: List[str]) -> List[dict]:
@@ -226,7 +240,7 @@ class LobbyManager:
             ).json()
             return response["players"]
         except Exception as e:
-            main_logger.warning(f"Failed to fetch steam bans data [{e}]")
+            main_logger.warning(f"[STATS] Failed to fetch steam bans data [{e}]")
             return []
 
     def _update_tf2_hours(self, to_update_players_list: List[PlayerStats]):
@@ -273,7 +287,7 @@ class LobbyManager:
 
                         player.steam.VAC = vac
                     except KeyError as e:
-                        main_logger.warning(f"Failed to fetch vac hours [{e}]")
+                        main_logger.warning(f"[STATS] Failed to fetch vac hours [{e}]")
 
         return to_update_players_list
 
@@ -356,7 +370,6 @@ class LobbyManager:
         # Parsing server ip
         elif matches := re.search(r"^udp/ip\s*:\s*((\d*.){4}:\d*)", line):
             ip = matches.groups()[0]
-            main_logger.info(f"Server ip is [{ip}]")
             self.server_ip = ip
 
         # Parsing kill

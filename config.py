@@ -56,6 +56,7 @@ class Config(BaseModel):
     RTD_COMMAND: str
     GLOBAL_CHAT_COMMAND: str
     GPT4_ADMIN_ONLY: bool
+    ENABLE_STATS_LOGS: bool
 
     CUSTOM_PROMPT: str
 
