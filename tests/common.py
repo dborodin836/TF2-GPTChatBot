@@ -1,3 +1,8 @@
+import os
+import tempfile
+
+import pytest
+
 from modules.typing import Player
 from modules.utils.steam import steamid3_to_steamid64
 
@@ -52,3 +57,18 @@ class MockConfig:
             self.FALLBACK_TO_USERNAME = fallback_to_username
         if enable_stats_logs is not None:
             self.ENABLE_STATS_LOGS = enable_stats_logs
+
+
+@pytest.fixture
+def temp_file():
+    # Create a temporary file and get its name
+    fd, path = tempfile.mkstemp()
+
+    # Pre-test setup: Close the file descriptor as we don't need it
+    os.close(fd)
+
+    # Provide the temporary file path to the test
+    yield path
+
+    # Post-test teardown: Remove the temporary file
+    os.remove(path)

@@ -74,6 +74,8 @@ def parse_console_logs_and_build_conversation_history() -> None:
             continue
         if not state_manager.bot_running:
             continue
-        if bans_manager.is_banned_username(logline.username):
+        if bans_manager.is_banned_player(logline.player):
+            main_logger.info(f"Player '{logline.player.name}' {logline.player.steamid3} tried to use commands, but "
+                             f"he's banned.")
             continue
         controller.process_line(logline)
