@@ -51,7 +51,7 @@ def handle_user_chat(logline: LogLine, shared_dict: InitializerConfig):
 def handle_global_chat(logline: LogLine, shared_dict: InitializerConfig):
     conv_his = handle_cgpt_request(
         logline.username,
-        logline.prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
+        logline.prompt.removeprefix(config.GLOBAL_CHAT_COMMAND).strip(),
         shared_dict.CHAT_CONVERSATION_HISTORY.GLOBAL,
         is_team=logline.is_team_message,
         model=config.GPT3_CHAT_MODEL,
@@ -67,7 +67,7 @@ def handle_gpt4(logline: LogLine, shared_dict: InitializerConfig):
     ):
         handle_gpt_request(
             logline.username,
-            logline.prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
+            logline.prompt.removeprefix(config.GPT4_COMMAND).strip(),
             model=config.GPT4_MODEL,
             is_team_chat=logline.is_team_message,
         )
@@ -81,7 +81,7 @@ def handle_gpt4l(logline: LogLine, shared_dict: InitializerConfig):
     ):
         handle_gpt_request(
             logline.username,
-            logline.prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
+            logline.prompt.removeprefix(config.GPT4_LEGACY_COMMAND).strip(),
             model=config.GPT4L_MODEL,
             is_team_chat=logline.is_team_message,
         )
