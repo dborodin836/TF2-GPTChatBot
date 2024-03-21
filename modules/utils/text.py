@@ -160,6 +160,7 @@ def parse_line(line: str) -> typing.Optional[LogLine]:
     return LogLine(prompt, username, is_team_mes, player)
 
 
+ever_updated: bool = False
 last_updated: float = 0.0
 max_delay: float = 20
 min_delay: float = 10
@@ -169,7 +170,7 @@ def get_console_logline() -> typing.Generator:
     """
     Opens a log file for Team Fortress 2 and yields tuples containing user prompts and usernames.
     """
-    global last_updated
+    global last_updated, ever_updated
 
     for line in follow_tail(config.TF2_LOGFILE_PATH):
         # Remove timestamp
@@ -198,8 +199,12 @@ def get_console_logline() -> typing.Generator:
             last_updated = time.time()
             get_status()
 
+        if not ever_updated:
+            get_status()
+
         # Ignore if line is from status command output
         if lobby_manager.stats_regexes(line):
+            ever_updated = True
             continue
 
         res = None
