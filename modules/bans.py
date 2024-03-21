@@ -48,28 +48,28 @@ class BansManager:
         main_logger.debug(f"Trying to ban '{player.name}' [{player.steamid64}]")
         if not self.is_banned_player(player):
             self.banned_players_steamid3.add(player.steamid3)
-            log_gui_general_message(f"BANNED '{player}' [{player.steamid64}]")
-            main_logger.debug(f"Successfully banned {player} [{player.steamid64}]")
+            log_gui_general_message(f"BANNED '{player.name}' [{player.steamid64}]")
+            main_logger.debug(f"Successfully banned {player.name} [{player.steamid64}]")
             with codecs.open(self.__bans_filename, "w", encoding="utf-8") as f:
                 json.dump(list(self.banned_players_steamid3), f)
         else:
             log_gui_general_message(f"='{player}' [{player.steamid64}] ALREADY BANNED")
-            main_logger.debug(f"{player} [{player.steamid64}] already banned.")
+            main_logger.debug(f"{player.name} [{player.steamid64}] already banned.")
 
     def unban_player(self, player: Player) -> None:
         """
         Removes a player from the set of banned players.
         """
-        main_logger.debug(f"Trying to unban '{player}' [{player.steamid64}]")
+        main_logger.debug(f"Trying to unban '{player.name}' [{player.steamid64}]")
         if self.is_banned_player(player):
             self.banned_players_steamid3.remove(player.steamid3)
-            log_gui_general_message(f"UNBANNED '{player}' [{player.steamid64}]")
-            main_logger.debug(f"Successfully unbanned {player} [{player.steamid64}]")
+            log_gui_general_message(f"UNBANNED '{player.name}' [{player.steamid64}]")
+            main_logger.debug(f"Successfully unbanned {player.name} [{player.steamid64}]")
             with codecs.open(self.__bans_filename, "w", encoding="utf-8") as f:
                 json.dump(list(self.banned_players_steamid3), f)
         else:
-            log_gui_general_message(f"USER '{player}' WAS NOT BANNED!")
-            main_logger.debug(f"{player} [{player.steamid64}] was not banned, cancelling.")
+            log_gui_general_message(f"USER '{player.name}' WAS NOT BANNED!")
+            main_logger.debug(f"{player.name} [{player.steamid64}] was not banned, cancelling.")
 
 
 bans_manager = BansManager()
