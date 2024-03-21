@@ -150,6 +150,7 @@ def parse_line(line: str) -> typing.Optional[LogLine]:
     player = lobby_manager.get_player_by_name(username)
     if player is None:
         main_logger.trace(f"Player with username '{username}' not found.")
+        return None
 
     if len(parts) > 2:
         prompt = " ".join(parts[1:])
