@@ -1,8 +1,13 @@
 import {Card, Input, Switch, Typography} from "@material-tailwind/react";
 import React from "react";
 import * as PropTypes from "prop-types";
+import {Settings} from "./SettingsType";
 
-export function StatsSettings(props) {
+export function StatsSettings(props: {
+    settings: Settings | null;
+    onChangeToggle: React.ChangeEventHandler<HTMLInputElement> | undefined;
+    onChangeInput: React.ChangeEventHandler<HTMLInputElement> | undefined;
+}) {
     return <Card className="p-6 w-full">
         <Typography className="mb-3" variant="h2">Statistics</Typography>
 

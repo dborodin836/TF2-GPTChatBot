@@ -2,8 +2,13 @@ import {Card, Input, Typography} from "@material-tailwind/react";
 import {ExclamationTriangleIcon} from "@heroicons/react/24/solid";
 import * as PropTypes from "prop-types";
 import React from "react";
+import {Settings} from "./SettingsType";
 
-export function RequireSettings(props) {
+
+export function RequireSettings(props: {
+    settings: Settings | null;
+    onChangeInput: React.ChangeEventHandler<HTMLInputElement> | undefined;
+}) {
     return <Card className="p-6 mt-15 w-full">
         <Typography className="mb-3" variant="h2">
                     <span className="flex items-center">

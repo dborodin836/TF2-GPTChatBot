@@ -1,8 +1,13 @@
 import {Card, Input, Switch, Textarea, Typography} from "@material-tailwind/react";
 import React from "react";
 import * as PropTypes from "prop-types";
+import {Settings} from "./SettingsType";
 
-export function TexgenWebUISettings(props) {
+export function TextgenWebUISettings(props: {
+    settings: Settings | null;
+    onChangeToggle: any;
+    onChangeInput: any;
+}) {
     return <Card className="p-6 w-full">
         <Typography className="mb-3" variant="h2">Text Generation WebUI</Typography>
         <hr className="mb-3"/>
@@ -114,7 +119,7 @@ export function TexgenWebUISettings(props) {
     </Card>;
 }
 
-TexgenWebUISettings.propTypes = {
+TextgenWebUISettings.propTypes = {
     settings: PropTypes.any,
     onChangeToggle: PropTypes.func,
     onChangeInput: PropTypes.func

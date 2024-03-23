@@ -1,8 +1,14 @@
 import {Card, Radio, Typography} from "@material-tailwind/react";
 import React from "react";
 import * as PropTypes from "prop-types";
+import {Settings} from "./SettingsType";
 
-export function RTDSettings(props) {
+export function RTDSettings(props: {
+    settings: Settings | null;
+    onChangeRadio0: React.ChangeEventHandler<HTMLInputElement> | undefined;
+    onChangeRadio1: React.ChangeEventHandler<HTMLInputElement> | undefined;
+    onChangeRadio2: React.ChangeEventHandler<HTMLInputElement> | undefined;
+}) {
     return <Card className="p-6 w-full">
         <Typography className="mb-3" variant="h2">RTD (Roll The Dice)</Typography>
 

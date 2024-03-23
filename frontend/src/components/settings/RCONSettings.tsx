@@ -1,8 +1,12 @@
 import {Card, Input, Typography} from "@material-tailwind/react";
 import React from "react";
 import * as PropTypes from "prop-types";
+import {Settings} from "./SettingsType";
 
-export function RCONSettings(props) {
+export function RCONSettings(props: {
+    settings: Settings | null;
+    onChangeInput: React.ChangeEventHandler<HTMLInputElement> | undefined;
+}) {
     return <Card className="p-6 w-full">
         <Typography className="mb-3" variant="h2">RCON</Typography>
         <hr className="mb-3"/>

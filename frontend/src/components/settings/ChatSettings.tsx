@@ -1,8 +1,13 @@
 import {Card, Input, Switch, Textarea, Typography} from "@material-tailwind/react";
 import React from "react";
 import * as PropTypes from "prop-types";
+import {Settings} from "./SettingsType";
 
-export function ChatSettings(props) {
+export function ChatSettings(props: {
+    settings: Settings | null;
+    onChangeInput: any;
+    onChangeToggle: any;
+}) {
     return <Card className="p-6 w-full">
         <Typography className="mb-3" variant="h2">Chat</Typography>
         <hr className="mb-3"/>

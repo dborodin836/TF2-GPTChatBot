@@ -2,18 +2,19 @@ import React, {useEffect, useState} from "react";
 import {RequireSettings} from "./RequiredSettings";
 import {RCONSettings} from "./RCONSettings";
 import {OpenAISettings} from "./OpenAISettings";
-import {TexgenWebUISettings} from "./TextgenWebUISettings";
+import {TextgenWebUISettings} from "./TextgenWebUISettings";
 import {StatsSettings} from "./StatsSettings";
 import {RTDSettings} from "./RTDSettings";
 import {MiscellaneousSettings} from "./MiscellaneousSettings";
 import {ExperimentalSettings} from "./ExperimentalSettings";
 import {ChatSettings} from "./ChatSettings";
 import {Controls} from "./Controls";
+import {Settings} from "./SettingsType";
 
 
 export function PageSettings() {
 
-    const [settings, setSettings] = useState(null);
+    const [settings, setSettings] = useState<Settings | null>(null);
 
     const fetchSettings = async () => {
         try {
@@ -78,25 +79,25 @@ export function PageSettings() {
         }
     }
 
-    const handleRTDModeChange = (mode) => {
-        setSettings((prevSettings) => ({
+    const handleRTDModeChange = (mode: number) => {
+        setSettings((prevSettings: any) => ({
             ...prevSettings,
             RTD_MODE: mode,
         }));
     };
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: any) => {
         const {name, value} = e.target;
-        setSettings(prevSettings => ({
+        setSettings((prevSettings: any) => ({
             ...prevSettings,
             [name]: value,
         }));
         console.log(e)
     };
 
-    const handleToggle = (e) => {
+    const handleToggle = (e: any) => {
         const {name} = e.target;
-        setSettings((prevSettings) => ({
+        setSettings((prevSettings: any) => ({
             ...prevSettings,
             [name]: !prevSettings[name],
         }));
@@ -105,7 +106,7 @@ export function PageSettings() {
 
     return (
         <>
-            <Controls onClick={submitSettings} onClick1={discardChanges} onClick2={fetchDefaultSettings}/>
+            <Controls submit={submitSettings} discard={discardChanges} getDefaults={fetchDefaultSettings}/>
 
             <div
                 className="flex flex-1 max-h-[calc(100vh-7rem)] flex-col text-gray-700 w-full gap-6 p-4 overflow-y-scroll">
@@ -118,7 +119,8 @@ export function PageSettings() {
 
                 <ChatSettings settings={settings} onChangeInput={handleInputChange} onChangeToggle={handleToggle}/>
 
-                <TexgenWebUISettings settings={settings} onChangeToggle={handleToggle} onChangeInput={handleInputChange}/>
+                <TextgenWebUISettings settings={settings} onChangeToggle={handleToggle}
+                                      onChangeInput={handleInputChange}/>
 
                 <StatsSettings settings={settings} onChangeToggle={handleToggle} onChangeInput={handleInputChange}/>
 
