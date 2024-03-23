@@ -11,7 +11,9 @@ export function LogsArea() {
         // Scroll to the end on mount
         setTimeout(() => {
             const textarea = document.getElementById('textarea_logs');
-            textarea.scrollTop = textarea.scrollHeight;
+            if (textarea !== null){
+                textarea.scrollTop = textarea.scrollHeight;
+            }
         }, 5)
 
         return unsubscribe;

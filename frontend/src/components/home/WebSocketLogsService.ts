@@ -1,6 +1,8 @@
+import { SetStateAction } from "react";
+
 let logs = '';
-let subscribers = [];
-let ws;
+let subscribers: any[] = [];
+let ws: WebSocket;
 
 function connect() {
     ws = new WebSocket('ws://127.0.0.1:8000/ws');
@@ -55,7 +57,7 @@ function attemptReconnect() {
 // Initial connection attempt
 connect();
 
-export function subscribeToLogs(callback) {
+export function subscribeToLogs(callback: { (value: SetStateAction<string>): void; (arg0: string): void; }) {
     subscribers.push(callback);
 
     callback(logs);

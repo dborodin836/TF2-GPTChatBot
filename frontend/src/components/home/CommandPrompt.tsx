@@ -5,7 +5,7 @@ import {Input, Button} from "@material-tailwind/react";
 export function CommandPrompt() {
     const [command, setCommand] = useState('');
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
 
         fetch('http://localhost:8000/cmd', {
