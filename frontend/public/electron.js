@@ -33,9 +33,9 @@ let mainWindow;
 const createWindow = () => {
     // Configure the main window
     mainWindow = new BrowserWindow({
-        width: 960,
+        width: 1040,
         height: 600,
-        minWidth: 960,
+        minWidth: 1040,
         minHeight: 600,
         webPreferences: {
             nodeIntegration: true, // Enable Node.js integration
