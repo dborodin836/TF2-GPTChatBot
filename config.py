@@ -64,12 +64,13 @@ class Config(BaseModel):
     APP_VERSION: str = "1.3.0"
     CONFIG_NAME: str
     HOST_USERNAME: str = ""
+    HOST_STEAMID3: str = "[U:X:XXXXXXX]"
     TOS_VIOLATION: bool
+    FALLBACK_TO_USERNAME: bool
 
     TF2_LOGFILE_PATH: str
     OPENAI_API_KEY: str
 
-    ENABLE_STATS: bool
     STEAM_WEBAPI_KEY: str
     DISABLE_KEYBOARD_BINDINGS: bool
     GPT4_COMMAND: str
@@ -87,6 +88,7 @@ class Config(BaseModel):
     RTD_COMMAND: str
     GLOBAL_CHAT_COMMAND: str
     GPT4_ADMIN_ONLY: bool
+    ENABLE_STATS_LOGS: bool
 
     CUSTOM_PROMPT: str
 
@@ -129,9 +131,6 @@ class Config(BaseModel):
 
     @validator("STEAM_WEBAPI_KEY")
     def steam_webapi_key_pattern_match(cls, v, values):
-        if not values["ENABLE_STATS"]:
-            return v
-
         if not re.fullmatch(WEB_API_KEY_RE_PATTERN, v):
             buffered_fail_message(
                 "STEAM WEB API key not set or invalid!", type_="BOTH", level="ERROR"

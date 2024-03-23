@@ -40,8 +40,8 @@ def handle_custom_model(logline: LogLine, shared_dict: InitializerConfig):
 
 
 def handle_custom_user_chat(logline: LogLine, shared_dict: InitializerConfig):
-    conversation_history: ConversationHistory = shared_dict.CHAT_CONVERSATION_HISTORY.get_conversation_history_by_name(
-        logline.username)
+    conversation_history: ConversationHistory = shared_dict.CHAT_CONVERSATION_HISTORY.get_conversation_history(
+        logline.player)
 
     log_gui_model_message(
         "CUSTOM CHAT",
@@ -57,7 +57,7 @@ def handle_custom_user_chat(logline: LogLine, shared_dict: InitializerConfig):
         conversation_history.add_assistant_message(Message(role="assistant", content=response))
         log_gui_model_message("CUSTOM CHAT", logline.username, response.strip())
         send_say_command_to_tf2(response, logline.username, logline.is_team_message)
-        shared_dict.CHAT_CONVERSATION_HISTORY.set_conversation_history_by_name(logline.username, conversation_history)
+        shared_dict.CHAT_CONVERSATION_HISTORY.set_conversation_history(logline.player, conversation_history)
 
 
 def handle_custom_global_chat(logline: LogLine, shared_dict: InitializerConfig):

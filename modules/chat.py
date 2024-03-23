@@ -13,6 +13,7 @@ from modules.message_queueing import messaging_queue_service
 from modules.servers.tf2 import check_connection, set_host_username
 from modules.utils.buffered_messages import print_buffered_config_innit_messages
 from modules.utils.prompts import load_prompts
+from modules.utils.steam import set_host_steamid3
 from modules.utils.text import get_console_logline
 
 gui_logger = get_logger("gui")
@@ -37,6 +38,7 @@ def setup() -> None:
     check_for_updates()
     check_connection()
     set_host_username()
+    set_host_steamid3()
     load_prompts()
     print_buffered_config_innit_messages()
 
@@ -68,8 +70,12 @@ def parse_console_logs_and_build_conversation_history() -> None:
     controller.register_service(messaging_queue_service)
 
     for logline in get_console_logline():
+        if logline is None:
+            continue
         if not state_manager.bot_running:
             continue
-        if bans_manager.is_banned_username(logline.username):
+        if bans_manager.is_banned_player(logline.player):
+            main_logger.info(f"Player '{logline.player.name}' {logline.player.steamid3} tried to use commands, but "
+                             f"he's banned.")
             continue
         controller.process_line(logline)

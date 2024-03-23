@@ -7,11 +7,11 @@ from string import Template
 from typing import Generator
 
 from config import config
+from modules.lobby_manager import lobby_manager
 from modules.logs import get_logger
-from modules.tf_statistics import StatsData
-from modules.typing import LogLine, Message, Player
+from modules.rcon_client import RconClient
+from modules.typing import LogLine, Message
 from modules.utils.prompts import PROMPTS
-from modules.utils.time import get_minutes_from_str
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -128,11 +128,7 @@ def follow_tail(file_path: str) -> typing.Generator:
             yield ""
 
 
-def parse_line(line: str) -> LogLine:
-    if TF2BD_WRAPPER_FOLDER_EXIST:
-        for char in TF2BD_WRAPPER_CHARS:
-            line = line.replace(char, "")
-
+def parse_line(line: str) -> typing.Optional[LogLine]:
     # Fixes issue #80
     # Valve servers use 2 spaces after the colon symbol, but some servers use one.
     # Default:                          Modified:
@@ -145,75 +141,78 @@ def parse_line(line: str) -> LogLine:
     is_team_mes = "(TEAM)" in line
     username = parts[0].replace("(TEAM)", "", 1).removeprefix("*DEAD*").strip()
 
+    if username == "":
+        return None
+
+    if not lobby_manager.is_username_exist(username):
+        username = lobby_manager.search_username(username)
+
+    player = lobby_manager.get_player_by_name(username)
+    if player is None:
+        main_logger.trace(f"Player with username '{username}' not found.")
+        return None
+
     if len(parts) > 2:
         prompt = " ".join(parts[1:])
     else:
         prompt = parts[-1]
 
-    return LogLine(prompt, username, is_team_mes)
+    return LogLine(prompt, username, is_team_mes, player)
 
 
-def stats_regexes(line: str):
-    # Parsing user line from status command
-    if matches := re.search(
-            r"^#\s*\d*\s*\"(.*)\"\s*(\[.*])\s*(\d*:?\d*:\d*)\s*(\d*)\s*\d*\s*\w*\s*\w*",
-            line,
-    ):
-        time_on_server = matches.groups()[2]
-
-        tm = get_minutes_from_str(time_on_server)
-
-        d = Player(
-            name=matches.groups()[0],
-            minutes_on_server=tm,
-            last_updated=tm,
-            steamid3=matches.groups()[1],
-            ping=matches.groups()[3],
-        )
-
-        StatsData.add_player(d)
-
-    # Parsing map name on connection
-    elif matches := re.search(r"^Map:\s(\w*)", line):
-        map_ = matches.groups()[0]
-        StatsData.set_map_name(map_)
-
-    # Parsing server ip
-    elif matches := re.search(r"^udp/ip\s*:\s*((\d*.){4}:\d*)", line):
-        ip = matches.groups()[0]
-        main_logger.info(f"Server ip is [{ip}]")
-        StatsData.set_server_ip(ip)
-
-    # Parsing kill
-    elif matches := re.search(r"^(.*)\skilled\s(.*)\swith\s(\w*).", line):
-        killer = matches.groups()[0]
-        victim = matches.groups()[1]
-        weapon = matches.groups()[2]
-        is_crit = line.strip().endswith("(crit)")
-        StatsData.process_kill(killer, victim, weapon, is_crit)
-
-    # Parsing suicide
-    elif matches := re.search(r"^(.*)\ssuicided", line):
-        user = matches.groups()[0]
-        StatsData.process_kill_bind(user)
+ever_updated: bool = False
+last_updated: float = 0.0
+max_delay: float = 20
+min_delay: float = 10
 
 
 def get_console_logline() -> typing.Generator:
     """
     Opens a log file for Team Fortress 2 and yields tuples containing user prompts and usernames.
     """
+    global last_updated, ever_updated
+
     for line in follow_tail(config.TF2_LOGFILE_PATH):
         # Remove timestamp
-        line = line[23:]
+        line: str = line[23:]
 
-        if config.ENABLE_STATS:
-            stats_regexes(line)
+        # Remove TF2BD chars
+        if TF2BD_WRAPPER_FOLDER_EXIST:
+            for char in TF2BD_WRAPPER_CHARS:
+                line = line.replace(char, "").strip()
+
+        # Send status commands based on events
+        if "Lobby updated" in line:
+            if time.time() - last_updated > min_delay:
+                main_logger.debug("Sending status command on lobby update connection.")
+                last_updated = time.time()
+                get_status()
+
+        if line.endswith("connected"):
+            if time.time() - last_updated > min_delay:
+                main_logger.debug("Sending status command on new player connection.")
+                last_updated = time.time()
+                get_status()
+
+        if time.time() - last_updated > max_delay:
+            main_logger.debug("Max delay between status commands exceeded.")
+            last_updated = time.time()
+            get_status()
+
+        if not ever_updated:
+            get_status()
+
+        # Ignore if line is from status command output
+        if lobby_manager.stats_regexes(line):
+            ever_updated = True
+            continue
+
+        res = None
 
         try:
             res = parse_line(line)
         except Exception as e:
             main_logger.warning(f"Unknown error happened while reading chat. [{e}]")
-            res = LogLine("", "", False)
         finally:
             yield res
 
@@ -303,11 +302,11 @@ def get_system_message(user_prompt: str, enable_soft_limit: bool = True) -> Mess
             message += prompt["prompt"]
             break
 
-    if r"\stats" in args and config.ENABLE_STATS:
+    if r"\stats" in args:
         message = (
-            f" {StatsData.get_data()} Based on this data answer following question. "
-            + message
-            + " Ignore unknown data."
+                f" {lobby_manager.get_data()} Based on this data answer following question. "
+                + message
+                + " Ignore unknown data."
         )
 
     if r"\l" not in args and enable_soft_limit:
@@ -316,3 +315,16 @@ def get_system_message(user_prompt: str, enable_soft_limit: bool = True) -> Mess
         )
 
     return Message(role="system", content=message)
+
+
+def get_status():
+    while True:
+        try:
+            with RconClient() as client:
+                return client.run("cmd status")
+        except ConnectionRefusedError:
+            main_logger.warning("Failed to fetch status. Connection refused!")
+            time.sleep(2)
+        except Exception as e:
+            main_logger.warning(f"Failed to fetch status. [{e}]")
+            time.sleep(2)
