@@ -186,7 +186,7 @@ export function PageSettings() {
             <div
                 className="flex flex-1 max-h-[calc(100vh-7rem)] flex-col text-gray-700 w-full gap-6 p-4 overflow-y-scroll">
                 {/* Required */}
-                <Card className="p-6 mt-15">
+                <Card className="p-6 mt-15 w-full">
                     <Typography className="mb-3" variant="h2">
                     <span className="flex items-center">
                           Required Settings <ExclamationTriangleIcon
@@ -197,7 +197,7 @@ export function PageSettings() {
                         <label
                             className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                         >console.log file location</label>
-                        <div className="w-72 min-w-[100%]">
+                        <div className="min-w-[100%]">
                             <Input
                                 className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                 labelProps={{
@@ -213,7 +213,7 @@ export function PageSettings() {
                 </Card>
 
                 {/* RCON */}
-                <Card className="p-6">
+                <Card className="p-6 w-full">
                     <Typography className="mb-3" variant="h2">RCON</Typography>
                     <hr className="mb-3"/>
                     <div className="flex">
@@ -221,7 +221,7 @@ export function PageSettings() {
                             <label
                                 className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                             >RCON Host</label>
-                            <div className="w-72 min-w-[100%]">
+                            <div className="min-w-[100%]">
                                 <Input
                                     className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                     labelProps={{
@@ -239,7 +239,7 @@ export function PageSettings() {
                             <label
                                 className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                             >RCON Port</label>
-                            <div className="w-72 min-w-[100%]">
+                            <div className="min-w-[100%]">
                                 <Input
                                     className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                     labelProps={{
@@ -259,7 +259,7 @@ export function PageSettings() {
                         <label
                             className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                         >RCON Password</label>
-                        <div className="w-72 min-w-[100%]">
+                        <div className="min-w-[100%]">
                             <Input
                                 className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                 labelProps={{
@@ -275,7 +275,7 @@ export function PageSettings() {
                 </Card>
 
                 {/* OpenAI Settings*/}
-                <Card className="p-6">
+                <Card className="p-6 w-full">
                     <Typography className="mb-3" variant="h2">OpenAI</Typography>
                     <hr className="mb-3"/>
 
@@ -299,7 +299,7 @@ export function PageSettings() {
                         <label
                             className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                         >OpenAI API Key</label>
-                        <div className="w-72 min-w-[100%]">
+                        <div className="min-w-[100%]">
                             <Input
                                 className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                 labelProps={{
@@ -319,7 +319,7 @@ export function PageSettings() {
                                 <label
                                     className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                                 >GPT3 Model Command</label>
-                                <div className="w-72 min-w-[100%]">
+                                <div className="min-w-[100%]">
                                     <Input
                                         className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                         labelProps={{
@@ -337,7 +337,7 @@ export function PageSettings() {
                                 <label
                                     className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                                 >GPT3 Model</label>
-                                <div className="w-72 min-w-[100%]">
+                                <div className="min-w-[100%]">
                                     <Input
                                         className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                         labelProps={{
@@ -357,7 +357,7 @@ export function PageSettings() {
                                 <label
                                     className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                                 >GPT4 Model Command</label>
-                                <div className="w-72 min-w-[100%]">
+                                <div className="min-w-[100%]">
                                     <Input
                                         className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                         labelProps={{
@@ -375,7 +375,7 @@ export function PageSettings() {
                                 <label
                                     className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                                 >GPT4 Model</label>
-                                <div className="w-72 min-w-[100%]">
+                                <div className="min-w-[100%]">
                                     <Input
                                         className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                         labelProps={{
@@ -395,7 +395,7 @@ export function PageSettings() {
                                 <label
                                     className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                                 >GPT4 Legacy Model Command</label>
-                                <div className="w-72 min-w-[100%]">
+                                <div className="min-w-[100%]">
                                     <Input
                                         className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                         labelProps={{
@@ -413,7 +413,7 @@ export function PageSettings() {
                                 <label
                                     className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                                 >GPT4 Legacy Model</label>
-                                <div className="w-72 min-w-[100%]">
+                                <div className="min-w-[100%]">
                                     <Input
                                         className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                         labelProps={{
@@ -433,7 +433,7 @@ export function PageSettings() {
                                 <label
                                     className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                                 >Global Chat Command</label>
-                                <div className="w-72 min-w-[100%]">
+                                <div className="min-w-[100%]">
                                     <Input
                                         className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                         labelProps={{
@@ -451,7 +451,7 @@ export function PageSettings() {
                                 <label
                                     className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                                 >Private Chat Command</label>
-                                <div className="w-72 min-w-[100%]">
+                                <div className="min-w-[100%]">
                                     <Input
                                         className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                         labelProps={{
@@ -469,7 +469,7 @@ export function PageSettings() {
                                 <label
                                     className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                                 >Chat Model</label>
-                                <div className="w-72 min-w-[100%]">
+                                <div className="min-w-[100%]">
                                     <Input
                                         className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                         labelProps={{
@@ -487,7 +487,7 @@ export function PageSettings() {
                 </Card>
 
                 {/* Chat */}
-                <Card className="p-6">
+                <Card className="p-6 w-full">
                     <Typography className="mb-3" variant="h2">Chat</Typography>
                     <hr className="mb-3"/>
                     <div className="flex">
@@ -495,7 +495,7 @@ export function PageSettings() {
                             <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
                                 Clear Chat Command
                             </label>
-                            <div className="w-72 min-w-[100%]">
+                            <div className="min-w-[100%]">
                                 <Input
                                     className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                     labelProps={{
@@ -513,7 +513,7 @@ export function PageSettings() {
                             <label
                                 className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                             >Delay Between Messages</label>
-                            <div className="w-72 min-w-[100%]">
+                            <div className="min-w-[100%]">
                                 <Input
                                     className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                     labelProps={{
@@ -533,7 +533,7 @@ export function PageSettings() {
                             <label
                                 className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                             >Soft Completion Limit</label>
-                            <div className="w-72 min-w-[100%]">
+                            <div className="min-w-[100%]">
                                 <Input
                                     className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                     labelProps={{
@@ -551,7 +551,7 @@ export function PageSettings() {
                             <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
                                 Hard Completion Limit
                             </label>
-                            <div className="w-72 min-w-[100%]">
+                            <div className="min-w-[100%]">
                                 <Input
                                     className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                     labelProps={{
@@ -582,7 +582,7 @@ export function PageSettings() {
                             <label
                                 className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                             >Shortened Username Format</label>
-                            <div className="w-72 min-w-[100%]">
+                            <div className="min-w-[100%]">
                                 <Input
                                     className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                     labelProps={{
@@ -600,7 +600,7 @@ export function PageSettings() {
                             <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
                                 Shortened Username Length
                             </label>
-                            <div className="w-72 min-w-[100%]">
+                            <div className="min-w-[100%]">
                                 <Input
                                     className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                     labelProps={{
@@ -650,7 +650,7 @@ export function PageSettings() {
                 </Card>
 
                 {/* Textgen Webui */}
-                <Card className="p-6">
+                <Card className="p-6 w-full">
                     <Typography className="mb-3" variant="h2">Text Generation WebUI</Typography>
                     <hr className="mb-3"/>
 
@@ -673,7 +673,7 @@ export function PageSettings() {
                             <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
                                 Custom Model Command
                             </label>
-                            <div className="w-72 min-w-[100%]">
+                            <div className="min-w-[100%]">
                                 <Input
                                     className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                     labelProps={{
@@ -691,7 +691,7 @@ export function PageSettings() {
                             <label
                                 className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                             >Private Chat Command</label>
-                            <div className="w-72 min-w-[100%]">
+                            <div className="min-w-[100%]">
                                 <Input
                                     className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                     labelProps={{
@@ -709,7 +709,7 @@ export function PageSettings() {
                             <label
                                 className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                             >Global Chat Command</label>
-                            <div className="w-72 min-w-[100%]">
+                            <div className="min-w-[100%]">
                                 <Input
                                     className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                     labelProps={{
@@ -728,7 +728,7 @@ export function PageSettings() {
                         <label
                             className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                         >Custom Model Host</label>
-                        <div className="w-72 min-w-[100%]">
+                        <div className="min-w-[100%]">
                             <Input
                                 className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                 labelProps={{
@@ -759,7 +759,7 @@ export function PageSettings() {
                 </Card>
 
                 {/* Stats */}
-                <Card className="p-6">
+                <Card className="p-6 w-full">
                     <Typography className="mb-3" variant="h2">Statistics</Typography>
 
                     <hr className="mb-3"/>
@@ -776,7 +776,7 @@ export function PageSettings() {
                         <label
                             className="mb-2 inline-block text-neutral-500 dark:text-neutral-400"
                         >Steam WebAPI Key</label>
-                        <div className="w-72 min-w-[100%]">
+                        <div className="min-w-[100%]">
                             <Input
                                 className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                                 labelProps={{
@@ -792,7 +792,7 @@ export function PageSettings() {
                 </Card>
 
                 {/* RTD */}
-                <Card className="p-6">
+                <Card className="p-6 w-full">
                     <Typography className="mb-3" variant="h2">RTD (Roll The Dice)</Typography>
 
                     <hr className="mb-3"/>
@@ -869,7 +869,7 @@ export function PageSettings() {
                 </Card>
 
                 {/* Miscellaneous */}
-                <Card className="p-6">
+                <Card className="p-6 w-full">
                     <Typography className="mb-3" variant="h2">Miscellaneous</Typography>
 
                     <hr className="mb-3"/>
@@ -892,7 +892,7 @@ export function PageSettings() {
                 </Card>
 
                 {/* Experimental */}
-                <Card className="p-6">
+                <Card className="p-6 w-full">
                     <Typography className="mb-3" variant="h2">
                     <span className="flex items-center">
                       Experimental <ExclamationTriangleIcon
