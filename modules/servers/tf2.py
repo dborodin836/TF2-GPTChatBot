@@ -61,20 +61,6 @@ def check_connection():
     combo_logger.info("Successfully connected!")
 
 
-def get_status():
-    while True:
-        try:
-            with RconClient() as client:
-                response = client.run("cmd status")
-                return response
-        except ConnectionRefusedError:
-            main_logger.warning("Failed to fetch status. Connection refused!")
-            time.sleep(2)
-        except Exception as e:
-            main_logger.warning(f"Failed to fetch status. [{e}]")
-            time.sleep(2)
-
-
 def format_say_message(message: str, username: str = None) -> str:
     # Append username to the first chunk
     if username is not None and config.ENABLE_SHORTENED_USERNAMES_RESPONSE:

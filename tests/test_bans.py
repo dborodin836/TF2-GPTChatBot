@@ -1,79 +1,78 @@
-import os
-import tempfile
-
-import pytest
-
 from modules.bans import BansManager
+from tests.common import get_player, temp_file
 
 
-@pytest.fixture
-def temp_ban_file():
-    # Create a temporary file and get its name
-    fd, path = tempfile.mkstemp()
+def test_is_banned_username(temp_file):
+    bans_manager = BansManager(temp_file)
+    plr1 = get_player("player1", 1)
+    plr2 = get_player("player2", 2)
+    plr3 = get_player("player3", 3)
 
-    # Pre-test setup: Close the file descriptor as we don't need it
-    os.close(fd)
+    bans_manager.ban_player(plr1)
+    bans_manager.ban_player(plr2)
 
-    # Provide the temporary file path to the test
-    yield path
-
-    # Post-test teardown: Remove the temporary file
-    os.remove(path)
+    assert bans_manager.is_banned_player(plr1) is True
+    assert bans_manager.is_banned_player(plr3) is False
 
 
-def test_is_banned_username(temp_ban_file):
-    bans_manager = BansManager(temp_ban_file)
-    bans_manager.banned_usernames = set()
-    bans_manager.ban_player("player1")
-    bans_manager.ban_player("player2")
-    assert bans_manager.is_banned_username("player1") is True
-    assert bans_manager.is_banned_username("player3") is False
+def test_list_banned_players(capsys, temp_file):
+    bans_manager = BansManager(temp_file)
 
+    plr1 = get_player("player1", 1)
+    plr2 = get_player("player2", 2)
 
-def test_list_banned_players(capsys, temp_ban_file):
-    bans_manager = BansManager(temp_ban_file)
-    bans_manager.banned_usernames = set()
-    bans_manager.ban_player("player1")
-    bans_manager.ban_player("player2")
-    ban_list = bans_manager.banned_usernames
-    assert "player1" in ban_list
-    assert "player2" in ban_list
+    bans_manager.ban_player(plr1)
+    bans_manager.ban_player(plr2)
+
+    ban_list = bans_manager.banned_players_steamid3
+    assert plr1.steamid3 in ban_list
+    assert plr2.steamid3 in ban_list
 
     # Test with no bans
-    bans_manager.banned_usernames = set()
-    ban_list = bans_manager.banned_usernames
+    bans_manager.banned_players_steamid3 = set()
+    ban_list = bans_manager.banned_players_steamid3
     assert len(ban_list) == 0
 
 
-def test_unban_player(temp_ban_file):
-    bans_manager = BansManager(temp_ban_file)
-    bans_manager.banned_usernames = set()
-    assert bans_manager.banned_usernames == set()
-    bans_manager.ban_player("test1")
-    assert bans_manager.banned_usernames == {"test1"}
-    bans_manager.unban_player("test1")
-    assert bans_manager.banned_usernames == set()
+def test_unban_player(temp_file):
+    bans_manager = BansManager(temp_file)
+
+    plr1 = get_player("player1", 1)
+
+    assert bans_manager.banned_players_steamid3 == set()
+    bans_manager.ban_player(plr1)
+    assert bans_manager.banned_players_steamid3 == {plr1.steamid3}
+    bans_manager.unban_player(plr1)
+    assert bans_manager.banned_players_steamid3 == set()
 
 
-def test_ban_player(temp_ban_file):
-    bans_manager = BansManager(temp_ban_file)
-    bans_manager.ban_player("player3")
+def test_ban_player(temp_file):
+    bans_manager = BansManager(temp_file)
+
+    plr1 = get_player("player1", 1)
+
+    bans_manager.ban_player(plr1)
     bans_manager.load_banned_players()
-    assert "player3" in bans_manager.banned_usernames
+    assert plr1.steamid3 in bans_manager.banned_players_steamid3
 
 
-def test_ban_twice(temp_ban_file):
-    bans_manager = BansManager(temp_ban_file)
-    bans_manager.ban_player("player")
+def test_ban_twice(temp_file):
+    bans_manager = BansManager(temp_file)
+
+    plr1 = get_player("player1", 1)
+
+    bans_manager.ban_player(plr1)
     bans_manager.load_banned_players()
-    bans_manager.ban_player("player")
-    assert "player" in bans_manager.banned_usernames
+    bans_manager.ban_player(plr1)
+    assert plr1.steamid3 in bans_manager.banned_players_steamid3
 
 
-def test_unban_twice(temp_ban_file):
-    bans_manager = BansManager(temp_ban_file)
-    bans_manager.ban_player("player")
+def test_unban_twice(temp_file):
+    bans_manager = BansManager(temp_file)
+    plr1 = get_player("player1", 1)
+
+    bans_manager.ban_player(plr1)
     bans_manager.load_banned_players()
-    bans_manager.unban_player("player")
-    bans_manager.unban_player("player")
-    assert "player" not in bans_manager.banned_usernames
+    bans_manager.unban_player(plr1)
+    bans_manager.unban_player(plr1)
+    assert plr1.steamid3 not in bans_manager.banned_players_steamid3

@@ -1,4 +1,4 @@
-from typing import Callable, List, Literal, NamedTuple, TypedDict
+from typing import Callable, List, Literal, NamedTuple, Optional, TypedDict
 
 from pydantic import BaseModel
 
@@ -37,14 +37,30 @@ class SteamHoursApiUrlID64(NamedTuple):
     steamid64: int
 
 
-class LogLine(NamedTuple):
-    """
-    Represents a line from a log file.
-    """
+class VACStats(BaseModel):
+    is_VAC_banned: str
+    number_of_bans: str
+    days_since_last_ban: str
 
-    prompt: str
-    username: str
-    is_team_message: bool
+
+class PlayerSteamInfo(BaseModel):
+    steamid64: int
+    steam_account_age: str
+    hours_in_team_fortress_2: str
+    country: str
+    real_name: str
+    VAC: Optional[VACStats]
+
+
+class PlayerStats(BaseModel):
+    name: str
+    steam: PlayerSteamInfo
+    deaths: int
+    kills: int
+    melee_crit_percentage: str
+    kill_death_ratio: float
+    avg_ping: int
+    minutes_on_server: int
 
 
 class Player(BaseModel):
@@ -61,3 +77,31 @@ class Player(BaseModel):
     last_updated: int
     ping_list: List[int] = []
     ping: int = 0
+
+    @property
+    def kd(self):
+        if self.deaths == 0:
+            kd = self.kills
+        else:
+            kd = round(self.kills / self.deaths, 2)
+        return kd
+
+    @property
+    def melee_crit_kills_percentage(self) -> str:
+        if self.melee_kills == 0:
+            return "no data"
+
+        percentage = round(self.crit_melee_kills / self.melee_kills * 100, 2)
+
+        return f"Melee crit kill {self.crit_melee_kills}/{self.melee_kills} ({percentage}%)"
+
+
+class LogLine(NamedTuple):
+    """
+    Represents a line from a log file.
+    """
+
+    prompt: str
+    username: str
+    is_team_message: bool
+    player: Player
