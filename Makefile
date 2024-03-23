@@ -10,6 +10,8 @@ run: .venv/Scripts/activate frontend/node_modules
 	cd frontend
 	npm run demo
 
+install: .venv/Scripts/activate frontend/node_modules
+
 build: .venv/Scripts/activate frontend/node_modules
 	$(PYTHON) -m PyInstaller -n tf2-gptcb --noconfirm --icon icon.ico -w main.py
 	xcopy cfg dist\tf2-gptcb\cfg /E /I /Y
