@@ -1,9 +1,9 @@
 import './App.css';
-import {DefaultSidebar} from "./components/sidebar/sidebar";
+import {DefaultSidebar} from "./components/sidebar";
 import {Route, Routes} from 'react-router-dom';
-import {PageHome} from "./components/page-home/page-home";
-import {PageSettings} from "./components/page-settings/page-settings";
-import {PageAbout} from "./components/page-about/page-about";
+import {PageHome} from "./components/home/page-home";
+import {PageSettings} from "./components/settings/page-settings";
+import {PageAbout} from "./components/about/page-about";
 
 function App() {
     return (

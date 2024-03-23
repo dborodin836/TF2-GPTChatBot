@@ -1,5 +1,5 @@
-import {LogsArea} from "../log-area/logs-area";
-import {CommandPrompt} from "../command-prompt/command-prompt";
+import {LogsArea} from "./logs-area";
+import {CommandPrompt} from "./command-prompt";
 
 export function PageHome() {
     return (
