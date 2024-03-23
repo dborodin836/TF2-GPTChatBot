@@ -1,4 +1,4 @@
-export function AboutLogo() {
+export function Logo() {
     return (
         <img
             className="h-96 w-full rounded-lg object-cover object-center"

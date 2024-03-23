@@ -1,7 +1,7 @@
 import React from "react";
 import {Typography} from "@material-tailwind/react";
 
-export function PageAbout() {
+export function About() {
     return (
         <div className="flex flex-1 flex-col text-gray-700 w-full h-screen items-center justify-center gap-6 p-4">
             <img

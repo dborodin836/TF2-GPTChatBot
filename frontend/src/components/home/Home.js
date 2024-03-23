@@ -1,7 +1,7 @@
-import {LogsArea} from "./logs-area";
-import {CommandPrompt} from "./command-prompt";
+import {LogsArea} from "./LogsArea";
+import {CommandPrompt} from "./CommandPrompt";
 
-export function PageHome() {
+export function Home() {
     return (
         <div className="h-[calc(100vh-2rem)] flex flex-col p-4 overflow-hidden">
             <LogsArea/>

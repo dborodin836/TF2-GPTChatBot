@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Textarea} from "@material-tailwind/react";
-import {subscribeToLogs} from "../../webSocketLogsService";
+import {subscribeToLogs} from "./WebSocketLogsService";
 
 export function LogsArea() {
     const [logs, setLogs] = useState('');
