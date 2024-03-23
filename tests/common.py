@@ -32,6 +32,9 @@ class MockConfig:
     CLEAR_CHAT_COMMAND = "!clear"
     FALLBACK_TO_USERNAME = True
     ENABLE_STATS_LOGS = True
+    SHORTENED_USERNAMES_FORMAT = "[$username] "
+    SHORTENED_USERNAME_LENGTH = 12
+    TF2_LOGFILE_PATH = "/"
 
     def __init__(
             self,
@@ -41,7 +44,10 @@ class MockConfig:
             host_username=None,
             clear_chat_command=None,
             fallback_to_username=None,
-            enable_stats_logs=None
+            enable_stats_logs=None,
+            shortened_username_format=None,
+            shortened_username_length=None,
+            tf2_logfile_path=None
     ):
         if app_version is not None:
             self.APP_VERSION = app_version
@@ -57,6 +63,12 @@ class MockConfig:
             self.FALLBACK_TO_USERNAME = fallback_to_username
         if enable_stats_logs is not None:
             self.ENABLE_STATS_LOGS = enable_stats_logs
+        if shortened_username_format is not None:
+            self.SHORTENED_USERNAMES_FORMAT = shortened_username_format
+        if shortened_username_length is not None:
+            self.SHORTENED_USERNAME_LENGTH = shortened_username_length
+        if tf2_logfile_path is not None:
+            self.TF2_LOGFILE_PATH = tf2_logfile_path
 
 
 @pytest.fixture
