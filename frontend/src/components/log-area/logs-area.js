@@ -29,6 +29,7 @@ export function LogsArea() {
                 labelProps={{
                     className: "hidden",
                 }}
+                style={{ fontFamily: 'monospace' }}
             />
         </div>
     );
