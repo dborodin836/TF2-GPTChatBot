@@ -76,69 +76,6 @@ export function PageSettings() {
         }
     }
 
-    const toggleEnableStats = () => {
-        setSettings({
-            ...settings,
-            ENABLE_STATS_LOGS: !settings.ENABLE_STATS_LOGS,
-        });
-    };
-
-    const toggleConfirmableQueue = () => {
-        setSettings({
-            ...settings,
-            CONFIRMABLE_QUEUE: !settings.CONFIRMABLE_QUEUE,
-        });
-    };
-
-    const toggleKeyboardBindings = () => {
-        setSettings({
-            ...settings,
-            DISABLE_KEYBOARD_BINDINGS: !settings.DISABLE_KEYBOARD_BINDINGS,
-        });
-    }
-
-    const toggleUsernamePermissions = () => {
-        setSettings({
-            ...settings,
-            FALLBACK_TO_USERNAME: !settings.FALLBACK_TO_USERNAME,
-        });
-    }
-
-    const toggleOpenAIModeration = () => {
-        setSettings({
-            ...settings,
-            TOS_VIOLATION: !settings.TOS_VIOLATION,
-        });
-    }
-
-    const toggleOpenAICommands = () => {
-        setSettings({
-            ...settings,
-            ENABLE_OPENAI_COMMANDS: !settings.ENABLE_OPENAI_COMMANDS,
-        });
-    }
-
-    const toggleShortenedUsernameResponse = () => {
-        setSettings({
-            ...settings,
-            ENABLE_SHORTENED_USERNAMES_RESPONSE: !settings.ENABLE_SHORTENED_USERNAMES_RESPONSE,
-        });
-    }
-
-    const toggleCustomModel = () => {
-        setSettings({
-            ...settings,
-            ENABLE_CUSTOM_MODEL: !settings.ENABLE_CUSTOM_MODEL,
-        });
-    }
-
-    const toggleSoftLimitForCustomModel = () => {
-        setSettings({
-            ...settings,
-            ENABLE_SOFT_LIMIT_FOR_CUSTOM_MODEL: !settings.ENABLE_SOFT_LIMIT_FOR_CUSTOM_MODEL,
-        });
-    }
-
     const handleRTDModeChange = (mode) => {
         setSettings((prevSettings) => ({
             ...prevSettings,
@@ -151,6 +88,15 @@ export function PageSettings() {
         setSettings(prevSettings => ({
             ...prevSettings,
             [name]: value,
+        }));
+        console.log(e)
+    };
+
+    const handleToggle = (e) => {
+        const {name} = e.target;
+        setSettings((prevSettings) => ({
+            ...prevSettings,
+            [name]: !prevSettings[name],
         }));
     };
 
@@ -282,15 +228,17 @@ export function PageSettings() {
                     <div className="ml-1 mb-3">
                         <Switch label="Enable OpenAI Commands"
                                 checked={settings?.ENABLE_OPENAI_COMMANDS || false}
-                                onChange={toggleOpenAICommands}/>
+                                name="ENABLE_OPENAI_COMMANDS"
+                                onChange={handleToggle}/>
                     </div>
 
                     <hr className="mb-3"/>
 
                     <div className="ml-1 mb-3">
                         <Switch label="Enable Message Moderation"
-                                checked={!settings?.TOS_VIOLATION || true}
-                                onChange={toggleOpenAIModeration}/>
+                                name="TOS_VIOLATION"
+                                checked={!!settings?.TOS_VIOLATION}
+                                onChange={handleToggle}/>
                     </div>
 
                     <hr className="mb-3"/>
@@ -572,7 +520,8 @@ export function PageSettings() {
                     <div className="ml-1 mb-3">
                         <Switch label="Enable Shortened Username Response"
                                 checked={settings?.ENABLE_SHORTENED_USERNAMES_RESPONSE || false}
-                                onChange={toggleShortenedUsernameResponse}/>
+                                name="ENABLE_SHORTENED_USERNAMES_RESPONSE"
+                                onChange={handleToggle}/>
                     </div>
 
                     <hr className="mb-3"/>
@@ -657,14 +606,16 @@ export function PageSettings() {
                     <div className="ml-1 mb-3">
                         <Switch label="Enable Text Generation WebUI Integration"
                                 checked={settings?.ENABLE_CUSTOM_MODEL || false}
-                                onChange={toggleCustomModel}/>
+                                name="ENABLE_CUSTOM_MODEL"
+                                onChange={handleToggle}/>
                     </div>
                     <hr className="mb-3"/>
 
                     <div className="ml-1 mb-3">
                         <Switch label="Enable Soft Completion Limit For Custom Model"
                                 checked={settings?.ENABLE_SOFT_LIMIT_FOR_CUSTOM_MODEL || false}
-                                onChange={toggleSoftLimitForCustomModel}/>
+                                name="ENABLE_SOFT_LIMIT_FOR_CUSTOM_MODEL"
+                                onChange={handleToggle}/>
                     </div>
                     <hr className="mb-3"/>
 
@@ -767,7 +718,8 @@ export function PageSettings() {
                     <div className="ml-1 mb-3">
                         <Switch label="Enable Statistics Module"
                                 checked={settings?.ENABLE_STATS_LOGS || false}
-                                onChange={toggleEnableStats}/>
+                                name="ENABLE_STATS_LOGS"
+                                onChange={handleToggle}/>
                     </div>
 
                     <hr className="mb-3"/>
@@ -877,7 +829,8 @@ export function PageSettings() {
                     <div className="ml-1 mb-3">
                         <Switch label="Disable Keyboard Bindings"
                                 checked={settings?.DISABLE_KEYBOARD_BINDINGS || false}
-                                onChange={toggleKeyboardBindings}/>
+                                name="DISABLE_KEYBOARD_BINDINGS"
+                                onChange={handleToggle}/>
                     </div>
 
                     <hr className="mb-3"/>
@@ -885,7 +838,8 @@ export function PageSettings() {
                     <div className="ml-1 mb-3">
                         <Switch label="Fallback to username to check permissions"
                                 checked={settings?.FALLBACK_TO_USERNAME || false}
-                                onChange={toggleUsernamePermissions}/>
+                                name="FALLBACK_TO_USERNAME"
+                                onChange={handleToggle}/>
                     </div>
 
                     <hr className="mb-3"/>
@@ -905,7 +859,8 @@ export function PageSettings() {
                     <div className="ml-1 mb-3">
                         <Switch label="Enable Confirmable Queue"
                                 checked={settings?.CONFIRMABLE_QUEUE || false}
-                                onChange={toggleConfirmableQueue}/>
+                                name="CONFIRMABLE_QUEUE"
+                                onChange={handleToggle}/>
                     </div>
 
                     <hr className="mb-3"/>
