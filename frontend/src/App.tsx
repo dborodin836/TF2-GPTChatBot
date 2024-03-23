@@ -4,6 +4,7 @@ import {Route, Routes} from 'react-router-dom';
 import {Home} from "./components/home/Home";
 import {PageSettings} from "./components/settings/PageSettings";
 import {About} from "./components/about/About";
+import React from 'react';
 
 function App() {
     return (
