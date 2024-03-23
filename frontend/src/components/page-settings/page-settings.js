@@ -79,7 +79,7 @@ export function PageSettings() {
     const toggleEnableStats = () => {
         setSettings({
             ...settings,
-            ENABLE_STATS: !settings.ENABLE_STATS,
+            ENABLE_STATS_LOGS: !settings.ENABLE_STATS_LOGS,
         });
     };
 
@@ -94,6 +94,13 @@ export function PageSettings() {
         setSettings({
             ...settings,
             DISABLE_KEYBOARD_BINDINGS: !settings.DISABLE_KEYBOARD_BINDINGS,
+        });
+    }
+
+    const toggleUsernamePermissions = () => {
+        setSettings({
+            ...settings,
+            FALLBACK_TO_USERNAME: !settings.FALLBACK_TO_USERNAME,
         });
     }
 
@@ -759,7 +766,7 @@ export function PageSettings() {
 
                     <div className="ml-1 mb-3">
                         <Switch label="Enable Statistics Module"
-                                checked={settings?.ENABLE_STATS || false}
+                                checked={settings?.ENABLE_STATS_LOGS || false}
                                 onChange={toggleEnableStats}/>
                     </div>
 
@@ -871,6 +878,14 @@ export function PageSettings() {
                         <Switch label="Disable Keyboard Bindings"
                                 checked={settings?.DISABLE_KEYBOARD_BINDINGS || false}
                                 onChange={toggleKeyboardBindings}/>
+                    </div>
+
+                    <hr className="mb-3"/>
+
+                    <div className="ml-1 mb-3">
+                        <Switch label="Fallback to username to check permissions"
+                                checked={settings?.FALLBACK_TO_USERNAME || false}
+                                onChange={toggleUsernamePermissions}/>
                     </div>
 
                     <hr className="mb-3"/>
