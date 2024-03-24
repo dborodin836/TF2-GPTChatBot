@@ -1,12 +1,13 @@
 import datetime
 import time
+from typing import Optional
 
 from modules.logs import get_logger
 
 main_logger = get_logger("main")
 
 
-def get_date(epoch: int, relative_epoch_time: int = None) -> str:
+def get_date(epoch: int, relative_epoch_time: Optional[int] = None) -> str:
     account_created_date = datetime.date.fromtimestamp(epoch)
 
     if relative_epoch_time is not None:

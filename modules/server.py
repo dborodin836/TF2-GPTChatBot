@@ -52,11 +52,11 @@ def create_partial_update_model(base_model: Type[BaseModel]) -> Type[BaseModel]:
     field_definitions = {}
     for name, type_hint in get_type_hints(base_model).items():
         field_definitions[name] = (Union[type_hint, None], None)
-    return create_model("PartialUpdateModel", **field_definitions)
+    return create_model("PartialUpdateModel", **field_definitions)  # type: ignore[call-overload]
 
 
 # Create partial update model dynamically
-PartialUpdateModel = create_partial_update_model(Config)
+PartialUpdateModel: Type[BaseModel] = create_partial_update_model(Config)
 
 
 @app.get("/settings")
@@ -65,14 +65,14 @@ async def handle_get_settings():
 
 
 @app.get("/settings/default")
-async def handle_get_settings():
+async def handle_get_default_settings():
     cfg = Config(**read_config_from_file("default.ini"))
     return cfg.dict()
 
 
 @app.post("/settings")
-async def handle_update_settings(settings: PartialUpdateModel):
-    update_data = settings.dict()
+async def handle_update_settings(settings: PartialUpdateModel):  # type: ignore[valid-type]
+    update_data = settings.dict()  # type: ignore[attr-defined]
     errors = []
     success = True
 
@@ -86,7 +86,7 @@ async def handle_update_settings(settings: PartialUpdateModel):
 
     response = {"status": "ok" if success else "error"}
     if errors:
-        response.update({"errors": errors})
+        response.update({"errors": str(errors)})
 
     return response
 

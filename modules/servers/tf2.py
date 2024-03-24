@@ -1,6 +1,7 @@
 import re
 import sys
 import time
+from typing import Optional
 
 from rcon import WrongPassword
 
@@ -30,6 +31,7 @@ def get_username() -> str:
         name = match.group(1)
         main_logger.info(f"Found username '{name}'")
         return name
+    return ""
 
 
 def check_connection():
@@ -58,7 +60,7 @@ def check_connection():
     combo_logger.info("Successfully connected!")
 
 
-def format_say_message(message: str, username: str = None) -> str:
+def format_say_message(message: str, username: Optional[str] = None) -> str:
     # Append username to the first chunk
     if username is not None and config.ENABLE_SHORTENED_USERNAMES_RESPONSE:
         message = f"{get_shortened_username(username)}{message}"
@@ -76,7 +78,9 @@ def format_say_message(message: str, username: str = None) -> str:
     return message
 
 
-def send_say_command_to_tf2(message: str, username: str = None, is_team_chat: bool = False) -> None:
+def send_say_command_to_tf2(
+    message: str, username: Optional[str] = None, is_team_chat: bool = False
+) -> None:
     """
     Sends a "say" command to a Team Fortress 2 server using RCON protocol.
     """

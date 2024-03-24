@@ -1,16 +1,10 @@
-import uvicorn
-
-from config import init_config
-
-# This is required due to config used in imported modules
-init_config()
-
 import argparse
 import sys
 import threading
 import time
 import tkinter as tk
 
+import uvicorn
 from pynput import keyboard
 
 from config import config

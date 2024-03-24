@@ -37,7 +37,7 @@ def save_config(filename: str):
 
         # Dump to a file
         parser = configparser.ConfigParser()
-        parser.optionxform = str
+        parser.optionxform = str  # type: ignore[method-assign,assignment]
         parser.read_dict(config_dict)
         with codecs.open(f"cfg/{filename}", "w", encoding="utf-8") as cfg_file:
             parser.write(cfg_file, space_around_delimiters=False)

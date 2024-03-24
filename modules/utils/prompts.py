@@ -1,6 +1,7 @@
 import codecs
 import os
 import sys
+from typing import List
 
 from modules.logs import get_logger
 
@@ -8,7 +9,8 @@ gui_logger = get_logger("gui")
 combo_logger = get_logger("combo")
 
 # PROMPTS is an empty list used to store prompts data that will be loaded later.
-PROMPTS = []
+# TODO: create Prompt type
+PROMPTS: List[dict] = []
 
 
 def load_prompts() -> None:

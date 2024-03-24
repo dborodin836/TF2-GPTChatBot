@@ -1,7 +1,7 @@
 import sys
 from datetime import datetime as dt
 
-from loguru import FilterFunction, Logger, Record, logger
+from loguru import logger
 
 FORMAT_LINE_MAIN = (
     "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} | {message}"
@@ -16,7 +16,7 @@ __combo_logger = logger.bind(name="combo")
 class LoggerDontExist(Exception): ...
 
 
-def get_logger(name: str) -> Logger:
+def get_logger(name: str):
     """
     Returns the logger object based on the specified name.
 
@@ -47,12 +47,12 @@ def get_logger(name: str) -> Logger:
         raise LoggerDontExist("Specified logger doesn't exist!")
 
 
-def make_name_filter(name: str) -> FilterFunction:
+def make_name_filter(name: str):
     """
     Create a filter function based on the provided name.
     """
 
-    def filter(record: Record) -> bool:
+    def filter(record) -> bool:
         return record["extra"].get("name") == name
 
     return filter

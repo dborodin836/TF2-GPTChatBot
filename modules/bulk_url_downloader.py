@@ -9,7 +9,7 @@ from modules.typing import SteamHoursApiUrlID64
 
 
 class BulkSteamGameDetailsUrlDownloader:
-    q = Queue(maxsize=0)
+    q: Queue[SteamHoursApiUrlID64] = Queue(maxsize=0)
     results: List = []
     thread_local = local()
     urls: List[SteamHoursApiUrlID64] = []

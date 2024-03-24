@@ -9,7 +9,7 @@ from modules.rcon_client import RconClient
 from modules.typing import LogLine, QueuedMessage
 from modules.utils.text import has_cyrillic
 
-message_queue = queue.Queue()
+message_queue: queue.Queue = queue.Queue()
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -41,6 +41,8 @@ class ConfirmableQueueManager:
         Worker method to handle messages in the queue.
         """
         while True:
+            queued_message: QueuedMessage = self.queue.queue[0]
+
             if self.is_locked:
                 # Check for queue activity and handle timeouts
                 # Send gui messages based on time intervals
@@ -49,7 +51,6 @@ class ConfirmableQueueManager:
                     combo_logger.debug("Queue seems to be dead. Cleaning...")
                     self.clean()
                 elif time.time() - self.last_confirmed_message > 15:
-                    queued_message: QueuedMessage = self.queue.queue[0]
                     send_say_cmd(queued_message)
                 elif time.time() - self.last_confirmed_message > 10:
                     if not self.warning_sent:
@@ -60,7 +61,6 @@ class ConfirmableQueueManager:
             if not self.queue.empty():
                 # Process queued messages
                 # Lock the queue, send message, and update flags
-                queued_message: QueuedMessage = self.queue.queue[0]
                 if has_cyrillic(queued_message.text):
                     # In case message gets stripped in chat.
                     self.awaited_message = queued_message.text[: len(queued_message.text) // 2]

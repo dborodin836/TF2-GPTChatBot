@@ -48,9 +48,10 @@ def read_config_from_file(filename: str) -> Dict:
 
     try:
         if config_dict.get("CUSTOM_MODEL_SETTINGS") != "":
-            config_dict["CUSTOM_MODEL_SETTINGS"] = json.loads(
-                config_dict.get("CUSTOM_MODEL_SETTINGS")
-            )
+            key = config_dict.get("CUSTOM_MODEL_SETTINGS")
+            if key is None:
+                key = ""
+            config_dict["CUSTOM_MODEL_SETTINGS"] = json.loads(key)
     except Exception as e:
         raise Exception(f"CUSTOM_MODEL_SETTINGS is not dict [{e}].")
 
@@ -117,7 +118,7 @@ class Config(BaseModel):
 
     CUSTOM_MODEL_SETTINGS: Optional[str | dict]
 
-    def load_from_file(self, filename: str = None) -> None:
+    def load_from_file(self, filename: str) -> None:
         config_dict = read_config_from_file(filename)
 
         for k, v in config_dict.items():
@@ -164,9 +165,6 @@ class Config(BaseModel):
         return v
 
 
-config: Optional[Config] = None
-
-
 def show_error_window(err):
     # Create a Tkinter window
     root = tk.Tk()
@@ -180,7 +178,7 @@ def show_error_window(err):
     sys.exit(1)
 
 
-def init_config(filename: str = None) -> None:
+def init_config(filename: Optional[str] = None) -> Config:
     config_file = filename or DEAFAULT_CONFIG_FILE
     # TODO: redo with pathlib
     config_file_path = "cfg/" + config_file
@@ -201,12 +199,13 @@ def init_config(filename: str = None) -> None:
             for section in configparser_config.sections()
             for key, value in configparser_config.items(section)
         }
-        global config
         try:
             if config_dict.get("CUSTOM_MODEL_SETTINGS") != "":
-                config_dict["CUSTOM_MODEL_SETTINGS"] = json.loads(
-                    config_dict.get("CUSTOM_MODEL_SETTINGS")
-                )
+                val = config_dict.get("CUSTOM_MODEL_SETTINGS")
+                if val:
+                    config_dict["CUSTOM_MODEL_SETTINGS"] = json.loads(val)
+                else:
+                    raise Exception
         except Exception as e:
             buffered_fail_message(
                 f"CUSTOM_MODEL_SETTINGS is not dict [{e}].", "BOTH", level="ERROR"
@@ -215,10 +214,16 @@ def init_config(filename: str = None) -> None:
         # Set loaded config filename
         config_dict["CONFIG_NAME"] = config_file
 
-        config = Config(**config_dict)
+        config = Config(**config_dict)  # type: ignore[arg-type]
 
         if not config.ENABLE_OPENAI_COMMANDS and not config.ENABLE_CUSTOM_MODEL:
             buffered_message("You haven't enabled any AI related commands.")
 
+        return config
+
     except (pydantic.ValidationError, Exception) as e:
         show_error_window(e)
+        exit(1)
+
+
+config: Config = init_config()

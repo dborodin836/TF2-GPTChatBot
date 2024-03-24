@@ -3,6 +3,7 @@ from typing import Callable, Optional
 import pydantic
 from ordered_set import OrderedSet
 from pydantic import BaseConfig, BaseModel
+from pydantic.config import Extra
 
 from modules.conversation_history import ConversationHistory
 from modules.logs import get_logger
@@ -38,8 +39,8 @@ class ChatHistoryManager(BaseModel):
         return f"USER_{id64}_CH"
 
     class Config(BaseConfig):
-        extra = "allow"
-        arbitrary_types_allowed = "allow"
+        extra = Extra.allow
+        arbitrary_types_allowed = True
 
 
 class InitializerConfig(BaseModel):
@@ -49,7 +50,9 @@ class InitializerConfig(BaseModel):
 
 
 class GuiCommandController:
-    def __init__(self, initializer_config: dict = None, disable_help: bool = False) -> None:
+    def __init__(
+        self, initializer_config: Optional[dict] = None, disable_help: bool = False
+    ) -> None:
         self.__named_commands_registry: SetOnceDictionary[str, Command] = SetOnceDictionary()
         self.__shared = dict()
 
@@ -80,13 +83,13 @@ class GuiCommandController:
             self.__named_commands_registry.values(), key=lambda cmd: len(cmd.name)
         )
         max_length = len(max_cmd_length.name)
-        for command in self.__named_commands_registry.values():
-            gui_logger.info(f"- {command.name:>{max_length}} | {command.description}")
+        for cmd in self.__named_commands_registry.values():
+            gui_logger.info(f"- {cmd.name:>{max_length}} | {cmd.description}")
 
 
 class CommandController:
-    def __init__(self, initializer_config: InitializerConfig = None) -> None:
-        self.__services = OrderedSet()
+    def __init__(self, initializer_config: Optional[InitializerConfig] = None) -> None:
+        self.__services: OrderedSet[Callable] = OrderedSet()
         self.__named_commands_registry: SetOnceDictionary[str, Callable] = SetOnceDictionary()
         self.__shared = InitializerConfig()
 

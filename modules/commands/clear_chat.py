@@ -37,8 +37,6 @@ def handle_clear(logline: LogLine, shared_dict: InitializerConfig):
                     combo_logger.error(r'Wrong syntax! e.g. !clear \global \user="username"')
                     continue
 
-                name: str
-                arg: str
                 arg, name = parts
 
                 if arg != r"\user":

@@ -2,6 +2,7 @@ import asyncio
 import sys
 import tkinter as tk
 from tkinter.ttk import Checkbutton
+from typing import TextIO
 
 import ttkbootstrap as ttk
 from ttkbootstrap import Style
@@ -96,7 +97,57 @@ class LogWindow(tk.Frame):
             self.cmd_line.insert("1.0", PROMPT_PLACEHOLDER)
 
 
-class CopyStdoutToSocket:
+class DummyTextIO(TextIO):
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+
+    def writelines(self, __lines):
+        pass
+
+    def __iter__(self):
+        pass
+
+    def __next__(self):
+        pass
+
+    def writable(self):
+        pass
+
+    def close(self):
+        pass
+
+    def truncate(self, __size=None):
+        pass
+
+    def tell(self):
+        pass
+
+    def fileno(self):
+        pass
+
+    def seekable(self):
+        pass
+
+    def read(self, __n=-1):
+        pass
+
+    def seek(self, __offset, __whence=0):
+        pass
+
+    def readline(self, __limit=-1):
+        pass
+
+    def readlines(self, __hint=-1):
+        pass
+
+    def readable(self):
+        pass
+
+
+class CopyStdoutToSocket(DummyTextIO):
     def write(self, message):
         sys.__stdout__.write(message)
         asyncio.run(connection_manager.broadcast(message))
@@ -108,7 +159,7 @@ class CopyStdoutToSocket:
         return False
 
 
-class RedirectStdoutToLogWindow:
+class RedirectStdoutToLogWindow(DummyTextIO):
     def __init__(self, window: LogWindow):
         self.window = window
 
@@ -117,3 +168,6 @@ class RedirectStdoutToLogWindow:
         asyncio.run(connection_manager.broadcast(message))
 
     def flush(self): ...
+
+    def isatty(self):
+        return False

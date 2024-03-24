@@ -39,6 +39,7 @@ build: .venv/Scripts/activate frontend/node_modules
 lint: .venv/Scripts/activate
 	$(PYTHON) -m isort --check-only --profile black .
 	$(PYTHON) -m black --check --line-length 100 .
+	$(PYTHON) -m mypy .
 
 ## format		-	Run isort and black on src to automatically fix issues.
 format: .venv/Scripts/activate

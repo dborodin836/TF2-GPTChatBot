@@ -15,18 +15,18 @@ def get_custom_model_response(conversation_history: list[Message]) -> str | None
 
     data = {"mode": "chat", "messages": conversation_history}
 
-    data.update(config.CUSTOM_MODEL_SETTINGS)
+    data.update(config.CUSTOM_MODEL_SETTINGS)  # type: ignore[arg-type]
 
     try:
         response = requests.post(uri, headers=headers, json=data, verify=False)
     except Exception as e:
         combo_logger.error(f"Failed to get response from the text-generation-webui server. [{e}]")
-        return
+        return None
 
     if response.status_code == 200:
         try:
-            data = response.json()["choices"][0]["message"]["content"]
-            return data
+            model_response = response.json()["choices"][0]["message"]["content"]
+            return model_response
         except Exception as e:
             combo_logger.error(f"Failed to parse data from server [{e}].")
     elif response.status_code == 500:

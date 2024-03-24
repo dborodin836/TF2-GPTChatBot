@@ -129,22 +129,22 @@ def get_response(conversation_history: MessageHistory, username: str, model) -> 
             return filtered_response
         except openai.error.RateLimitError:
             log_gui_general_message("Rate limited! Trying again...")
-            main_logger(f"User is rate limited.")
+            main_logger.warning(f"User is rate limited.")
             time.sleep(2)
             attempts += 1
         except openai.error.APIError as e:
             log_gui_general_message(f"Wasn't able to connect to OpenAI API. Cancelling...")
             main_logger.error(f"APIError happened. [{e}]")
-            return
+            return None
         except openai.error.AuthenticationError:
             log_gui_general_message("Your OpenAI api key is invalid.")
             main_logger.error("OpenAI API key is invalid.")
-            return
+            return None
         except Exception as e:
             log_gui_general_message(f"Unhandled error happened! Cancelling ({e})")
             main_logger.error(f"Unhandled error happened! Cancelling ({e})")
-            return
+            return None
 
     if attempts == max_attempts:
         log_gui_general_message("Max number of attempts reached! Try again later!")
-        main_logger(f"Max number of attempts reached. [{max_attempts}/{max_attempts}]")
+        main_logger.warning(f"Max number of attempts reached. [{max_attempts}/{max_attempts}]")

@@ -91,7 +91,7 @@ def get_chunk_size(text: str) -> int:
     return MAX_LENGTH_OTHER
 
 
-def follow_tail(file_path: str) -> typing.Generator:
+def follow_tail(file_path: str) -> Generator[str, None, None]:
     """
     Follows the tail of a file, yielding new lines as they are added.
     """
@@ -174,7 +174,7 @@ def get_console_logline() -> typing.Generator:
 
     for line in follow_tail(config.TF2_LOGFILE_PATH):
         # Remove timestamp
-        line: str = line[23:]
+        line = line[23:]
 
         # Remove TF2BD chars
         if TF2BD_WRAPPER_FOLDER_EXIST:

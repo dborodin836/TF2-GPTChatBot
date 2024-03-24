@@ -20,3 +20,6 @@ websockets==12.0
 uvicorn==0.27.1
 black==24.3.0
 isort==5.13.2
+mypy==1.9.0
+types-pynput==1.7.5.20240311
+types-requests==2.31.0.20240311

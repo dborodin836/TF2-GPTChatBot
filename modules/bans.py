@@ -1,7 +1,7 @@
 import codecs
 import json
 from json import JSONDecodeError
-from typing import Set
+from typing import Optional, Set
 
 from modules.logs import get_logger, log_gui_general_message
 from modules.typing import Player
@@ -12,7 +12,7 @@ combo_logger = get_logger("combo")
 
 
 class BansManager:
-    def __init__(self, bans_file: str = None):
+    def __init__(self, bans_file: Optional[str] = None):
         self.banned_players_steamid3: Set[str] = set()
         self.__bans_filename = bans_file or "bans.json"
         self.load_banned_players()

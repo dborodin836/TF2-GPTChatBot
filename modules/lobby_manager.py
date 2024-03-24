@@ -258,10 +258,10 @@ class LobbyManager:
         results_total_game_hours = BulkSteamGameDetailsUrlDownloader(hours_url).download_all()
 
         for response, steamid64 in results_total_game_hours:
-            for player in to_update_players_list:
-                if player.steam.steamid64 == steamid64:
+            for plr_stats in to_update_players_list:
+                if plr_stats.steam.steamid64 == steamid64:
                     try:
-                        player.steam.hours_in_team_fortress_2 = (
+                        plr_stats.steam.hours_in_team_fortress_2 = (
                             str(round(response["response"]["games"][0]["playtime_forever"] / 60))
                             + " hours"
                         )
@@ -361,7 +361,8 @@ class LobbyManager:
                 minutes_on_server=time_,
                 last_updated=time_,
                 steamid3=matches.groups()[1],
-                ping=matches.groups()[3],
+                ping=int(matches.groups()[3]),
+                steamid64=steamid3_to_steamid64(matches.groups()[1]),
             )
 
             self.add_player(player)
@@ -392,9 +393,9 @@ class LobbyManager:
         # Parsing suicide
         elif matches := re.search(r"^(.*)\ssuicided", line):
             username = matches.groups()[0]
-            player = self.get_player_by_name(username)
-            if player is not None:
-                self.handle_kill_bind(player)
+            plr = self.get_player_by_name(username)
+            if plr is not None:
+                self.handle_kill_bind(plr)
 
         else:
             return False
