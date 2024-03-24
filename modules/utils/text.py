@@ -29,20 +29,6 @@ TF2BD_WRAPPER_CHARS = [
     "\u2060",
     "\u200c",
 ]
-try:
-    TF2BD_WRAPPER_FOLDER_EXIST = os.path.exists(
-        os.path.join(
-            os.path.dirname(config.TF2_LOGFILE_PATH),
-            "custom/aaaaaaaaaa_loadfirst_tf2_bot_detector",
-        )
-    )
-except AttributeError:
-    # Nothing bad will happen if we set this to True
-    main_logger.warning(f"Attribute error while checking for TF2BD wrapper.")
-    TF2BD_WRAPPER_FOLDER_EXIST = True
-except Exception as e:
-    main_logger.error(f"Failed to check for TF2BD wrapper. [{e}]")
-    TF2BD_WRAPPER_FOLDER_EXIST = True
 
 
 def split_into_chunks(string: str, maxlength: int) -> typing.Generator:
@@ -177,9 +163,8 @@ def get_console_logline() -> typing.Generator:
         line = line[23:]
 
         # Remove TF2BD chars
-        if TF2BD_WRAPPER_FOLDER_EXIST:
-            for char in TF2BD_WRAPPER_CHARS:
-                line = line.replace(char, "").strip()
+        for char in TF2BD_WRAPPER_CHARS:
+            line = line.replace(char, "").strip()
 
         # Send status commands based on events
         if "Lobby updated" in line:
