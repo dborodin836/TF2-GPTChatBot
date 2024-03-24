@@ -7,8 +7,8 @@ from pydantic import BaseModel, create_model
 from pydantic.typing import get_type_hints
 from starlette.websockets import WebSocketDisconnect
 
+from config import Config, config, read_config_from_file
 from modules.gui.controller import command_controller
-from config import config, Config, read_config_from_file
 from modules.utils.config import save_config
 
 app = FastAPI()
@@ -52,7 +52,7 @@ def create_partial_update_model(base_model: Type[BaseModel]) -> Type[BaseModel]:
     field_definitions = {}
     for name, type_hint in get_type_hints(base_model).items():
         field_definitions[name] = (Union[type_hint, None], None)
-    return create_model('PartialUpdateModel', **field_definitions)
+    return create_model("PartialUpdateModel", **field_definitions)
 
 
 # Create partial update model dynamically

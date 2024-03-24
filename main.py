@@ -6,22 +6,26 @@ from config import init_config
 init_config()
 
 import argparse
-import time
 import sys
 import threading
+import time
 import tkinter as tk
 
 from pynput import keyboard
 
-from modules.server import app
 from config import config
 from modules.bot_state import state_manager
 from modules.chat import parse_console_logs_and_build_conversation_history
 from modules.commands.gui.openai import gpt3_cmd_handler
-from modules.gui.log_window import LogWindow, RedirectStdoutToLogWindow, CopyStdoutToSocket
+from modules.gui.log_window import (
+    CopyStdoutToSocket,
+    LogWindow,
+    RedirectStdoutToLogWindow,
+)
+from modules.lobby_manager import lobby_manager
 from modules.logs import get_logger, setup_loggers
 from modules.message_queueing import message_queue_handler
-from modules.lobby_manager import lobby_manager
+from modules.server import app
 
 gui_logger = get_logger("gui")
 
@@ -60,18 +64,24 @@ def run_threads(args: argparse.Namespace):
         setup_loggers()
         run_common_threads()
 
-        threading.Thread(target=parse_console_logs_and_build_conversation_history, daemon=True).start()
+        threading.Thread(
+            target=parse_console_logs_and_build_conversation_history, daemon=True
+        ).start()
 
         log_window.pack()
         root.mainloop()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='An AI-powered chatbot for Team Fortress 2 fans and players.')
+    parser = argparse.ArgumentParser(
+        description="An AI-powered chatbot for Team Fortress 2 fans and players."
+    )
 
-    parser.add_argument('--no-gui', action='store_true',
-                        help='Run the application without the GUI.')
-    parser.add_argument('--web-server', action='store_true',
-                        help='Start the application in web server mode.')
+    parser.add_argument(
+        "--no-gui", action="store_true", help="Run the application without the GUI."
+    )
+    parser.add_argument(
+        "--web-server", action="store_true", help="Start the application in web server mode."
+    )
 
     run_threads(parser.parse_args())

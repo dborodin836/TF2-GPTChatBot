@@ -1,5 +1,5 @@
-import sys
 import pathlib
+import sys
 
 from modules.utils.path import resource_path
 

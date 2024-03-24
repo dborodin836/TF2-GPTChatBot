@@ -35,6 +35,16 @@ build: .venv/Scripts/activate frontend/node_modules
 	cd frontend
 	npm run pack
 
+## lint		-	Runs linters on src.
+lint: .venv/Scripts/activate
+	$(PYTHON) -m isort --check-only --profile black .
+	$(PYTHON) -m black --check --line-length 100 .
+
+## format		-	Run isort and black on src to automatically fix issues.
+format: .venv/Scripts/activate
+	$(PYTHON) -m isort --profile black .
+	$(PYTHON) -m black --line-length 100 .
+
 # Install .venv for python
 .venv/Scripts/activate: requirements.txt
 	python -m venv .venv
@@ -59,4 +69,4 @@ clean:
 else
 endif
 
-.PHONY: run clean build
+.PHONY: run clean build lint format install

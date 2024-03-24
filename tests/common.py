@@ -18,7 +18,7 @@ def get_player(name: str, id: int) -> Player:
         last_updated=0,
         ping=1,
         steamid3=f"[U:1:{id}]",
-        steamid64=steamid3_to_steamid64(f"[U:1:{id}]")
+        steamid64=steamid3_to_steamid64(f"[U:1:{id}]"),
     )
 
 
@@ -37,17 +37,17 @@ class MockConfig:
     TF2_LOGFILE_PATH = "/"
 
     def __init__(
-            self,
-            app_version=None,
-            soft_completion_limit=None,
-            custom_prompt=None,
-            host_username=None,
-            clear_chat_command=None,
-            fallback_to_username=None,
-            enable_stats_logs=None,
-            shortened_username_format=None,
-            shortened_username_length=None,
-            tf2_logfile_path=None
+        self,
+        app_version=None,
+        soft_completion_limit=None,
+        custom_prompt=None,
+        host_username=None,
+        clear_chat_command=None,
+        fallback_to_username=None,
+        enable_stats_logs=None,
+        shortened_username_format=None,
+        shortened_username_length=None,
+        tf2_logfile_path=None,
     ):
         if app_version is not None:
             self.APP_VERSION = app_version

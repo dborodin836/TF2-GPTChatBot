@@ -2,7 +2,7 @@ from typing import Callable, Optional
 
 import pydantic
 from ordered_set import OrderedSet
-from pydantic import BaseModel, BaseConfig
+from pydantic import BaseConfig, BaseModel
 
 from modules.conversation_history import ConversationHistory
 from modules.logs import get_logger
@@ -28,7 +28,9 @@ class ChatHistoryManager(BaseModel):
         if hasattr(self, attr_name):
             return getattr(self, attr_name)
         else:
-            main_logger.info(f"Conversation history for user '{player.name}' [{player.steamid64}] doesn't exist. Creating...")
+            main_logger.info(
+                f"Conversation history for user '{player.name}' [{player.steamid64}] doesn't exist. Creating..."
+            )
             setattr(self, attr_name, ConversationHistory())
             return getattr(self, attr_name)
 
@@ -41,7 +43,9 @@ class ChatHistoryManager(BaseModel):
 
 
 class InitializerConfig(BaseModel):
-    CHAT_CONVERSATION_HISTORY: ChatHistoryManager = pydantic.Field(default_factory=ChatHistoryManager)
+    CHAT_CONVERSATION_HISTORY: ChatHistoryManager = pydantic.Field(
+        default_factory=ChatHistoryManager
+    )
 
 
 class GuiCommandController:

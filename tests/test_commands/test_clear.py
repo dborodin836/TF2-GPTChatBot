@@ -1,6 +1,6 @@
 import modules.commands.clear_chat
-import modules.permissions
 import modules.lobby_manager
+import modules.permissions
 from modules.command_controllers import InitializerConfig
 from modules.commands.clear_chat import handle_clear
 from modules.lobby_manager import LobbyManager
@@ -48,11 +48,15 @@ def test_clear_admin(mocker):
     lobby_manager.add_player(pl1)
     lobby_manager.add_player(pl2)
 
-    logline_admin = LogLine(username="admin", prompt=r"!clear \user='user1'", is_team_message=False, player=pl_admin)
+    logline_admin = LogLine(
+        username="admin", prompt=r"!clear \user='user1'", is_team_message=False, player=pl_admin
+    )
     cfg = InitializerConfig()
 
     # Init global chat
-    cfg.CHAT_CONVERSATION_HISTORY.GLOBAL.message_history.append(Message(content="global message", role="user"))
+    cfg.CHAT_CONVERSATION_HISTORY.GLOBAL.message_history.append(
+        Message(content="global message", role="user")
+    )
     assert cfg.CHAT_CONVERSATION_HISTORY.GLOBAL.message_history != []
 
     # Create chats for users
@@ -69,7 +73,9 @@ def test_clear_admin(mocker):
     assert cvh_admin.message_history != []
 
     # test for admin
-    logline_admin_self = LogLine(username="admin", prompt=r"!clear", is_team_message=False, player=pl_admin)
+    logline_admin_self = LogLine(
+        username="admin", prompt=r"!clear", is_team_message=False, player=pl_admin
+    )
     handle_clear(logline_admin_self, cfg)
 
     assert cvh_admin.message_history == []
@@ -85,7 +91,9 @@ def test_clear_admin(mocker):
     assert cfg.CHAT_CONVERSATION_HISTORY.GLOBAL.message_history != []
 
     # test global
-    logline_admin_global = LogLine(username="admin", prompt=r"!clear \global", is_team_message=False, player=pl_admin)
+    logline_admin_global = LogLine(
+        username="admin", prompt=r"!clear \global", is_team_message=False, player=pl_admin
+    )
     handle_clear(logline_admin_global, cfg)
 
     assert cvh1.message_history == []
@@ -110,7 +118,9 @@ def test_clear_admin_bypass(mocker):
     lobby_manager.add_player(pl3)
 
     # Init global chat
-    cfg.CHAT_CONVERSATION_HISTORY.GLOBAL.message_history.append(Message(content="global message", role="user"))
+    cfg.CHAT_CONVERSATION_HISTORY.GLOBAL.message_history.append(
+        Message(content="global message", role="user")
+    )
     assert cfg.CHAT_CONVERSATION_HISTORY.GLOBAL.message_history != []
 
     # Create chats for users
@@ -121,9 +131,15 @@ def test_clear_admin_bypass(mocker):
     assert cvh1.message_history != []
     assert cvh2.message_history != []
 
-    logline_user1 = LogLine(username="user3", prompt=r"!clear \user='user1'", is_team_message=False, player=pl3)
-    logline_user2 = LogLine(username="user3", prompt=r"!clear \user='user2'", is_team_message=False, player=pl3)
-    logline_global = LogLine(username="user3", prompt=r"!clear \global", is_team_message=False, player=pl3)
+    logline_user1 = LogLine(
+        username="user3", prompt=r"!clear \user='user1'", is_team_message=False, player=pl3
+    )
+    logline_user2 = LogLine(
+        username="user3", prompt=r"!clear \user='user2'", is_team_message=False, player=pl3
+    )
+    logline_global = LogLine(
+        username="user3", prompt=r"!clear \global", is_team_message=False, player=pl3
+    )
 
     handle_clear(logline_user1, cfg)
     handle_clear(logline_user2, cfg)

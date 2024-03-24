@@ -5,9 +5,19 @@ from modules.bot_state import state_manager
 from modules.command_controllers import CommandController, InitializerConfig
 from modules.commands.clear_chat import handle_clear
 from modules.commands.github import handle_gh_command
-from modules.commands.openai import handle_user_chat, handle_gpt3, handle_gpt4, handle_gpt4l, handle_global_chat
+from modules.commands.openai import (
+    handle_global_chat,
+    handle_gpt3,
+    handle_gpt4,
+    handle_gpt4l,
+    handle_user_chat,
+)
 from modules.commands.rtd import handle_rtd
-from modules.commands.textgen_webui import handle_custom_user_chat, handle_custom_model, handle_custom_global_chat
+from modules.commands.textgen_webui import (
+    handle_custom_global_chat,
+    handle_custom_model,
+    handle_custom_user_chat,
+)
 from modules.logs import get_logger
 from modules.message_queueing import messaging_queue_service
 from modules.servers.tf2 import check_connection, set_host_username
@@ -75,7 +85,9 @@ def parse_console_logs_and_build_conversation_history() -> None:
         if not state_manager.bot_running:
             continue
         if bans_manager.is_banned_player(logline.player):
-            main_logger.info(f"Player '{logline.player.name}' {logline.player.steamid3} tried to use commands, but "
-                             f"he's banned.")
+            main_logger.info(
+                f"Player '{logline.player.name}' {logline.player.steamid3} tried to use commands, but "
+                f"he's banned."
+            )
             continue
         controller.process_line(logline)

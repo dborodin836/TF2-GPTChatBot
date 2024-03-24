@@ -61,9 +61,9 @@ def handle_global_chat(logline: LogLine, shared_dict: InitializerConfig):
 
 def handle_gpt4(logline: LogLine, shared_dict: InitializerConfig):
     if (
-            config.GPT4_ADMIN_ONLY
-            and config.HOST_USERNAME == logline.username
-            or not config.GPT4_ADMIN_ONLY
+        config.GPT4_ADMIN_ONLY
+        and config.HOST_USERNAME == logline.username
+        or not config.GPT4_ADMIN_ONLY
     ):
         handle_gpt_request(
             logline.username,
@@ -75,9 +75,9 @@ def handle_gpt4(logline: LogLine, shared_dict: InitializerConfig):
 
 def handle_gpt4l(logline: LogLine, shared_dict: InitializerConfig):
     if (
-            config.GPT4_ADMIN_ONLY
-            and config.HOST_USERNAME == logline.username
-            or not config.GPT4_ADMIN_ONLY
+        config.GPT4_ADMIN_ONLY
+        and config.HOST_USERNAME == logline.username
+        or not config.GPT4_ADMIN_ONLY
     ):
         handle_gpt_request(
             logline.username,

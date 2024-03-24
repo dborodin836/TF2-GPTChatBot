@@ -40,9 +40,7 @@ def check_connection():
     """
     connected = False
     while not connected:
-        main_logger.debug(
-            f"Trying to connect to '{config.RCON_HOST}:{config.RCON_PORT}'"
-        )
+        main_logger.debug(f"Trying to connect to '{config.RCON_HOST}:{config.RCON_PORT}'")
 
         try:
             with RconClient() as client:

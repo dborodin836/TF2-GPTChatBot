@@ -7,7 +7,7 @@ import tkinter as tk
 from enum import IntEnum
 from os.path import exists
 from tkinter import messagebox
-from typing import Optional, Dict
+from typing import Dict, Optional
 
 import pydantic
 from pydantic import BaseModel, validator

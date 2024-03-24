@@ -1,7 +1,6 @@
 from config import config
 from modules.typing import Player
 
-
 # def check_permission(func):
 #     def wrapper(*args, **kwargs):
 #         if user_has_permission():

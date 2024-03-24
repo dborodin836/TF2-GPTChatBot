@@ -233,7 +233,7 @@ def remove_hashtags(text: str) -> str:
 
 def get_args(prompt: str) -> typing.List[str]:
     in_quote = None  # Track the type of quote we're inside (None, single ', or double ")
-    current_arg = ''
+    current_arg = ""
     result = []
     escape_next = False  # Flag to indicate the next character is escaped
 
@@ -241,7 +241,7 @@ def get_args(prompt: str) -> typing.List[str]:
         if escape_next:
             current_arg += char
             escape_next = False
-        elif char == '\\':  # Detect backslash
+        elif char == "\\":  # Detect backslash
             if current_arg and not current_arg.startswith("\\"):
                 # If current_arg doesn't start with \, reset it. Prepare for new arg.
                 current_arg = char
@@ -262,11 +262,11 @@ def get_args(prompt: str) -> typing.List[str]:
             elif not in_quote:  # Entering a quote
                 in_quote = char
             current_arg += char
-        elif char == ' ' and not in_quote:
+        elif char == " " and not in_quote:
             if current_arg:
                 if current_arg.startswith("\\"):  # Ensure arg starts with a backslash
                     result.append(current_arg)
-                current_arg = ''
+                current_arg = ""
         else:
             current_arg += char
 
@@ -304,9 +304,9 @@ def get_system_message(user_prompt: str, enable_soft_limit: bool = True) -> Mess
 
     if r"\stats" in args:
         message = (
-                f" {lobby_manager.get_data()} Based on this data answer following question. "
-                + message
-                + " Ignore unknown data."
+            f" {lobby_manager.get_data()} Based on this data answer following question. "
+            + message
+            + " Ignore unknown data."
         )
 
     if r"\l" not in args and enable_soft_limit:

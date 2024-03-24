@@ -1,7 +1,7 @@
 import codecs
 import configparser
-from typing import List
 import pprint
+from typing import List
 
 from config import config
 from modules.logs import get_logger

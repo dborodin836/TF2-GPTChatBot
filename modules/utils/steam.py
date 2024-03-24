@@ -5,8 +5,8 @@ except ModuleNotFoundError:
 
 from typing import Optional
 
-from modules.logs import get_logger
 from config import config
+from modules.logs import get_logger
 
 main_logger = get_logger("main")
 combo_logger = get_logger("combo")

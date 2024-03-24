@@ -13,8 +13,7 @@ __gui_logger = logger.bind(name="gui")
 __combo_logger = logger.bind(name="combo")
 
 
-class LoggerDontExist(Exception):
-    ...
+class LoggerDontExist(Exception): ...
 
 
 def get_logger(name: str) -> Logger:
@@ -52,6 +51,7 @@ def make_name_filter(name: str) -> FilterFunction:
     """
     Create a filter function based on the provided name.
     """
+
     def filter(record: Record) -> bool:
         return record["extra"].get("name") == name
 
