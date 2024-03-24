@@ -3,6 +3,7 @@ import time
 from typing import Optional
 
 from config import config
+from modules.command_controllers import InitializerConfig
 from modules.logs import get_logger
 from modules.rcon_client import RconClient
 from modules.typing import LogLine, QueuedMessage
@@ -18,23 +19,31 @@ combo_logger = get_logger("combo")
 class ConfirmableQueueManager:
     queue: queue.Queue
     is_locked: bool = False
-    awaiting_message: Optional[str] = None
+    awaited_message: Optional[str] = None
     last_confirmed_message: float
     warning_sent = False
 
     def __init__(self, q):
         self.queue = q
 
-    def clean(self):
+    def clean(self) -> None:
+        """
+        Method to clean the queue and reset flags.
+        """
         self.queue = queue.Queue()
         self.is_locked = False
-        self.awaiting_message = None
+        self.awaited_message = None
         self.last_confirmed_message = time.time()
         self.warning_sent = False
 
-    def start_worker(self):
+    def start_worker(self) -> None:
+        """
+        Worker method to handle messages in the queue.
+        """
         while True:
             if self.is_locked:
+                # Check for queue activity and handle timeouts
+                # Send gui messages based on time intervals
                 time.sleep(0.5)
                 if time.time() - self.last_confirmed_message > 30:
                     combo_logger.debug("Queue seems to be dead. Cleaning...")
@@ -49,11 +58,14 @@ class ConfirmableQueueManager:
                 continue
 
             if not self.queue.empty():
+                # Process queued messages
+                # Lock the queue, send message, and update flags
                 queued_message: QueuedMessage = self.queue.queue[0]
                 if has_cyrillic(queued_message.text):
-                    self.awaiting_message = queued_message.text[: len(queued_message.text) // 2]
+                    # In case message gets stripped in chat.
+                    self.awaited_message = queued_message.text[: len(queued_message.text) // 2]
                 else:
-                    self.awaiting_message = queued_message.text
+                    self.awaited_message = queued_message.text
                 self.is_locked = True
                 main_logger.trace("Locking queue")
                 self.last_confirmed_message = time.time()
@@ -62,21 +74,29 @@ class ConfirmableQueueManager:
                 time.sleep(0.5)
 
     def unlock_queue(self) -> None:
+        """
+        Unlock the queue, remove processed message, and reset flags.
+        """
         main_logger.trace("Unlocking queue")
         self.queue.get()
-        time.time()
-        self.awaiting_message = None
+        self.awaited_message = None
         self.is_locked = False
         self.warning_sent = False
         self.last_confirmed_message = time.time()
 
-    def get_awaited_msg(self) -> str:
-        if self.awaiting_message is not None:
-            main_logger.trace(f"Requested awaited message '{self.awaiting_message}'")
-        return self.awaiting_message
+    def get_awaited_msg(self) -> Optional[str]:
+        """
+        Return the awaited message if present, else None.
+        """
+        if self.awaited_message is not None:
+            main_logger.trace(f"Requested awaited message '{self.awaited_message}'")
+        return self.awaited_message
 
 
-def send_say_cmd(queued_message):
+def send_say_cmd(queued_message: QueuedMessage) -> None:
+    """
+    Construct and send the appropriate say command.
+    """
     if queued_message.is_team_chat:
         cmd = f'say_team "{queued_message.text}";'
     else:
@@ -92,6 +112,9 @@ def send_say_cmd(queued_message):
 
 
 def message_queue_handler() -> None:
+    """
+    Check if using confirmable queue. Process messages from either regular or confirmable queue.
+    """
     if not config.CONFIRMABLE_QUEUE:
         while True:
             if not message_queue.empty():
@@ -105,7 +128,10 @@ def message_queue_handler() -> None:
         confirmable_queue_manager.start_worker()
 
 
-def messaging_queue_service(logline: LogLine, shared_dict: dict):
+def messaging_queue_service(logline: LogLine, shared_dict: InitializerConfig):
+    """
+    Check for awaited message and unlock the queue if found.
+    """
     awaited_msg = confirmable_queue_manager.get_awaited_msg()
     if awaited_msg is not None and awaited_msg in logline.prompt:
         confirmable_queue_manager.unlock_queue()
