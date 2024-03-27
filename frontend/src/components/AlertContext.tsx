@@ -17,6 +17,10 @@ export const AlertProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
 
+  window.electronAPI.onAlertMessage((value: string) => {
+    openAlert(value)
+  });
+
   const openAlert = (newMessage: string) => {
     setMessage(newMessage);
     setOpen(true);
