@@ -10,14 +10,12 @@ def test_chat_conversation_history_basic():
     assert chm.GLOBAL.message_history == []
 
     # No user chats exist on init
-    user_chats_keys = [x for x in list(chm.__dict__) if x.startswith("USER_")]
-    assert len(user_chats_keys) == 0
+    assert len(chm.PRIVATE_CHATS) == 0
 
     # test creation
     chm.get_conversation_history(pl1)
-    user_chats_keys = [x for x in list(chm.__dict__) if x.startswith("USER_")]
-    assert len(user_chats_keys) == 1
-    assert chm._get_conv_history_attr_name(pl1.steamid64) in user_chats_keys
+    assert len(chm.PRIVATE_CHATS) == 1
+    assert chm._get_conv_history_attr_name(pl1.steamid64) in chm.PRIVATE_CHATS
 
 
 def test_chat_conversation_history_isolation():
@@ -32,8 +30,7 @@ def test_chat_conversation_history_isolation():
     # Create 2 user chats
     cvh1 = chm.get_conversation_history(pl1)
     cvh2 = chm.get_conversation_history(pl2)
-    user_chats_keys = [x for x in list(chm.__dict__) if x.startswith("USER_")]
-    assert len(user_chats_keys) == 2
+    assert len(chm.PRIVATE_CHATS) == 2
 
     # test isolation
     assert cvh1 is not cvh2

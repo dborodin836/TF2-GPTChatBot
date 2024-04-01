@@ -3,7 +3,7 @@ openai==0.27.2
 pyinstaller==6.3.0
 pytest==7.3.0
 pytest-cov==4.0.0
-pydantic==1.10.7
+pydantic==2.6.4
 requests==2.31.0
 ttkbootstrap==1.10.1
 docutils-stubs==0.0.22

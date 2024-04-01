@@ -1,9 +1,8 @@
-from typing import Callable, Optional
+from typing import Any, Callable, Dict, Optional
 
 import pydantic
 from ordered_set import OrderedSet
-from pydantic import BaseConfig, BaseModel
-from pydantic.config import Extra
+from pydantic import BaseModel, ConfigDict
 
 from modules.conversation_history import ConversationHistory
 from modules.logs import get_logger
@@ -15,35 +14,37 @@ combo_logger = get_logger("combo")
 gui_logger = get_logger("gui")
 
 
-class ChatHistoryManager(BaseModel):
-    GLOBAL = ConversationHistory()
+class ChatHistoryManager:
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    def __init__(self, /, **data: Any):
+        super().__init__(**data)
+        self.GLOBAL: ConversationHistory = ConversationHistory()
+        self.PRIVATE_CHATS: Dict[str, ConversationHistory] = dict()
 
     def set_conversation_history(self, player: Player, conv_history: ConversationHistory) -> None:
         attr_name = self._get_conv_history_attr_name(player.steamid64)
 
-        setattr(self, attr_name, conv_history)
+        self.PRIVATE_CHATS[attr_name] = conv_history
 
     def get_conversation_history(self, player: Player) -> ConversationHistory:
         attr_name = self._get_conv_history_attr_name(player.steamid64)
 
-        if hasattr(self, attr_name):
-            return getattr(self, attr_name)
+        if self.PRIVATE_CHATS.get(attr_name):
+            return self.PRIVATE_CHATS.get(attr_name)
         else:
             main_logger.info(
                 f"Conversation history for user '{player.name}' [{player.steamid64}] doesn't exist. Creating..."
             )
-            setattr(self, attr_name, ConversationHistory())
-            return getattr(self, attr_name)
+            self.PRIVATE_CHATS[attr_name] = ConversationHistory()
+            return self.PRIVATE_CHATS.get(attr_name)
 
     def _get_conv_history_attr_name(self, id64: int) -> str:
         return f"USER_{id64}_CH"
 
-    class Config(BaseConfig):
-        extra = Extra.allow
-        arbitrary_types_allowed = True
-
 
 class InitializerConfig(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
     CHAT_CONVERSATION_HISTORY: ChatHistoryManager = pydantic.Field(
         default_factory=ChatHistoryManager
     )
@@ -51,7 +52,7 @@ class InitializerConfig(BaseModel):
 
 class GuiCommandController:
     def __init__(
-        self, initializer_config: Optional[dict] = None, disable_help: bool = False
+            self, initializer_config: Optional[dict] = None, disable_help: bool = False
     ) -> None:
         self.__named_commands_registry: SetOnceDictionary[str, Command] = SetOnceDictionary()
         self.__shared = dict()

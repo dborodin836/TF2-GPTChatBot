@@ -9,8 +9,7 @@ from os.path import exists
 from tkinter import messagebox
 from typing import Dict, Optional
 
-import pydantic
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 
 from modules.utils.buffered_messages import buffered_fail_message, buffered_message
 
@@ -124,21 +123,21 @@ class Config(BaseModel):
         for k, v in config_dict.items():
             self.__setattr__(k, v)
 
-    @validator("OPENAI_API_KEY")
+    @field_validator("OPENAI_API_KEY")
     def api_key_pattern_match(cls, v):
         if not re.fullmatch(OPENAI_API_KEY_RE_PATTERN, v):
             buffered_fail_message("API key not set or invalid!", type_="BOTH", level="ERROR")
         return v
 
-    @validator("STEAM_WEBAPI_KEY")
-    def steam_webapi_key_pattern_match(cls, v, values):
+    @field_validator("STEAM_WEBAPI_KEY")
+    def steam_webapi_key_pattern_match(cls, v):
         if not re.fullmatch(WEB_API_KEY_RE_PATTERN, v):
             buffered_fail_message(
                 "STEAM WEB API key not set or invalid!", type_="BOTH", level="ERROR"
             )
         return v
 
-    @validator("SHORTENED_USERNAMES_FORMAT")
+    @field_validator("SHORTENED_USERNAMES_FORMAT")
     def is_username_in_template_string(cls, v):
         if not "$username" in v:
             buffered_fail_message(
@@ -148,7 +147,7 @@ class Config(BaseModel):
             )
         return v
 
-    @validator("RTD_MODE")
+    @field_validator("RTD_MODE")
     def rtd_mode_is_valid_enum(cls, v):
         if not RTDModes.has_value(v):
             buffered_fail_message(
@@ -158,7 +157,7 @@ class Config(BaseModel):
             )
         return v
 
-    @validator("TF2_LOGFILE_PATH")
+    @field_validator("TF2_LOGFILE_PATH")
     def is_logfile_path_exists(cls, v):
         if not os.path.exists(os.path.dirname(v)):
             buffered_fail_message("Non-valid logfile path!", type_="BOTH", level="ERROR")
