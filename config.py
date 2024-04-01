@@ -10,7 +10,7 @@ from pydantic import BaseModel, field_validator
 
 from modules.utils.buffered_messages import buffered_fail_message, buffered_message
 
-DEAFAULT_CONFIG_FILE = "config.ini"
+DEFAULT_CONFIG_FILE = "config.ini"
 OPENAI_API_KEY_RE_PATTERN = r"sk-[a-zA-Z0-9]{48}"
 WEB_API_KEY_RE_PATTERN = r"[a-zA-Z0-9]{32}"
 
@@ -26,7 +26,7 @@ class RTDModes(IntEnum):
 
 
 def read_config_from_file(filename: str) -> Dict:
-    config_file = filename or DEAFAULT_CONFIG_FILE
+    config_file = filename or DEFAULT_CONFIG_FILE
     # TODO: redo with pathlib
     config_file_path = "cfg/" + config_file
 
@@ -158,7 +158,7 @@ class Config(BaseModel):
 
 
 def init_config(filename: Optional[str] = None) -> Dict[str, Optional[str]]:
-    config_file = filename or DEAFAULT_CONFIG_FILE
+    config_file = filename or DEFAULT_CONFIG_FILE
     # TODO: redo with pathlib
     config_file_path = "cfg/" + config_file
 
