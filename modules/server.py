@@ -4,16 +4,14 @@ from typing import Type, Union, get_type_hints
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, ValidationError, create_model
-
-
-from starlette.websockets import WebSocketDisconnect
-from starlette.responses import Response
 from starlette import status
+from starlette.responses import Response
+from starlette.websockets import WebSocketDisconnect
 
 from config import Config, config
 from modules.gui.controller import command_controller
-from modules.utils.config import save_config
 from modules.logs import get_logger
+from modules.utils.config import save_config
 
 combo_logger = get_logger("combo")
 
@@ -90,7 +88,7 @@ async def update_settings(settings: PartialUpdateModel):  # type: ignore[valid-t
         # If it doesn't throw ValidationError we're safe to go
         tmp_config = Config(**current_config_dict)
         # Finally replace app config with updated config
-        config = config.model_copy(update=tmp_config, deep=True)
+        config = config.model_copy(update=tmp_config.dict(), deep=True)
         # Save config on filesystem
         save_config("config.ini")
     except ValidationError as exc:

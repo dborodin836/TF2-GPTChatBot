@@ -1,8 +1,8 @@
-from fastapi.testclient import TestClient
-from starlette import status
 import json
 
+from fastapi.testclient import TestClient
 from httpx import Response
+from starlette import status
 
 from modules.server import app
 
@@ -21,9 +21,7 @@ def test_get_config():
 
 
 def test_update_config_err():
-    payload = {
-        "OPENAI_API_KEY": "NONE"
-    }
+    payload = {"OPENAI_API_KEY": "NONE"}
     payload = json.dumps(payload)
     response = client.post("/settings", content=payload)
     assert response.status_code == status.HTTP_400_BAD_REQUEST

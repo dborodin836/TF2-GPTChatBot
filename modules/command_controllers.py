@@ -30,14 +30,17 @@ class ChatHistoryManager:
     def get_conversation_history(self, player: Player) -> ConversationHistory:
         attr_name = self._get_conv_history_attr_name(player.steamid64)
 
-        if self.PRIVATE_CHATS.get(attr_name):
-            return self.PRIVATE_CHATS.get(attr_name)
-        else:
-            main_logger.info(
-                f"Conversation history for user '{player.name}' [{player.steamid64}] doesn't exist. Creating..."
-            )
-            self.PRIVATE_CHATS[attr_name] = ConversationHistory()
-            return self.PRIVATE_CHATS.get(attr_name)
+        user_chat = self.PRIVATE_CHATS.get(attr_name)
+
+        if user_chat:
+            return user_chat
+
+        main_logger.info(
+            f"Conversation history for user '{player.name}' [{player.steamid64}] doesn't exist. Creating..."
+        )
+        new_chat = ConversationHistory()
+        self.PRIVATE_CHATS[attr_name] = new_chat
+        return new_chat
 
     def _get_conv_history_attr_name(self, id64: int) -> str:
         return f"USER_{id64}_CH"
@@ -52,7 +55,7 @@ class InitializerConfig(BaseModel):
 
 class GuiCommandController:
     def __init__(
-            self, initializer_config: Optional[dict] = None, disable_help: bool = False
+        self, initializer_config: Optional[dict] = None, disable_help: bool = False
     ) -> None:
         self.__named_commands_registry: SetOnceDictionary[str, Command] = SetOnceDictionary()
         self.__shared = dict()

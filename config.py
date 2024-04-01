@@ -65,7 +65,9 @@ class Config(BaseModel):
     TOS_VIOLATION: bool = False
     FALLBACK_TO_USERNAME: bool = False
 
-    TF2_LOGFILE_PATH: str = r"C:\Program Files (x86)\Steam\steamapps\common\Team Fortress 2\tf\console.log"
+    TF2_LOGFILE_PATH: str = (
+        r"C:\Program Files (x86)\Steam\steamapps\common\Team Fortress 2\tf\console.log"
+    )
     OPENAI_API_KEY: str = "sk-" + "X" * 48
 
     STEAM_WEBAPI_KEY: str = "X" * 32
@@ -135,13 +137,17 @@ class Config(BaseModel):
     @field_validator("SHORTENED_USERNAMES_FORMAT")
     def is_username_in_template_string(cls, v):
         if "$username" not in v:
-            raise ValueError(f"'SHORTENED_USERNAMES_FORMAT' setting does not contain '$username' ({v}).")
+            raise ValueError(
+                f"'SHORTENED_USERNAMES_FORMAT' setting does not contain '$username' ({v})."
+            )
         return v
 
     @field_validator("RTD_MODE")
     def rtd_mode_is_valid_enum(cls, v):
         if not RTDModes.has_value(v):
-            raise ValueError(f"Invalid RTD_MODE value! Expected one of {[mode.value for mode in RTDModes]}.")
+            raise ValueError(
+                f"Invalid RTD_MODE value! Expected one of {[mode.value for mode in RTDModes]}."
+            )
         return v
 
     @field_validator("TF2_LOGFILE_PATH")
@@ -179,9 +185,7 @@ def init_config(filename: Optional[str] = None) -> Config:
             else:
                 raise Exception
     except Exception as e:
-        buffered_fail_message(
-            f"CUSTOM_MODEL_SETTINGS is not dict [{e}].", "BOTH", level="ERROR"
-        )
+        buffered_fail_message(f"CUSTOM_MODEL_SETTINGS is not dict [{e}].", "BOTH", level="ERROR")
 
     # Set loaded config filename
     config_dict["CONFIG_NAME"] = config_file
