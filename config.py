@@ -157,7 +157,7 @@ class Config(BaseModel):
         return v
 
 
-def init_config(filename: Optional[str] = None) -> Config:
+def init_config(filename: Optional[str] = None) -> Dict[str, Optional[str]]:
     config_file = filename or DEAFAULT_CONFIG_FILE
     # TODO: redo with pathlib
     config_file_path = "cfg/" + config_file
@@ -190,19 +190,29 @@ def init_config(filename: Optional[str] = None) -> Config:
     # Set loaded config filename
     config_dict["CONFIG_NAME"] = config_file
 
-    config = Config(**config_dict)  # type: ignore[arg-type]
-
-    if not config.ENABLE_OPENAI_COMMANDS and not config.ENABLE_CUSTOM_MODEL:
+    # TODO: move that logic somewhere else
+    if not config_dict["ENABLE_OPENAI_COMMANDS"] and not config_dict["ENABLE_CUSTOM_MODEL"]:
         buffered_message("You haven't enabled any AI related commands.")
 
-    return config
+    return config_dict
 
 
 try:
-    config: Config = init_config()
-except Exception as e:
-    buffered_fail_message(f"#############################", "GUI", level="INFO")
-    buffered_fail_message(f"#  Config file is invalid.  #", "GUI", level="INFO")
-    buffered_fail_message(f"#############################", "GUI", level="INFO")
-    buffered_message(f"{e}", "BOTH", level="INFO")
+    config: Config = Config(**init_config())
+except Exception as exc:
+    buffered_fail_message(f"#############################", "GUI", level="WARNING")
+    buffered_fail_message(f"#  Config file is invalid.  #", "GUI", level="WARNING")
+    buffered_fail_message(f"#############################", "GUI", level="WARNING")
+    buffered_message(f"{exc}", "BOTH", level="WARNING")
+
+# Load config anyway, so user can edit it
+try:
+    config = Config.model_construct(**init_config())
+except Exception as exc:
+    buffered_fail_message(f"Failed to load config. Loading default config...", "BOTH", level="ERROR")
+    buffered_fail_message(f"Failed to load config. [{exc}]", "LOG", level="ERROR")
+
+try:
     config = Config()
+except Exception as exc:
+    buffered_fail_message(f"Failed to load default config. App is unusable.", "BOTH", level="ERROR")
