@@ -48,10 +48,5 @@ def print_buffered_config_innit_messages() -> None:
             main_logger.log(buffered_message.level, buffered_message.message)
 
     if startup_successful:
-        gui_logger.info("Ready to use!")
+        gui_logger.info("Config is valid!")
         main_logger.info("Config is OK.")
-    else:
-        gui_logger.error(
-            "App is not configured correctly. Check documentation and edit config.ini file."
-        )
-        main_logger.error("Config is faulty.")

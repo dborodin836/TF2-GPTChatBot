@@ -1,15 +1,21 @@
 import asyncio
-from typing import Type, Union
+from typing import Type, Union, get_type_hints
 
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, create_model
-from pydantic.typing import get_type_hints
-from starlette.websockets import WebSocketDisconnect
+from pydantic import BaseModel, ValidationError, create_model
 
-from config import Config, config, read_config_from_file
+
+from starlette.websockets import WebSocketDisconnect
+from starlette.responses import Response
+from starlette import status
+
+from config import Config, config
 from modules.gui.controller import command_controller
 from modules.utils.config import save_config
+from modules.logs import get_logger
+
+combo_logger = get_logger("combo")
 
 app = FastAPI()
 
@@ -66,34 +72,37 @@ async def handle_get_settings():
 
 @app.get("/settings/default")
 async def handle_get_default_settings():
-    cfg = Config(**read_config_from_file("default.ini"))
+    # Generate default config
+    cfg = Config()
     return cfg.dict()
 
 
 @app.post("/settings")
-async def handle_update_settings(settings: PartialUpdateModel):  # type: ignore[valid-type]
-    update_data = settings.dict()  # type: ignore[attr-defined]
-    errors = []
-    success = True
+async def update_settings(settings: PartialUpdateModel):  # type: ignore[valid-type]
+    global config
+    update_data = {k: v for k, v in settings.dict().items() if v is not None}  # type: ignore[attr-defined]
 
     try:
-        for k, v in update_data.items():
-            config.__setattr__(k, v)
+        # Get current model as a dict, can't use Config() 'cos of possible session overwrites
+        current_config_dict = config.model_dump()
+        # Update that dict with data received from request
+        current_config_dict.update(update_data)
+        # If it doesn't throw ValidationError we're safe to go
+        tmp_config = Config(**current_config_dict)
+        # Finally replace app config with updated config
+        config = config.model_copy(update=tmp_config, deep=True)
+        # Save config on filesystem
         save_config("config.ini")
-    except Exception as e:
-        success = False
-        errors.append(str(e))
+    except ValidationError as exc:
+        return Response(status_code=status.HTTP_400_BAD_REQUEST, content=exc.json())
 
-    response = {"status": "ok" if success else "error"}
-    if errors:
-        response.update({"errors": str(errors)})
-
-    return response
+    return Response(status_code=status.HTTP_201_CREATED)
 
 
 @app.post("/cmd")
 async def handle_command(command: Command):
     await asyncio.to_thread(command_controller.process_line, command.text)
+    return Response(status_code=status.HTTP_200_OK)
 
 
 @app.websocket("/ws")
@@ -101,7 +110,6 @@ async def websocket_endpoint(websocket: WebSocket):
     await connection_manager.connect(websocket)
     try:
         while True:
-            # Here you can also receive messages
             data = await websocket.receive_text()
             await websocket.send_text(data)
     except WebSocketDisconnect:

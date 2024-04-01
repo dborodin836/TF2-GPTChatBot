@@ -37,10 +37,6 @@ def handle_config(command, shared_dict):
             gui_logger.warning("You didn't provide filename.")
             return
 
-        if args[0] == "default.ini":
-            gui_logger.warning("You cant overwrite 'default.ini' config file.")
-            return
-
         save_config(args[0])
 
     elif operation == "set":

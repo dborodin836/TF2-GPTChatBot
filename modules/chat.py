@@ -46,11 +46,11 @@ def setup() -> None:
     """
     )
     check_for_updates()
+    print_buffered_config_innit_messages()
     check_connection()
     set_host_username()
     set_host_steamid3()
     load_prompts()
-    print_buffered_config_innit_messages()
 
 
 def parse_console_logs_and_build_conversation_history() -> None:
