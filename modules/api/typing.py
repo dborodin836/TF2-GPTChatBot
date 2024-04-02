@@ -10,8 +10,8 @@ class GenerationOptions(BaseModel):
     preset: str | None = Field(
         default=None,
         description="The name of a file under text-generation-webui/presets (without the .yaml extension). The "
-                    "sampling parameters that get overwritten by this option are the keys in the default_preset() "
-                    "function in modules/presets.py.",
+        "sampling parameters that get overwritten by this option are the keys in the default_preset() "
+        "function in modules/presets.py.",
     )
     min_p: float = 0
     dynamic_temperature: bool = False
@@ -46,7 +46,7 @@ class GenerationOptions(BaseModel):
     sampler_priority: List[str] | str | None = Field(
         default=None,
         description='List of samplers where the first items will appear first in the stack. Example: ["top_k", '
-                    '"temperature", "top_p"].',
+        '"temperature", "top_p"].',
     )
     auto_max_new_tokens: bool = False
     ban_eos_token: bool = False

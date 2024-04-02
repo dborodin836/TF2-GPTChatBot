@@ -62,6 +62,7 @@ class Config(BaseModel):
     """
     May only contain validators that do not raise Exceptions and fields.
     """
+
     # App Internals
     APP_VERSION: str = "1.3.0"
     CONFIG_NAME: str = "config.ini"
@@ -136,10 +137,10 @@ class Config(BaseModel):
         for k, v in config_dict.items():
             self.__setattr__(k, v)
 
-    @field_validator('CUSTOM_MODEL_SETTINGS', mode="before")
+    @field_validator("CUSTOM_MODEL_SETTINGS", mode="before")
     @classmethod
     def empty_str_to_none(cls, v):
-        if v.strip() == '':
+        if v.strip() == "":
             return None
         return v
 
@@ -148,6 +149,7 @@ class ValidatableConfig(Config):
     """
     Should only contain validators.
     """
+
     @field_validator("CUSTOM_MODEL_SETTINGS")
     @classmethod
     def set_custom_model_settings(cls, v: Any) -> Optional[CompletionRequest]:
@@ -194,7 +196,7 @@ class ValidatableConfig(Config):
         return v
 
 
-def init_config(filename: Optional[str] = None) -> Dict[str, Optional[str]]:
+def init_config(filename: Optional[str] = None) -> Dict[str, Any]:
     # Get config file location
     # TODO: redo with pathlib
     config_file = filename or DEFAULT_CONFIG_FILE
