@@ -37,14 +37,14 @@ build: .venv/Scripts/activate frontend/node_modules
 
 ## lint		-	Runs linters on src.
 lint: .venv/Scripts/activate
-	$(PYTHON) -m isort --check-only --profile black .
-	$(PYTHON) -m black --check --line-length 100 .
+	$(PYTHON) -m isort --check-only .
+	$(PYTHON) -m black --check .
 	$(PYTHON) -m mypy .
 
 ## format		-	Run isort and black on src to automatically fix issues.
 format: .venv/Scripts/activate
-	$(PYTHON) -m isort --profile black .
-	$(PYTHON) -m black --line-length 100 .
+	$(PYTHON) -m isort .
+	$(PYTHON) -m black .
 
 # Install .venv for python
 .venv/Scripts/activate: requirements.txt

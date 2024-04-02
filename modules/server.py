@@ -8,7 +8,7 @@ from starlette import status
 from starlette.responses import Response
 from starlette.websockets import WebSocketDisconnect
 
-from config import Config, config
+from config import Config, ValidatableConfig, config
 from modules.gui.controller import command_controller
 from modules.logs import get_logger
 from modules.utils.config import save_config
@@ -86,7 +86,7 @@ async def update_settings(settings: PartialUpdateModel):  # type: ignore[valid-t
         # Update that dict with data received from request
         current_config_dict.update(update_data)
         # If it doesn't throw ValidationError we're safe to go
-        tmp_config = Config(**current_config_dict)
+        tmp_config = ValidatableConfig(**current_config_dict)
         # Finally replace app config with updated config
         config = config.model_copy(update=tmp_config.dict(), deep=True)
         # Save config on filesystem

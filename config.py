@@ -140,7 +140,7 @@ class Config(BaseModel):
     @field_validator("CUSTOM_MODEL_SETTINGS", mode="before")
     @classmethod
     def empty_str_to_none(cls, v):
-        if v.strip() == "":
+        if v == "":
             return None
         return v
 

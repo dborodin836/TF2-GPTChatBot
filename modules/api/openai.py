@@ -148,3 +148,4 @@ def get_response(conversation_history: MessageHistory, username: str, model) -> 
     if attempts == max_attempts:
         log_gui_general_message("Max number of attempts reached! Try again later!")
         main_logger.warning(f"Max number of attempts reached. [{max_attempts}/{max_attempts}]")
+    return None

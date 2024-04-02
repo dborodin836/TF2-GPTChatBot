@@ -117,6 +117,7 @@ def find_username(username: str, data: List) -> Optional[str] | Any:
         return diff
     elif type(diff) is list:
         return diff[0]
+    return None
 
 
 class LobbyManager:
