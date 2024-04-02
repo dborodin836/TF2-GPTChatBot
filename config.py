@@ -4,10 +4,11 @@ import os
 import re
 from enum import IntEnum
 from os.path import exists
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 from pydantic import BaseModel, field_validator
 
+from modules.api.typing import CompletionRequest
 from modules.utils.buffered_messages import buffered_fail_message, buffered_message
 
 DEFAULT_CONFIG_FILE = "config.ini"
@@ -58,69 +59,105 @@ def read_config_from_file(filename: str) -> Dict:
 
 
 class Config(BaseModel):
+    """
+    May only contain validators that do not raise Exceptions and fields.
+    """
+    # App Internals
     APP_VERSION: str = "1.3.0"
     CONFIG_NAME: str = "config.ini"
+
+    # Player stuff
     HOST_USERNAME: str = ""
     HOST_STEAMID3: str = "[U:X:XXXXXXX]"
-    TOS_VIOLATION: bool = False
-    FALLBACK_TO_USERNAME: bool = False
 
+    # Required
     TF2_LOGFILE_PATH: str = (
         r"C:\Program Files (x86)\Steam\steamapps\common\Team Fortress 2\tf\console.log"
     )
-    OPENAI_API_KEY: str = "sk-" + "X" * 48
 
-    STEAM_WEBAPI_KEY: str = "X" * 32
-    DISABLE_KEYBOARD_BINDINGS: bool = False
-    GPT4_COMMAND: str = "!gpt4"
-    GPT4_LEGACY_COMMAND: str = "!gpt4l"
-
-    ENABLE_OPENAI_COMMANDS: bool = True
-    GPT3_MODEL: str = "gpt-3.5-turbo"
-    GPT3_CHAT_MODEL: str = "gpt-3.5-turbo"
-    GPT4_MODEL: str = "gpt-4-1106-preview"
-    GPT4L_MODEL: str = "gpt-4"
-
-    GPT_COMMAND: str = "!gpt3"
-    CHATGPT_COMMAND: str = "!pc"
-    CLEAR_CHAT_COMMAND: str = "!clear"
-    RTD_COMMAND: str = "!rtd"
-    GLOBAL_CHAT_COMMAND: str = "!cgpt"
-    GPT4_ADMIN_ONLY: bool = False
-    ENABLE_STATS_LOGS: bool = False
-
-    CUSTOM_PROMPT: str = ""
-
+    # RCON
     RCON_HOST: str = "127.0.0.1"
     RCON_PASSWORD: str = "password"
     RCON_PORT: int = 42465
 
-    SOFT_COMPLETION_LIMIT: int = 128
-    HARD_COMPLETION_LIMIT: int = 300
-    ENABLE_SHORTENED_USERNAMES_RESPONSE: bool = True
-    SHORTENED_USERNAMES_FORMAT: str = "[$username] "
-    SHORTENED_USERNAME_LENGTH: int = 12
-    DELAY_BETWEEN_MESSAGES: float = 1.3
-    ENABLE_SOFT_LIMIT_FOR_CUSTOM_MODEL: bool = True
+    # OpenAI
+    ENABLE_OPENAI_COMMANDS: bool = True
+    TOS_VIOLATION: bool = False
+    GPT4_ADMIN_ONLY: bool = False
+    OPENAI_API_KEY: str = "sk-" + "X" * 48
+    GPT3_MODEL: str = "gpt-3.5-turbo"
+    GPT3_CHAT_MODEL: str = "gpt-3.5-turbo"
+    GPT4_MODEL: str = "gpt-4-1106-preview"
+    GPT4L_MODEL: str = "gpt-4"
+    GPT4_COMMAND: str = "!gpt4"
+    GPT4_LEGACY_COMMAND: str = "!gpt4l"
+    GPT_COMMAND: str = "!gpt3"
+    CHATGPT_COMMAND: str = "!pc"
+    GLOBAL_CHAT_COMMAND: str = "!cgpt"
 
-    RTD_MODE: int = RTDModes.DISABLED
-
+    # Text Generation Web UI
     ENABLE_CUSTOM_MODEL: bool = False
     CUSTOM_MODEL_HOST: str = "127.0.0.1"
     CUSTOM_MODEL_COMMAND: str = "!ai"
     CUSTOM_MODEL_CHAT_COMMAND: str = "!pcc"
     GLOBAL_CUSTOM_CHAT_COMMAND: str = "!chat"
+    ENABLE_SOFT_LIMIT_FOR_CUSTOM_MODEL: bool = True
     GREETING: str = ""
+    CUSTOM_MODEL_SETTINGS: Optional[CompletionRequest] = None
+    CUSTOM_PROMPT: str = ""
 
+    # Chat
+    DELAY_BETWEEN_MESSAGES: float = 1.3
+    CLEAR_CHAT_COMMAND: str = "!clear"
+    SOFT_COMPLETION_LIMIT: int = 128
+    HARD_COMPLETION_LIMIT: int = 300
+    ENABLE_SHORTENED_USERNAMES_RESPONSE: bool = True
+    SHORTENED_USERNAMES_FORMAT: str = "[$username] "
+    SHORTENED_USERNAME_LENGTH: int = 12
+
+    # Roll the Dice
+    RTD_COMMAND: str = "!rtd"
+    RTD_MODE: int = RTDModes.DISABLED
+
+    # Misc
+    DISABLE_KEYBOARD_BINDINGS: bool = False
+    FALLBACK_TO_USERNAME: bool = False
+
+    # Stats
+    STEAM_WEBAPI_KEY: str = "X" * 32
+    ENABLE_STATS_LOGS: bool = False
+
+    # Experimental
     CONFIRMABLE_QUEUE: bool = False
-
-    CUSTOM_MODEL_SETTINGS: Optional[str | dict] = {}
 
     def load_from_file(self, filename: str) -> None:
         config_dict = read_config_from_file(filename)
 
         for k, v in config_dict.items():
             self.__setattr__(k, v)
+
+    @field_validator('CUSTOM_MODEL_SETTINGS', mode="before")
+    @classmethod
+    def empty_str_to_none(cls, v):
+        if v.strip() == '':
+            return None
+        return v
+
+
+class ValidatableConfig(Config):
+    """
+    Should only contain validators.
+    """
+    @field_validator("CUSTOM_MODEL_SETTINGS")
+    @classmethod
+    def set_custom_model_settings(cls, v: Any) -> Optional[CompletionRequest]:
+        if v is None:
+            return None
+        try:
+            data = json.loads(v)
+            return CompletionRequest(**data)
+        except Exception:
+            raise ValueError("CUSTOM_MODEL_SETTINGS is not a valid dictionary.")
 
     @field_validator("OPENAI_API_KEY")
     def api_key_pattern_match(cls, v):
@@ -158,34 +195,29 @@ class Config(BaseModel):
 
 
 def init_config(filename: Optional[str] = None) -> Dict[str, Optional[str]]:
-    config_file = filename or DEFAULT_CONFIG_FILE
+    # Get config file location
     # TODO: redo with pathlib
+    config_file = filename or DEFAULT_CONFIG_FILE
     config_file_path = "cfg/" + config_file
 
+    # Check if file exists.
     if not exists(config_file_path):
         buffered_fail_message("Config file is missing.", "LOG", level="ERROR")
         buffered_fail_message(
             f"Couldn't find '{config_file_path}' file.", type_="BOTH", level="ERROR"
         )
 
+    # Parse config file
     buffered_message("Starting parsing config file.", "LOG", level="INFO")
     configparser_config = configparser.ConfigParser()
     configparser_config.read(config_file_path, encoding="utf-8")
 
+    # Make dict with UPPERCASE keys out of parsed config
     config_dict: dict[str, str | None] = {
         key.upper(): value
         for section in configparser_config.sections()
         for key, value in configparser_config.items(section)
     }
-    try:
-        if config_dict.get("CUSTOM_MODEL_SETTINGS") != "":
-            val = config_dict.get("CUSTOM_MODEL_SETTINGS")
-            if val:
-                config_dict["CUSTOM_MODEL_SETTINGS"] = json.loads(val)
-            else:
-                raise Exception
-    except Exception as e:
-        buffered_fail_message(f"CUSTOM_MODEL_SETTINGS is not dict [{e}].", "BOTH", level="ERROR")
 
     # Set loaded config filename
     config_dict["CONFIG_NAME"] = config_file
@@ -197,22 +229,27 @@ def init_config(filename: Optional[str] = None) -> Dict[str, Optional[str]]:
     return config_dict
 
 
-try:
-    config: Config = Config(**init_config())
-except Exception as exc:
-    buffered_fail_message(f"#############################", "GUI", level="WARNING")
-    buffered_fail_message(f"#  Config file is invalid.  #", "GUI", level="WARNING")
-    buffered_fail_message(f"#############################", "GUI", level="WARNING")
-    buffered_message(f"{exc}", "BOTH", level="WARNING")
+def load_config() -> Config:
+    # Attempt #1: Load the initial config
+    try:
+        return ValidatableConfig(**init_config())
+    except Exception as exc:
+        buffered_fail_message("#############################", "GUI", level="WARNING")
+        buffered_fail_message("#  Config file is invalid.  #", "GUI", level="WARNING")
+        buffered_fail_message("#############################", "GUI", level="WARNING")
+        buffered_message(f"{exc}", "BOTH", level="WARNING")
 
-# Load config anyway, so user can edit it
-try:
-    config = Config.model_construct(**init_config())
-except Exception as exc:
-    buffered_fail_message(f"Failed to load config. Loading default config...", "BOTH", level="ERROR")
-    buffered_fail_message(f"Failed to load config. [{exc}]", "LOG", level="ERROR")
+    # Attempt #2: Load the config anyway so user can edit it
+    try:
+        return Config(**init_config())
+    except Exception as exc:
+        buffered_fail_message(
+            "Failed to load config. Loading default config...", "BOTH", level="ERROR"
+        )
+        buffered_fail_message(f"Failed to load config. [{exc}]", "BOTH", level="ERROR")
 
-try:
-    config = Config()
-except Exception as exc:
-    buffered_fail_message(f"Failed to load default config. App is unusable.", "BOTH", level="ERROR")
+    # Attempt #3: Load a default config as a last resort
+    return Config()
+
+
+config: Config = load_config()
