@@ -1,6 +1,7 @@
 import requests
 
 from config import config
+from modules.api.typing import ChatCompletionResponse
 from modules.logs import get_logger
 from modules.typing import Message
 
@@ -15,7 +16,8 @@ def get_custom_model_response(conversation_history: list[Message]) -> str | None
 
     data = {"mode": "chat", "messages": conversation_history}
 
-    data.update(config.CUSTOM_MODEL_SETTINGS)  # type: ignore[arg-type]
+    if config.CUSTOM_MODEL_SETTINGS is not None:
+        data.update(config.CUSTOM_MODEL_SETTINGS.dict())
 
     try:
         response = requests.post(uri, headers=headers, json=data, verify=False)
@@ -25,6 +27,7 @@ def get_custom_model_response(conversation_history: list[Message]) -> str | None
 
     if response.status_code == 200:
         try:
+            ChatCompletionResponse.model_validate_json(response.content)
             model_response = response.json()["choices"][0]["message"]["content"]
             return model_response
         except Exception as e:
