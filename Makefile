@@ -17,15 +17,15 @@ help:
 	$(call find-functions)
 
 ## run		-	Start electron demo.
-run: .venv/Scripts/activate frontend/node_modules
+run: .venv/pyvenv.cfg frontend/node_modules
 	cd frontend
 	npm run demo
 
 ## install	-	Install required dependencies (venv, node_modules).
-install: .venv/Scripts/activate frontend/node_modules
+install: .venv/pyvenv.cfg frontend/node_modules
 
 ## build		-	Build whole project to frontend/dist.
-build: .venv/Scripts/activate frontend/node_modules
+build: .venv/pyvenv.cfg frontend/node_modules
 	$(PYTHON) -m PyInstaller -n tf2-gptcb --noconfirm --icon icon.ico -w main.py
 	xcopy cfg dist\tf2-gptcb\cfg /E /I /Y
 	xcopy icon.png dist\tf2-gptcb /Y
@@ -36,18 +36,18 @@ build: .venv/Scripts/activate frontend/node_modules
 	npm run pack
 
 ## lint		-	Runs linters on src.
-lint: .venv/Scripts/activate
+lint: .venv/pyvenv.cfg
 	$(PYTHON) -m isort --check-only .
 	$(PYTHON) -m black --check .
 	$(PYTHON) -m mypy .
 
 ## format		-	Run isort and black on src to automatically fix issues.
-format: .venv/Scripts/activate
+format: .venv/pyvenv.cfg
 	$(PYTHON) -m isort .
 	$(PYTHON) -m black .
 
 # Install .venv for python
-.venv/Scripts/activate: requirements.txt
+.venv/pyvenv.cfg: requirements.txt
 	python -m venv .venv
 	$(PYTHON) -m pip install --upgrade pip
 	$(PYTHON) -m pip install -r requirements.txt
