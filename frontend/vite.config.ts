@@ -7,6 +7,10 @@ export default defineConfig(({ command, mode }) => {
     return {
         // vite config
         base: '',
+        build: {
+            root: './frontend',
+            outDir: 'build',
+        },
         plugins: [react(), viteTsconfigPaths()],
         server: {
             // this ensures that the browser opens upon server start
