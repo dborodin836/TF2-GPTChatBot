@@ -1,20 +1,25 @@
 {
   "env": {
     "node": true,
-    "es2021": true
+    "es2021": true,
+    "jest": true
   },
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier"
   ],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off"
+  },
   "parser": "@typescript-eslint/parser",
   "ignorePatterns": [
     "build/**/*.js",
     "dist/**/*.js",
     "node_modules/**/*.js",
     "*.config.js",
-    "*.config.ts"
+    "*.config.ts",
+    "preload.js"
   ],
   "parserOptions": {
     "ecmaVersion": "latest",

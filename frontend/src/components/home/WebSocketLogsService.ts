@@ -7,7 +7,7 @@ let ws: WebSocket;
 function connect() {
   ws = new WebSocket('ws://127.0.0.1:8000/ws');
 
-  ws.onopen = (event) => {
+  ws.onopen = () => {
     console.log('WebSocket connection established');
     // Reset reconnection attempts count on successful connection
     reconnectAttempts = 0;
@@ -31,7 +31,7 @@ function connect() {
     subscribers.forEach((callback) => callback(logs));
   };
 
-  ws.onclose = (event) => {
+  ws.onclose = () => {
     console.log('WebSocket connection closed. Attempting to reconnect...');
     attemptReconnect();
   };
