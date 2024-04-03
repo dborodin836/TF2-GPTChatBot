@@ -1,30 +1,29 @@
-import React, { useState } from "react";
-import { Input, Button } from "@material-tailwind/react";
-
+import React, { useState } from 'react';
+import { Input, Button } from '@material-tailwind/react';
 
 export function CommandPrompt() {
-  const [command, setCommand] = useState("");
+  const [command, setCommand] = useState('');
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    fetch("http://localhost:8000/cmd", {
-      method: "POST",
+    fetch('http://localhost:8000/cmd', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ text: command })
+      body: JSON.stringify({ text: command }),
     })
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           console.error(`Error: ${response.status}`);
         }
       })
-      .catch(error => {
-        console.error("Error:", error);
+      .catch((error) => {
+        console.error('Error:', error);
       })
       .finally(() => {
-        setCommand(""); // Reset command string here
+        setCommand(''); // Reset command string here
       });
   };
 
@@ -36,22 +35,23 @@ export function CommandPrompt() {
         onChange={(e) => setCommand(e.target.value)}
         className="pr-20"
         onKeyDown={(e) => {
-          if (e.key === "Enter" && command) {
+          if (e.key === 'Enter' && command) {
             e.preventDefault();
             handleSubmit(e);
           }
         }}
         containerProps={{
-          className: "min-w-0"
+          className: 'min-w-0',
         }}
       />
       <Button
         size="sm"
-        color={command ? "gray" : "blue-gray"}
+        color={command ? 'gray' : 'blue-gray'}
         disabled={!command}
         className="rounded min-h-[40px]"
         onClick={handleSubmit}
-      >Send
+      >
+        Send
       </Button>
     </div>
   );

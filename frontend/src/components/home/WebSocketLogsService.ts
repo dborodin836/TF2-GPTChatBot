@@ -1,14 +1,14 @@
-import { SetStateAction } from "react";
+import { SetStateAction } from 'react';
 
-let logs = "";
+let logs = '';
 let subscribers: any[] = [];
 let ws: WebSocket;
 
 function connect() {
-  ws = new WebSocket("ws://127.0.0.1:8000/ws");
+  ws = new WebSocket('ws://127.0.0.1:8000/ws');
 
   ws.onopen = (event) => {
-    console.log("WebSocket connection established");
+    console.log('WebSocket connection established');
     // Reset reconnection attempts count on successful connection
     reconnectAttempts = 0;
   };
@@ -16,12 +16,13 @@ function connect() {
   ws.onmessage = (event) => {
     logs += event.data;
 
-    const textarea = document.getElementById("textarea_logs");
+    const textarea = document.getElementById('textarea_logs');
     if (!textarea) {
       return;
     }
 
-    const shouldScroll = Math.abs((textarea.scrollHeight - textarea.offsetHeight) - textarea.scrollTop) <= 80;
+    const shouldScroll =
+      Math.abs(textarea.scrollHeight - textarea.offsetHeight - textarea.scrollTop) <= 80;
     if (shouldScroll) {
       setTimeout(() => {
         textarea.scrollTop = textarea.scrollHeight;
@@ -31,12 +32,12 @@ function connect() {
   };
 
   ws.onclose = (event) => {
-    console.log("WebSocket connection closed. Attempting to reconnect...");
+    console.log('WebSocket connection closed. Attempting to reconnect...');
     attemptReconnect();
   };
 
   ws.onerror = (error) => {
-    console.error("WebSocket encountered an error:", error);
+    console.error('WebSocket encountered an error:', error);
     ws.close(); // Ensure the connection is closed on error.
   };
 }
@@ -46,7 +47,7 @@ let reconnectAttempts = 0;
 
 function attemptReconnect() {
   // Calculate backoff delay with a maximum delay of 10 seconds
-  const delay = Math.min(1000 * (2 ** reconnectAttempts), 10000);
+  const delay = Math.min(1000 * 2 ** reconnectAttempts, 10000);
   setTimeout(() => {
     console.log(`Attempting to reconnect... Attempt ${reconnectAttempts + 1}`);
     reconnectAttempts++;
@@ -57,7 +58,10 @@ function attemptReconnect() {
 // Initial connection attempt
 connect();
 
-export function subscribeToLogs(callback: { (value: SetStateAction<string>): void; (arg0: string): void; }) {
+export function subscribeToLogs(callback: {
+  (value: SetStateAction<string>): void;
+  (arg0: string): void;
+}) {
   subscribers.push(callback);
 
   callback(logs);

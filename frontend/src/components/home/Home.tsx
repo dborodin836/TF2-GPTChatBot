@@ -1,6 +1,6 @@
-import { LogsArea } from "./LogsArea";
-import { CommandPrompt } from "./CommandPrompt";
-import React from "react";
+import { LogsArea } from './LogsArea';
+import { CommandPrompt } from './CommandPrompt';
+import React from 'react';
 
 export function Home() {
   return (

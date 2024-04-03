@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Textarea } from "@material-tailwind/react";
-import { subscribeToLogs } from "./WebSocketLogsService";
+import React, { useState, useEffect } from 'react';
+import { Textarea } from '@material-tailwind/react';
+import { subscribeToLogs } from './WebSocketLogsService';
 
 export function LogsArea() {
-  const [logs, setLogs] = useState("");
+  const [logs, setLogs] = useState('');
 
   useEffect(() => {
     const unsubscribe = subscribeToLogs(setLogs);
 
     // Scroll to the end on mount
     setTimeout(() => {
-      const textarea = document.getElementById("textarea_logs");
+      const textarea = document.getElementById('textarea_logs');
       if (textarea !== null) {
         textarea.scrollTop = textarea.scrollHeight;
       }
@@ -29,9 +29,9 @@ export function LogsArea() {
         id="textarea_logs"
         readOnly
         labelProps={{
-          className: "hidden"
+          className: 'hidden',
         }}
-        style={{ fontFamily: "monospace" }}
+        style={{ fontFamily: 'monospace' }}
       />
     </div>
   );

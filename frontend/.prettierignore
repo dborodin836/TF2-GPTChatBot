@@ -1,3 +1,10 @@
 node_modules
 build
 dist
+*.config.ts
+*.config.js
+package.json
+package-lock.json
+tsconfig.json
+.prettierrc
+.eslintrc.json
