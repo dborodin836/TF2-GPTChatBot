@@ -1,8 +1,13 @@
-const path = require("path");
-const { app, BrowserWindow, Menu } = require("electron");
-const { spawn } = require("child_process");
-const isDev = process.env.REACT_APP_DEV === "true";
-const devTools = process.env.REACT_APP_DEVTOOLS === "true";
+import path from "path";
+import { app, BrowserWindow, Menu } from "electron";
+import { spawn } from "child_process";
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
+const isDev = process.env.VITE_APP_DEV === "true";
+const devTools = process.env.VITE_APP_DEVTOOLS === "true";
+
+globalThis.__filename = fileURLToPath(import.meta.url)
+globalThis.__dirname = dirname(__filename)
 
 let execPath;
 let launchOptions;

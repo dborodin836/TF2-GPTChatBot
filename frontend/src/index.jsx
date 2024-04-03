@@ -7,7 +7,7 @@ import { BrowserRouter, HashRouter } from "react-router-dom";
 import { ThemeProvider } from "@material-tailwind/react";
 import { AlertProvider } from "./components/AlertContext";
 
-const Router = process.env.REACT_APP_ELECTRON === "true" ? HashRouter : BrowserRouter;
+const Router = "true" === "true" ? HashRouter : BrowserRouter;
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
