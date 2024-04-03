@@ -1,8 +1,8 @@
 import path from "path";
-import { app, BrowserWindow, Menu } from "electron";
+import { app, BrowserWindow } from "electron";
 import { spawn } from "child_process";
 import { fileURLToPath } from 'node:url'
-import { dirname, join } from 'node:path'
+import { dirname } from 'node:path'
 const isDev = process.env.VITE_APP_DEV === "true";
 const devTools = process.env.VITE_APP_DEVTOOLS === "true";
 

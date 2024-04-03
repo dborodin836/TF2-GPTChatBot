@@ -21,7 +21,7 @@ function connect() {
       return;
     }
 
-    let shouldScroll = Math.abs((textarea.scrollHeight - textarea.offsetHeight) - textarea.scrollTop) <= 80;
+    const shouldScroll = Math.abs((textarea.scrollHeight - textarea.offsetHeight) - textarea.scrollTop) <= 80;
     if (shouldScroll) {
       setTimeout(() => {
         textarea.scrollTop = textarea.scrollHeight;
@@ -46,7 +46,7 @@ let reconnectAttempts = 0;
 
 function attemptReconnect() {
   // Calculate backoff delay with a maximum delay of 10 seconds
-  let delay = Math.min(1000 * (2 ** reconnectAttempts), 10000);
+  const delay = Math.min(1000 * (2 ** reconnectAttempts), 10000);
   setTimeout(() => {
     console.log(`Attempting to reconnect... Attempt ${reconnectAttempts + 1}`);
     reconnectAttempts++;

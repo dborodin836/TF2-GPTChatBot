@@ -74,7 +74,7 @@ export function PageSettings() {
 
     if (!response.ok) {
       console.error("Settings are invalid.");
-      let data: ValidationError[] = await response.json()
+      const data: ValidationError[] = await response.json()
       const fieldsWithErrors = data.map((element: ValidationError) => element.loc[0])
       openAlert(`Settings are invalid. [${fieldsWithErrors.join(', ')}]`);
 
