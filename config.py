@@ -6,7 +6,7 @@ from enum import IntEnum
 from os.path import exists
 from typing import Any, Dict, Optional
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, ValidationError, field_validator
 
 from modules.api.typing import CompletionRequest
 from modules.utils.buffered_messages import buffered_fail_message, buffered_message
@@ -231,6 +231,15 @@ def init_config(filename: Optional[str] = None) -> Dict[str, Any]:
     return config_dict
 
 
+def get_formatter_errors(exc: ValidationError) -> str:
+    rtn: str = ""
+    rtn += f"Found {exc.error_count()} error(s)!\n"
+    for err in exc.errors():
+        rtn += f"{err.get('loc')[0]}\n\t{err.get('msg')}"
+    rtn += '\n'
+    return rtn
+
+
 def load_config() -> Config:
     # Attempt #1: Load the initial config
     try:
@@ -239,7 +248,7 @@ def load_config() -> Config:
         buffered_fail_message("#############################", "GUI", level="WARNING")
         buffered_fail_message("#  Config file is invalid.  #", "GUI", level="WARNING")
         buffered_fail_message("#############################", "GUI", level="WARNING")
-        buffered_message(f"{exc}", "BOTH", level="WARNING")
+        buffered_message(f"{get_formatter_errors(exc)}", "BOTH", level="WARNING")
 
     # Attempt #2: Load the config anyway so user can edit it
     try:
@@ -248,7 +257,7 @@ def load_config() -> Config:
         buffered_fail_message(
             "Failed to load config. Loading default config...", "BOTH", level="ERROR"
         )
-        buffered_fail_message(f"Failed to load config. [{exc}]", "BOTH", level="ERROR")
+        buffered_fail_message(f"Failed to load config. Loading default config.", "BOTH", level="ERROR")
 
     # Attempt #3: Load a default config as a last resort
     return Config()
