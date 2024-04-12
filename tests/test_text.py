@@ -104,7 +104,7 @@ def test_get_console_logline(mocker):
     conf = MockConfig()
     lobby_manager = LobbyManager()
 
-    def follow_tail_overwrite(x: str):
+    def follow_tail_overwrite():
         text = [
             '03/21/2024 - 20:20:51: #      3 "silly goose"       [U:1:220946399]     01:06      111    0 active',
             "03/69/2024 - 20:20:55: *SPEC* [Owner]silly goose :  !gpt3 test",
@@ -166,7 +166,7 @@ def test_get_tf2bd(mocker):
     conf = MockConfig()
     lobby_manager = LobbyManager()
 
-    def follow_tail_overwrite(x: str):
+    def follow_tail_overwrite():
         text = [
             '03/21/2024 - 20:20:51: #      3 "jeff"       [U:1:220946399]     01:06      111    0 active',
             "03/69/2024 - 20:20:58: \u200d\u200d\u200d\u2060\u2060\u200djeff\ufeff\u2060\u200b :  \u200d\u200b\u200b!gpt3 2+2\u2060\u200b\u200b\u2060\ufeff\ufeff",

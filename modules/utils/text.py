@@ -77,14 +77,14 @@ def get_chunk_size(text: str) -> int:
     return MAX_LENGTH_OTHER
 
 
-def follow_tail(file_path: str) -> Generator[str, None, None]:
+def follow_tail() -> Generator[str, None, None]:
     """
     Follows the tail of a file, yielding new lines as they are added.
     """
     first_call = True
     while True:
         try:
-            with codecs.open(file_path, encoding="utf-8", errors="ignore") as input:
+            with codecs.open(config.TF2_LOGFILE_PATH, encoding="utf-8", errors="ignore") as input:
                 if first_call:
                     input.seek(0, 2)
                     first_call = False
@@ -94,7 +94,7 @@ def follow_tail(file_path: str) -> Generator[str, None, None]:
                         latest_data += input.read()
                         if "\n" not in latest_data:
                             yield ""
-                            if not os.path.isfile(file_path):
+                            if not os.path.isfile(config.TF2_LOGFILE_PATH):
                                 break
                             time.sleep(0.1)
                             continue
@@ -158,7 +158,7 @@ def get_console_logline() -> typing.Generator:
     """
     global last_updated, ever_updated
 
-    for line in follow_tail(config.TF2_LOGFILE_PATH):
+    for line in follow_tail():
         # Remove timestamp
         line = line[23:]
 

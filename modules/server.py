@@ -77,7 +77,6 @@ async def handle_get_default_settings():
 
 @app.post("/settings")
 async def update_settings(settings: PartialUpdateModel):  # type: ignore[valid-type]
-    global config
     update_data = {k: v for k, v in settings.dict().items() if v is not None}  # type: ignore[attr-defined]
 
     try:
@@ -88,9 +87,9 @@ async def update_settings(settings: PartialUpdateModel):  # type: ignore[valid-t
         # If it doesn't throw ValidationError we're safe to go
         tmp_config = ValidatableConfig(**current_config_dict)
         # Finally replace app config with updated config
-        config = config.model_copy(update=tmp_config.dict(), deep=True)
+        config.update_config(config.model_copy(update=tmp_config.dict(), deep=True))
         # Save config on filesystem
-        save_config("config.ini")
+        await asyncio.to_thread(save_config, "config.ini")
     except ValidationError as exc:
         return Response(status_code=status.HTTP_400_BAD_REQUEST, content=exc.json())
 

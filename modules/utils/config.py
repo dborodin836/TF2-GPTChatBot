@@ -33,6 +33,12 @@ def save_config(filename: str):
         # Remove keys that are useless
         dict_ = {k: v for k, v in config.dict().items() if k not in DROP_KEYS}
 
+        # Replace None values with empty string
+        for k, v in dict_.items():
+            if v is None:
+                dict_[k] = ""
+
+        # Add header
         config_dict = {INI_CONFIG_FILE_HEADER: dict_}
 
         # Dump to a file

@@ -235,7 +235,9 @@ def get_formatter_errors(exc: ValidationError) -> str:
     rtn: str = ""
     rtn += f"Found {exc.error_count()} error(s)!\n"
     for err in exc.errors():
-        rtn += f"{err.get('loc')[0]}\n\t{err.get('msg')}"
+        # If loc key is missing replace it with ERR_UNKNOWN_OPTION string
+        loc = err.get("loc", ("ERR_UNKNOWN_OPTION",))[0]
+        rtn += f"{loc}\n\t{err.get('msg')}"
     rtn += '\n'
     return rtn
 
@@ -244,11 +246,11 @@ def load_config() -> Config:
     # Attempt #1: Load the initial config
     try:
         return ValidatableConfig(**init_config())
-    except Exception as exc:
+    except ValidationError as exc:
         buffered_fail_message("#############################", "GUI", level="WARNING")
         buffered_fail_message("#  Config file is invalid.  #", "GUI", level="WARNING")
         buffered_fail_message("#############################", "GUI", level="WARNING")
-        buffered_message(f"{get_formatter_errors(exc)}", "BOTH", level="WARNING")
+        buffered_message(f"{get_formatter_errors(exc)}", "GUI", level="WARNING")
 
     # Attempt #2: Load the config anyway so user can edit it
     try:
@@ -263,4 +265,18 @@ def load_config() -> Config:
     return Config()
 
 
-config: Config = load_config()
+class ConfigWrapper:
+    def __init__(self):
+        self.__dict__['_config']: Config = load_config()
+
+    def update_config(self, config: Config):
+        self.__dict__['_config'] = config
+
+    def __getattr__(self, name):
+        return getattr(self._config, name)
+
+    def __setattr__(self, name, value):
+        setattr(self._config, name, value)
+
+
+config: ConfigWrapper = ConfigWrapper()
