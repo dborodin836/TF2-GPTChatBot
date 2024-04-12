@@ -42,7 +42,9 @@ def run_common_threads():
 def run_threads(args: argparse.Namespace):
     if args.web_server:
         threading.Thread(target=uvicorn.run, daemon=True, args=(app,)).start()
-        time.sleep(5)
+
+    if args.web_server and args.sleep:
+        time.sleep(args.sleep)
 
     if args.no_gui:
         sys.stdout = CopyStdoutToSocket()
@@ -76,6 +78,9 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--web-server", action="store_true", help="Start the application in web server mode."
+    )
+    parser.add_argument(
+        "--sleep", action="store", type=int, help="Time to wait before starting main logic."
     )
 
     run_threads(parser.parse_args())
