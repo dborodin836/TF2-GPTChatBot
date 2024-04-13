@@ -6,6 +6,7 @@ ifeq ($(OS),Windows_NT)
 
 MAKEFILE_LIST = "Makefile"
 PYTHON = ".venv/Scripts/python.exe"
+BACKEND_NODEMON = "npx nodemon --exec $(PYTHON) main.py --web-server --no-gui"
 
 define find-functions
 	@powershell -Command "$$matches = Select-String -Path $(MAKEFILE_LIST) -Pattern '##'; foreach ($$match in $$matches) { if ($$match.Line -notmatch 'powershell|Select-String') { $$line = $$match.Line; $$line -replace '.*##', '' } }"
@@ -20,6 +21,10 @@ help:
 run: .venv/pyvenv.cfg frontend/node_modules
 	cd frontend
 	npm run demo
+
+## dev		-	Start development environment.
+dev: .venv/pyvenv.cfg frontend/node_modules
+	npx concurrently -k -n "BACK,FRNT" -c "green,yellow" $(BACKEND_NODEMON) "cd frontend && npm run dev"
 
 ## install	-	Install required dependencies (venv, node_modules).
 install: .venv/pyvenv.cfg frontend/node_modules

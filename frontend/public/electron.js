@@ -3,8 +3,8 @@ import { app, BrowserWindow } from 'electron';
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
-const isDev = process.env.VITE_APP_DEV === 'true';
-const devTools = process.env.VITE_APP_DEVTOOLS === 'true';
+
+const env = process.env.VITE_ENVIRONMENT;
 
 globalThis.__filename = fileURLToPath(import.meta.url);
 globalThis.__dirname = dirname(__filename);
@@ -17,13 +17,18 @@ let mainWindow;
 let restartAttempts = 0;
 const MAX_RETRIES = 4;
 
-if (isDev) {
+if (env === 'demo') {
+  // Demo
   execPath = path.join(__dirname, '..', '..', '.venv', 'Scripts', 'python.exe');
-  launchOptions = [path.join(__dirname, '..', '..', 'main.py'), '--web-server', '--no-gui'];
+  launchOptions = [path.join(__dirname, '..', '..', 'main.py'), '--web-server', '--no-gui', '--sleep', '1'];
   cwd = path.dirname(path.join(__dirname, '..'));
+} else if (env === "development") {
+  // Development
+  // Doesn't start backend
 } else {
+  // Production
   execPath = path.join(__dirname, '..', '..', '..', 'tf2-gptcb.exe');
-  launchOptions = ['--web-server', '--no-gui'];
+  launchOptions = ['--web-server', '--no-gui', '--sleep', '3'];
   cwd = path.dirname(execPath);
 }
 
@@ -66,13 +71,13 @@ const createWindow = () => {
 
   // Load the appropriate URL based on the environment
   mainWindow.loadURL(
-    isDev
+    env === 'development'
       ? 'http://localhost:3000' // Development URL
       : `file://${path.join(__dirname, '../build/index.html')}`, // Production URL
   );
 
   // Open DevTools in development mode
-  if (devTools && isDev) {
+  if (env === 'development') {
     mainWindow.webContents.openDevTools({ mode: 'detach' });
   }
 };
@@ -80,7 +85,9 @@ const createWindow = () => {
 // Create the main window when the app is ready
 app.whenReady().then(() => {
   createWindow();
-  spawnChildProcess();
+  if (env === 'production' || env === 'demo') {
+    spawnChildProcess();
+  }
 });
 
 // Quit the app when all windows are closed (except on macOS)
@@ -90,14 +97,17 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.on('before-quit', () => {
-  // Kill the child process when the app is terminated
+if (env === 'production' || env === 'demo') {
   app.on('before-quit', () => {
-    if (childProcess) {
-      childProcess.kill();
-    }
+    // Kill the child process when the app is terminated
+    app.on('before-quit', () => {
+      if (childProcess) {
+        childProcess.kill();
+      }
+    });
   });
-});
+}
+
 
 // Create a new window when the app is activated (macOS)
 app.on('activate', () => {

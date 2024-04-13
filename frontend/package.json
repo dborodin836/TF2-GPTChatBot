@@ -16,10 +16,11 @@
     "url": "https://github.com/dborodin836/TF2-GPTChatBot/issues"
   },
   "scripts": {
-    "start": "cross-env BROWSER=none vite",
+    "dev": "concurrently -k -n \"ELCTR,SERVE\" -c \"blue,magenta\" \"npm run electron:dev\" \"npm run start\"",
     "demo": "concurrently -k -n \"ELCTR,SERVE\" -c \"blue,magenta\" \"npm run electron:demo\" \"npm run start\"",
-    "electron": "cross-env VITE_APP_DEV=true VITE_APP_DEVTOOLS=true electron .",
-    "electron:demo": "wait-on tcp:3000 && cross-env VITE_APP_DEV=true electron .",
+    "start": "cross-env BROWSER=none vite",
+    "electron:dev": "wait-on tcp:3000 && cross-env VITE_ENVIRONMENT=development electron .",
+    "electron:demo": "wait-on tcp:3000 && cross-env VITE_ENVIRONMENT=demo electron .",
     "build": "cross-env VITE_APP_ELECTRON=true vite build",
     "pack": "npm run build && electron-builder",
     "test": "vite test",
