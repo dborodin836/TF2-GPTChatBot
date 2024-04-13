@@ -85,7 +85,7 @@ const createWindow = () => {
 // Create the main window when the app is ready
 app.whenReady().then(() => {
   createWindow();
-  if (env === 'production' || env === 'demo') {
+  if (env === 'production' || env === 'demo' || env === undefined) {
     spawnChildProcess();
   }
 });
@@ -97,7 +97,7 @@ app.on('window-all-closed', () => {
   }
 });
 
-if (env === 'production' || env === 'demo') {
+if (env === 'production' || env === 'demo' || env === undefined) {
   app.on('before-quit', () => {
     // Kill the child process when the app is terminated
     app.on('before-quit', () => {
