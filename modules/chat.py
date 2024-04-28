@@ -5,6 +5,7 @@ from modules.bot_state import state_manager
 from modules.command_controllers import CommandController, InitializerConfig
 from modules.commands.clear_chat import handle_clear
 from modules.commands.github import handle_gh_command
+from modules.commands.groq import handle_groq, handle_groq_global_chat, handle_groq_private_chat
 from modules.commands.openai import handle_user_chat, handle_gpt3, handle_gpt4, handle_gpt4l, handle_global_chat
 from modules.commands.rtd import handle_rtd
 from modules.commands.textgen_webui import handle_custom_user_chat, handle_custom_model, handle_custom_global_chat
@@ -65,6 +66,10 @@ def parse_console_logs_and_build_conversation_history() -> None:
         controller.register_command(config.CUSTOM_MODEL_COMMAND, handle_custom_model)
         controller.register_command(config.CUSTOM_MODEL_CHAT_COMMAND, handle_custom_user_chat)
         controller.register_command(config.GLOBAL_CUSTOM_CHAT_COMMAND, handle_custom_global_chat)
+    if config.GROQ_ENABLE:
+        controller.register_command(config.GROQ_COMMAND, handle_groq)
+        controller.register_command(config.GROQ_CHAT_COMMAND, handle_groq_global_chat)
+        controller.register_command(config.GROQ_PRIVATE_CHAT, handle_groq_private_chat)
 
     # Services
     controller.register_service(messaging_queue_service)

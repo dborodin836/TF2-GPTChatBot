@@ -85,6 +85,13 @@ class Config(BaseModel):
 
     CUSTOM_MODEL_SETTINGS: Optional[str | dict]
 
+    GROQ_API_KEY: str
+    GROQ_COMMAND: str
+    GROQ_CHAT_COMMAND: str
+    GROQ_PRIVATE_CHAT: str
+    GROQ_MODEL: str
+    GROQ_ENABLE: bool
+
     @validator("OPENAI_API_KEY")
     def api_key_pattern_match(cls, v):
         if not re.fullmatch(OPENAI_API_KEY_RE_PATTERN, v):

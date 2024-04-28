@@ -48,7 +48,7 @@ class ConversationHistory:
         self.message_history.append(message)
 
     def add_user_message_from_prompt(
-        self, user_prompt: str, enable_soft_limit: bool = True
+            self, user_prompt: str, enable_soft_limit: bool = True
     ) -> None:
         user_message = remove_args(user_prompt)
         args = get_args(user_prompt)
