@@ -120,7 +120,7 @@ def follow_tail(file_path: str) -> typing.Generator:
                     for line in latest_lines[:-1]:
                         yield line + "\n"
         except FileNotFoundError:
-            gui_logger.warning(f"Logfile doesn't exist. Checking again in 4 seconds.")
+            gui_logger.warning("Logfile doesn't exist. Checking again in 4 seconds.")
             time.sleep(4)
             yield ""
         except Exception as e:
