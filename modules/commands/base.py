@@ -35,7 +35,7 @@ class GlobalChatCommand:
                 logline.prompt.removeprefix(config.GROQ_CHAT_COMMAND).strip(),
                 shared_dict.CHAT_CONVERSATION_HISTORY.GLOBAL,
                 is_team=logline.is_team_message,
-                model=config.GROQ_MODEL,
+                model=cls.model,
             )
             shared_dict.CHAT_CONVERSATION_HISTORY.GLOBAL = chat_history
 
@@ -56,7 +56,7 @@ class PrivateChatCommand:
                 logline.prompt.removeprefix(config.GROQ_PRIVATE_CHAT).strip(),
                 user_chat,
                 is_team=logline.is_team_message,
-                model=config.GROQ_MODEL,
+                model=cls.model,
             )
             shared_dict.CHAT_CONVERSATION_HISTORY.set_conversation_history(logline.player, chat_history)
 

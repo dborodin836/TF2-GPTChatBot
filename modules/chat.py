@@ -8,7 +8,7 @@ from modules.commands.github import handle_gh_command
 from modules.commands.groq import GroqQuickQueryCommand, GroqGlobalChatCommand, GroqPrivateChatCommand
 from modules.commands.openai import handle_gpt3, handle_gpt4, handle_gpt4l, OpenAIGlobalChatCommand, OpenAIPrivateChatCommand
 from modules.commands.rtd import handle_rtd
-from modules.commands.textgen_webui import handle_custom_user_chat, handle_custom_model, handle_custom_global_chat
+from modules.commands.textgen_webui import TextgenWebUIGlobalChatCommand, TextgenWebUIPrivateChatCommand, TextgenWebUIQuickQueryCommand
 from modules.logs import get_logger
 from modules.message_queueing import messaging_queue_service
 from modules.servers.tf2 import check_connection, set_host_username
@@ -63,9 +63,9 @@ def parse_console_logs_and_build_conversation_history() -> None:
         controller.register_command(config.GLOBAL_CHAT_COMMAND, OpenAIGlobalChatCommand.as_command())
         controller.register_command(config.GPT_COMMAND, handle_gpt3)
     if config.ENABLE_CUSTOM_MODEL:
-        controller.register_command(config.CUSTOM_MODEL_COMMAND, handle_custom_model)
-        controller.register_command(config.CUSTOM_MODEL_CHAT_COMMAND, handle_custom_user_chat)
-        controller.register_command(config.GLOBAL_CUSTOM_CHAT_COMMAND, handle_custom_global_chat)
+        controller.register_command(config.CUSTOM_MODEL_COMMAND, TextgenWebUIQuickQueryCommand.as_command())
+        controller.register_command(config.CUSTOM_MODEL_CHAT_COMMAND, TextgenWebUIGlobalChatCommand.as_command())
+        controller.register_command(config.GLOBAL_CUSTOM_CHAT_COMMAND, TextgenWebUIPrivateChatCommand.as_command())
     if config.GROQ_ENABLE:
         controller.register_command(config.GROQ_COMMAND, GroqQuickQueryCommand.as_command())
         controller.register_command(config.GROQ_CHAT_COMMAND, GroqGlobalChatCommand.as_command())

@@ -42,9 +42,6 @@ class OpenAILLMProvider(LLMProvider):
         response = OpenAILLMProvider._try_get_response(payload, username, model)
 
         if response:
-            main_logger.info(
-                f"Got response for user {username}. Response: {' '.join(response.split())}"
-            )
             log_gui_model_message(model, username, " ".join(response.split()))
             send_say_command_to_tf2(response, username, is_team_chat)
 
