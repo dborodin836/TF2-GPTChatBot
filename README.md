@@ -387,7 +387,7 @@ Hi chatGPT, you are going to pretend to be MEDIC from Team Fortress 2. You can d
 ## That's all?
 
 If you want to know more here are listed some things that were left unexplained, and some tips and tricks:
-[unexplained_explained.md](docs/unexplained_explained.md)
+[unexplained_explained.md](docs/unexplained_explained.md) or at project [Wiki](https://github.com/dborodin836/TF2-GPTChatBot/wiki).
 
 ## Screenshots
 
