@@ -4,19 +4,14 @@ from modules.commands.base import QuickQueryLLMCommand, GlobalChatLLMCommand, Pr
 
 main_logger = get_logger("main")
 
-DUMMY_MODEL_NAME = 'CUSTOM'
-
 
 class TextgenWebUIQuickQueryCommand(QuickQueryLLMCommand):
     provider = TextGenerationWebUILLMProvider
-    model = DUMMY_MODEL_NAME
 
 
 class TextgenWebUIGlobalChatCommand(GlobalChatLLMCommand):
     provider = TextGenerationWebUILLMProvider
-    model = DUMMY_MODEL_NAME
 
 
 class TextgenWebUIPrivateChatCommand(PrivateChatLLMCommand):
     provider = TextGenerationWebUILLMProvider
-    model = DUMMY_MODEL_NAME

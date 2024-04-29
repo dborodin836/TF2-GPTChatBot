@@ -20,7 +20,6 @@ def handle_empty(logline: LogLine, shared_dict: InitializerConfig):
         username=None,
         is_team_chat=logline.is_team_message,
     )
-    log_gui_model_message(config.GPT3_MODEL, logline.username, logline.prompt.strip())
     main_logger.info(f"Empty '{config.GPT_COMMAND}' command from user '{logline.username}'.")
 
 

@@ -14,7 +14,7 @@ def empty_prompt_wrapper_handler_factory(handler: Callable):
     def decorator(func):
         def wrapper(logline: LogLine, shared_dict: InitializerConfig):
             if logline.prompt == '':
-                handler()
+                handler(logline, shared_dict)
                 return None
             return func(logline, shared_dict)
 

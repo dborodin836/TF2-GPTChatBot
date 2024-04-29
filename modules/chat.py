@@ -1,4 +1,4 @@
-from config import config
+from config import config, RTDModes
 from modules.api.github import check_for_updates
 from modules.bans import bans_manager
 from modules.bot_state import state_manager
@@ -56,8 +56,9 @@ def parse_console_logs_and_build_conversation_history() -> None:
 
     # Commands
     controller.register_command("!gh", handle_gh_command)
-    controller.register_command(config.RTD_COMMAND, handle_rtd)
     controller.register_command(config.CLEAR_CHAT_COMMAND, handle_clear)
+    if config.RTD_MODE != RTDModes.DISABLED:
+        controller.register_command(config.RTD_COMMAND, handle_rtd)
     if config.ENABLE_OPENAI_COMMANDS:
         controller.register_command(config.GPT4_COMMAND, OpenAIGPT4QuickQueryCommand.as_command())
         controller.register_command(config.GPT4_LEGACY_COMMAND, OpenAIGPT4LQuickQueryCommand.as_command())

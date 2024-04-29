@@ -5,7 +5,7 @@ from ordered_set import OrderedSet
 from pydantic import BaseModel, BaseConfig
 
 from modules.conversation_history import ConversationHistory
-from modules.logs import get_logger
+from modules.logs import get_logger, log_gui_model_message
 from modules.set_once_dict import SetOnceDictionary
 from modules.typing import Command, LogLine, Player
 
@@ -83,7 +83,7 @@ class GuiCommandController:
 class CommandController:
     def __init__(self, initializer_config: InitializerConfig = None) -> None:
         self.__services = OrderedSet()
-        self.__named_commands_registry: SetOnceDictionary[str, Callable] = SetOnceDictionary()
+        self.__named_commands_registry: SetOnceDictionary[str, Callable[[LogLine, InitializerConfig], Optional[str]]] = SetOnceDictionary()
         self.__shared = InitializerConfig()
 
         if initializer_config is not None:
@@ -109,4 +109,7 @@ class CommandController:
 
         logline = LogLine(cleaned_prompt, logline.username, logline.is_team_message, logline.player)
 
-        handler(logline, self.__shared)
+        log_gui_model_message(command_name.upper(), logline.username, logline.prompt)
+        result = handler(logline, self.__shared)
+        if result:
+            log_gui_model_message(command_name.upper(), logline.username, result)
