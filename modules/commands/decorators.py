@@ -1,7 +1,7 @@
 from typing import Callable, List
 
 from config import config
-from modules.api.openai import is_violated_tos
+from modules.api.openai import is_flagged
 from modules.command_controllers import InitializerConfig
 from modules.permissions import is_admin
 from modules.typing import LogLine, Player
@@ -31,7 +31,7 @@ def gpt4_admin_only(func):
                 or not config.GPT4_ADMIN_ONLY
         ):
             return func(logline, shared_dict)
-        return None
+        raise Exception('User is not admin.')
 
     return wrapper
 
@@ -40,13 +40,10 @@ def openai_moderated_message(func):
     def wrapper(logline: LogLine, shared_dict: InitializerConfig):
         if (
                 not config.TOS_VIOLATION
-                and is_violated_tos(logline.prompt)
+                and is_flagged(logline.prompt)
                 and not is_admin(logline.player)
         ):
-            gui_logger.warning(
-                f"Request '{logline.prompt}' by user '{logline.username}' violates OPENAI TOS. Skipping..."
-            )
-            return None
+            raise Exception("Request was flagged during moderation. Skipping...")
 
         return func(logline, shared_dict)
 

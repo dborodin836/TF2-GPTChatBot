@@ -110,6 +110,9 @@ class CommandController:
         logline = LogLine(cleaned_prompt, logline.username, logline.is_team_message, logline.player)
 
         log_gui_model_message(command_name.upper(), logline.username, logline.prompt)
-        result = handler(logline, self.__shared)
-        if result:
-            log_gui_model_message(command_name.upper(), logline.username, result)
+        try:
+            result = handler(logline, self.__shared)
+            if result:
+                log_gui_model_message(command_name.upper(), logline.username, result)
+        except Exception as e:
+            log_gui_model_message(command_name.upper(), logline.username, f"Error occurred: [{e}]")

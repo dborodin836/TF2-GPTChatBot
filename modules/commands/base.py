@@ -39,8 +39,8 @@ class QuickQueryLLMCommand(BaseLLMCommand):
             user_message = remove_args(logline.prompt)
             tmp_chat_history.add_user_message_from_prompt(user_message)
 
-            response = cls.provider._try_get_response(tmp_chat_history.get_messages_array(), logline.username,
-                                                      cls.model)
+            response = cls.provider.get_completion_text(tmp_chat_history.get_messages_array(), logline.username,
+                                                        cls.model)
             if response:
                 tmp_chat_history.add_assistant_message(Message(role="assistant", content=response))
                 send_say_command_to_tf2(response, logline.username, logline.is_team_message)
@@ -59,8 +59,8 @@ class GlobalChatLLMCommand(BaseLLMCommand):
             user_message = remove_args(logline.prompt)
             chat_history.add_user_message_from_prompt(user_message)
 
-            response = cls.provider._try_get_response(chat_history.get_messages_array(), logline.username,
-                                                      cls.model)
+            response = cls.provider.get_completion_text(chat_history.get_messages_array(), logline.username,
+                                                        cls.model)
             if response:
                 chat_history.add_assistant_message(Message(role="assistant", content=response))
                 send_say_command_to_tf2(response, logline.username, logline.is_team_message)
@@ -79,8 +79,8 @@ class PrivateChatLLMCommand(BaseLLMCommand):
             user_message = remove_args(logline.prompt)
             chat_history.add_user_message_from_prompt(user_message)
 
-            response = cls.provider._try_get_response(chat_history.get_messages_array(), logline.username,
-                                                      cls.model)
+            response = cls.provider.get_completion_text(chat_history.get_messages_array(), logline.username,
+                                                        cls.model)
             if response:
                 chat_history.add_assistant_message(Message(role="assistant", content=response))
                 send_say_command_to_tf2(response, logline.username, logline.is_team_message)

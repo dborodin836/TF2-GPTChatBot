@@ -3,7 +3,7 @@ import time
 from config import config
 from modules.api.openai import OpenAILLMProvider
 from modules.command_controllers import InitializerConfig
-from modules.logs import get_logger, log_gui_model_message
+from modules.logs import get_logger
 from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import LogLine
 from modules.commands.base import GlobalChatLLMCommand, PrivateChatLLMCommand, QuickQueryLLMCommand

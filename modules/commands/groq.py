@@ -1,9 +1,6 @@
 from config import config
 from modules.api.groq import GroqCloudLLMProvider
 from modules.commands.base import QuickQueryLLMCommand, GlobalChatLLMCommand, PrivateChatLLMCommand
-from modules.logs import get_logger
-
-main_logger = get_logger('main')
 
 
 class GroqQuickQueryCommand(QuickQueryLLMCommand):
