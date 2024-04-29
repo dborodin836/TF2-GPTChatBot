@@ -6,8 +6,8 @@ from modules.command_controllers import CommandController, InitializerConfig
 from modules.commands.clear_chat import handle_clear
 from modules.commands.github import handle_gh_command
 from modules.commands.groq import GroqQuickQueryCommand, GroqGlobalChatCommand, GroqPrivateChatCommand
-from modules.commands.openai import handle_gpt3, handle_gpt4, handle_gpt4l, OpenAIGlobalChatCommand, \
-    OpenAIPrivateChatCommand
+from modules.commands.openai import OpenAIGlobalChatCommand, OpenAIPrivateChatCommand, OpenAIGPT3QuickQueryCommand, \
+    OpenAIGPT4QuickQueryCommand, OpenAIGPT4LQuickQueryCommand
 from modules.commands.rtd import handle_rtd
 from modules.commands.textgen_webui import TextgenWebUIGlobalChatCommand, TextgenWebUIPrivateChatCommand, \
     TextgenWebUIQuickQueryCommand
@@ -59,11 +59,11 @@ def parse_console_logs_and_build_conversation_history() -> None:
     controller.register_command(config.RTD_COMMAND, handle_rtd)
     controller.register_command(config.CLEAR_CHAT_COMMAND, handle_clear)
     if config.ENABLE_OPENAI_COMMANDS:
-        controller.register_command(config.GPT4_COMMAND, handle_gpt4)
-        controller.register_command(config.GPT4_LEGACY_COMMAND, handle_gpt4l)
+        controller.register_command(config.GPT4_COMMAND, OpenAIGPT4QuickQueryCommand.as_command())
+        controller.register_command(config.GPT4_LEGACY_COMMAND, OpenAIGPT4LQuickQueryCommand.as_command())
         controller.register_command(config.CHATGPT_COMMAND, OpenAIPrivateChatCommand.as_command())
         controller.register_command(config.GLOBAL_CHAT_COMMAND, OpenAIGlobalChatCommand.as_command())
-        controller.register_command(config.GPT_COMMAND, handle_gpt3)
+        controller.register_command(config.GPT_COMMAND, OpenAIGPT3QuickQueryCommand.as_command())
     if config.ENABLE_CUSTOM_MODEL:
         controller.register_command(config.CUSTOM_MODEL_COMMAND, TextgenWebUIQuickQueryCommand.as_command())
         controller.register_command(config.CUSTOM_MODEL_CHAT_COMMAND, TextgenWebUIPrivateChatCommand.as_command())
