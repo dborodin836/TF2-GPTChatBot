@@ -1,17 +1,35 @@
-from typing import Callable
+from abc import ABC, abstractmethod
+from typing import Callable, List
 
-from config import config
 from modules.api.base import LLMProvider
 from modules.command_controllers import InitializerConfig
 from modules.typing import LogLine
 
 
-class QuickQueryCommand:
+class BaseCommand(ABC):
     provider: LLMProvider = None
     model: str = None
+    wrappers: List[Callable] = []
+
+    @classmethod
+    @abstractmethod
+    def get_handler(cls):
+        ...
 
     @classmethod
     def as_command(cls) -> Callable[[LogLine, InitializerConfig], None]:
+        func = cls.get_handler()
+
+        for decorator in cls.wrappers:
+            func = decorator(func)
+
+        return func
+
+
+class QuickQueryCommand(BaseCommand):
+
+    @classmethod
+    def get_handler(cls):
         def func(logline: LogLine, shared_dict: InitializerConfig) -> None:
             cls.provider.get_quick_query_completion(
                 logline.username,
@@ -23,12 +41,10 @@ class QuickQueryCommand:
         return func
 
 
-class GlobalChatCommand:
-    provider: LLMProvider = None
-    model: str = None
+class GlobalChatCommand(BaseCommand):
 
     @classmethod
-    def as_command(cls) -> Callable[[LogLine, InitializerConfig], None]:
+    def get_handler(cls) -> Callable[[LogLine, InitializerConfig], None]:
         def func(logline: LogLine, shared_dict: InitializerConfig) -> None:
             chat_history = cls.provider.get_chat_completion(
                 logline.username,
@@ -42,12 +58,10 @@ class GlobalChatCommand:
         return func
 
 
-class PrivateChatCommand:
-    provider: LLMProvider = None
-    model: str = None
+class PrivateChatCommand(BaseCommand):
 
     @classmethod
-    def as_command(cls) -> Callable[[LogLine, InitializerConfig], None]:
+    def get_handler(cls) -> Callable[[LogLine, InitializerConfig], None]:
         def func(logline: LogLine, shared_dict: InitializerConfig) -> None:
             user_chat = shared_dict.CHAT_CONVERSATION_HISTORY.get_conversation_history(logline.player)
 

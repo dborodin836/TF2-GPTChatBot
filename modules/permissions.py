@@ -1,15 +1,8 @@
+from typing import Callable, List
+
 from config import config
-from modules.typing import Player
-
-
-# def check_permission(func):
-#     def wrapper(*args, **kwargs):
-#         if user_has_permission():
-#             return func(*args, **kwargs)
-#         else:
-#             return "Permission denied"
-#
-#     return wrapper
+from modules.command_controllers import InitializerConfig
+from modules.typing import LogLine, Player
 
 
 def is_admin(user: Player) -> bool:
@@ -23,3 +16,15 @@ def is_admin(user: Player) -> bool:
         return True
 
     return False
+
+
+def permission_decorator_factory(permissions_funcs: List[Callable[[Player], bool]]):
+    def permissions_decorator(func):
+        def wrapper(logline: LogLine, shared_dict: InitializerConfig):
+            if all(map(lambda x: x(logline.player), permissions_funcs)):
+                return func(logline, shared_dict)
+            return None
+
+        return wrapper
+
+    return permissions_decorator
