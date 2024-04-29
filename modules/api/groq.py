@@ -5,52 +5,14 @@ import groq
 
 from config import config
 from modules.api.base import LLMProvider
-from modules.logs import get_logger, log_gui_general_message, log_gui_model_message
-from modules.servers.tf2 import send_say_command_to_tf2
-from modules.typing import Message
-from modules.utils.text import get_system_message, remove_args, remove_hashtags
+from modules.logs import get_logger, log_gui_general_message
+from modules.utils.text import remove_hashtags
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
 
 
 class GroqCloudLLMProvider(LLMProvider):
-
-    @staticmethod
-    def get_quick_query_completion(username, user_prompt, model, is_team_chat=False):
-        log_gui_model_message(model, username, user_prompt)
-
-        user_message = remove_args(user_prompt)
-        sys_message = get_system_message(user_prompt)
-
-        payload = [
-            sys_message,
-            Message(role="assistant", content=config.GREETING),
-            Message(role="user", content=user_message),
-        ]
-
-        response = GroqCloudLLMProvider._try_get_response(payload, username, model)
-
-        if response:
-            log_gui_model_message(model, username, " ".join(response.split()))
-            send_say_command_to_tf2(response, username, is_team_chat)
-
-    @staticmethod
-    def get_chat_completion(username, user_prompt, conversation_history, model, is_team=False):
-        log_gui_model_message(model, username, user_prompt)
-
-        user_message = remove_args(user_prompt)
-
-        conversation_history.add_user_message_from_prompt(user_message)
-
-        response = GroqCloudLLMProvider._try_get_response(conversation_history.get_messages_array(), username, model)
-
-        if response:
-            conversation_history.add_assistant_message(Message(role="assistant", content=response))
-            log_gui_model_message(model, username, " ".join(response.split()))
-            send_say_command_to_tf2(response, username, is_team)
-
-        return conversation_history
 
     @staticmethod
     def _get_provider_response(conversation_history, username, model):

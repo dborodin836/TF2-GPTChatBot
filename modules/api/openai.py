@@ -17,59 +17,6 @@ gui_logger = get_logger("gui")
 class OpenAILLMProvider(LLMProvider):
 
     @staticmethod
-    def get_quick_query_completion(username, user_prompt, model, is_team_chat=False):
-        log_gui_model_message(model, username, user_prompt)
-
-        user_message = remove_args(user_prompt)
-        sys_message = get_system_message(user_prompt)
-
-        if (
-                not config.TOS_VIOLATION
-                and is_violated_tos(user_message)
-                and config.HOST_USERNAME != username
-        ):
-            gui_logger.warning(
-                f"Request '{user_prompt}' by user {username} violates OPENAI TOS. Skipping..."
-            )
-            return
-
-        payload = [
-            sys_message,
-            Message(role="assistant", content=config.GREETING),
-            Message(role="user", content=user_message),
-        ]
-
-        response = OpenAILLMProvider._try_get_response(payload, username, model)
-
-        if response:
-            log_gui_model_message(model, username, " ".join(response.split()))
-            send_say_command_to_tf2(response, username, is_team_chat)
-
-    @staticmethod
-    def get_chat_completion(username, user_prompt, conversation_history, model, is_team=False):
-        log_gui_model_message(model, username, user_prompt)
-
-        user_message = remove_args(user_prompt)
-        if (
-                not config.TOS_VIOLATION
-                and is_violated_tos(user_message)
-                and config.HOST_USERNAME != username
-        ):
-            gui_logger.error(f"Request '{user_prompt}' violates OPENAI TOS. Skipping...")
-            return conversation_history
-
-        conversation_history.add_user_message_from_prompt(user_prompt)
-
-        response = OpenAILLMProvider._try_get_response(conversation_history.get_messages_array(), username, model)
-
-        if response:
-            conversation_history.add_assistant_message(Message(role="assistant", content=response))
-            log_gui_model_message(model, username, " ".join(response.split()))
-            send_say_command_to_tf2(response, username, is_team)
-
-        return conversation_history
-
-    @staticmethod
     def _get_provider_response(conversation_history, username, model):
         openai.api_key = config.OPENAI_API_KEY
 
