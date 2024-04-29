@@ -5,8 +5,8 @@ from modules.bot_state import state_manager
 from modules.command_controllers import CommandController, InitializerConfig
 from modules.commands.clear_chat import handle_clear
 from modules.commands.github import handle_gh_command
-from modules.commands.groq import handle_groq, handle_groq_global_chat, handle_groq_private_chat
-from modules.commands.openai import handle_user_chat, handle_gpt3, handle_gpt4, handle_gpt4l, handle_global_chat
+from modules.commands.groq import GroqQuickQueryCommand, GroqGlobalChatCommand, GroqPrivateChatCommand
+from modules.commands.openai import handle_gpt3, handle_gpt4, handle_gpt4l, OpenAIGlobalChatCommand, OpenAIPrivateChatCommand
 from modules.commands.rtd import handle_rtd
 from modules.commands.textgen_webui import handle_custom_user_chat, handle_custom_model, handle_custom_global_chat
 from modules.logs import get_logger
@@ -59,17 +59,17 @@ def parse_console_logs_and_build_conversation_history() -> None:
     if config.ENABLE_OPENAI_COMMANDS:
         controller.register_command(config.GPT4_COMMAND, handle_gpt4)
         controller.register_command(config.GPT4_LEGACY_COMMAND, handle_gpt4l)
-        controller.register_command(config.CHATGPT_COMMAND, handle_user_chat)
-        controller.register_command(config.GLOBAL_CHAT_COMMAND, handle_global_chat)
+        controller.register_command(config.CHATGPT_COMMAND, OpenAIPrivateChatCommand.as_command())
+        controller.register_command(config.GLOBAL_CHAT_COMMAND, OpenAIGlobalChatCommand.as_command())
         controller.register_command(config.GPT_COMMAND, handle_gpt3)
     if config.ENABLE_CUSTOM_MODEL:
         controller.register_command(config.CUSTOM_MODEL_COMMAND, handle_custom_model)
         controller.register_command(config.CUSTOM_MODEL_CHAT_COMMAND, handle_custom_user_chat)
         controller.register_command(config.GLOBAL_CUSTOM_CHAT_COMMAND, handle_custom_global_chat)
     if config.GROQ_ENABLE:
-        controller.register_command(config.GROQ_COMMAND, handle_groq)
-        controller.register_command(config.GROQ_CHAT_COMMAND, handle_groq_global_chat)
-        controller.register_command(config.GROQ_PRIVATE_CHAT, handle_groq_private_chat)
+        controller.register_command(config.GROQ_COMMAND, GroqQuickQueryCommand.as_command())
+        controller.register_command(config.GROQ_CHAT_COMMAND, GroqGlobalChatCommand.as_command())
+        controller.register_command(config.GROQ_PRIVATE_CHAT, GroqPrivateChatCommand.as_command())
 
     # Services
     controller.register_service(messaging_queue_service)

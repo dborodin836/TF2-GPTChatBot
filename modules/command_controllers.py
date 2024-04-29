@@ -105,4 +105,8 @@ class CommandController:
         if handler is None:
             return
 
+        cleaned_prompt = logline.prompt.removeprefix(command_name).strip()
+
+        logline = LogLine(cleaned_prompt, logline.username, logline.is_team_message, logline.player)
+
         handler(logline, self.__shared)

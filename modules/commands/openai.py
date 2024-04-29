@@ -1,11 +1,12 @@
 import time
 
 from config import config
-from modules.api.openai import handle_cgpt_request, handle_gpt_request
+from modules.api.openai import OpenAILLMProvider
 from modules.command_controllers import InitializerConfig
 from modules.logs import get_logger, log_gui_model_message
 from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import LogLine
+from modules.commands.base import QuickQueryCommand, GlobalChatCommand, PrivateChatCommand
 
 main_logger = get_logger("main")
 
@@ -23,11 +24,7 @@ def handle_gpt3(logline: LogLine, shared_dict: InitializerConfig) -> None:
         main_logger.info(f"Empty '{config.GPT_COMMAND}' command from user '{logline.username}'.")
         return
 
-    main_logger.info(
-        f"'{config.GPT_COMMAND}' command from user '{logline.username}'. "
-        f"Message: '{logline.prompt.removeprefix(config.GPT_COMMAND).strip()}'"
-    )
-    handle_gpt_request(
+    OpenAILLMProvider.get_quick_query_completion(
         logline.username,
         logline.prompt.removeprefix(config.GPT_COMMAND).strip(),
         model=config.GPT3_MODEL,
@@ -35,28 +32,14 @@ def handle_gpt3(logline: LogLine, shared_dict: InitializerConfig) -> None:
     )
 
 
-def handle_user_chat(logline: LogLine, shared_dict: InitializerConfig):
-    user_chat = shared_dict.CHAT_CONVERSATION_HISTORY.get_conversation_history(logline.player)
-
-    conv_his = handle_cgpt_request(
-        logline.username,
-        logline.prompt.removeprefix(config.CHATGPT_COMMAND).strip(),
-        user_chat,
-        is_team=logline.is_team_message,
-        model=config.GPT3_CHAT_MODEL,
-    )
-    shared_dict.CHAT_CONVERSATION_HISTORY.set_conversation_history(logline.player, conv_his)
+class OpenAIPrivateChatCommand(PrivateChatCommand):
+    provider = OpenAILLMProvider
+    model = config.GPT3_CHAT_MODEL
 
 
-def handle_global_chat(logline: LogLine, shared_dict: InitializerConfig):
-    conv_his = handle_cgpt_request(
-        logline.username,
-        logline.prompt.removeprefix(config.GLOBAL_CHAT_COMMAND).strip(),
-        shared_dict.CHAT_CONVERSATION_HISTORY.GLOBAL,
-        is_team=logline.is_team_message,
-        model=config.GPT3_CHAT_MODEL,
-    )
-    shared_dict.CHAT_CONVERSATION_HISTORY.GLOBAL = conv_his
+class OpenAIGlobalChatCommand(GlobalChatCommand):
+    provider = OpenAILLMProvider
+    model = config.GPT3_CHAT_MODEL
 
 
 def handle_gpt4(logline: LogLine, shared_dict: InitializerConfig):
@@ -65,7 +48,7 @@ def handle_gpt4(logline: LogLine, shared_dict: InitializerConfig):
             and config.HOST_USERNAME == logline.username
             or not config.GPT4_ADMIN_ONLY
     ):
-        handle_gpt_request(
+        OpenAILLMProvider.get_quick_query_completion(
             logline.username,
             logline.prompt.removeprefix(config.GPT4_COMMAND).strip(),
             model=config.GPT4_MODEL,
@@ -79,7 +62,7 @@ def handle_gpt4l(logline: LogLine, shared_dict: InitializerConfig):
             and config.HOST_USERNAME == logline.username
             or not config.GPT4_ADMIN_ONLY
     ):
-        handle_gpt_request(
+        OpenAILLMProvider.get_quick_query_completion(
             logline.username,
             logline.prompt.removeprefix(config.GPT4_LEGACY_COMMAND).strip(),
             model=config.GPT4L_MODEL,
