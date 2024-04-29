@@ -1,13 +1,16 @@
-from config import config
+from config import config, RTDModes
 from modules.api.github import check_for_updates
 from modules.bans import bans_manager
 from modules.bot_state import state_manager
 from modules.command_controllers import CommandController, InitializerConfig
 from modules.commands.clear_chat import handle_clear
 from modules.commands.github import handle_gh_command
-from modules.commands.openai import handle_user_chat, handle_gpt3, handle_gpt4, handle_gpt4l, handle_global_chat
+from modules.commands.groq import GroqQuickQueryCommand, GroqGlobalChatCommand, GroqPrivateChatCommand
+from modules.commands.openai import OpenAIGlobalChatCommand, OpenAIPrivateChatCommand, OpenAIGPT3QuickQueryCommand, \
+    OpenAIGPT4QuickQueryCommand, OpenAIGPT4LQuickQueryCommand
 from modules.commands.rtd import handle_rtd
-from modules.commands.textgen_webui import handle_custom_user_chat, handle_custom_model, handle_custom_global_chat
+from modules.commands.textgen_webui import TextgenWebUIGlobalChatCommand, TextgenWebUIPrivateChatCommand, \
+    TextgenWebUIQuickQueryCommand
 from modules.logs import get_logger
 from modules.message_queueing import messaging_queue_service
 from modules.servers.tf2 import check_connection, set_host_username
@@ -53,18 +56,23 @@ def parse_console_logs_and_build_conversation_history() -> None:
 
     # Commands
     controller.register_command("!gh", handle_gh_command)
-    controller.register_command(config.RTD_COMMAND, handle_rtd)
     controller.register_command(config.CLEAR_CHAT_COMMAND, handle_clear)
+    if config.RTD_MODE != RTDModes.DISABLED:
+        controller.register_command(config.RTD_COMMAND, handle_rtd)
     if config.ENABLE_OPENAI_COMMANDS:
-        controller.register_command(config.GPT4_COMMAND, handle_gpt4)
-        controller.register_command(config.GPT4_LEGACY_COMMAND, handle_gpt4l)
-        controller.register_command(config.CHATGPT_COMMAND, handle_user_chat)
-        controller.register_command(config.GLOBAL_CHAT_COMMAND, handle_global_chat)
-        controller.register_command(config.GPT_COMMAND, handle_gpt3)
+        controller.register_command(config.GPT4_COMMAND, OpenAIGPT4QuickQueryCommand.as_command())
+        controller.register_command(config.GPT4_LEGACY_COMMAND, OpenAIGPT4LQuickQueryCommand.as_command())
+        controller.register_command(config.CHATGPT_COMMAND, OpenAIPrivateChatCommand.as_command())
+        controller.register_command(config.GLOBAL_CHAT_COMMAND, OpenAIGlobalChatCommand.as_command())
+        controller.register_command(config.GPT_COMMAND, OpenAIGPT3QuickQueryCommand.as_command())
     if config.ENABLE_CUSTOM_MODEL:
-        controller.register_command(config.CUSTOM_MODEL_COMMAND, handle_custom_model)
-        controller.register_command(config.CUSTOM_MODEL_CHAT_COMMAND, handle_custom_user_chat)
-        controller.register_command(config.GLOBAL_CUSTOM_CHAT_COMMAND, handle_custom_global_chat)
+        controller.register_command(config.CUSTOM_MODEL_COMMAND, TextgenWebUIQuickQueryCommand.as_command())
+        controller.register_command(config.CUSTOM_MODEL_CHAT_COMMAND, TextgenWebUIPrivateChatCommand.as_command())
+        controller.register_command(config.GLOBAL_CUSTOM_CHAT_COMMAND, TextgenWebUIGlobalChatCommand.as_command())
+    if config.GROQ_ENABLE:
+        controller.register_command(config.GROQ_COMMAND, GroqQuickQueryCommand.as_command())
+        controller.register_command(config.GROQ_CHAT_COMMAND, GroqGlobalChatCommand.as_command())
+        controller.register_command(config.GROQ_PRIVATE_CHAT, GroqPrivateChatCommand.as_command())
 
     # Services
     controller.register_service(messaging_queue_service)

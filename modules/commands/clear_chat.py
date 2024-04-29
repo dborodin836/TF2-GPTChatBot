@@ -9,10 +9,12 @@ from config import config
 main_logger = get_logger("main")
 combo_logger = get_logger("combo")
 
+CLEAR_WRONG_SYNTAX_MSG = r'Wrong syntax! e.g. !clear \global \user="username"'
+
 
 def handle_clear(logline: LogLine, shared_dict: InitializerConfig):
     if is_admin(logline.player):
-        args = get_args(logline.prompt.removeprefix(config.CLEAR_CHAT_COMMAND).strip())
+        args = get_args(logline.prompt)
 
         if len(args) == 0:
             combo_logger.info(f"Clearing chat history for user '{logline.username}'.")
@@ -30,7 +32,7 @@ def handle_clear(logline: LogLine, shared_dict: InitializerConfig):
             try:
                 parts = arg.split("=")
                 if len(parts) != 2:
-                    combo_logger.error(r'Wrong syntax! e.g. !clear \global \user="username"')
+                    combo_logger.error(CLEAR_WRONG_SYNTAX_MSG)
                     continue
 
                 name: str
@@ -38,11 +40,11 @@ def handle_clear(logline: LogLine, shared_dict: InitializerConfig):
                 arg, name = parts
 
                 if arg != r"\user":
-                    combo_logger.error(r'Wrong syntax! e.g. !clear \global \user="username"')
+                    combo_logger.error(CLEAR_WRONG_SYNTAX_MSG)
                     continue
 
                 if not (name.startswith("'") and name.endswith("'")):
-                    combo_logger.error(r'Wrong syntax! e.g. !clear \global \user="username"')
+                    combo_logger.error(CLEAR_WRONG_SYNTAX_MSG)
                     continue
 
                 name = name.removeprefix("'")

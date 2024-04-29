@@ -85,6 +85,14 @@ class Config(BaseModel):
 
     CUSTOM_MODEL_SETTINGS: Optional[str | dict]
 
+    GROQ_API_KEY: str
+    GROQ_COMMAND: str
+    GROQ_CHAT_COMMAND: str
+    GROQ_PRIVATE_CHAT: str
+    GROQ_MODEL: str
+    GROQ_ENABLE: bool
+    GROQ_SETTINGS: Optional[str | dict]
+
     @validator("OPENAI_API_KEY")
     def api_key_pattern_match(cls, v):
         if not re.fullmatch(OPENAI_API_KEY_RE_PATTERN, v):
@@ -158,6 +166,7 @@ def init_config():
             for key, value in configparser_config.items(section)
         }
         global config
+
         try:
             if config_dict.get("CUSTOM_MODEL_SETTINGS") != "":
                 config_dict["CUSTOM_MODEL_SETTINGS"] = json.loads(
@@ -168,9 +177,19 @@ def init_config():
                 f"CUSTOM_MODEL_SETTINGS is not dict [{e}].", "BOTH", level="ERROR"
             )
 
+        try:
+            if config_dict.get("GROQ_SETTINGS") != "":
+                config_dict["GROQ_SETTINGS"] = json.loads(
+                    config_dict.get("GROQ_SETTINGS")
+                )
+        except Exception as e:
+            buffered_fail_message(
+                f"GROQ_SETTINGS is not dict [{e}].", "BOTH", level="ERROR"
+            )
+
         config = Config(**config_dict)
 
-        if not config.ENABLE_OPENAI_COMMANDS and not config.ENABLE_CUSTOM_MODEL:
+        if not config.ENABLE_OPENAI_COMMANDS and not config.ENABLE_CUSTOM_MODEL and not config.GROQ_ENABLE:
             buffered_message("You haven't enabled any AI related commands.")
 
     except (pydantic.ValidationError, Exception) as e:

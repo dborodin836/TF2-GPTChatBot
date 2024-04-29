@@ -80,11 +80,14 @@ def get_time_stamp() -> str:
     return f"{dt.now().strftime('%H:%M:%S')}"
 
 
-def log_gui_model_message(message_type: str, username: str, user_prompt: str) -> None:
+def log_gui_model_message(type_: str, username: str, message: str) -> None:
     """
     Logs a message with the current timestamp, message type, username, user_id, and prompt text.
     """
-    log_msg = f"[{get_time_stamp()}] ({message_type}) User: '{username}' --- '{user_prompt}'"
+    if message:
+        log_msg = f"[{get_time_stamp()}] ({type_}) User: '{username}' --- '{message}'"
+    else:
+        log_msg = f"[{get_time_stamp()}] ({type_}) User: '{username}'"
     __gui_logger.info(log_msg)
 
 

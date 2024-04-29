@@ -3,7 +3,7 @@ import time
 
 import openai
 
-from modules.api.openai import send_gpt_completion_request
+from modules.api.openai import OpenAILLMProvider
 from modules.logs import get_logger
 from modules.typing import Message
 
@@ -23,7 +23,7 @@ def gpt3_cmd_handler() -> None:
         if GPT3_PROMPTS_QUEUE.qsize() != 0:
             prompt = GPT3_PROMPTS_QUEUE.get()
             try:
-                response = send_gpt_completion_request(
+                response = OpenAILLMProvider.get_completion_text(
                     [Message(role="user", content=prompt)],
                     "admin",
                     model="gpt-3.5-turbo",
