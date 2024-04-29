@@ -12,7 +12,7 @@ main_logger = get_logger("main")
 
 
 def handle_gpt3(logline: LogLine, shared_dict: InitializerConfig) -> None:
-    if logline.prompt.removeprefix(config.GPT_COMMAND).strip() == "":
+    if logline.prompt == "":
         time.sleep(1)
         send_say_command_to_tf2(
             "Hello there! I am ChatGPT, a ChatGPT plugin integrated into"
@@ -26,7 +26,7 @@ def handle_gpt3(logline: LogLine, shared_dict: InitializerConfig) -> None:
 
     OpenAILLMProvider.get_quick_query_completion(
         logline.username,
-        logline.prompt.removeprefix(config.GPT_COMMAND).strip(),
+        logline.prompt,
         model=config.GPT3_MODEL,
         is_team_chat=logline.is_team_message,
     )
@@ -50,7 +50,7 @@ def handle_gpt4(logline: LogLine, shared_dict: InitializerConfig):
     ):
         OpenAILLMProvider.get_quick_query_completion(
             logline.username,
-            logline.prompt.removeprefix(config.GPT4_COMMAND).strip(),
+            logline.prompt,
             model=config.GPT4_MODEL,
             is_team_chat=logline.is_team_message,
         )
@@ -64,7 +64,7 @@ def handle_gpt4l(logline: LogLine, shared_dict: InitializerConfig):
     ):
         OpenAILLMProvider.get_quick_query_completion(
             logline.username,
-            logline.prompt.removeprefix(config.GPT4_LEGACY_COMMAND).strip(),
+            logline.prompt,
             model=config.GPT4L_MODEL,
             is_team_chat=logline.is_team_message,
         )

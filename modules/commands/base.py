@@ -32,7 +32,7 @@ class GlobalChatCommand:
         def func(logline: LogLine, shared_dict: InitializerConfig) -> None:
             chat_history = cls.provider.get_chat_completion(
                 logline.username,
-                logline.prompt.removeprefix(config.GROQ_CHAT_COMMAND).strip(),
+                logline.prompt,
                 shared_dict.CHAT_CONVERSATION_HISTORY.GLOBAL,
                 is_team=logline.is_team_message,
                 model=cls.model,
@@ -53,7 +53,7 @@ class PrivateChatCommand:
 
             chat_history = cls.provider.get_chat_completion(
                 logline.username,
-                logline.prompt.removeprefix(config.GROQ_PRIVATE_CHAT).strip(),
+                logline.prompt,
                 user_chat,
                 is_team=logline.is_team_message,
                 model=cls.model,

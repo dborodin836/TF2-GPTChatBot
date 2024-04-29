@@ -12,7 +12,7 @@ combo_logger = get_logger("combo")
 
 def handle_clear(logline: LogLine, shared_dict: InitializerConfig):
     if is_admin(logline.player):
-        args = get_args(logline.prompt.removeprefix(config.CLEAR_CHAT_COMMAND).strip())
+        args = get_args(logline.prompt)
 
         if len(args) == 0:
             combo_logger.info(f"Clearing chat history for user '{logline.username}'.")
