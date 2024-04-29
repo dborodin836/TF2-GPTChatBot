@@ -6,7 +6,7 @@ from modules.command_controllers import InitializerConfig
 from modules.logs import get_logger, log_gui_model_message
 from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import LogLine
-from modules.commands.base import GlobalChatCommand, PrivateChatCommand, QuickQueryCommand
+from modules.commands.base import GlobalChatLLMCommand, PrivateChatLLMCommand, QuickQueryLLMCommand
 from modules.commands.decorators import empty_prompt_wrapper_handler_factory, gpt4_admin_only, openai_moderated_message
 
 main_logger = get_logger("main")
@@ -24,7 +24,7 @@ def handle_empty(logline: LogLine, shared_dict: InitializerConfig):
     main_logger.info(f"Empty '{config.GPT_COMMAND}' command from user '{logline.username}'.")
 
 
-class OpenAIGPT3QuickQueryCommand(QuickQueryCommand):
+class OpenAIGPT3QuickQueryCommand(QuickQueryLLMCommand):
     provider = OpenAILLMProvider
     model = config.GPT3_MODEL
     wrappers = [
@@ -33,7 +33,7 @@ class OpenAIGPT3QuickQueryCommand(QuickQueryCommand):
     ]
 
 
-class OpenAIPrivateChatCommand(PrivateChatCommand):
+class OpenAIPrivateChatCommand(PrivateChatLLMCommand):
     provider = OpenAILLMProvider
     model = config.GPT3_CHAT_MODEL
     wrappers = [
@@ -41,7 +41,7 @@ class OpenAIPrivateChatCommand(PrivateChatCommand):
     ]
 
 
-class OpenAIGlobalChatCommand(GlobalChatCommand):
+class OpenAIGlobalChatCommand(GlobalChatLLMCommand):
     provider = OpenAILLMProvider
     model = config.GPT3_CHAT_MODEL
     wrappers = [
@@ -49,7 +49,7 @@ class OpenAIGlobalChatCommand(GlobalChatCommand):
     ]
 
 
-class OpenAIGPT4QuickQueryCommand(QuickQueryCommand):
+class OpenAIGPT4QuickQueryCommand(QuickQueryLLMCommand):
     provider = OpenAILLMProvider
     model = config.GPT4_MODEL
     wrappers = [
@@ -58,7 +58,7 @@ class OpenAIGPT4QuickQueryCommand(QuickQueryCommand):
     ]
 
 
-class OpenAIGPT4LQuickQueryCommand(QuickQueryCommand):
+class OpenAIGPT4LQuickQueryCommand(QuickQueryLLMCommand):
     provider = OpenAILLMProvider
     model = config.GPT4L_MODEL
     wrappers = [

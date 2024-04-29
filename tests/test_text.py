@@ -4,7 +4,6 @@ import modules.utils.text
 from modules.lobby_manager import LobbyManager
 from modules.typing import Message, LogLine, Player
 from modules.utils.text import (
-    get_system_message,
     get_chunk_size,
     has_cyrillic,
     split_into_chunks,
@@ -66,12 +65,6 @@ def test_get_chunk_size_with_non_cyrillic_text():
     # Test the function with non-Cyrillic text
     text = "Hello, world!"
     assert get_chunk_size(text) == MAX_LENGTH_OTHER
-
-
-def test_get_system_message():
-    expected_output = Message(role="system", content="")
-    result = get_system_message(r"\l Please enter your name")
-    assert result == expected_output
 
 
 def test_get_args():

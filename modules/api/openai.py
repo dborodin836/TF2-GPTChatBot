@@ -5,10 +5,8 @@ import openai
 
 from config import config
 from modules.api.base import LLMProvider
-from modules.logs import get_logger, log_gui_general_message, log_gui_model_message
-from modules.servers.tf2 import send_say_command_to_tf2
-from modules.typing import Message
-from modules.utils.text import get_system_message, remove_args, remove_hashtags
+from modules.logs import get_logger, log_gui_general_message
+from modules.utils.text import remove_hashtags
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")

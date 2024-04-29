@@ -2,10 +2,7 @@ import requests
 
 from config import config
 from modules.api.base import LLMProvider
-from modules.logs import get_logger, log_gui_model_message
-from modules.servers.tf2 import send_say_command_to_tf2
-from modules.typing import Message
-from modules.utils.text import get_system_message, remove_args
+from modules.logs import get_logger
 
 main_logger = get_logger("main")
 combo_logger = get_logger("combo")

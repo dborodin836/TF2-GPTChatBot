@@ -1,21 +1,21 @@
 from config import config
 from modules.api.groq import GroqCloudLLMProvider
-from modules.commands.base import QuickQueryCommand, GlobalChatCommand, PrivateChatCommand
+from modules.commands.base import QuickQueryLLMCommand, GlobalChatLLMCommand, PrivateChatLLMCommand
 from modules.logs import get_logger
 
 main_logger = get_logger('main')
 
 
-class GroqQuickQueryCommand(QuickQueryCommand):
+class GroqQuickQueryCommand(QuickQueryLLMCommand):
     provider = GroqCloudLLMProvider
     model = config.GROQ_MODEL
 
 
-class GroqGlobalChatCommand(GlobalChatCommand):
+class GroqGlobalChatCommand(GlobalChatLLMCommand):
     provider = GroqCloudLLMProvider
     model = config.GROQ_MODEL
 
 
-class GroqPrivateChatCommand(PrivateChatCommand):
+class GroqPrivateChatCommand(PrivateChatLLMCommand):
     provider = GroqCloudLLMProvider
     model = config.GROQ_MODEL
