@@ -1,9 +1,11 @@
+import time
 from typing import Callable, List
 
 from config import config
 from modules.api.openai import is_flagged
 from modules.command_controllers import InitializerConfig
 from modules.permissions import is_admin
+from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import LogLine, Player
 from modules.logs import get_logger
 
@@ -23,6 +25,35 @@ def empty_prompt_wrapper_handler_factory(handler: Callable):
     return decorator
 
 
+def empty_prompt_message_response(msg: str):
+    def decorator(func):
+        def wrapper(logline: LogLine, shared_dict: InitializerConfig):
+            time.sleep(1)
+            send_say_command_to_tf2(
+                msg,
+                username=None,
+                is_team_chat=logline.is_team_message,
+            )
+            return None
+
+        return wrapper
+
+    return decorator
+
+
+def admin_only(func):
+    def wrapper(logline: LogLine, shared_dict: InitializerConfig):
+        if (
+                config.GPT4_ADMIN_ONLY
+                and is_admin(logline.player)
+                or not config.GPT4_ADMIN_ONLY
+        ):
+            return func(logline, shared_dict)
+        raise Exception('User is not admin.')
+
+    return wrapper
+
+
 def gpt4_admin_only(func):
     def wrapper(logline: LogLine, shared_dict: InitializerConfig):
         if (
@@ -36,7 +67,7 @@ def gpt4_admin_only(func):
     return wrapper
 
 
-def openai_moderated_message(func):
+def openai_moderated(func):
     def wrapper(logline: LogLine, shared_dict: InitializerConfig):
         if (
                 not config.TOS_VIOLATION

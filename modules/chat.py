@@ -2,6 +2,7 @@ from config import config, RTDModes
 from modules.api.github import check_for_updates
 from modules.bans import bans_manager
 from modules.bot_state import state_manager
+from modules.builder import load_commands
 from modules.command_controllers import CommandController, InitializerConfig
 from modules.commands.clear_chat import handle_clear
 from modules.commands.github import handle_gh_command
@@ -23,6 +24,8 @@ gui_logger = get_logger("gui")
 main_logger = get_logger("main")
 combo_logger = get_logger("combo")
 
+controller = CommandController(InitializerConfig())
+
 
 def setup() -> None:
     """
@@ -39,10 +42,11 @@ def setup() -> None:
     """
     )
     check_for_updates()
-    check_connection()
     set_host_username()
     set_host_steamid3()
+    load_commands(controller)
     load_prompts()
+    check_connection()
     print_buffered_config_innit_messages()
 
 
@@ -51,8 +55,6 @@ def parse_console_logs_and_build_conversation_history() -> None:
     Processes the console logs and builds a conversation history, filters banned usernames.
     """
     setup()
-
-    controller = CommandController(InitializerConfig())
 
     # Commands
     controller.register_command("!gh", handle_gh_command)

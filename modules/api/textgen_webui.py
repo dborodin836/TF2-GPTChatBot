@@ -11,12 +11,13 @@ combo_logger = get_logger("combo")
 class TextGenerationWebUILLMProvider(LLMProvider):
 
     @staticmethod
-    def get_completion_text(conversation_history, username, model):
+    def get_completion_text(conversation_history, username, model, settings):
         uri = f"http://{config.CUSTOM_MODEL_HOST}/v1/chat/completions"
         headers = {"Content-Type": "application/json"}
 
         data = {"mode": "chat", "messages": conversation_history}
-        data.update(config.CUSTOM_MODEL_SETTINGS)
+        if isinstance(settings, dict):
+            data.update(settings)
 
         response = requests.post(uri, headers=headers, json=data, verify=False)
         if response.status_code == 500:
