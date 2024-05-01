@@ -1,3 +1,5 @@
+from typing import Optional
+
 from config import config
 from modules.lobby_manager import lobby_manager
 from modules.typing import Message, MessageHistory
@@ -6,23 +8,26 @@ from modules.utils.text import get_args, remove_args
 
 
 class ConversationHistory:
-    def __init__(self):
+    def __init__(self, settings: dict = None):
         self.custom_prompt: str = ""
         self.enable_soft_limit: bool = True
         self.enable_stats: bool = False
         self.message_history: MessageHistory = list()
+        self.settings = settings or {}
 
     def _get_system_message(self) -> Message:
         sys_msg = []
 
-        if self.custom_prompt:
-            sys_msg.append(self.custom_prompt)
+        if prompt := self.settings.get('prompt') or self.custom_prompt:
+            sys_msg.append(prompt)
 
-        if self.enable_soft_limit:
-            sys_msg.append(f"Answer in less than {config.SOFT_COMPLETION_LIMIT} chars!")
+        enable_soft_limit = self.settings.get('enable-soft-limit') if self.settings.get('enable-soft-limit') else self.enable_soft_limit
+        if enable_soft_limit:
+            length = self.settings.get('soft-limit') if self.settings.get('soft-limit') else config.SOFT_COMPLETION_LIMIT
+            sys_msg.append(f"Answer in less than {length} chars!")
 
-        if config.CUSTOM_PROMPT:
-            sys_msg.append(config.CUSTOM_PROMPT)
+        if prompt := self.settings.get('custom-prompt') or config.CUSTOM_PROMPT:
+            sys_msg.append(prompt)
 
         if self.enable_stats:
             sys_msg.insert(
@@ -35,8 +40,8 @@ class ConversationHistory:
     def get_messages_array(self) -> MessageHistory:
         array = [self._get_system_message()]
 
-        if config.GREETING:
-            array.append(Message(role="assistant", content=config.GREETING))
+        if greeting := self.settings.get('greeting') or config.GREETING:
+            array.append(Message(role="assistant", content=greeting))
 
         array.extend(self.message_history)
 
@@ -53,10 +58,11 @@ class ConversationHistory:
         user_message = remove_args(user_prompt)
         args = get_args(user_prompt)
 
-        for prompt in PROMPTS:
-            if prompt["flag"] in args:
-                self.custom_prompt = prompt["prompt"]
-                break
+        if self.settings.get('allow-prompt-overwrite', True):
+            for prompt in PROMPTS:
+                if prompt["flag"] in args:
+                    self.custom_prompt = prompt["prompt"]
+                    break
 
         if r"\l" in args or not enable_soft_limit:
             self.enable_soft_limit = False

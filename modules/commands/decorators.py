@@ -5,7 +5,7 @@ from config import config
 from modules.api.llm.openai import is_flagged
 from modules.command_controllers import InitializerConfig
 from modules.permissions import is_admin
-from modules.servers.tf2 import send_say_command_to_tf2
+from modules.servers.tf2 import format_say_message, send_say_command_to_tf2
 from modules.typing import LogLine, Player
 from modules.logs import get_logger
 
@@ -28,13 +28,16 @@ def empty_prompt_wrapper_handler_factory(handler: Callable):
 def empty_prompt_message_response(msg: str):
     def decorator(func):
         def wrapper(logline: LogLine, shared_dict: InitializerConfig):
-            time.sleep(1)
-            send_say_command_to_tf2(
-                msg,
-                username=None,
-                is_team_chat=logline.is_team_message,
-            )
-            return None
+            if logline.prompt == '':
+                time.sleep(1)
+                message = format_say_message(msg, logline.username)
+                send_say_command_to_tf2(
+                    message,
+                    username=None,
+                    is_team_chat=logline.is_team_message,
+                )
+                return None
+            return func(logline, shared_dict)
 
         return wrapper
 

@@ -11,7 +11,6 @@ from modules.utils.text import remove_args
 
 class BaseCommand(ABC):
     wrappers: List[Callable] = []
-    settings = {}
 
     @classmethod
     @abstractmethod
@@ -28,71 +27,52 @@ class BaseCommand(ABC):
         return func
 
 
-class LLMCommand(BaseCommand):
+class ChatLLMCommand(BaseCommand):
     provider: LLMProvider = None
     model: str = None
+    model_settings = {}
+    chat: ConversationHistory = None
+    chat_settings = {}
 
     @classmethod
     @abstractmethod
-    def get_handler(cls):
+    def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory:
         ...
 
-
-class QuickQueryLLMCommand(LLMCommand):
-
     @classmethod
     def get_handler(cls) -> Callable[[LogLine, InitializerConfig], None]:
         def func(logline: LogLine, shared_dict: InitializerConfig) -> Optional[str]:
-            tmp_chat_history = ConversationHistory()
+            chat = cls.get_chat(logline, shared_dict)
 
             user_message = remove_args(logline.prompt)
-            tmp_chat_history.add_user_message_from_prompt(user_message)
+            chat.add_user_message_from_prompt(user_message)
 
-            response = cls.provider.get_completion_text(tmp_chat_history.get_messages_array(), logline.username,
-                                                        cls.model, cls.settings)
+            response = cls.provider.get_completion_text(chat.get_messages_array(), logline.username,
+                                                        cls.model, cls.model_settings)
             if response:
-                tmp_chat_history.add_assistant_message(Message(role="assistant", content=response))
+                chat.add_assistant_message(Message(role="assistant", content=response))
                 send_say_command_to_tf2(response, logline.username, logline.is_team_message)
                 return " ".join(response.split())
 
         return func
 
 
-class GlobalChatLLMCommand(LLMCommand):
+class QuickQueryLLMCommand(ChatLLMCommand):
 
     @classmethod
-    def get_handler(cls) -> Callable[[LogLine, InitializerConfig], None]:
-        def func(logline: LogLine, shared_dict: InitializerConfig) -> Optional[str]:
-            chat_history = shared_dict.CHAT_CONVERSATION_HISTORY.GLOBAL
-
-            user_message = remove_args(logline.prompt)
-            chat_history.add_user_message_from_prompt(user_message)
-
-            response = cls.provider.get_completion_text(chat_history.get_messages_array(), logline.username,
-                                                        cls.model, cls.settings)
-            if response:
-                chat_history.add_assistant_message(Message(role="assistant", content=response))
-                send_say_command_to_tf2(response, logline.username, logline.is_team_message)
-                return " ".join(response.split())
-
-        return func
+    def get_chat(cls, logline, shared_dict) -> ConversationHistory:
+        return ConversationHistory()
 
 
-class PrivateChatLLMCommand(LLMCommand):
+class GlobalChatChatLLMCommand(ChatLLMCommand):
 
     @classmethod
-    def get_handler(cls) -> Callable[[LogLine, InitializerConfig], None]:
-        def func(logline: LogLine, shared_dict: InitializerConfig) -> Optional[str]:
-            chat_history = shared_dict.CHAT_CONVERSATION_HISTORY.get_conversation_history(logline.player)
+    def get_chat(cls, logline, shared_dict) -> ConversationHistory:
+        return shared_dict.CHAT_CONVERSATION_HISTORY.GLOBAL
 
-            user_message = remove_args(logline.prompt)
-            chat_history.add_user_message_from_prompt(user_message)
 
-            response = cls.provider.get_completion_text(chat_history.get_messages_array(), logline.username,
-                                                        cls.model, cls.settings)
-            if response:
-                chat_history.add_assistant_message(Message(role="assistant", content=response))
-                send_say_command_to_tf2(response, logline.username, logline.is_team_message)
-                return " ".join(response.split())
+class PrivateChatChatLLMCommand(ChatLLMCommand):
 
-        return func
+    @classmethod
+    def get_chat(cls, logline, shared_dict) -> ConversationHistory:
+        return shared_dict.CHAT_CONVERSATION_HISTORY.get_conversation_history(logline.player)

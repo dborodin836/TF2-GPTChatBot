@@ -1,18 +1,18 @@
 from modules.api.llm.textgen_webui import TextGenerationWebUILLMProvider
-from modules.commands.base import QuickQueryLLMCommand, GlobalChatLLMCommand, PrivateChatLLMCommand
+from modules.commands.base import QuickQueryLLMCommand, GlobalChatChatLLMCommand, PrivateChatChatLLMCommand
 from config import config
 
 
 class TextgenWebUIQuickQueryCommand(QuickQueryLLMCommand):
     provider = TextGenerationWebUILLMProvider
-    settings = config.CUSTOM_MODEL_SETTINGS
+    model_settings = config.CUSTOM_MODEL_SETTINGS
 
 
-class TextgenWebUIGlobalChatCommand(GlobalChatLLMCommand):
+class TextgenWebUIGlobalChatCommand(GlobalChatChatLLMCommand):
     provider = TextGenerationWebUILLMProvider
-    settings = config.CUSTOM_MODEL_SETTINGS
+    model_settings = config.CUSTOM_MODEL_SETTINGS
 
 
-class TextgenWebUIPrivateChatCommand(PrivateChatLLMCommand):
+class TextgenWebUIPrivateChatCommand(PrivateChatChatLLMCommand):
     provider = TextGenerationWebUILLMProvider
-    settings = config.CUSTOM_MODEL_SETTINGS
+    model_settings = config.CUSTOM_MODEL_SETTINGS

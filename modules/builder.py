@@ -1,4 +1,3 @@
-import enum
 import os.path
 from typing import List
 
@@ -7,31 +6,41 @@ import yaml
 from modules.api.llm.groq import GroqCloudLLMProvider
 from modules.api.llm.openai import OpenAILLMProvider
 from modules.api.llm.textgen_webui import TextGenerationWebUILLMProvider
+from modules.command_controllers import CommandController
 
-from modules.commands.base import LLMCommand, GlobalChatLLMCommand, PrivateChatLLMCommand, QuickQueryLLMCommand
+from modules.commands.base import ChatLLMCommand, GlobalChatChatLLMCommand, PrivateChatChatLLMCommand, \
+    QuickQueryLLMCommand
 from modules.commands.decorators import admin_only, openai_moderated, empty_prompt_message_response
 from modules.logs import get_logger
 
 main_logger = get_logger('main')
 gui_logger = get_logger("gui")
 
+TYPES = {
+    'quick-query': QuickQueryLLMCommand,
+    'global-chat': GlobalChatChatLLMCommand,
+    'private-chat': PrivateChatChatLLMCommand
+}
 
-class Types(enum.Enum):
-    quick_query = QuickQueryLLMCommand
-    global_chat = GlobalChatLLMCommand
-    private_chat = PrivateChatLLMCommand
+PROVIDERS = {
+    'open-ai': OpenAILLMProvider,
+    'global-chat': GroqCloudLLMProvider,
+    'private-chat': TextGenerationWebUILLMProvider
+}
 
+WRAPPERS = {
+    'openai_moderated': openai_moderated,
+    'admin_only': admin_only,
+    'empty_prompt_message_response': empty_prompt_message_response
+}
 
-class Providers(enum.Enum):
-    OpenAI = OpenAILLMProvider
-    GroqCloud = GroqCloudLLMProvider
-    TextGenerationWebUI = TextGenerationWebUILLMProvider
-
-
-class Wrappers(enum.Enum):
-    moderated = openai_moderated
-    admin_only = admin_only
-    empty_prompt_message_response = empty_prompt_message_response
+CHAT_SETTINGS = (
+    'prompt',
+    'enable-soft-limit',
+    'soft-limit',
+    'custom-prompt',
+    'greeting'
+)
 
 
 def get_commands_from_yaml() -> List[dict]:
@@ -41,22 +50,23 @@ def get_commands_from_yaml() -> List[dict]:
     return data['commands']
 
 
-def create_command_from_dict(cmd: dict) -> LLMCommand:
+def create_command_from_dict(cmd: dict) -> ChatLLMCommand:
     class_name = f"DynamicCommand"
     command_dict = {}
 
     # Command type
     try:
-        type_ = getattr(Types, cmd['type']).value
+        type_ = TYPES[cmd['type']]
     except Exception as e:
-        raise Exception(f'Command type is invalid or missing. Expected one of {[type_.value for type_ in Types]}')
+        raise Exception(f'Command type is invalid or missing. Expected one of {list(TYPES.keys())}')
 
     # Provider type
     try:
-        provider = getattr(Providers, cmd['provider']).value
+        provider = PROVIDERS[cmd['provider']]
+        command_dict.update(provider=provider)
     except Exception as e:
         raise Exception(
-            f'Command type is invalid or missing. Expected one of {[provider.value for provider in Providers]}'
+            f'Command type is invalid or missing. Expected one of {list(PROVIDERS.keys())}'
         )
 
     # Model
@@ -67,27 +77,39 @@ def create_command_from_dict(cmd: dict) -> LLMCommand:
         raise Exception(f'Model name is invalid or missing.')
 
     # Update command wrappers
-    if cmd.get('traits'):
+    if traits := cmd.get('traits'):
         wrappers = []
-        for item in cmd['traits']:
-            if isinstance(item, dict):
-                key = list(item)[0]
-                values = item[key]
-                factory = getattr(Wrappers, key)
-                wrappers.append(factory(*values))
-            elif isinstance(item, str):
-                wrapper = getattr(Wrappers, item)
-                wrappers.append(wrapper)
+        for wrapper_obj in traits:
+            try:
+                if isinstance(wrapper_obj, dict):
+                    key = list(wrapper_obj)[0]
+                    values = wrapper_obj[key]
+                    factory = WRAPPERS[key]
+                    wrappers.append(factory(*values))
+                elif isinstance(wrapper_obj, str):
+                    wrapper = WRAPPERS[wrapper_obj]
+                    wrappers.append(wrapper)
+            except Exception as e:
+                gui_logger.warning(f'{e} is not a valid trait.')
         command_dict.update(wrappers=wrappers)
 
     # Update command settings
-    if settings := cmd.get('settings'):
-        command_dict.update(settings=settings)
+    if model_settings := cmd.get('model_settings'):
+        command_dict.update(model_settings=model_settings)
+
+    # Update command settings
+    if chat_settings := cmd.get('chat_settings'):
+        # Verify for unknown keys
+        for option in chat_settings.keys():
+            if option not in CHAT_SETTINGS:
+                gui_logger.warning(f'"{option}" is not a valid option.')
+        # Update dict
+        command_dict.update(chat_settings=chat_settings)
 
     return type(class_name, (type_,), command_dict)
 
 
-def load_commands(controller):
+def load_commands(controller: CommandController):
     if not os.path.exists('./commands.yaml'):
         main_logger.info('commands.yaml file is missing')
         return None

@@ -6,7 +6,7 @@ from modules.command_controllers import InitializerConfig
 from modules.logs import get_logger
 from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import LogLine
-from modules.commands.base import GlobalChatLLMCommand, PrivateChatLLMCommand, QuickQueryLLMCommand
+from modules.commands.base import GlobalChatChatLLMCommand, PrivateChatChatLLMCommand, QuickQueryLLMCommand
 from modules.commands.decorators import empty_prompt_wrapper_handler_factory, gpt4_admin_only, openai_moderated
 
 main_logger = get_logger("main")
@@ -32,7 +32,7 @@ class OpenAIGPT3QuickQueryCommand(QuickQueryLLMCommand):
     ]
 
 
-class OpenAIPrivateChatCommand(PrivateChatLLMCommand):
+class OpenAIPrivateChatCommand(PrivateChatChatLLMCommand):
     provider = OpenAILLMProvider
     model = config.GPT3_CHAT_MODEL
     wrappers = [
@@ -40,7 +40,7 @@ class OpenAIPrivateChatCommand(PrivateChatLLMCommand):
     ]
 
 
-class OpenAIGlobalChatCommand(GlobalChatLLMCommand):
+class OpenAIGlobalChatCommand(GlobalChatChatLLMCommand):
     provider = OpenAILLMProvider
     model = config.GPT3_CHAT_MODEL
     wrappers = [

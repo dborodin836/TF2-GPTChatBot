@@ -42,11 +42,11 @@ def setup() -> None:
     """
     )
     check_for_updates()
-    set_host_username()
-    set_host_steamid3()
     load_commands(controller)
     load_prompts()
     check_connection()
+    set_host_username()
+    set_host_steamid3()
     print_buffered_config_innit_messages()
 
 
