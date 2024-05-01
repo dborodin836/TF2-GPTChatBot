@@ -40,3 +40,11 @@ def load_prompts() -> None:
     combo_logger.info(
         f'Loaded {len([f for f in os.listdir("prompts") if f.endswith(".txt")])} models!'
     )
+
+
+def get_prompt_by_name(name: str) -> str:
+    for prompt in PROMPTS:
+        if prompt['flag'] == f'\\{name}':
+            return prompt["prompt"]
+    gui_logger.warning(f"Prompt {name} does not exist.")
+    return ''

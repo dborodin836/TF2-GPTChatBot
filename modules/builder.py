@@ -10,7 +10,7 @@ from modules.command_controllers import CommandController
 
 from modules.commands.base import ChatLLMCommand, GlobalChatChatLLMCommand, PrivateChatChatLLMCommand, \
     QuickQueryLLMCommand
-from modules.commands.decorators import admin_only, openai_moderated, empty_prompt_message_response
+from modules.commands.decorators import admin_only, disabled, openai_moderated, empty_prompt_message_response
 from modules.logs import get_logger
 
 main_logger = get_logger('main')
@@ -29,17 +29,20 @@ PROVIDERS = {
 }
 
 WRAPPERS = {
-    'openai_moderated': openai_moderated,
-    'admin_only': admin_only,
-    'empty_prompt_message_response': empty_prompt_message_response
+    'openai-moderated': openai_moderated,
+    'admin-only': admin_only,
+    'empty-prompt-message-response': empty_prompt_message_response,
+    'disabled': disabled,
+
 }
 
 CHAT_SETTINGS = (
-    'prompt',
+    'prompt-file',
     'enable-soft-limit',
-    'soft-limit',
-    'custom-prompt',
-    'greeting'
+    'soft-limit-length',
+    'message-suffix',
+    'greeting',
+    'allow-prompt-overwrite'
 )
 
 
@@ -79,7 +82,8 @@ def create_command_from_dict(cmd: dict) -> ChatLLMCommand:
     # Update command wrappers
     if traits := cmd.get('traits'):
         wrappers = []
-        for wrapper_obj in traits:
+        # Reverse the order to make it natural, to make wrappers applied from top to bottom in yaml file.
+        for wrapper_obj in traits[::-1]:
             try:
                 if isinstance(wrapper_obj, dict):
                     key = list(wrapper_obj)[0]

@@ -61,7 +61,7 @@ class QuickQueryLLMCommand(ChatLLMCommand):
 
     @classmethod
     def get_chat(cls, logline, shared_dict) -> ConversationHistory:
-        return ConversationHistory()
+        return ConversationHistory(cls.chat_settings)
 
 
 class GlobalChatChatLLMCommand(ChatLLMCommand):

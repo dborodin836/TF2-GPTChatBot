@@ -94,3 +94,10 @@ def permission_decorator_factory(permissions_funcs: List[Callable[[Player], bool
         return wrapper
 
     return permissions_decorator
+
+
+def disabled(func):
+    def wrapper(logline: LogLine, shared_dict: InitializerConfig):
+        raise Exception("This command is disabled.")
+
+    return wrapper

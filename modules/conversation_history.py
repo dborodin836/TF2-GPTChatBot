@@ -3,7 +3,7 @@ from typing import Optional
 from config import config
 from modules.lobby_manager import lobby_manager
 from modules.typing import Message, MessageHistory
-from modules.utils.prompts import PROMPTS
+from modules.utils.prompts import PROMPTS, get_prompt_by_name
 from modules.utils.text import get_args, remove_args
 
 
@@ -18,17 +18,24 @@ class ConversationHistory:
     def _get_system_message(self) -> Message:
         sys_msg = []
 
-        if prompt := self.settings.get('prompt') or self.custom_prompt:
+        prompt_text = ''
+        if prompt_name := self.settings.get('prompt-file'):
+            prompt_text = get_prompt_by_name(prompt_name)
+
+        if prompt := prompt_text or self.custom_prompt:
             sys_msg.append(prompt)
 
+        # Soft limiting the response
         enable_soft_limit = self.settings.get('enable-soft-limit') if self.settings.get('enable-soft-limit') else self.enable_soft_limit
         if enable_soft_limit:
-            length = self.settings.get('soft-limit') if self.settings.get('soft-limit') else config.SOFT_COMPLETION_LIMIT
+            length = self.settings.get('soft-limit-length') if self.settings.get('soft-limit-length') else config.SOFT_COMPLETION_LIMIT
             sys_msg.append(f"Answer in less than {length} chars!")
 
-        if prompt := self.settings.get('custom-prompt') or config.CUSTOM_PROMPT:
+        # Add custom prompt. Acts as a prompt suffix.
+        if prompt := self.settings.get('message-suffix') or config.CUSTOM_PROMPT:
             sys_msg.append(prompt)
 
+        # Stats
         if self.enable_stats:
             sys_msg.insert(
                 0, f"{lobby_manager.get_data()} Based on this data answer following question."
