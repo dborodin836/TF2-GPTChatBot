@@ -2,7 +2,7 @@ import time
 from typing import Callable, List
 
 from config import config
-from modules.api.openai import is_flagged
+from modules.api.llm.openai import is_flagged
 from modules.command_controllers import InitializerConfig
 from modules.permissions import is_admin
 from modules.servers.tf2 import send_say_command_to_tf2

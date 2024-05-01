@@ -1,4 +1,4 @@
-from modules.api.textgen_webui import TextGenerationWebUILLMProvider
+from modules.api.llm.textgen_webui import TextGenerationWebUILLMProvider
 from modules.commands.base import QuickQueryLLMCommand, GlobalChatLLMCommand, PrivateChatLLMCommand
 from config import config
 

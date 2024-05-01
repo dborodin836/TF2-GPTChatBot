@@ -4,11 +4,11 @@ from typing import List
 
 import yaml
 
-from modules.api.groq import GroqCloudLLMProvider
-from modules.api.openai import OpenAILLMProvider
-from modules.api.textgen_webui import TextGenerationWebUILLMProvider
+from modules.api.llm.groq import GroqCloudLLMProvider
+from modules.api.llm.openai import OpenAILLMProvider
+from modules.api.llm.textgen_webui import TextGenerationWebUILLMProvider
 
-from modules.commands.base import BaseLLMCommand, GlobalChatLLMCommand, PrivateChatLLMCommand, QuickQueryLLMCommand
+from modules.commands.base import LLMCommand, GlobalChatLLMCommand, PrivateChatLLMCommand, QuickQueryLLMCommand
 from modules.commands.decorators import admin_only, openai_moderated, empty_prompt_message_response
 from modules.logs import get_logger
 
@@ -41,7 +41,7 @@ def get_commands_from_yaml() -> List[dict]:
     return data['commands']
 
 
-def create_command_from_dict(cmd: dict) -> BaseLLMCommand:
+def create_command_from_dict(cmd: dict) -> LLMCommand:
     class_name = f"DynamicCommand"
     command_dict = {}
 
@@ -90,6 +90,7 @@ def create_command_from_dict(cmd: dict) -> BaseLLMCommand:
 def load_commands(controller):
     if not os.path.exists('./commands.yaml'):
         main_logger.info('commands.yaml file is missing')
+        return None
 
     try:
         commands = get_commands_from_yaml()

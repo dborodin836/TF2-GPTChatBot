@@ -9,9 +9,7 @@ from modules.typing import LogLine, Message
 from modules.utils.text import remove_args
 
 
-class BaseLLMCommand(ABC):
-    provider: LLMProvider = None
-    model: str = None
+class BaseCommand(ABC):
     wrappers: List[Callable] = []
     settings = {}
 
@@ -30,7 +28,17 @@ class BaseLLMCommand(ABC):
         return func
 
 
-class QuickQueryLLMCommand(BaseLLMCommand):
+class LLMCommand(BaseCommand):
+    provider: LLMProvider = None
+    model: str = None
+
+    @classmethod
+    @abstractmethod
+    def get_handler(cls):
+        ...
+
+
+class QuickQueryLLMCommand(LLMCommand):
 
     @classmethod
     def get_handler(cls) -> Callable[[LogLine, InitializerConfig], None]:
@@ -50,7 +58,7 @@ class QuickQueryLLMCommand(BaseLLMCommand):
         return func
 
 
-class GlobalChatLLMCommand(BaseLLMCommand):
+class GlobalChatLLMCommand(LLMCommand):
 
     @classmethod
     def get_handler(cls) -> Callable[[LogLine, InitializerConfig], None]:
@@ -70,7 +78,7 @@ class GlobalChatLLMCommand(BaseLLMCommand):
         return func
 
 
-class PrivateChatLLMCommand(BaseLLMCommand):
+class PrivateChatLLMCommand(LLMCommand):
 
     @classmethod
     def get_handler(cls) -> Callable[[LogLine, InitializerConfig], None]:

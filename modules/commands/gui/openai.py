@@ -3,7 +3,7 @@ import time
 
 import openai
 
-from modules.api.openai import OpenAILLMProvider
+from modules.api.llm.openai import OpenAILLMProvider
 from modules.logs import get_logger
 from modules.typing import Message
 

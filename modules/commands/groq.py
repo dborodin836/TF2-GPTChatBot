@@ -1,5 +1,5 @@
 from config import config
-from modules.api.groq import GroqCloudLLMProvider
+from modules.api.llm.groq import GroqCloudLLMProvider
 from modules.commands.base import QuickQueryLLMCommand, GlobalChatLLMCommand, PrivateChatLLMCommand
 
 
