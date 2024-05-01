@@ -290,33 +290,6 @@ def remove_args(prompt: str) -> str:
     return " ".join(result)
 
 
-def get_system_message(user_prompt: str, enable_soft_limit: bool = True) -> Message:
-    """
-    Adds prompts to a user prompt based on the flags provided in the prompt.
-    """
-    args = get_args(user_prompt)
-    message = ""
-
-    for prompt in PROMPTS:
-        if prompt["flag"] in args:
-            message += prompt["prompt"]
-            break
-
-    if r"\stats" in args:
-        message = (
-                f" {lobby_manager.get_data()} Based on this data answer following question. "
-                + message
-                + " Ignore unknown data."
-        )
-
-    if r"\l" not in args and enable_soft_limit:
-        message += (
-            f" Answer in less than {config.SOFT_COMPLETION_LIMIT} chars! {config.CUSTOM_PROMPT}"
-        )
-
-    return Message(role="system", content=message)
-
-
 def get_status():
     while True:
         try:
