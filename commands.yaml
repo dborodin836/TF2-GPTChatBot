@@ -1,0 +1,18 @@
+commands:
+  - name: '!solly'
+    type: quick-query
+    provider: open-ai
+    model: gpt-3.5-turbo-1106
+    model_settings:
+      max_tokens: 60
+    chat_settings:
+      prompt-file: soldier
+      message-suffix: 'End your response with "I love buckets btw."'
+      enable-soft-limit: false
+      allow-prompt-overwrite: false
+      allow-long: false
+    traits:
+      - admin-only
+      - openai-moderated
+      - empty-prompt-message-response:
+          - "Hello there! I am ChatGPT, a ChatGPT plugin integrated into Team Fortress 2. Ask me anything!"

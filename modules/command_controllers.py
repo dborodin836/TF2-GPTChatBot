@@ -18,12 +18,12 @@ class ChatHistoryManager(BaseModel):
     GLOBAL = ConversationHistory()
 
     def set_conversation_history(self, player: Player, conv_history: ConversationHistory) -> None:
-        attr_name = self._get_conv_history_attr_name(player.steamid64)
+        attr_name = self._get_user_chat_history_attr_name(player.steamid64)
 
         setattr(self, attr_name, conv_history)
 
     def get_conversation_history(self, player: Player) -> ConversationHistory:
-        attr_name = self._get_conv_history_attr_name(player.steamid64)
+        attr_name = self._get_user_chat_history_attr_name(player.steamid64)
 
         if hasattr(self, attr_name):
             return getattr(self, attr_name)
@@ -32,7 +32,7 @@ class ChatHistoryManager(BaseModel):
             setattr(self, attr_name, ConversationHistory())
             return getattr(self, attr_name)
 
-    def _get_conv_history_attr_name(self, id64: int) -> str:
+    def _get_user_chat_history_attr_name(self, id64: int) -> str:
         return f"USER_{id64}_CH"
 
     class Config(BaseConfig):

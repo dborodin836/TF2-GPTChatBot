@@ -27,7 +27,7 @@ class BaseCommand(ABC):
         return func
 
 
-class ChatLLMCommand(BaseCommand):
+class LLMChatCommand(BaseCommand):
     provider: LLMProvider = None
     model: str = None
     model_settings = {}
@@ -57,21 +57,21 @@ class ChatLLMCommand(BaseCommand):
         return func
 
 
-class QuickQueryLLMCommand(ChatLLMCommand):
+class QuickQueryLLMCommand(LLMChatCommand):
 
     @classmethod
     def get_chat(cls, logline, shared_dict) -> ConversationHistory:
         return ConversationHistory(cls.chat_settings)
 
 
-class GlobalChatChatLLMCommand(ChatLLMCommand):
+class GlobalChatLLMChatCommand(LLMChatCommand):
 
     @classmethod
     def get_chat(cls, logline, shared_dict) -> ConversationHistory:
         return shared_dict.CHAT_CONVERSATION_HISTORY.GLOBAL
 
 
-class PrivateChatChatLLMCommand(ChatLLMCommand):
+class PrivateChatLLMChatCommand(LLMChatCommand):
 
     @classmethod
     def get_chat(cls, logline, shared_dict) -> ConversationHistory:

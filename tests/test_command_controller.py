@@ -17,7 +17,7 @@ def test_chat_conversation_history_basic():
     chm.get_conversation_history(pl1)
     user_chats_keys = [x for x in list(chm.__dict__) if x.startswith("USER_")]
     assert len(user_chats_keys) == 1
-    assert chm._get_conv_history_attr_name(pl1.steamid64) in user_chats_keys
+    assert chm._get_user_chat_history_attr_name(pl1.steamid64) in user_chats_keys
 
 
 def test_chat_conversation_history_isolation():

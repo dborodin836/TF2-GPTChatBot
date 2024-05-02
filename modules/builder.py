@@ -8,7 +8,7 @@ from modules.api.llm.openai import OpenAILLMProvider
 from modules.api.llm.textgen_webui import TextGenerationWebUILLMProvider
 from modules.command_controllers import CommandController
 
-from modules.commands.base import ChatLLMCommand, GlobalChatChatLLMCommand, PrivateChatChatLLMCommand, \
+from modules.commands.base import LLMChatCommand, GlobalChatLLMChatCommand, PrivateChatLLMChatCommand, \
     QuickQueryLLMCommand
 from modules.commands.decorators import admin_only, disabled, openai_moderated, empty_prompt_message_response
 from modules.logs import get_logger
@@ -18,16 +18,17 @@ gui_logger = get_logger("gui")
 
 TYPES = {
     'quick-query': QuickQueryLLMCommand,
-    'global-chat': GlobalChatChatLLMCommand,
-    'private-chat': PrivateChatChatLLMCommand
+    'global-chat': GlobalChatLLMChatCommand,
+    'private-chat': PrivateChatLLMChatCommand
 }
 
 PROVIDERS = {
     'open-ai': OpenAILLMProvider,
-    'global-chat': GroqCloudLLMProvider,
-    'private-chat': TextGenerationWebUILLMProvider
+    'groq-cloud': GroqCloudLLMProvider,
+    'text-generation-webui': TextGenerationWebUILLMProvider
 }
 
+# Traits
 WRAPPERS = {
     'openai-moderated': openai_moderated,
     'admin-only': admin_only,
@@ -42,7 +43,8 @@ CHAT_SETTINGS = (
     'soft-limit-length',
     'message-suffix',
     'greeting',
-    'allow-prompt-overwrite'
+    'allow-prompt-overwrite',
+    'allow-long'
 )
 
 
@@ -53,7 +55,7 @@ def get_commands_from_yaml() -> List[dict]:
     return data['commands']
 
 
-def create_command_from_dict(cmd: dict) -> ChatLLMCommand:
+def create_command_from_dict(cmd: dict) -> LLMChatCommand:
     class_name = f"DynamicCommand"
     command_dict = {}
 

@@ -46,11 +46,7 @@ def empty_prompt_message_response(msg: str):
 
 def admin_only(func):
     def wrapper(logline: LogLine, shared_dict: InitializerConfig):
-        if (
-                config.GPT4_ADMIN_ONLY
-                and is_admin(logline.player)
-                or not config.GPT4_ADMIN_ONLY
-        ):
+        if is_admin(logline.player):
             return func(logline, shared_dict)
         raise Exception('User is not admin.')
 
