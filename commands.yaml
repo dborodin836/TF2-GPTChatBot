@@ -1,10 +1,11 @@
 commands:
-  - name: '!solly'
-    type: quick-query
-    provider: open-ai
-    model: gpt-3.5-turbo-1106
+  - name: solly
+    prefix: '!'
+    type: command-global
+    provider: groq-cloud
+    model: llama3-8b-8192
     model_settings:
-      max_tokens: 60
+      max_tokens: 20
     chat_settings:
       prompt-file: soldier
       message-suffix: 'End your response with "I love buckets btw."'
@@ -16,3 +17,31 @@ commands:
       - openai-moderated
       - empty-prompt-message-response:
           - "Hello there! I am ChatGPT, a ChatGPT plugin integrated into Team Fortress 2. Ask me anything!"
+
+  - name: gpt3
+    prefix: '!'
+    type: quick-query
+    provider: open-ai
+    model: gpt-3.5-turbo-1106
+    traits:
+      - openai-moderated
+
+  - name: cgpt
+    prefix: '!'
+    type: command-private
+    provider: open-ai
+    model: gpt-3.5-turbo-1106
+    model_settings:
+      max_tokens: 40
+    traits:
+      - openai-moderated
+
+  - name: heavy
+    prefix: '!'
+    type: command-global
+    provider: groq-cloud
+    model: llama3-8b-8192
+    model_settings:
+      max_tokens: 60
+    chat_settings:
+      prompt-file: heavy
