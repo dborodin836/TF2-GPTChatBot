@@ -66,7 +66,7 @@ def setup_loggers():
         "logs/log-{time:YYYY-MM-DD}.log",
         mode="a",
         format=FORMAT_LINE_MAIN,
-        level="DEBUG",
+        level="TRACE",
         filter=make_name_filter("combo"),
         retention="1 week",
         rotation="50 MB",

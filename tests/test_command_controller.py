@@ -14,7 +14,7 @@ def test_chat_conversation_history_basic():
     assert len(user_chats_keys) == 0
 
     # test creation
-    chm.get_conversation_history(pl1)
+    chm.get_user_chat_history(pl1)
     user_chats_keys = [x for x in list(chm.__dict__) if x.startswith("USER_")]
     assert len(user_chats_keys) == 1
     assert chm._get_user_chat_history_attr_name(pl1.steamid64) in user_chats_keys
@@ -30,8 +30,8 @@ def test_chat_conversation_history_isolation():
     pl2 = get_player("user2", 2)
 
     # Create 2 user chats
-    cvh1 = chm.get_conversation_history(pl1)
-    cvh2 = chm.get_conversation_history(pl2)
+    cvh1 = chm.get_user_chat_history(pl1)
+    cvh2 = chm.get_user_chat_history(pl2)
     user_chats_keys = [x for x in list(chm.__dict__) if x.startswith("USER_")]
     assert len(user_chats_keys) == 2
 

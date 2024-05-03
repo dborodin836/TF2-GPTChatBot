@@ -8,7 +8,7 @@ from modules.api.llm.openai import OpenAILLMProvider
 from modules.api.llm.textgen_webui import TextGenerationWebUILLMProvider
 from modules.command_controllers import CommandController
 
-from modules.commands.base import LLMChatCommand, GlobalChatLLMChatCommand, PrivateChatLLMChatCommand, \
+from modules.commands.base import CommandGlobalChatLLMChatCommand, CommandPrivateChatLLMChatCommand, LLMChatCommand, \
     QuickQueryLLMCommand
 from modules.commands.decorators import admin_only, disabled, openai_moderated, empty_prompt_message_response
 from modules.logs import get_logger
@@ -18,8 +18,8 @@ gui_logger = get_logger("gui")
 
 TYPES = {
     'quick-query': QuickQueryLLMCommand,
-    'global-chat': GlobalChatLLMChatCommand,
-    'private-chat': PrivateChatLLMChatCommand
+    'command-private': CommandGlobalChatLLMChatCommand,
+    'command-global': CommandPrivateChatLLMChatCommand
 }
 
 PROVIDERS = {
@@ -56,8 +56,9 @@ def get_commands_from_yaml() -> List[dict]:
 
 
 def create_command_from_dict(cmd: dict) -> LLMChatCommand:
-    class_name = f"DynamicCommand"
     command_dict = {}
+    command_dict.update(name=cmd['name'])
+    class_name = f"DynamicCommand{cmd['name']}"
 
     # Command type
     try:
@@ -132,7 +133,8 @@ def load_commands(controller: CommandController):
     for cmd in commands:
         try:
             klass = create_command_from_dict(cmd)
-            controller.register_command(cmd['name'], klass.as_command())
+            chat_command_name = cmd['prefix'] + cmd['name']
+            controller.register_command(chat_command_name, klass.as_command(), cmd['name'])
             loaded_commands_count += 1
         except Exception as e:
             errors_count += 1

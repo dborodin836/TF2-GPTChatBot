@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Callable, List, Optional
 
 from modules.api.base import LLMProvider
-from modules.command_controllers import InitializerConfig
+from modules.command_controllers import CommandChatTypes, InitializerConfig
 from modules.conversation_history import ConversationHistory
 from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import LogLine, Message
@@ -11,6 +11,7 @@ from modules.utils.text import remove_args
 
 class BaseCommand(ABC):
     wrappers: List[Callable] = []
+    name: str = None
 
     @classmethod
     @abstractmethod
@@ -75,4 +76,21 @@ class PrivateChatLLMChatCommand(LLMChatCommand):
 
     @classmethod
     def get_chat(cls, logline, shared_dict) -> ConversationHistory:
-        return shared_dict.CHAT_CONVERSATION_HISTORY.get_conversation_history(logline.player)
+        return shared_dict.CHAT_CONVERSATION_HISTORY.get_user_chat_history(logline.player)
+
+
+class CommandGlobalChatLLMChatCommand(LLMChatCommand):
+    @classmethod
+    def get_chat(cls, logline, shared_dict) -> ConversationHistory:
+        return shared_dict.CHAT_CONVERSATION_HISTORY.get_or_create_command_chat_history(cls.name,
+                                                                                        CommandChatTypes.GLOBAL,
+                                                                                        cls.chat_settings)
+
+
+class CommandPrivateChatLLMChatCommand(LLMChatCommand):
+    @classmethod
+    def get_chat(cls, logline, shared_dict) -> ConversationHistory:
+        return shared_dict.CHAT_CONVERSATION_HISTORY.get_or_create_command_chat_history(cls.name,
+                                                                                        CommandChatTypes.PRIVATE,
+                                                                                        cls.chat_settings,
+                                                                                        logline.player)
