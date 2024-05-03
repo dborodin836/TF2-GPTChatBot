@@ -280,19 +280,29 @@ response: 42 is a well-known number in pop culture, often referencing the meanin
 #### !clear
 
 ```
-Command: !clear
+Command: !clear [\global] [\user='username'] [commands]
 
-Description: Clears the chat history.
-
-Options are not required and can be used in any combination.
+Description: Clears the chat history for specified command(s).
 
 Calling without arguments clears own private chat history for any user.
 
 Global Option (admin only):
-  \global  Clears global chat history.
+  \global  Clears global chat history for specified command(s).
   
 User Option (admin only):
-  \user='username'  Clears private chat history for the specified user.
+  \user='username'  Clears private chat history for the specified user(s) for specified command(s).
+  
+Examples:
+  For admin:
+    !clear \global solly
+    - Will clear global chat for solly command
+    
+    !clear \global \user='Pootis' \user='Soldier' solly
+    - Will clear global and private chat for solly command for users with username "Pootis" and "Soldier"
+    
+  For everyone:
+    !clear solly heavy
+    - Will clear private chats for 'solly' and 'heavy' commands
 ```
 
 #### !rtd
