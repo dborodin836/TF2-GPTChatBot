@@ -71,7 +71,7 @@ class ConversationHistory:
                     self.custom_prompt = prompt["prompt"]
                     break
         if self.settings.get('allow-long', True):
-            if r"\l" in args or not enable_soft_limit or self.settings.get('allow-long', True):
+            if r"\l" in args or not enable_soft_limit:
                 self.enable_soft_limit = False
 
         if r"\stats" in args:
