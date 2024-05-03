@@ -52,6 +52,8 @@ class ConversationHistory:
 
         array.extend(self.message_history)
 
+        print(array)
+
         self.reset_turn()
 
         return array

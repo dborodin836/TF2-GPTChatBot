@@ -18,8 +18,8 @@ gui_logger = get_logger("gui")
 
 TYPES = {
     'quick-query': QuickQueryLLMCommand,
-    'command-private': CommandGlobalChatLLMChatCommand,
-    'command-global': CommandPrivateChatLLMChatCommand
+    'command-private': CommandPrivateChatLLMChatCommand,
+    'command-global': CommandGlobalChatLLMChatCommand
 }
 
 PROVIDERS = {

@@ -50,7 +50,7 @@ class ChatHistoryManager(BaseModel):
 
         match type_:
             case CommandChatTypes.PRIVATE:
-                if chat_history := self.COMMAND.get(name):
+                if chat_history := self.COMMAND.get(PRIVATE_CHAT_ID.format(name, user.steamid64)):
                     return chat_history
                 main_logger.info(
                     f"Conversation history for command '{name}' [{type_}] doesn't exist. Creating...")
@@ -60,7 +60,7 @@ class ChatHistoryManager(BaseModel):
                 return new_ch
 
             case CommandChatTypes.GLOBAL:
-                if chat_history := self.COMMAND.get(name):
+                if chat_history := self.COMMAND.get(GLOBAL_CHAT_ID.format(name)):
                     return chat_history
                 main_logger.info(
                     f"Conversation history for command '{name}' [{type_}] doesn't exist. Creating...")
@@ -68,7 +68,7 @@ class ChatHistoryManager(BaseModel):
                 self.COMMAND[GLOBAL_CHAT_ID.format(name)] = new_ch
                 return new_ch
 
-    def get_command_chat_history(self, name: str, type_: CommandChatTypes, user: Player = None):
+    def get_command_chat_history(self, name: str, type_: CommandChatTypes, user: Player = None) -> Optional[ConversationHistory]:
         match type_:
             case CommandChatTypes.PRIVATE:
                 if user is None:
@@ -76,13 +76,13 @@ class ChatHistoryManager(BaseModel):
                 combo_logger.trace(PRIVATE_CHAT_ID.format(name, user.steamid64))
                 if chat_history := self.COMMAND.get(PRIVATE_CHAT_ID.format(name, user.steamid64)):
                     return chat_history
-                raise Exception('Command with this name not found.')
+                return None
 
             case CommandChatTypes.GLOBAL:
                 combo_logger.trace(GLOBAL_CHAT_ID.format(name))
                 if chat_history := self.COMMAND.get(GLOBAL_CHAT_ID.format(name)):
                     return chat_history
-                raise Exception('Command with this name not found.')
+                return None
 
     def set_command_chat_history(self, name: str, type_: CommandChatTypes, chat_history: ConversationHistory,
                                  user: Player = None):
