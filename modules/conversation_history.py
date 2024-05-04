@@ -15,21 +15,25 @@ class ConversationHistory:
     def _get_system_message(self) -> Message:
         sys_msg = []
 
-        prompt_text = ''
-        if prompt_name := self.settings.get('prompt-file'):
+        prompt_text = ""
+        if prompt_name := self.settings.get("prompt-file"):
             prompt_text = get_prompt_by_name(prompt_name)
 
         if prompt := prompt_text or self.custom_prompt:
             sys_msg.append(prompt)
 
         # Soft limiting the response
-        enable_soft_limit = self.settings.get('enable-soft-limit') if self.settings.get('enable-soft-limit') else self.enable_soft_limit
+        enable_soft_limit = (
+            self.settings.get("enable-soft-limit")
+            if self.settings.get("enable-soft-limit")
+            else self.enable_soft_limit
+        )
         if enable_soft_limit:
-            length = self.settings.get('soft-limit-length', 128)
+            length = self.settings.get("soft-limit-length", 128)
             sys_msg.append(f"Answer in less than {length} chars!")
 
         # Add custom prompt. Acts as a prompt suffix.
-        if prompt := self.settings.get('message-suffix'):
+        if prompt := self.settings.get("message-suffix"):
             sys_msg.append(prompt)
 
         # Stats
@@ -44,7 +48,7 @@ class ConversationHistory:
     def get_messages_array(self) -> MessageHistory:
         array = [self._get_system_message()]
 
-        if greeting := self.settings.get('greeting'):
+        if greeting := self.settings.get("greeting"):
             array.append(Message(role="assistant", content=greeting))
 
         array.extend(self.message_history)
@@ -57,17 +61,17 @@ class ConversationHistory:
         self.message_history.append(message)
 
     def add_user_message_from_prompt(
-            self, user_prompt: str, enable_soft_limit: bool = True
+        self, user_prompt: str, enable_soft_limit: bool = True
     ) -> None:
         user_message = remove_args(user_prompt)
         args = get_args(user_prompt)
 
-        if self.settings.get('allow-prompt-overwrite', True):
+        if self.settings.get("allow-prompt-overwrite", True):
             for prompt in PROMPTS:
                 if prompt["flag"] in args:
                     self.custom_prompt = prompt["prompt"]
                     break
-        if self.settings.get('allow-long', True):
+        if self.settings.get("allow-long", True):
             if r"\l" in args or not enable_soft_limit:
                 self.enable_soft_limit = False
 

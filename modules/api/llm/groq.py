@@ -11,10 +11,7 @@ class GroqCloudLLMProvider(LLMProvider):
 
     @staticmethod
     def get_completion_text(message_array, username, model, settings):
-        client = groq.Groq(
-            max_retries=0,
-            api_key=config.GROQ_API_KEY
-        )
+        client = groq.Groq(max_retries=0, api_key=config.GROQ_API_KEY)
 
         if isinstance(settings, dict):
             completion = client.chat.completions.create(

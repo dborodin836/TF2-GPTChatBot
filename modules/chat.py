@@ -1,4 +1,4 @@
-from config import config, RTDModes
+from config import RTDModes, config
 from modules.api.github import check_for_updates
 from modules.bans import bans_manager
 from modules.bot_state import state_manager
@@ -55,7 +55,7 @@ def parse_console_logs_and_build_conversation_history() -> None:
     controller.register_command("!gh", handle_gh_command)
     controller.register_command(config.CLEAR_CHAT_COMMAND, handle_clear)
     if config.RTD_MODE != RTDModes.DISABLED:
-        controller.register_command(config.RTD_COMMAND, handle_rtd, 'rtd')
+        controller.register_command(config.RTD_COMMAND, handle_rtd, "rtd")
 
     # Services
     controller.register_service(messaging_queue_service)
@@ -66,7 +66,9 @@ def parse_console_logs_and_build_conversation_history() -> None:
         if not state_manager.bot_running:
             continue
         if bans_manager.is_banned_player(logline.player):
-            main_logger.info(f"Player '{logline.player.name}' {logline.player.steamid3} tried to use commands, but "
-                             f"he's banned.")
+            main_logger.info(
+                f"Player '{logline.player.name}' {logline.player.steamid3} tried to use commands, but "
+                f"he's banned."
+            )
             continue
         controller.process_line(logline)

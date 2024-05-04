@@ -1,9 +1,9 @@
+import modules.lobby_manager
 from modules.bans import BansManager
 from modules.command_controllers import InitializerConfig
+from modules.commands.gui.bans import handle_ban, handle_list_bans, handle_unban
 from modules.lobby_manager import LobbyManager
-import modules.lobby_manager
 from tests.common import MockConfig, get_player, temp_file
-from modules.commands.gui.bans import handle_ban, handle_unban, handle_list_bans
 
 
 def test_handle_ban(temp_file, mocker):

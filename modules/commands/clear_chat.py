@@ -1,9 +1,9 @@
 from modules.command_controllers import CommandChatTypes, InitializerConfig
 from modules.lobby_manager import lobby_manager
+from modules.logs import get_logger
 from modules.permissions import is_admin
 from modules.typing import LogLine
 from modules.utils.text import get_args
-from modules.logs import get_logger
 
 main_logger = get_logger("main")
 combo_logger = get_logger("combo")
@@ -13,7 +13,7 @@ CLEAR_WRONG_SYNTAX_MSG = r'Wrong syntax! e.g. !clear \global \user="username" !s
 
 def handle_clear(logline: LogLine, shared_dict: InitializerConfig):
     args = get_args(logline.prompt)
-    commands = [cmd for cmd in logline.prompt.split() if not cmd.startswith('\\')]
+    commands = [cmd for cmd in logline.prompt.split() if not cmd.startswith("\\")]
 
     if is_admin(logline.player):
         if len(commands) == 0:
@@ -22,37 +22,35 @@ def handle_clear(logline: LogLine, shared_dict: InitializerConfig):
         for command in commands:
             # Check if command exist
             if command not in shared_dict.LOADED_COMMANDS:
-                combo_logger.warning(f'Trying to clear unknown command - {command}. Skipping...')
+                combo_logger.warning(f"Trying to clear unknown command - {command}. Skipping...")
                 continue
 
             # Decide what to clear personal/other users
             if args:
                 # Clear global chat
-                if r'\global' in args:
+                if r"\global" in args:
                     chat = shared_dict.CHAT_CONVERSATION_HISTORY.get_command_chat_history(
-                        command,
-                        CommandChatTypes.GLOBAL,
-                        logline.player
+                        command, CommandChatTypes.GLOBAL, logline.player
                     )
                     if chat is not None:
                         chat.reset()
-                        shared_dict.CHAT_CONVERSATION_HISTORY.set_command_chat_history(command,
-                                                                                       CommandChatTypes.GLOBAL,
-                                                                                       chat,
-                                                                                       logline.player)
+                        shared_dict.CHAT_CONVERSATION_HISTORY.set_command_chat_history(
+                            command, CommandChatTypes.GLOBAL, chat, logline.player
+                        )
                         combo_logger.info(f"Clearing global chat history for command '{command}'.")
                         continue
                     combo_logger.warning(
-                        f'Global chat for command "{command}" does not exist yet. Skipping...')
+                        f'Global chat for command "{command}" does not exist yet. Skipping...'
+                    )
 
                 # Clear users chats
                 for arg in args:
                     # Ignore global arg
-                    if arg == r'\global':
+                    if arg == r"\global":
                         continue
 
                     # Ignore if it's anything else than \user='whatever'
-                    if not arg.startswith(r'\user='):
+                    if not arg.startswith(r"\user="):
                         combo_logger.error(CLEAR_WRONG_SYNTAX_MSG)
                         continue
 
@@ -76,21 +74,20 @@ def handle_clear(logline: LogLine, shared_dict: InitializerConfig):
                         player = lobby_manager.get_player_by_name(name)
                         if player is not None:
                             chat = shared_dict.CHAT_CONVERSATION_HISTORY.get_command_chat_history(
-                                command,
-                                CommandChatTypes.PRIVATE,
-                                player
+                                command, CommandChatTypes.PRIVATE, player
                             )
                             if chat is not None:
                                 chat.reset()
-                                shared_dict.CHAT_CONVERSATION_HISTORY.set_command_chat_history(command,
-                                                                                               CommandChatTypes.PRIVATE,
-                                                                                               chat,
-                                                                                               logline.player)
+                                shared_dict.CHAT_CONVERSATION_HISTORY.set_command_chat_history(
+                                    command, CommandChatTypes.PRIVATE, chat, logline.player
+                                )
                                 combo_logger.info(
-                                    f"Clearing chat history for user '{player.name}' [{command}].")
+                                    f"Clearing chat history for user '{player.name}' [{command}]."
+                                )
                                 continue
                             combo_logger.warning(
-                                f'Private chat for user "{player.name}" [{command}] does not exist yet. Skipping...')
+                                f'Private chat for user "{player.name}" [{command}] does not exist yet. Skipping...'
+                            )
 
                         else:
                             combo_logger.info(f"Failed to find user with name: '{name}'.")
@@ -102,19 +99,20 @@ def handle_clear(logline: LogLine, shared_dict: InitializerConfig):
             else:
                 # Clear private chats
                 chat = shared_dict.CHAT_CONVERSATION_HISTORY.get_command_chat_history(
-                    command,
-                    CommandChatTypes.PRIVATE,
-                    logline.player
+                    command, CommandChatTypes.PRIVATE, logline.player
                 )
                 if chat is not None:
                     chat.reset()
-                    shared_dict.CHAT_CONVERSATION_HISTORY.set_command_chat_history(command, CommandChatTypes.PRIVATE,
-                                                                                   chat,
-                                                                                   logline.player)
-                    combo_logger.info(f"Clearing chat history for user '{logline.player.name}' [{command}].")
+                    shared_dict.CHAT_CONVERSATION_HISTORY.set_command_chat_history(
+                        command, CommandChatTypes.PRIVATE, chat, logline.player
+                    )
+                    combo_logger.info(
+                        f"Clearing chat history for user '{logline.player.name}' [{command}]."
+                    )
                     continue
                 combo_logger.warning(
-                    f'Private chat for user "{logline.player.name}" [{command}] does not exist yet. Skipping...')
+                    f'Private chat for user "{logline.player.name}" [{command}] does not exist yet. Skipping...'
+                )
 
     else:
         if len(commands) == 0:
@@ -122,19 +120,20 @@ def handle_clear(logline: LogLine, shared_dict: InitializerConfig):
 
         for command in commands:
             if command not in shared_dict.LOADED_COMMANDS:
-                combo_logger.warning(f'Trying to clear unknown command - {command}. Skipping...')
+                combo_logger.warning(f"Trying to clear unknown command - {command}. Skipping...")
 
             chat = shared_dict.CHAT_CONVERSATION_HISTORY.get_command_chat_history(
-                command,
-                CommandChatTypes.PRIVATE,
-                logline.player
+                command, CommandChatTypes.PRIVATE, logline.player
             )
             if chat is not None:
                 chat.reset()
-                shared_dict.CHAT_CONVERSATION_HISTORY.set_command_chat_history(command, CommandChatTypes.PRIVATE,
-                                                                               chat,
-                                                                               logline.player)
-                combo_logger.info(f"Clearing chat history for user '{logline.player.name}' [{command}].")
+                shared_dict.CHAT_CONVERSATION_HISTORY.set_command_chat_history(
+                    command, CommandChatTypes.PRIVATE, chat, logline.player
+                )
+                combo_logger.info(
+                    f"Clearing chat history for user '{logline.player.name}' [{command}]."
+                )
                 continue
             combo_logger.warning(
-                f'Private chat for user "{logline.player.name}" [{command}] does not exist yet. Skipping...')
+                f'Private chat for user "{logline.player.name}" [{command}] does not exist yet. Skipping...'
+            )

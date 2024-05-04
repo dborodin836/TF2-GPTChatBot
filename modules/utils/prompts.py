@@ -44,7 +44,7 @@ def load_prompts() -> None:
 
 def get_prompt_by_name(name: str) -> str:
     for prompt in PROMPTS:
-        if prompt['flag'] == f'\\{name}':
+        if prompt["flag"] == f"\\{name}":
             return prompt["prompt"]
     gui_logger.warning(f"Prompt {name} does not exist.")
-    return ''
+    return ""

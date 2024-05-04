@@ -38,11 +38,8 @@ def test_chat_conversation_history_isolation():
     # test isolation
     assert cvh1 is not cvh2
     cvh1.add_user_message_from_prompt(r"\l hello")
-    assert cvh1.message_history == [{'content': 'hello', 'role': 'user'}]
+    assert cvh1.message_history == [{"content": "hello", "role": "user"}]
     assert cvh1.enable_soft_limit is False
 
     assert cvh2.message_history == []
     assert cvh2.enable_soft_limit is True
-
-
-

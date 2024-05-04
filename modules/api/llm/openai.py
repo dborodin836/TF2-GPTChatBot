@@ -21,7 +21,7 @@ class OpenAILLMProvider(LLMProvider):
                 model=model,
                 messages=conversation_history,
                 user=hashlib.md5(username.encode()).hexdigest(),
-                **settings
+                **settings,
             )
         else:
             completion = openai.ChatCompletion.create(

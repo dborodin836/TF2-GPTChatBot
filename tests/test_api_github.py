@@ -2,15 +2,18 @@ import logging
 
 import modules.api.github
 from modules.api.github import check_for_updates
-from tests.common import raise_, MockConfig
+from tests.common import MockConfig, raise_
 
 
 def test_check_for_updates_with_newer_version_available(mocker, caplog, requests_mock):
     remote_ver = "1.2.1"
     local_ver = "1.0.0"
 
-    requests_mock.register_uri("GET", "https://api.github.com/repos/dborodin836/TF2-GPTChatBot/releases/latest",
-                               text='{"tag_name": "%s"}' % remote_ver)
+    requests_mock.register_uri(
+        "GET",
+        "https://api.github.com/repos/dborodin836/TF2-GPTChatBot/releases/latest",
+        text='{"tag_name": "%s"}' % remote_ver,
+    )
     mocker.patch.object(modules.api.github, "config", MockConfig(app_version="1.0.0"))
 
     with caplog.at_level(logging.DEBUG):
@@ -25,8 +28,11 @@ def test_check_for_updates_with_no_new_version(mocker, caplog, requests_mock):
     remote_ver = "1.0.0"
     local_ver = "1.0.0"
 
-    requests_mock.register_uri("GET", "https://api.github.com/repos/dborodin836/TF2-GPTChatBot/releases/latest",
-                               text='{"tag_name": "%s"}' % remote_ver)
+    requests_mock.register_uri(
+        "GET",
+        "https://api.github.com/repos/dborodin836/TF2-GPTChatBot/releases/latest",
+        text='{"tag_name": "%s"}' % remote_ver,
+    )
     mocker.patch.object(modules.api.github, "config", MockConfig(app_version="1.0.0"))
 
     with caplog.at_level(logging.DEBUG):
@@ -37,7 +43,9 @@ def test_check_for_updates_with_no_new_version(mocker, caplog, requests_mock):
 
 
 def test_check_for_updates_with_request_failure(mocker, caplog):
-    mocker.patch("modules.api.github.requests.get", return_value=(lambda: raise_(Exception("Network Error"))))
+    mocker.patch(
+        "modules.api.github.requests.get", return_value=(lambda: raise_(Exception("Network Error")))
+    )
 
     mocker.patch.object(modules.api.github, "config", MockConfig(app_version="1.0.0"))
 

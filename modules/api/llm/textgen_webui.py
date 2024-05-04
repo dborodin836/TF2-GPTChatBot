@@ -21,6 +21,6 @@ class TextGenerationWebUILLMProvider(LLMProvider):
 
         response = requests.post(uri, headers=headers, json=data, verify=False)
         if response.status_code == 500:
-            raise Exception('HTTP 500')
+            raise Exception("HTTP 500")
         data = response.json()["choices"][0]["message"]["content"]
         return data

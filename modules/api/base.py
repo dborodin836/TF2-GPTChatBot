@@ -8,5 +8,6 @@ class LLMProvider(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_completion_text(message_array: MessageHistory, username: str, model: str, settings: Optional[Dict]) -> str:
-        ...
+    def get_completion_text(
+        message_array: MessageHistory, username: str, model: str, settings: Optional[Dict]
+    ) -> str: ...
