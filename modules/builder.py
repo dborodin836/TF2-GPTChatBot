@@ -108,7 +108,7 @@ def create_command_from_dict(cmd: dict) -> LLMChatCommand:
         command_dict.update(model_settings=model_settings)
 
     # Update command settings
-    if chat_settings := cmd.get('chat_settings'):
+    if chat_settings := cmd.get('settings'):
         # Verify for unknown keys
         for option in chat_settings.keys():
             if option not in CHAT_SETTINGS:

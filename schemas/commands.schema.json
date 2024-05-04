@@ -44,7 +44,7 @@
         "model_settings": {
           "type": "object"
         },
-        "chat_settings": {
+        "settings": {
           "type": "object",
           "additionalProperties": false,
           "properties": {

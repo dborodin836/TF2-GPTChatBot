@@ -9,7 +9,7 @@ commands:
     model: llama3-70b-8192
     model_settings:
       max_tokens: 60
-    chat_settings:
+    settings:
       prompt-file: soldier
       message-suffix: 'End your response with "I love buckets btw."'
       allow-prompt-overwrite: false
@@ -31,7 +31,7 @@ commands:
     model: llama3-70b-8192
     model_settings:
       max_tokens: 60
-    chat_settings:
+    settings:
       prompt-file: heavy
 
   #######################
@@ -55,8 +55,8 @@ commands:
     type: quick-query
     model: gpt-4-1106-preview
     traits:
-      - openai-moderated
       - admin-only
+      - openai-moderated
 
   - name: cgpt
     prefix: '!'

@@ -1,4 +1,3 @@
-from config import config
 from modules.lobby_manager import lobby_manager
 from modules.typing import Message, MessageHistory
 from modules.utils.prompts import PROMPTS, get_prompt_by_name
