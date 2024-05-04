@@ -1,5 +1,3 @@
-from typing import Optional
-
 from config import config
 from modules.lobby_manager import lobby_manager
 from modules.typing import Message, MessageHistory
@@ -28,11 +26,11 @@ class ConversationHistory:
         # Soft limiting the response
         enable_soft_limit = self.settings.get('enable-soft-limit') if self.settings.get('enable-soft-limit') else self.enable_soft_limit
         if enable_soft_limit:
-            length = self.settings.get('soft-limit-length') if self.settings.get('soft-limit-length') else config.SOFT_COMPLETION_LIMIT
+            length = self.settings.get('soft-limit-length', 128)
             sys_msg.append(f"Answer in less than {length} chars!")
 
         # Add custom prompt. Acts as a prompt suffix.
-        if prompt := self.settings.get('message-suffix') or config.CUSTOM_PROMPT:
+        if prompt := self.settings.get('message-suffix'):
             sys_msg.append(prompt)
 
         # Stats
@@ -47,7 +45,7 @@ class ConversationHistory:
     def get_messages_array(self) -> MessageHistory:
         array = [self._get_system_message()]
 
-        if greeting := self.settings.get('greeting') or config.GREETING:
+        if greeting := self.settings.get('greeting'):
             array.append(Message(role="assistant", content=greeting))
 
         array.extend(self.message_history)

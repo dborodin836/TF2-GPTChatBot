@@ -7,7 +7,6 @@ from modules.api.llm.groq import GroqCloudLLMProvider
 from modules.api.llm.openai import OpenAILLMProvider
 from modules.api.llm.textgen_webui import TextGenerationWebUILLMProvider
 from modules.command_controllers import CommandController
-
 from modules.commands.base import CommandGlobalChatLLMChatCommand, CommandPrivateChatLLMChatCommand, LLMChatCommand, \
     QuickQueryLLMCommand
 from modules.commands.decorators import admin_only, deny_empty_prompt, disabled, openai_moderated, \
@@ -38,15 +37,17 @@ WRAPPERS = {
     'deny-empty-prompt': deny_empty_prompt
 }
 
-CHAT_SETTINGS = (
+CHAT_SETTINGS = {
     'prompt-file',
     'enable-soft-limit',
     'soft-limit-length',
     'message-suffix',
     'greeting',
     'allow-prompt-overwrite',
-    'allow-long'
-)
+    'allow-long',
+    'enable-hard-limit',
+    'hard-limit-length'
+}
 
 
 def get_commands_from_yaml() -> List[dict]:
@@ -77,11 +78,12 @@ def create_command_from_dict(cmd: dict) -> LLMChatCommand:
         )
 
     # Model
-    try:
-        model = cmd['model']
-        command_dict.update(model=model)
-    except Exception as e:
-        raise Exception(f'Model name is invalid or missing.')
+    if provider != PROVIDERS.get('text-generation-webui'):
+        try:
+            model = cmd['model']
+            command_dict.update(model=model)
+        except Exception as e:
+            raise Exception(f'Model name is invalid or missing.')
 
     # Update command wrappers
     if traits := cmd.get('traits'):

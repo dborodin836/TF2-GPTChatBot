@@ -1,7 +1,6 @@
 import time
 from typing import Callable, List
 
-from config import config
 from modules.api.llm.openai import is_flagged
 from modules.command_controllers import InitializerConfig
 from modules.permissions import is_admin
@@ -53,24 +52,10 @@ def admin_only(func):
     return wrapper
 
 
-def gpt4_admin_only(func):
-    def wrapper(logline: LogLine, shared_dict: InitializerConfig):
-        if (
-                config.GPT4_ADMIN_ONLY
-                and is_admin(logline.player)
-                or not config.GPT4_ADMIN_ONLY
-        ):
-            return func(logline, shared_dict)
-        raise Exception('User is not admin.')
-
-    return wrapper
-
-
 def openai_moderated(func):
     def wrapper(logline: LogLine, shared_dict: InitializerConfig):
         if (
-                not config.TOS_VIOLATION
-                and is_flagged(logline.prompt)
+                is_flagged(logline.prompt)
                 and not is_admin(logline.player)
         ):
             raise Exception("Request was flagged during moderation. Skipping...")

@@ -68,6 +68,20 @@
             },
             "allow-long": {
               "type": "boolean"
+            },
+            "enable-hard-limit": {
+              "type": "boolean"
+            },
+            "hard-limit-length": {
+              "type": "integer"
+            }
+          },
+          "dependencies": {
+            "enable-soft-limit": {
+              "required": ["soft-limit-length"]
+            },
+            "enable-hard-limit": {
+              "required": ["hard-limit-length"]
             }
           }
         },

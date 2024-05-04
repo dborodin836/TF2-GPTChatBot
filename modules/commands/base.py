@@ -7,6 +7,9 @@ from modules.conversation_history import ConversationHistory
 from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import LogLine, Message
 from modules.utils.text import remove_args
+from modules.logs import get_logger
+
+main_logger = get_logger('main')
 
 
 class BaseCommand(ABC):
@@ -52,6 +55,12 @@ class LLMChatCommand(BaseCommand):
                                                         cls.model, cls.model_settings)
             if response:
                 chat.add_assistant_message(Message(role="assistant", content=response))
+                # Strip the message if needed
+                if cls.chat_settings.get('enable-hard-limit') and len(response) > cls.chat_settings.get('enable-hard-limit'):
+                    main_logger.warning(
+                        f"Message is longer than Hard Limit [{len(response)}]. Limit is {cls.chat_settings.get('enable-hard-limit')}."
+                    )
+                    response = response[: cls.chat_settings.get('hard-limit-length', 300)] + "..."
                 send_say_command_to_tf2(response, logline.username, logline.is_team_message)
                 return " ".join(response.split())
 

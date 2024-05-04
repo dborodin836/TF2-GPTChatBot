@@ -12,9 +12,12 @@ commands:
     chat_settings:
       prompt-file: soldier
       message-suffix: 'End your response with "I love buckets btw."'
-      enable-soft-limit: false
       allow-prompt-overwrite: false
       allow-long: false
+      enable-soft-limit: true
+      soft-limit-length: 128
+      enable-hard-limit: true
+      hard-limit-length: 300
     traits:
       - admin-only
       - openai-moderated
