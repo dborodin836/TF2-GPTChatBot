@@ -3,12 +3,30 @@ import tempfile
 
 import pytest
 
+from modules.commands.base import LLMChatCommand
 from modules.typing import Player
 from modules.utils.steam import steamid3_to_steamid64
 
 
 def raise_(ex):
     raise ex
+
+
+class DummyLLMChatCommand(LLMChatCommand):
+    provider: None
+    model: None
+    model_settings = {}
+    chat = None
+    chat_settings = {}
+
+    @classmethod
+    def get_chat(cls, logline, shared_dict):
+        ...
+
+    @classmethod
+    def get_handler(cls):
+        def func(logline, shared_dict):
+            return func
 
 
 def get_player(name: str, id: int) -> Player:
