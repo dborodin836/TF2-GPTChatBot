@@ -44,28 +44,28 @@ class ChatHistoryManager(BaseModel):
     def _get_user_chat_history_attr_name(self, id64: int) -> str:
         return f"USER_{id64}_CH"
 
-    def get_or_create_command_chat_history(self, name: str, type_: CommandChatTypes, settings: dict = None, user: Player = None):
+    def get_or_create_command_chat_history(self, cmd_name: str, type_: CommandChatTypes, settings: dict = None, user: Player = None):
         if settings is None:
             settings = {}
 
         match type_:
             case CommandChatTypes.PRIVATE:
-                if chat_history := self.COMMAND.get(PRIVATE_CHAT_ID.format(name, user.steamid64)):
+                if chat_history := self.COMMAND.get(PRIVATE_CHAT_ID.format(cmd_name, user.steamid64)):
                     return chat_history
                 main_logger.info(
-                    f"Conversation history for command '{name}' [{type_}] doesn't exist. Creating...")
-                combo_logger.trace(f'Creating chat history "{PRIVATE_CHAT_ID.format(name, user.steamid64)}"')
+                    f"Conversation history for command '{cmd_name}' [{type_}] doesn't exist. Creating...")
+                combo_logger.trace(f'Creating chat history "{PRIVATE_CHAT_ID.format(cmd_name, user.steamid64)}"')
                 new_ch = ConversationHistory(settings)
-                self.COMMAND[PRIVATE_CHAT_ID.format(name, user.steamid64)] = new_ch
+                self.COMMAND[PRIVATE_CHAT_ID.format(cmd_name, user.steamid64)] = new_ch
                 return new_ch
 
             case CommandChatTypes.GLOBAL:
-                if chat_history := self.COMMAND.get(GLOBAL_CHAT_ID.format(name)):
+                if chat_history := self.COMMAND.get(GLOBAL_CHAT_ID.format(cmd_name)):
                     return chat_history
                 main_logger.info(
-                    f"Conversation history for command '{name}' [{type_}] doesn't exist. Creating...")
+                    f"Conversation history for command '{cmd_name}' [{type_}] doesn't exist. Creating...")
                 new_ch = ConversationHistory(settings)
-                self.COMMAND[GLOBAL_CHAT_ID.format(name)] = new_ch
+                self.COMMAND[GLOBAL_CHAT_ID.format(cmd_name)] = new_ch
                 return new_ch
 
     def get_command_chat_history(self, name: str, type_: CommandChatTypes, user: Player = None) -> Optional[ConversationHistory]:

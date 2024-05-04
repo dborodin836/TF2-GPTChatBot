@@ -87,10 +87,10 @@ def handle_clear(logline: LogLine, shared_dict: InitializerConfig):
                                                                                                chat,
                                                                                                logline.player)
                                 combo_logger.info(
-                                    f"Clearing chat history for user '{logline.player.name}' [{command}].")
+                                    f"Clearing chat history for user '{player.name}' [{command}].")
                                 continue
                             combo_logger.warning(
-                                f'Private chat for user "{logline.player.name}" [{command}] does not exist yet. Skipping...')
+                                f'Private chat for user "{player.name}" [{command}] does not exist yet. Skipping...')
 
                         else:
                             combo_logger.info(f"Failed to find user with name: '{name}'.")

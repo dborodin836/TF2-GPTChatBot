@@ -92,6 +92,16 @@ def permission_decorator_factory(permissions_funcs: List[Callable[[Player], bool
     return permissions_decorator
 
 
+def deny_empty_prompt(func):
+    def wrapper(logline: LogLine, shared_dict: InitializerConfig):
+        if logline.prompt.strip() == '':
+            raise Exception("Prompt is empty. Skipping...")
+
+        return func(logline, shared_dict)
+
+    return wrapper
+
+
 def disabled(func):
     def wrapper(logline: LogLine, shared_dict: InitializerConfig):
         raise Exception("This command is disabled.")

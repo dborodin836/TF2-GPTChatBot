@@ -10,7 +10,8 @@ from modules.command_controllers import CommandController
 
 from modules.commands.base import CommandGlobalChatLLMChatCommand, CommandPrivateChatLLMChatCommand, LLMChatCommand, \
     QuickQueryLLMCommand
-from modules.commands.decorators import admin_only, disabled, openai_moderated, empty_prompt_message_response
+from modules.commands.decorators import admin_only, deny_empty_prompt, disabled, openai_moderated, \
+    empty_prompt_message_response
 from modules.logs import get_logger
 
 main_logger = get_logger('main')
@@ -34,7 +35,7 @@ WRAPPERS = {
     'admin-only': admin_only,
     'empty-prompt-message-response': empty_prompt_message_response,
     'disabled': disabled,
-
+    'deny-empty-prompt': deny_empty_prompt
 }
 
 CHAT_SETTINGS = (
