@@ -1,11 +1,14 @@
 commands:
+  #########################
+  # TESTING SECTION START #
+  #########################
   - name: solly
     prefix: '!'
     type: command-global
     provider: groq-cloud
-    model: llama3-8b-8192
+    model: llama3-70b-8192
     model_settings:
-      max_tokens: 20
+      max_tokens: 60
     chat_settings:
       prompt-file: soldier
       message-suffix: 'End your response with "I love buckets btw."'
@@ -16,32 +19,89 @@ commands:
       - admin-only
       - openai-moderated
       - empty-prompt-message-response:
-          - "Hello there! I am ChatGPT, a ChatGPT plugin integrated into Team Fortress 2. Ask me anything!"
-
-  - name: gpt3
-    prefix: '!'
-    type: quick-query
-    provider: open-ai
-    model: gpt-3.5-turbo-1106
-    traits:
-      - openai-moderated
-
-  - name: cgpt
-    prefix: '!'
-    type: command-private
-    provider: open-ai
-    model: gpt-3.5-turbo-1106
-    model_settings:
-      max_tokens: 40
-    traits:
-      - openai-moderated
+          - "Hello, MAGGOT!"
 
   - name: heavy
     prefix: '!'
     type: command-global
     provider: groq-cloud
-    model: llama3-8b-8192
+    model: llama3-70b-8192
     model_settings:
       max_tokens: 60
     chat_settings:
       prompt-file: heavy
+
+  #######################
+  # TESTING SECTION END #
+  #######################
+
+  # OpenAI commands
+  - name: gpt3
+    prefix: '!'
+    provider: open-ai
+    type: quick-query
+    model: gpt-3.5-turbo-1106
+    traits:
+      - openai-moderated
+      - empty-prompt-message-response:
+          - "Hello there! I am ChatGPT, a ChatGPT plugin integrated into Team Fortress 2. Ask me anything!"
+
+  - name: gpt4
+    prefix: '!'
+    provider: open-ai
+    type: quick-query
+    model: gpt-4-1106-preview
+    traits:
+      - openai-moderated
+      - admin-only
+
+  - name: cgpt
+    prefix: '!'
+    type: command-global
+    provider: open-ai
+    model: gpt-3.5-turbo-1106
+    traits:
+      - openai-moderated
+
+  - name: pc
+    prefix: '!'
+    type: command-private
+    provider: open-ai
+    model: gpt-3.5-turbo-1106
+    traits:
+      - openai-moderated
+
+  # Text-generation-webui commands
+  - name: ai
+    prefix: '!'
+    type: quick-query
+    provider: text-generation-webui
+
+  - name: chat
+    prefix: '!'
+    type: command-global
+    provider: text-generation-webui
+
+  - name: pcc
+    prefix: '!'
+    type: command-private
+    provider: text-generation-webui
+
+  # GroqCloud commands
+  - name: g
+    prefix: '!'
+    type: quick-query
+    provider: groq-cloud
+    model: llama3-70b-8192
+
+  - name: gc
+    prefix: '!'
+    type: command-global
+    provider: groq-cloud
+    model: llama3-70b-8192
+
+  - name: gpc
+    prefix: '!'
+    type: command-private
+    provider: groq-cloud
+    model: llama3-70b-8192
