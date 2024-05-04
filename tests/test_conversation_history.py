@@ -7,7 +7,6 @@ from tests.common import MockConfig
 
 def test_empty(mocker):
     conf = MockConfig()
-    mocker.patch.object(modules.conversation_history, "config", conf)
     convh = ConversationHistory()
 
     assert convh.custom_prompt == ""
@@ -21,7 +20,6 @@ def test_empty(mocker):
 
 def test_basic(mocker):
     conf = MockConfig()
-    mocker.patch.object(modules.conversation_history, "config", conf)
     convh = ConversationHistory()
 
     convh.add_user_message_from_prompt("2+2?")
@@ -48,7 +46,6 @@ def test_with_flags(mocker):
 
     # Config setup
     conf = MockConfig()
-    mocker.patch.object(modules.conversation_history, "config", conf)
     convh = ConversationHistory()
 
     # Prompts setup
