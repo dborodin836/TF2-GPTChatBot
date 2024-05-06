@@ -78,10 +78,14 @@
           },
           "dependencies": {
             "enable-soft-limit": {
-              "required": ["soft-limit-length"]
+              "required": [
+                "soft-limit-length"
+              ]
             },
             "enable-hard-limit": {
-              "required": ["hard-limit-length"]
+              "required": [
+                "hard-limit-length"
+              ]
             }
           }
         },
@@ -121,7 +125,14 @@
       "if": {
         "properties": {
           "provider": {
-            "const": "open-ai"
+            "anyOf": [
+              {
+                "const": "open-ai"
+              },
+              {
+                "const": "groq-cloud"
+              }
+            ]
           }
         }
       },
