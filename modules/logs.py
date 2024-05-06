@@ -13,6 +13,10 @@ __gui_logger = logger.bind(name="gui")
 __combo_logger = logger.bind(name="combo")
 
 
+LOG_RETENTION = "1 week"
+LOG_ROTATION = "50 MB"
+
+
 class LoggerDontExist(Exception): ...
 
 
@@ -45,8 +49,8 @@ def setup_loggers():
         format=FORMAT_LINE_MAIN,
         level="DEBUG",
         filter=make_name_filter("main"),
-        retention="1 week",
-        rotation="50 MB",
+        retention=LOG_RETENTION,
+        rotation=LOG_ROTATION,
     )
 
     __gui_logger.add(sys.stdout, format="{message}", filter=make_name_filter("gui"))
@@ -56,8 +60,8 @@ def setup_loggers():
         format=FORMAT_LINE_GUI,
         level="DEBUG",
         filter=make_name_filter("gui"),
-        retention="1 week",
-        rotation="50 MB",
+        retention=LOG_RETENTION,
+        rotation=LOG_ROTATION,
     )
 
     __combo_logger.add(sys.stdout, format="{message}", filter=make_name_filter("combo"))
@@ -67,8 +71,8 @@ def setup_loggers():
         format=FORMAT_LINE_MAIN,
         level="TRACE",
         filter=make_name_filter("combo"),
-        retention="1 week",
-        rotation="50 MB",
+        retention=LOG_RETENTION,
+        rotation=LOG_ROTATION,
     )
 
 

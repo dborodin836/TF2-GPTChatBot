@@ -10,8 +10,7 @@ from config import config
 from modules.lobby_manager import lobby_manager
 from modules.logs import get_logger
 from modules.rcon_client import RconClient
-from modules.typing import LogLine, Message
-from modules.utils.prompts import PROMPTS
+from modules.typing import LogLine
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -38,7 +37,7 @@ try:
     )
 except AttributeError:
     # Nothing bad will happen if we set this to True
-    main_logger.warning(f"Attribute error while checking for TF2BD wrapper.")
+    main_logger.warning("Attribute error while checking for TF2BD wrapper.")
     TF2BD_WRAPPER_FOLDER_EXIST = True
 except Exception as e:
     main_logger.error(f"Failed to check for TF2BD wrapper. [{e}]")
@@ -182,17 +181,15 @@ def get_console_logline() -> typing.Generator:
                 line = line.replace(char, "").strip()
 
         # Send status commands based on events
-        if "Lobby updated" in line:
-            if time.time() - last_updated > min_delay:
-                main_logger.debug("Sending status command on lobby update connection.")
-                last_updated = time.time()
-                get_status()
+        if "Lobby updated" in line and time.time() - last_updated > min_delay:
+            main_logger.debug("Sending status command on lobby update connection.")
+            last_updated = time.time()
+            get_status()
 
-        if line.endswith("connected"):
-            if time.time() - last_updated > min_delay:
-                main_logger.debug("Sending status command on new player connection.")
-                last_updated = time.time()
-                get_status()
+        if line.endswith("connected") and time.time() - last_updated > min_delay:
+            main_logger.debug("Sending status command on new player connection.")
+            last_updated = time.time()
+            get_status()
 
         if time.time() - last_updated > max_delay:
             main_logger.debug("Max delay between status commands exceeded.")

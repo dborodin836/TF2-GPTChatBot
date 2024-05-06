@@ -92,7 +92,7 @@ def create_command_from_dict(cmd: dict) -> LLMChatCommand:
             model = cmd["model"]
             command_dict.update(model=model)
         except Exception as e:
-            raise Exception(f"Model name is invalid or missing.")
+            raise Exception("Model name is invalid or missing.")
 
     # Update command wrappers
     if traits := cmd.get("traits"):
