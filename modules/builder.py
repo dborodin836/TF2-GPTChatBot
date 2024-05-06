@@ -10,7 +10,7 @@ from modules.command_controllers import CommandController
 from modules.commands.base import (
     CommandGlobalChatLLMChatCommand,
     CommandPrivateChatLLMChatCommand,
-    LLMChatCommand,
+    BaseCommand,
     QuickQueryLLMCommand,
 )
 from modules.commands.decorators import (
@@ -24,6 +24,10 @@ from modules.logs import get_logger
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
+
+
+class InvalidCommandException(Exception): ...
+
 
 TYPES = {
     "quick-query": QuickQueryLLMCommand,
@@ -66,7 +70,7 @@ def get_commands_from_yaml() -> List[dict]:
     return data["commands"]
 
 
-def create_command_from_dict(cmd: dict) -> LLMChatCommand:
+def create_command_from_dict(cmd: dict) -> BaseCommand:
     command_dict = {}
     command_dict.update(name=cmd["name"])
     class_name = f"DynamicCommand{cmd['name']}"
@@ -75,14 +79,14 @@ def create_command_from_dict(cmd: dict) -> LLMChatCommand:
     try:
         type_ = TYPES[cmd["type"]]
     except Exception as e:
-        raise Exception(f"Command type is invalid or missing. Expected one of {list(TYPES.keys())}")
+        raise InvalidCommandException(f"Command type is invalid or missing. Expected one of {list(TYPES.keys())}")
 
     # Provider type
     try:
         provider = PROVIDERS[cmd["provider"]]
         command_dict.update(provider=provider)
     except Exception as e:
-        raise Exception(
+        raise InvalidCommandException(
             f"Command type is invalid or missing. Expected one of {list(PROVIDERS.keys())}"
         )
 
@@ -92,7 +96,7 @@ def create_command_from_dict(cmd: dict) -> LLMChatCommand:
             model = cmd["model"]
             command_dict.update(model=model)
         except Exception as e:
-            raise Exception("Model name is invalid or missing.")
+            raise InvalidCommandException("Model name is invalid or missing.")
 
     # Update command wrappers
     if traits := cmd.get("traits"):
@@ -128,7 +132,7 @@ def create_command_from_dict(cmd: dict) -> LLMChatCommand:
     return type(class_name, (type_,), command_dict)
 
 
-def load_commands(controller: CommandController):
+def load_commands(controller: CommandController) -> None:
     if not os.path.exists("./commands.yaml"):
         main_logger.info("commands.yaml file is missing")
         return None
