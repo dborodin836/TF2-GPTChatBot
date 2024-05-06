@@ -25,7 +25,7 @@ class ConversationHistory:
         # Soft limiting the response
         enable_soft_limit = (
             self.settings.get("enable-soft-limit")
-            if self.settings.get("enable-soft-limit")
+            if self.settings.get("enable-soft-limit") is not None
             else self.enable_soft_limit
         )
         if enable_soft_limit:
