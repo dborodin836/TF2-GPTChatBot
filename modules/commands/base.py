@@ -7,7 +7,6 @@ from modules.conversation_history import ConversationHistory
 from modules.logs import get_logger
 from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import LogLine, Message
-from modules.utils.text import remove_args
 
 main_logger = get_logger("main")
 
@@ -46,8 +45,7 @@ class LLMChatCommand(BaseCommand):
         def func(logline: LogLine, shared_dict: InitializerConfig) -> Optional[str]:
             chat = cls.get_chat(logline, shared_dict)
 
-            user_message = remove_args(logline.prompt)
-            chat.add_user_message_from_prompt(user_message)
+            chat.add_user_message_from_prompt(logline.prompt)
 
             response = cls.provider.get_completion_text(
                 chat.get_messages_array(), logline.username, cls.model, cls.model_settings

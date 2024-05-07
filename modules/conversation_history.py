@@ -19,7 +19,7 @@ class ConversationHistory:
         if prompt_name := self.settings.get("prompt-file"):
             prompt_text = get_prompt_by_name(prompt_name)
 
-        if prompt := prompt_text or self.custom_prompt:
+        if prompt := self.custom_prompt or prompt_text:
             sys_msg.append(prompt)
 
         # Soft limiting the response
