@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Callable, List, Optional
 
-from modules.api.base import LLMProvider
+from modules.api.llm.base import LLMProvider
 from modules.command_controllers import CommandChatTypes, InitializerConfig
 from modules.conversation_history import ConversationHistory
 from modules.logs import get_logger
@@ -14,7 +14,7 @@ main_logger = get_logger("main")
 
 class BaseCommand(ABC):
     wrappers: List[Callable] = []
-    name: str = None
+    name: str
 
     @classmethod
     @abstractmethod
@@ -31,10 +31,10 @@ class BaseCommand(ABC):
 
 
 class LLMChatCommand(BaseCommand):
-    provider: LLMProvider = None
-    model: str = None
+    provider: LLMProvider
+    model: str = Optional[str]
     model_settings = {}
-    chat: ConversationHistory = None
+    chat: ConversationHistory
     chat_settings = {}
 
     @classmethod
@@ -55,11 +55,10 @@ class LLMChatCommand(BaseCommand):
             if response:
                 chat.add_assistant_message(Message(role="assistant", content=response))
                 # Strip the message if needed
-                if cls.chat_settings.get("enable-hard-limit") and len(
-                    response
-                ) > cls.chat_settings.get("enable-hard-limit"):
+                if (cls.chat_settings.get("enable-hard-limit") and
+                        len(response) > cls.chat_settings.get("enable-hard-limit")):
                     main_logger.warning(
-                        f"Message is longer than Hard Limit [{len(response)}]. Limit is {cls.chat_settings.get('enable-hard-limit')}."
+                        f"Message is longer than Hard Limit [{len(response)}]. Limit is {cls.chat_settings.get('hard-limit-length')}."
                     )
                     response = response[: cls.chat_settings.get("hard-limit-length", 300)] + "..."
                 send_say_command_to_tf2(response, logline.username, logline.is_team_message)

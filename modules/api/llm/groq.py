@@ -3,7 +3,7 @@ import hashlib
 import groq
 
 from config import config
-from modules.api.base import LLMProvider
+from modules.api.llm.base import LLMProvider
 from modules.utils.text import remove_hashtags
 
 

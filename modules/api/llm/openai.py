@@ -3,7 +3,7 @@ import hashlib
 import openai
 
 from config import config
-from modules.api.base import LLMProvider
+from modules.api.llm.base import LLMProvider
 from modules.logs import get_logger
 
 main_logger = get_logger("main")
