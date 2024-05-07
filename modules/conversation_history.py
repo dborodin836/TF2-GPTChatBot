@@ -23,11 +23,11 @@ class ConversationHistory:
             sys_msg.append(prompt)
 
         # Soft limiting the response
-        enable_soft_limit = (
-            self.settings.get("enable-soft-limit")
-            if self.settings.get("enable-soft-limit") is not None
-            else self.enable_soft_limit
-        )
+        if self.settings.get('enable-soft-limit') is True or self.settings.get("enable-soft-limit") is None:
+            enable_soft_limit = self.enable_soft_limit
+        else:
+            enable_soft_limit = False
+
         if enable_soft_limit:
             length = self.settings.get("soft-limit-length", 128)
             sys_msg.append(f"Answer in less than {length} chars!")
