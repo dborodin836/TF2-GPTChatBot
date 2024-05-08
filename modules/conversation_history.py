@@ -54,7 +54,7 @@ class ConversationHistory:
         # Don't add a message if the system prompt is empty.
         # Some LLM providers will complain about that, which effectively kills the chat.
         sys_msg = self._get_system_message()
-        if sys_msg.get('content', '') != '':
+        if sys_msg.get("content", "") != "":
             array.append(sys_msg)
 
         if greeting := self.settings.get("greeting"):
@@ -89,7 +89,7 @@ class ConversationHistory:
 
         # Don't add a message if the user prompt is empty.
         # Some LLM providers will complain about that, which effectively kills the chat.
-        if user_message != '':
+        if user_message != "":
             self.message_history.append(Message(role="user", content=user_message))
 
     def reset_turn(self):

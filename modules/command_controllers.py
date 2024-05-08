@@ -24,27 +24,7 @@ class CommandChatTypes(enum.Enum):
 
 
 class ChatHistoryManager(BaseModel):
-    GLOBAL = ConversationHistory()
     COMMAND = {}
-
-    def set_user_chat_history(self, player: Player, conv_history: ConversationHistory) -> None:
-        attr_name = self._get_user_chat_history_attr_name(player.steamid64)
-        setattr(self, attr_name, conv_history)
-
-    def get_user_chat_history(self, player: Player) -> ConversationHistory:
-        attr_name = self._get_user_chat_history_attr_name(player.steamid64)
-
-        if hasattr(self, attr_name):
-            return getattr(self, attr_name)
-        else:
-            main_logger.info(
-                f"Conversation history for user '{player.name}' [{player.steamid64}] doesn't exist. Creating..."
-            )
-            setattr(self, attr_name, ConversationHistory())
-            return getattr(self, attr_name)
-
-    def _get_user_chat_history_attr_name(self, id64: int) -> str:
-        return f"USER_{id64}_CH"
 
     def get_or_create_command_chat_history(
         self, cmd_name: str, type_: CommandChatTypes, settings: dict = None, user: Player = None
@@ -79,20 +59,22 @@ class ChatHistoryManager(BaseModel):
                 return new_ch
 
     def get_command_chat_history(
-        self, name: str, type_: CommandChatTypes, user: Player = None
+        self, command_name: str, type_: CommandChatTypes, user: Player = None
     ) -> Optional[ConversationHistory]:
         match type_:
             case CommandChatTypes.PRIVATE:
                 if user is None:
                     raise Exception("User argument must be provided for private chat retrieval.")
-                combo_logger.trace(PRIVATE_CHAT_ID.format(name, user.steamid64))
-                if chat_history := self.COMMAND.get(PRIVATE_CHAT_ID.format(name, user.steamid64)):
+                combo_logger.trace(PRIVATE_CHAT_ID.format(command_name, user.steamid64))
+                if chat_history := self.COMMAND.get(
+                    PRIVATE_CHAT_ID.format(command_name, user.steamid64)
+                ):
                     return chat_history
                 return None
 
             case CommandChatTypes.GLOBAL:
-                combo_logger.trace(GLOBAL_CHAT_ID.format(name))
-                if chat_history := self.COMMAND.get(GLOBAL_CHAT_ID.format(name)):
+                combo_logger.trace(GLOBAL_CHAT_ID.format(command_name))
+                if chat_history := self.COMMAND.get(GLOBAL_CHAT_ID.format(command_name)):
                     return chat_history
                 return None
 

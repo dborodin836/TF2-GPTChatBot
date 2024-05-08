@@ -73,20 +73,6 @@ class QuickQueryLLMCommand(LLMChatCommand):
         return ConversationHistory(cls.chat_settings)
 
 
-class GlobalChatLLMChatCommand(LLMChatCommand):
-
-    @classmethod
-    def get_chat(cls, logline, shared_dict) -> ConversationHistory:
-        return shared_dict.CHAT_CONVERSATION_HISTORY.GLOBAL
-
-
-class PrivateChatLLMChatCommand(LLMChatCommand):
-
-    @classmethod
-    def get_chat(cls, logline, shared_dict) -> ConversationHistory:
-        return shared_dict.CHAT_CONVERSATION_HISTORY.get_user_chat_history(logline.player)
-
-
 class CommandGlobalChatLLMChatCommand(LLMChatCommand):
     @classmethod
     def get_chat(cls, logline, shared_dict) -> ConversationHistory:
