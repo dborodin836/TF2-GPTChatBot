@@ -79,16 +79,22 @@ commands:
     prefix: '!'
     type: quick-query
     provider: text-generation-webui
+    traits:
+      - disabled
 
   - name: chat
     prefix: '!'
     type: command-global
     provider: text-generation-webui
+    traits:
+      - disabled
 
   - name: pcc
     prefix: '!'
     type: command-private
     provider: text-generation-webui
+    traits:
+      - disabled
 
   # GroqCloud commands
   - name: g
@@ -96,15 +102,21 @@ commands:
     type: quick-query
     provider: groq-cloud
     model: llama3-70b-8192
+    traits:
+      - disabled
 
   - name: gc
     prefix: '!'
     type: command-global
     provider: groq-cloud
     model: llama3-70b-8192
+    traits:
+      - disabled
 
   - name: gpc
     prefix: '!'
     type: command-private
     provider: groq-cloud
     model: llama3-70b-8192
+    traits:
+      - disabled
