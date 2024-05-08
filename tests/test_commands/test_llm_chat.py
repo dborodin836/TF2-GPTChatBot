@@ -1,13 +1,11 @@
+import modules.servers.tf2
+import modules.utils.text
+from modules.builder import create_command_from_dict
 from modules.command_controllers import InitializerConfig
 from modules.commands.base import LLMChatCommand
 from modules.conversation_history import ConversationHistory
 from modules.typing import LogLine
-from tests.common import DummyProvider
-from tests.common import get_player
-from tests.common import MockConfig
-import modules.utils.text
-import modules.servers.tf2
-from modules.builder import create_command_from_dict
+from tests.common import DummyProvider, MockConfig, get_player
 
 
 def dummy_func(*args):
@@ -34,51 +32,36 @@ def test_command_hard_limit(mocker):
         def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory:
             return chat
 
-    player_1 = get_player('test', 1)
+    player_1 = get_player("test", 1)
     logline = LogLine(username="test", prompt="2+2", player=player_1, is_team_message=False)
 
     func = TestCmd.as_command()
     func(logline, InitializerConfig())
 
     assert spy.call_count == 1
-    assert spy.spy_return == ('comp...', 'test', False)
+    assert spy.spy_return == ("comp...", "test", False)
 
-    chat_settings_new = {
-        "enable-hard-limit": False,
-        "hard-limit-length": 4
-    }
+    chat_settings_new = {"enable-hard-limit": False, "hard-limit-length": 4}
     TestCmd.chat_settings = chat_settings_new
     func(logline, InitializerConfig())
     assert spy.call_count == 2
-    assert spy.spy_return == ('completion text', 'test', False)
+    assert spy.spy_return == ("completion text", "test", False)
 
 
 def test_multiple_commands_global():
     cmd_dict_1 = {
-        'name': 'test_1',
-        'prefix': '!',
-        'provider': 'text-generation-webui',
-        'type': 'command-global',
-        'traits': [
-            {
-                'empty-prompt-message-response': [
-                    'EMPTY TEST_1 RESPONSE'
-                ]
-            }
-        ]
+        "name": "test_1",
+        "prefix": "!",
+        "provider": "text-generation-webui",
+        "type": "command-global",
+        "traits": [{"empty-prompt-message-response": ["EMPTY TEST_1 RESPONSE"]}],
     }
     cmd_dict_2 = {
-        'name': 'test_2',
-        'prefix': '!',
-        'provider': 'text-generation-webui',
-        'type': 'command-global',
-        'traits': [
-            {
-                'empty-prompt-message-response': [
-                    'EMPTY TEST_2 RESPONSE'
-                ]
-            }
-        ]
+        "name": "test_2",
+        "prefix": "!",
+        "provider": "text-generation-webui",
+        "type": "command-global",
+        "traits": [{"empty-prompt-message-response": ["EMPTY TEST_2 RESPONSE"]}],
     }
     command_1 = create_command_from_dict(cmd_dict_1)
     command_2 = create_command_from_dict(cmd_dict_2)
@@ -89,30 +72,18 @@ def test_multiple_commands_global():
 
 def test_multiple_commands_private():
     cmd_dict_1 = {
-        'name': 'test_1',
-        'prefix': '!',
-        'provider': 'text-generation-webui',
-        'type': 'command-private',
-        'traits': [
-            {
-                'empty-prompt-message-response': [
-                    'EMPTY TEST_1 RESPONSE'
-                ]
-            }
-        ]
+        "name": "test_1",
+        "prefix": "!",
+        "provider": "text-generation-webui",
+        "type": "command-private",
+        "traits": [{"empty-prompt-message-response": ["EMPTY TEST_1 RESPONSE"]}],
     }
     cmd_dict_2 = {
-        'name': 'test_2',
-        'prefix': '!',
-        'provider': 'text-generation-webui',
-        'type': 'command-private',
-        'traits': [
-            {
-                'empty-prompt-message-response': [
-                    'EMPTY TEST_2 RESPONSE'
-                ]
-            }
-        ]
+        "name": "test_2",
+        "prefix": "!",
+        "provider": "text-generation-webui",
+        "type": "command-private",
+        "traits": [{"empty-prompt-message-response": ["EMPTY TEST_2 RESPONSE"]}],
     }
     command_1 = create_command_from_dict(cmd_dict_1)
     command_2 = create_command_from_dict(cmd_dict_2)
@@ -123,30 +94,18 @@ def test_multiple_commands_private():
 
 def test_multiple_commands_quick():
     cmd_dict_1 = {
-        'name': 'test_1',
-        'prefix': '!',
-        'provider': 'text-generation-webui',
-        'type': 'quick-query',
-        'traits': [
-            {
-                'empty-prompt-message-response': [
-                    'EMPTY TEST_1 RESPONSE'
-                ]
-            }
-        ]
+        "name": "test_1",
+        "prefix": "!",
+        "provider": "text-generation-webui",
+        "type": "quick-query",
+        "traits": [{"empty-prompt-message-response": ["EMPTY TEST_1 RESPONSE"]}],
     }
     cmd_dict_2 = {
-        'name': 'test_2',
-        'prefix': '!',
-        'provider': 'text-generation-webui',
-        'type': 'quick-query',
-        'traits': [
-            {
-                'empty-prompt-message-response': [
-                    'EMPTY TEST_2 RESPONSE'
-                ]
-            }
-        ]
+        "name": "test_2",
+        "prefix": "!",
+        "provider": "text-generation-webui",
+        "type": "quick-query",
+        "traits": [{"empty-prompt-message-response": ["EMPTY TEST_2 RESPONSE"]}],
     }
     command_1 = create_command_from_dict(cmd_dict_1)
     command_2 = create_command_from_dict(cmd_dict_2)

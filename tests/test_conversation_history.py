@@ -38,9 +38,7 @@ def test_basic():
 
 
 def test_settings_greeting():
-    chat_settings = {
-        "greeting": "TEST_GREETING"
-    }
+    chat_settings = {"greeting": "TEST_GREETING"}
     chat = ConversationHistory(chat_settings)
 
     chat.add_user_message_from_prompt("2+2?")
@@ -55,7 +53,7 @@ def test_settings_greeting():
         {"content": "Answer in less than 128 chars!", "role": "system"},
         {"content": "TEST_GREETING", "role": "assistant"},
         {"content": "2+2?", "role": "user"},
-        {"content": "4", "role": "assistant"}
+        {"content": "4", "role": "assistant"},
     ]
 
     chat.reset()
@@ -68,9 +66,7 @@ def test_settings_greeting():
 
 
 def test_settings_message_suffix():
-    chat_settings = {
-        "message-suffix": "MESSAGE_SUFFIX"
-    }
+    chat_settings = {"message-suffix": "MESSAGE_SUFFIX"}
     chat = ConversationHistory(chat_settings)
 
     chat.add_user_message_from_prompt("2+2?")
@@ -79,17 +75,17 @@ def test_settings_message_suffix():
         {"content": "2+2?", "role": "user"},
     ]
 
-    chat.add_assistant_message(Message(content='4', role="assistant"))
+    chat.add_assistant_message(Message(content="4", role="assistant"))
     chat.add_user_message_from_prompt("4+4")
     assert chat.get_messages_array() == [
-        {'content': 'Answer in less than 128 chars! MESSAGE_SUFFIX', 'role': 'system'},
-        {'content': '2+2?', 'role': 'user'},
-        {'content': '4', 'role': 'assistant'},
-        {'content': '4+4', 'role': 'user'}
+        {"content": "Answer in less than 128 chars! MESSAGE_SUFFIX", "role": "system"},
+        {"content": "2+2?", "role": "user"},
+        {"content": "4", "role": "assistant"},
+        {"content": "4+4", "role": "user"},
     ]
 
     chat.reset()
-    chat.settings['message-suffix'] = None
+    chat.settings["message-suffix"] = None
     chat.add_user_message_from_prompt("2+2?")
     assert chat.get_messages_array() == [
         {"content": "Answer in less than 128 chars!", "role": "system"},
@@ -110,7 +106,7 @@ def test_settings_allow_long():
     ]
 
     chat.reset()
-    chat.settings['allow-long'] = True
+    chat.settings["allow-long"] = True
     chat.add_user_message_from_prompt("\l 2+2?")
     assert chat.get_messages_array() == [
         {"content": "", "role": "system"},
@@ -132,7 +128,7 @@ def test_settings_soft_limit():
     ]
 
     chat.reset()
-    chat.settings['enable-soft-limit'] = False
+    chat.settings["enable-soft-limit"] = False
     chat.add_user_message_from_prompt("2+2?")
     assert chat.get_messages_array() == [
         {"content": "", "role": "system"},
@@ -186,9 +182,7 @@ def test_with_flags(mocker):
 
 def test_settings_prompt_file(mocker):
     custom_prompt = "test_prompt"
-    chat_settings = {
-        "prompt-file": "medic"
-    }
+    chat_settings = {"prompt-file": "medic"}
     chat = ConversationHistory(chat_settings)
 
     mocker.patch("modules.utils.prompts.os.listdir", return_value=["medic.txt"])
@@ -205,10 +199,10 @@ def test_settings_prompt_file(mocker):
     assert chat.get_messages_array() == [
         {"content": "test_prompt Answer in less than 128 chars!", "role": "system"},
         {"content": "2+2?", "role": "user"},
-        {"content": "4", "role": "assistant"}
+        {"content": "4", "role": "assistant"},
     ]
 
-    chat.add_user_message_from_prompt('\clear 3+3?')
+    chat.add_user_message_from_prompt("\clear 3+3?")
     assert chat.get_messages_array() == [
         {"content": "test_prompt Answer in less than 128 chars!", "role": "system"},
         {"content": "2+2?", "role": "user"},

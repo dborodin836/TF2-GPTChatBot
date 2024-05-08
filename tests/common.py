@@ -3,10 +3,10 @@ import tempfile
 
 import pytest
 
+from modules.api.llm.base import LLMProvider
 from modules.commands.base import LLMChatCommand
 from modules.typing import Player
 from modules.utils.steam import steamid3_to_steamid64
-from modules.api.llm.base import LLMProvider
 
 
 def raise_(ex):
@@ -59,21 +59,21 @@ class MockConfig:
     SHORTENED_USERNAMES_FORMAT = "[$username] "
     SHORTENED_USERNAME_LENGTH = 12
     TF2_LOGFILE_PATH = "/"
-    ENABLE_SHORTENED_USERNAMES_RESPONSE=True
+    ENABLE_SHORTENED_USERNAMES_RESPONSE = True
 
     def __init__(
-            self,
-            app_version=None,
-            soft_completion_limit=None,
-            custom_prompt=None,
-            host_username=None,
-            clear_chat_command=None,
-            fallback_to_username=None,
-            enable_stats_logs=None,
-            shortened_username_format=None,
-            shortened_username_length=None,
-            tf2_logfile_path=None,
-            enable_shortened_username_format=None
+        self,
+        app_version=None,
+        soft_completion_limit=None,
+        custom_prompt=None,
+        host_username=None,
+        clear_chat_command=None,
+        fallback_to_username=None,
+        enable_stats_logs=None,
+        shortened_username_format=None,
+        shortened_username_length=None,
+        tf2_logfile_path=None,
+        enable_shortened_username_format=None,
     ):
         if app_version is not None:
             self.APP_VERSION = app_version

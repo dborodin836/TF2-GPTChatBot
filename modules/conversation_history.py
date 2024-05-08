@@ -23,7 +23,10 @@ class ConversationHistory:
             sys_msg.append(prompt)
 
         # Soft limiting the response
-        if self.settings.get('enable-soft-limit') is True or self.settings.get("enable-soft-limit") is None:
+        if (
+            self.settings.get("enable-soft-limit") is True
+            or self.settings.get("enable-soft-limit") is None
+        ):
             enable_soft_limit = self.enable_soft_limit
         else:
             enable_soft_limit = False

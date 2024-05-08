@@ -8,9 +8,9 @@ from modules.api.llm.openai import OpenAILLMProvider
 from modules.api.llm.textgen_webui import TextGenerationWebUILLMProvider
 from modules.command_controllers import CommandController
 from modules.commands.base import (
+    BaseCommand,
     CommandGlobalChatLLMChatCommand,
     CommandPrivateChatLLMChatCommand,
-    BaseCommand,
     QuickQueryLLMCommand,
 )
 from modules.commands.decorators import (
@@ -79,7 +79,9 @@ def create_command_from_dict(cmd: dict) -> BaseCommand:
     try:
         type_ = TYPES[cmd["type"]]
     except Exception as e:
-        raise InvalidCommandException(f"Command type is invalid or missing. Expected one of {list(TYPES.keys())}")
+        raise InvalidCommandException(
+            f"Command type is invalid or missing. Expected one of {list(TYPES.keys())}"
+        )
 
     # Provider type
     try:

@@ -53,8 +53,9 @@ class LLMChatCommand(BaseCommand):
             if response:
                 chat.add_assistant_message(Message(role="assistant", content=response))
                 # Strip the message if needed
-                if (cls.chat_settings.get("enable-hard-limit") and
-                        len(response) > cls.chat_settings.get("enable-hard-limit")):
+                if cls.chat_settings.get("enable-hard-limit") and len(
+                    response
+                ) > cls.chat_settings.get("enable-hard-limit"):
                     main_logger.warning(
                         f"Message is longer than Hard Limit [{len(response)}]. Limit is {cls.chat_settings.get('hard-limit-length')}."
                     )
