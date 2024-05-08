@@ -70,6 +70,40 @@ def test_deny_empty(setup_mocks):
     assert spy.call_count == 1
 
 
+def test_multiple(setup_mocks):
+    lobby_manager, controller, chat, spy = setup_mocks
+
+    # Setup environment
+    class TestCmd(LLMChatCommand):
+        provider = DummyProvider
+        wrappers = [traits.deny_empty_prompt, traits.admin_only]
+
+        @classmethod
+        def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory:
+            return chat
+
+    controller.register_command("!test", TestCmd.as_command(), "test")
+    admin_player = get_player("admin", 0)
+    player_1 = get_player("user1", 1)
+    lobby_manager.add_player(admin_player)
+    lobby_manager.add_player(player_1)
+
+    # Test
+    logline = LogLine(username="admin", player=admin_player, is_team_message=False, prompt="!test")
+    controller.process_line(logline)
+    assert spy.call_count == 0
+
+    logline_1 = LogLine(username="user1", player=player_1, is_team_message=False, prompt="!test")
+    controller.process_line(logline_1)
+    assert spy.call_count == 0
+
+    logline_2 = LogLine(
+        username="admin", player=admin_player, is_team_message=False, prompt="!test 123"
+    )
+    controller.process_line(logline_2)
+    assert spy.call_count == 1
+
+
 def test_admin_only(setup_mocks):
     lobby_manager, controller, chat, spy = setup_mocks
 

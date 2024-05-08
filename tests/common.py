@@ -52,9 +52,9 @@ class MockConfig:
     CUSTOM_PROMPT = ""
     GREETING = ""
     HOST_USERNAME = "admin"
-    HOST_STEAMID3 = "[U:0:0]"
+    HOST_STEAMID3 = "[U:1:0]"
     CLEAR_CHAT_COMMAND = "!clear"
-    FALLBACK_TO_USERNAME = True
+    FALLBACK_TO_USERNAME = False
     ENABLE_STATS_LOGS = True
     SHORTENED_USERNAMES_FORMAT = "[$username] "
     SHORTENED_USERNAME_LENGTH = 12
