@@ -1,8 +1,6 @@
-import modules.conversation_history
 from modules.conversation_history import ConversationHistory
 from modules.typing import Message
 from modules.utils.prompts import load_prompts
-from tests.common import MockConfig
 
 
 def test_empty():
