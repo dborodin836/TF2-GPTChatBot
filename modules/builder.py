@@ -110,7 +110,7 @@ def create_command_from_dict(cmd: dict) -> BaseCommand:
                     key = list(wrapper_obj)[0]
                     values = wrapper_obj[key]
                     factory = WRAPPERS[key]
-                    wrappers.append(factory(*values))
+                    wrappers.append(factory(**values))
                 elif isinstance(wrapper_obj, str):
                     wrapper = WRAPPERS[wrapper_obj]
                     wrappers.append(wrapper)

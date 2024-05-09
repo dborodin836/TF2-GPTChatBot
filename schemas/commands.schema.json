@@ -107,9 +107,11 @@
                 "type": "object",
                 "properties": {
                   "empty-prompt-message-response": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
+                    "type": "object",
+                    "properties": {
+                      "msg": {
+                        "type": "string"
+                      }
                     }
                   }
                 },

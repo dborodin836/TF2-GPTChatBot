@@ -22,7 +22,7 @@ commands:
       - admin-only
       - openai-moderated
       - empty-prompt-message-response:
-          - "Hello, MAGGOT!"
+          msg: "Hello, MAGGOT!"
 
   - name: heavy
     prefix: '!'
@@ -47,7 +47,7 @@ commands:
     traits:
       - openai-moderated
       - empty-prompt-message-response:
-          - "Hello there! I am ChatGPT, a ChatGPT plugin integrated into Team Fortress 2. Ask me anything!"
+          msg: "Hello there! I am ChatGPT, a ChatGPT plugin integrated into Team Fortress 2. Ask me anything!"
 
   - name: gpt4
     prefix: '!'
