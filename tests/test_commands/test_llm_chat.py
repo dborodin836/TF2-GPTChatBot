@@ -54,14 +54,14 @@ def test_multiple_commands_global():
         "prefix": "!",
         "provider": "text-generation-webui",
         "type": "command-global",
-        "traits": [{"empty-prompt-message-response": ["EMPTY TEST_1 RESPONSE"]}],
+        "traits": [{"empty-prompt-message-response": {"msg": "EMPTY TEST_1 RESPONSE"}}],
     }
     cmd_dict_2 = {
         "name": "test_2",
         "prefix": "!",
         "provider": "text-generation-webui",
         "type": "command-global",
-        "traits": [{"empty-prompt-message-response": ["EMPTY TEST_2 RESPONSE"]}],
+        "traits": [{"empty-prompt-message-response": {"msg": "EMPTY TEST_2 RESPONSE"}}],
     }
     command_1 = create_command_from_dict(cmd_dict_1)
     command_2 = create_command_from_dict(cmd_dict_2)
@@ -76,14 +76,14 @@ def test_multiple_commands_private():
         "prefix": "!",
         "provider": "text-generation-webui",
         "type": "command-private",
-        "traits": [{"empty-prompt-message-response": ["EMPTY TEST_1 RESPONSE"]}],
+        "traits": [{"empty-prompt-message-response": {"msg": "EMPTY TEST_1 RESPONSE"}}],
     }
     cmd_dict_2 = {
         "name": "test_2",
         "prefix": "!",
         "provider": "text-generation-webui",
         "type": "command-private",
-        "traits": [{"empty-prompt-message-response": ["EMPTY TEST_2 RESPONSE"]}],
+        "traits": [{"empty-prompt-message-response": {"msg": "EMPTY TEST_2 RESPONSE"}}],
     }
     command_1 = create_command_from_dict(cmd_dict_1)
     command_2 = create_command_from_dict(cmd_dict_2)
@@ -98,14 +98,14 @@ def test_multiple_commands_quick():
         "prefix": "!",
         "provider": "text-generation-webui",
         "type": "quick-query",
-        "traits": [{"empty-prompt-message-response": ["EMPTY TEST_1 RESPONSE"]}],
+        "traits": [{"empty-prompt-message-response": {"msg": "EMPTY TEST_1 RESPONSE"}}],
     }
     cmd_dict_2 = {
         "name": "test_2",
         "prefix": "!",
         "provider": "text-generation-webui",
         "type": "quick-query",
-        "traits": [{"empty-prompt-message-response": ["EMPTY TEST_2 RESPONSE"]}],
+        "traits": [{"empty-prompt-message-response": {"msg": "EMPTY TEST_2 RESPONSE"}}],
     }
     command_1 = create_command_from_dict(cmd_dict_1)
     command_2 = create_command_from_dict(cmd_dict_2)
