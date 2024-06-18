@@ -30,7 +30,7 @@ class RTDModes(IntEnum):
 
 
 class Config(BaseModel):
-    APP_VERSION: str = "1.3.0"
+    APP_VERSION: str = "1.4.0"
     HOST_USERNAME: str = ""
     HOST_STEAMID3: str = "[U:X:XXXXXXX]"
     TOS_VIOLATION: bool
