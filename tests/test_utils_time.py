@@ -1,5 +1,6 @@
-import pytest
 import datetime
+
+import pytest
 
 from modules.utils.time import get_date, get_minutes_from_str
 from tests.common import raise_

@@ -1,7 +1,7 @@
 from modules.bans import bans_manager
 from modules.command_controllers import InitializerConfig
-from modules.logs import get_logger
 from modules.lobby_manager import lobby_manager
+from modules.logs import get_logger
 
 gui_logger = get_logger("gui")
 
@@ -28,4 +28,6 @@ def handle_list_bans(command: str, shared_dict: InitializerConfig):
     if len(bans_manager.banned_players_steamid3) == 0:
         gui_logger.info("### NO BANS ###")
     else:
-        gui_logger.info("### BANNED PLAYERS ###", *list(bans_manager.banned_players_steamid3), sep="\n")
+        gui_logger.info(
+            "### BANNED PLAYERS ###", *list(bans_manager.banned_players_steamid3), sep="\n"
+        )

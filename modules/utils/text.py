@@ -10,8 +10,7 @@ from config import config
 from modules.lobby_manager import lobby_manager
 from modules.logs import get_logger
 from modules.rcon_client import RconClient
-from modules.typing import LogLine, Message
-from modules.utils.prompts import PROMPTS
+from modules.typing import LogLine
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -38,7 +37,7 @@ try:
     )
 except AttributeError:
     # Nothing bad will happen if we set this to True
-    main_logger.warning(f"Attribute error while checking for TF2BD wrapper.")
+    main_logger.warning("Attribute error while checking for TF2BD wrapper.")
     TF2BD_WRAPPER_FOLDER_EXIST = True
 except Exception as e:
     main_logger.error(f"Failed to check for TF2BD wrapper. [{e}]")
@@ -182,17 +181,15 @@ def get_console_logline() -> typing.Generator:
                 line = line.replace(char, "").strip()
 
         # Send status commands based on events
-        if "Lobby updated" in line:
-            if time.time() - last_updated > min_delay:
-                main_logger.debug("Sending status command on lobby update connection.")
-                last_updated = time.time()
-                get_status()
+        if "Lobby updated" in line and time.time() - last_updated > min_delay:
+            main_logger.debug("Sending status command on lobby update connection.")
+            last_updated = time.time()
+            get_status()
 
-        if line.endswith("connected"):
-            if time.time() - last_updated > min_delay:
-                main_logger.debug("Sending status command on new player connection.")
-                last_updated = time.time()
-                get_status()
+        if line.endswith("connected") and time.time() - last_updated > min_delay:
+            main_logger.debug("Sending status command on new player connection.")
+            last_updated = time.time()
+            get_status()
 
         if time.time() - last_updated > max_delay:
             main_logger.debug("Max delay between status commands exceeded.")
@@ -233,7 +230,7 @@ def remove_hashtags(text: str) -> str:
 
 def get_args(prompt: str) -> typing.List[str]:
     in_quote = None  # Track the type of quote we're inside (None, single ', or double ")
-    current_arg = ''
+    current_arg = ""
     result = []
     escape_next = False  # Flag to indicate the next character is escaped
 
@@ -241,7 +238,7 @@ def get_args(prompt: str) -> typing.List[str]:
         if escape_next:
             current_arg += char
             escape_next = False
-        elif char == '\\':  # Detect backslash
+        elif char == "\\":  # Detect backslash
             if current_arg and not current_arg.startswith("\\"):
                 # If current_arg doesn't start with \, reset it. Prepare for new arg.
                 current_arg = char
@@ -262,11 +259,11 @@ def get_args(prompt: str) -> typing.List[str]:
             elif not in_quote:  # Entering a quote
                 in_quote = char
             current_arg += char
-        elif char == ' ' and not in_quote:
+        elif char == " " and not in_quote:
             if current_arg:
                 if current_arg.startswith("\\"):  # Ensure arg starts with a backslash
                     result.append(current_arg)
-                current_arg = ''
+                current_arg = ""
         else:
             current_arg += char
 
@@ -288,33 +285,6 @@ def remove_args(prompt: str) -> str:
             result.append(item)
 
     return " ".join(result)
-
-
-def get_system_message(user_prompt: str, enable_soft_limit: bool = True) -> Message:
-    """
-    Adds prompts to a user prompt based on the flags provided in the prompt.
-    """
-    args = get_args(user_prompt)
-    message = ""
-
-    for prompt in PROMPTS:
-        if prompt["flag"] in args:
-            message += prompt["prompt"]
-            break
-
-    if r"\stats" in args:
-        message = (
-                f" {lobby_manager.get_data()} Based on this data answer following question. "
-                + message
-                + " Ignore unknown data."
-        )
-
-    if r"\l" not in args and enable_soft_limit:
-        message += (
-            f" Answer in less than {config.SOFT_COMPLETION_LIMIT} chars! {config.CUSTOM_PROMPT}"
-        )
-
-    return Message(role="system", content=message)
 
 
 def get_status():

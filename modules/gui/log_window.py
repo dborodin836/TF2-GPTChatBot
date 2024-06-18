@@ -118,5 +118,4 @@ class RedirectStdoutToLogWindow:
     def write(self, message):
         self.window.update_logs(message)
 
-    def flush(self):
-        ...
+    def flush(self): ...

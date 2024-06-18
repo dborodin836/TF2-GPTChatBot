@@ -3,12 +3,36 @@ import tempfile
 
 import pytest
 
+from modules.api.llm.base import LLMProvider
+from modules.commands.base import LLMChatCommand
 from modules.typing import Player
 from modules.utils.steam import steamid3_to_steamid64
 
 
 def raise_(ex):
     raise ex
+
+
+class DummyProvider(LLMProvider):
+    @staticmethod
+    def get_completion_text(message_array, username, model, settings):
+        return "completion text"
+
+
+class DummyLLMChatCommand(LLMChatCommand):
+    provider: None
+    model: None
+    model_settings = {}
+    chat = None
+    chat_settings = {}
+
+    @classmethod
+    def get_chat(cls, logline, shared_dict): ...
+
+    @classmethod
+    def get_handler(cls):
+        def func(logline, shared_dict):
+            return func
 
 
 def get_player(name: str, id: int) -> Player:
@@ -18,7 +42,7 @@ def get_player(name: str, id: int) -> Player:
         last_updated=0,
         ping=1,
         steamid3=f"[U:1:{id}]",
-        steamid64=steamid3_to_steamid64(f"[U:1:{id}]")
+        steamid64=steamid3_to_steamid64(f"[U:1:{id}]"),
     )
 
 
@@ -28,26 +52,28 @@ class MockConfig:
     CUSTOM_PROMPT = ""
     GREETING = ""
     HOST_USERNAME = "admin"
-    HOST_STEAMID3 = "[U:0:0]"
+    HOST_STEAMID3 = "[U:1:0]"
     CLEAR_CHAT_COMMAND = "!clear"
-    FALLBACK_TO_USERNAME = True
+    FALLBACK_TO_USERNAME = False
     ENABLE_STATS_LOGS = True
     SHORTENED_USERNAMES_FORMAT = "[$username] "
     SHORTENED_USERNAME_LENGTH = 12
     TF2_LOGFILE_PATH = "/"
+    ENABLE_SHORTENED_USERNAMES_RESPONSE = True
 
     def __init__(
-            self,
-            app_version=None,
-            soft_completion_limit=None,
-            custom_prompt=None,
-            host_username=None,
-            clear_chat_command=None,
-            fallback_to_username=None,
-            enable_stats_logs=None,
-            shortened_username_format=None,
-            shortened_username_length=None,
-            tf2_logfile_path=None
+        self,
+        app_version=None,
+        soft_completion_limit=None,
+        custom_prompt=None,
+        host_username=None,
+        clear_chat_command=None,
+        fallback_to_username=None,
+        enable_stats_logs=None,
+        shortened_username_format=None,
+        shortened_username_length=None,
+        tf2_logfile_path=None,
+        enable_shortened_username_format=None,
     ):
         if app_version is not None:
             self.APP_VERSION = app_version
@@ -69,6 +95,8 @@ class MockConfig:
             self.SHORTENED_USERNAME_LENGTH = shortened_username_length
         if tf2_logfile_path is not None:
             self.TF2_LOGFILE_PATH = tf2_logfile_path
+        if enable_shortened_username_format is not None:
+            self.ENABLE_SHORTENED_USERNAMES_RESPONSE = enable_shortened_username_format
 
 
 @pytest.fixture

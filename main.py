@@ -14,9 +14,9 @@ from modules.bot_state import state_manager
 from modules.chat import parse_console_logs_and_build_conversation_history
 from modules.commands.gui.openai import gpt3_cmd_handler
 from modules.gui.log_window import LogWindow, RedirectStdoutToLogWindow
+from modules.lobby_manager import lobby_manager
 from modules.logs import get_logger, setup_loggers
 from modules.message_queueing import message_queue_handler
-from modules.lobby_manager import lobby_manager
 
 gui_logger = get_logger("gui")
 

@@ -1,8 +1,9 @@
-from typing import Callable, Optional
+import enum
+from typing import Callable, List, Optional
 
 import pydantic
 from ordered_set import OrderedSet
-from pydantic import BaseModel, BaseConfig
+from pydantic import BaseConfig, BaseModel
 
 from modules.conversation_history import ConversationHistory
 from modules.logs import get_logger, log_gui_model_message
@@ -13,27 +14,83 @@ main_logger = get_logger("main")
 combo_logger = get_logger("combo")
 gui_logger = get_logger("gui")
 
+PRIVATE_CHAT_ID = "CMD_{0}_USR_{1}"
+GLOBAL_CHAT_ID = "CMD_{0}"
+
+
+class CommandChatTypes(enum.Enum):
+    GLOBAL = 1
+    PRIVATE = 2
+
 
 class ChatHistoryManager(BaseModel):
-    GLOBAL = ConversationHistory()
+    COMMAND = {}
 
-    def set_conversation_history(self, player: Player, conv_history: ConversationHistory) -> None:
-        attr_name = self._get_conv_history_attr_name(player.steamid64)
+    def get_or_create_command_chat_history(
+        self, cmd_name: str, type_: CommandChatTypes, settings: dict = None, user: Player = None
+    ):
+        if settings is None:
+            settings = {}
 
-        setattr(self, attr_name, conv_history)
+        match type_:
+            case CommandChatTypes.PRIVATE:
+                if chat_history := self.COMMAND.get(
+                    PRIVATE_CHAT_ID.format(cmd_name, user.steamid64)
+                ):
+                    return chat_history
+                main_logger.info(
+                    f"Conversation history for command '{cmd_name}' [{type_}] doesn't exist. Creating..."
+                )
+                combo_logger.trace(
+                    f'Creating chat history "{PRIVATE_CHAT_ID.format(cmd_name, user.steamid64)}"'
+                )
+                new_ch = ConversationHistory(settings)
+                self.COMMAND[PRIVATE_CHAT_ID.format(cmd_name, user.steamid64)] = new_ch
+                return new_ch
 
-    def get_conversation_history(self, player: Player) -> ConversationHistory:
-        attr_name = self._get_conv_history_attr_name(player.steamid64)
+            case CommandChatTypes.GLOBAL:
+                if chat_history := self.COMMAND.get(GLOBAL_CHAT_ID.format(cmd_name)):
+                    return chat_history
+                main_logger.info(
+                    f"Conversation history for command '{cmd_name}' [{type_}] doesn't exist. Creating..."
+                )
+                new_ch = ConversationHistory(settings)
+                self.COMMAND[GLOBAL_CHAT_ID.format(cmd_name)] = new_ch
+                return new_ch
 
-        if hasattr(self, attr_name):
-            return getattr(self, attr_name)
-        else:
-            main_logger.info(f"Conversation history for user '{player.name}' [{player.steamid64}] doesn't exist. Creating...")
-            setattr(self, attr_name, ConversationHistory())
-            return getattr(self, attr_name)
+    def get_command_chat_history(
+        self, command_name: str, type_: CommandChatTypes, user: Player = None
+    ) -> Optional[ConversationHistory]:
+        match type_:
+            case CommandChatTypes.PRIVATE:
+                if user is None:
+                    raise Exception("User argument must be provided for private chat retrieval.")
+                combo_logger.trace(PRIVATE_CHAT_ID.format(command_name, user.steamid64))
+                if chat_history := self.COMMAND.get(
+                    PRIVATE_CHAT_ID.format(command_name, user.steamid64)
+                ):
+                    return chat_history
+                return None
 
-    def _get_conv_history_attr_name(self, id64: int) -> str:
-        return f"USER_{id64}_CH"
+            case CommandChatTypes.GLOBAL:
+                combo_logger.trace(GLOBAL_CHAT_ID.format(command_name))
+                if chat_history := self.COMMAND.get(GLOBAL_CHAT_ID.format(command_name)):
+                    return chat_history
+                return None
+
+    def set_command_chat_history(
+        self,
+        name: str,
+        type_: CommandChatTypes,
+        chat_history: ConversationHistory,
+        user: Player = None,
+    ):
+        match type_:
+            case CommandChatTypes.PRIVATE:
+                self.COMMAND[PRIVATE_CHAT_ID.format(name, user.steamid64)] = chat_history
+
+            case CommandChatTypes.GLOBAL:
+                self.COMMAND[GLOBAL_CHAT_ID.format(name)] = chat_history
 
     class Config(BaseConfig):
         extra = "allow"
@@ -41,7 +98,10 @@ class ChatHistoryManager(BaseModel):
 
 
 class InitializerConfig(BaseModel):
-    CHAT_CONVERSATION_HISTORY: ChatHistoryManager = pydantic.Field(default_factory=ChatHistoryManager)
+    CHAT_CONVERSATION_HISTORY: ChatHistoryManager = pydantic.Field(
+        default_factory=ChatHistoryManager
+    )
+    LOADED_COMMANDS: List[str] = []
 
 
 class GuiCommandController:
@@ -83,14 +143,18 @@ class GuiCommandController:
 class CommandController:
     def __init__(self, initializer_config: InitializerConfig = None) -> None:
         self.__services = OrderedSet()
-        self.__named_commands_registry: SetOnceDictionary[str, Callable[[LogLine, InitializerConfig], Optional[str]]] = SetOnceDictionary()
+        self.__named_commands_registry: SetOnceDictionary[
+            str, Callable[[LogLine, InitializerConfig], Optional[str]]
+        ] = SetOnceDictionary()
         self.__shared = InitializerConfig()
 
         if initializer_config is not None:
             self.__shared.__dict__.update(initializer_config)
 
-    def register_command(self, name: str, function: Callable) -> None:
-        self.__named_commands_registry[name] = function
+    def register_command(self, cmd: str, function: Callable, name: str = None) -> None:
+        if name is not None:
+            self.__shared.LOADED_COMMANDS.append(name)
+        self.__named_commands_registry[cmd] = function
 
     def register_service(self, function: Callable):
         self.__services.add(function)

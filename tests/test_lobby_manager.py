@@ -1,6 +1,6 @@
-from modules.lobby_manager import find_username, LobbyManager
-from tests.common import MockConfig, get_player
 import modules.lobby_manager
+from modules.lobby_manager import LobbyManager, find_username
+from tests.common import MockConfig, get_player
 
 
 def test_find_username_basic():
@@ -57,7 +57,7 @@ def test_regex_map(mocker):
     conf = MockConfig()
     mocker.patch.object(modules.lobby_manager, "config", conf)
 
-    line = r'Map: ctf_2fort'
+    line = r"Map: ctf_2fort"
     res = lobby_manager.stats_regexes(line)
     assert res is True
     assert lobby_manager.map == "ctf_2fort"
@@ -68,7 +68,7 @@ def test_regex_ip(mocker):
     conf = MockConfig()
     mocker.patch.object(modules.lobby_manager, "config", conf)
 
-    line = r'udp/ip  : 169.254.239.115:45288'
+    line = r"udp/ip  : 169.254.239.115:45288"
     res = lobby_manager.stats_regexes(line)
     assert res is True
     assert lobby_manager.server_ip == "169.254.239.115:45288"
@@ -79,7 +79,7 @@ def test_regex_empty(mocker):
     conf = MockConfig()
     mocker.patch.object(modules.lobby_manager, "config", conf)
 
-    line = r'nothing :D'
+    line = r"nothing :D"
     res = lobby_manager.stats_regexes(line)
     assert res is False
 
@@ -91,7 +91,7 @@ def test_regex_suicide(mocker):
     plr = get_player("Gamer", 1)
     lobby_manager.add_player(plr)
 
-    line = r'Gamer suicided.'
+    line = r"Gamer suicided."
     res = lobby_manager.stats_regexes(line)
     assert res is True
     assert lobby_manager.get_player_by_name("Gamer").deaths == 1
@@ -106,7 +106,7 @@ def test_regex_kill(mocker):
     lobby_manager.add_player(plr1)
     lobby_manager.add_player(plr2)
 
-    line = r'Gamer 1 killed Gamer 2 with bazaar_bargain. (crit)'
+    line = r"Gamer 1 killed Gamer 2 with bazaar_bargain. (crit)"
     res = lobby_manager.stats_regexes(line)
     assert res is True
     assert len(lobby_manager.players) == 2

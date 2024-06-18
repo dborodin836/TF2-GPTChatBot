@@ -33,7 +33,6 @@ class Config(BaseModel):
     APP_VERSION: str = "1.4.0"
     HOST_USERNAME: str = ""
     HOST_STEAMID3: str = "[U:X:XXXXXXX]"
-    TOS_VIOLATION: bool
     FALLBACK_TO_USERNAME: bool
 
     TF2_LOGFILE_PATH: str
@@ -41,57 +40,23 @@ class Config(BaseModel):
 
     STEAM_WEBAPI_KEY: str
     DISABLE_KEYBOARD_BINDINGS: bool
-    GPT4_COMMAND: str
-    GPT4_LEGACY_COMMAND: str
 
-    ENABLE_OPENAI_COMMANDS: bool
-    GPT3_MODEL: str
-    GPT3_CHAT_MODEL: str
-    GPT4_MODEL: str
-    GPT4L_MODEL: str
-
-    GPT_COMMAND: str
-    CHATGPT_COMMAND: str
     CLEAR_CHAT_COMMAND: str
     RTD_COMMAND: str
-    GLOBAL_CHAT_COMMAND: str
-    GPT4_ADMIN_ONLY: bool
     ENABLE_STATS_LOGS: bool
-
-    CUSTOM_PROMPT: str
 
     RCON_HOST: str
     RCON_PASSWORD: str
     RCON_PORT: int
 
-    SOFT_COMPLETION_LIMIT: int
-    HARD_COMPLETION_LIMIT: int
     ENABLE_SHORTENED_USERNAMES_RESPONSE: bool
     SHORTENED_USERNAMES_FORMAT: str
     SHORTENED_USERNAME_LENGTH: int
     DELAY_BETWEEN_MESSAGES: float
-    ENABLE_SOFT_LIMIT_FOR_CUSTOM_MODEL: bool
-
     RTD_MODE: int
-
-    ENABLE_CUSTOM_MODEL: bool
     CUSTOM_MODEL_HOST: str
-    CUSTOM_MODEL_COMMAND: str
-    CUSTOM_MODEL_CHAT_COMMAND: str
-    GLOBAL_CUSTOM_CHAT_COMMAND: str
-    GREETING: str
-
     CONFIRMABLE_QUEUE: bool
-
-    CUSTOM_MODEL_SETTINGS: Optional[str | dict]
-
     GROQ_API_KEY: str
-    GROQ_COMMAND: str
-    GROQ_CHAT_COMMAND: str
-    GROQ_PRIVATE_CHAT: str
-    GROQ_MODEL: str
-    GROQ_ENABLE: bool
-    GROQ_SETTINGS: Optional[str | dict]
 
     @validator("OPENAI_API_KEY")
     def api_key_pattern_match(cls, v):
@@ -167,30 +132,7 @@ def init_config():
         }
         global config
 
-        try:
-            if config_dict.get("CUSTOM_MODEL_SETTINGS") != "":
-                config_dict["CUSTOM_MODEL_SETTINGS"] = json.loads(
-                    config_dict.get("CUSTOM_MODEL_SETTINGS")
-                )
-        except Exception as e:
-            buffered_fail_message(
-                f"CUSTOM_MODEL_SETTINGS is not dict [{e}].", "BOTH", level="ERROR"
-            )
-
-        try:
-            if config_dict.get("GROQ_SETTINGS") != "":
-                config_dict["GROQ_SETTINGS"] = json.loads(
-                    config_dict.get("GROQ_SETTINGS")
-                )
-        except Exception as e:
-            buffered_fail_message(
-                f"GROQ_SETTINGS is not dict [{e}].", "BOTH", level="ERROR"
-            )
-
         config = Config(**config_dict)
-
-        if not config.ENABLE_OPENAI_COMMANDS and not config.ENABLE_CUSTOM_MODEL and not config.GROQ_ENABLE:
-            buffered_message("You haven't enabled any AI related commands.")
 
     except (pydantic.ValidationError, Exception) as e:
         show_error_window(e)

@@ -1,29 +1,45 @@
-from config import config
 from modules.lobby_manager import lobby_manager
 from modules.typing import Message, MessageHistory
-from modules.utils.prompts import PROMPTS
+from modules.utils.prompts import PROMPTS, get_prompt_by_name
 from modules.utils.text import get_args, remove_args
 
 
 class ConversationHistory:
-    def __init__(self):
+    def __init__(self, settings: dict = None):
         self.custom_prompt: str = ""
         self.enable_soft_limit: bool = True
         self.enable_stats: bool = False
         self.message_history: MessageHistory = list()
+        self.settings = settings or {}
 
     def _get_system_message(self) -> Message:
         sys_msg = []
 
-        if self.custom_prompt:
-            sys_msg.append(self.custom_prompt)
+        prompt_text = ""
+        if prompt_name := self.settings.get("prompt-file"):
+            prompt_text = get_prompt_by_name(prompt_name)
 
-        if self.enable_soft_limit:
-            sys_msg.append(f"Answer in less than {config.SOFT_COMPLETION_LIMIT} chars!")
+        if prompt := self.custom_prompt or prompt_text:
+            sys_msg.append(prompt)
 
-        if config.CUSTOM_PROMPT:
-            sys_msg.append(config.CUSTOM_PROMPT)
+        # Soft limiting the response
+        if (
+            self.settings.get("enable-soft-limit") is True
+            or self.settings.get("enable-soft-limit") is None
+        ):
+            enable_soft_limit = self.enable_soft_limit
+        else:
+            enable_soft_limit = False
 
+        if enable_soft_limit:
+            length = self.settings.get("soft-limit-length", 128)
+            sys_msg.append(f"Answer in less than {length} chars!")
+
+        # Add custom prompt. Acts as a prompt suffix.
+        if prompt := self.settings.get("message-suffix"):
+            sys_msg.append(prompt)
+
+        # Stats
         if self.enable_stats:
             sys_msg.insert(
                 0, f"{lobby_manager.get_data()} Based on this data answer following question."
@@ -33,10 +49,16 @@ class ConversationHistory:
         return Message(role="system", content=" ".join(sys_msg))
 
     def get_messages_array(self) -> MessageHistory:
-        array = [self._get_system_message()]
+        array = []
 
-        if config.GREETING:
-            array.append(Message(role="assistant", content=config.GREETING))
+        # Don't add a message if the system prompt is empty.
+        # Some LLM providers will complain about that, which effectively kills the chat.
+        sys_msg = self._get_system_message()
+        if sys_msg.get("content", "") != "":
+            array.append(sys_msg)
+
+        if greeting := self.settings.get("greeting"):
+            array.append(Message(role="assistant", content=greeting))
 
         array.extend(self.message_history)
 
@@ -48,23 +70,27 @@ class ConversationHistory:
         self.message_history.append(message)
 
     def add_user_message_from_prompt(
-            self, user_prompt: str, enable_soft_limit: bool = True
+        self, user_prompt: str, enable_soft_limit: bool = True
     ) -> None:
         user_message = remove_args(user_prompt)
         args = get_args(user_prompt)
 
-        for prompt in PROMPTS:
-            if prompt["flag"] in args:
-                self.custom_prompt = prompt["prompt"]
-                break
-
-        if r"\l" in args or not enable_soft_limit:
-            self.enable_soft_limit = False
+        if self.settings.get("allow-prompt-overwrite", True):
+            for prompt in PROMPTS:
+                if prompt["flag"] in args:
+                    self.custom_prompt = prompt["prompt"]
+                    break
+        if self.settings.get("allow-long", True):
+            if r"\l" in args or not enable_soft_limit:
+                self.enable_soft_limit = False
 
         if r"\stats" in args:
             self.enable_stats = True
 
-        self.message_history.append(Message(role="user", content=user_message))
+        # Don't add a message if the user prompt is empty.
+        # Some LLM providers will complain about that, which effectively kills the chat.
+        if user_message != "":
+            self.message_history.append(Message(role="user", content=user_message))
 
     def reset_turn(self):
         self.enable_soft_limit = True

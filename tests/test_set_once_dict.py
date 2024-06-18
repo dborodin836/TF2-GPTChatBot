@@ -1,6 +1,10 @@
 import pytest
 
-from modules.set_once_dict import SetOnceDictionary, DeletionOfSetKey, ModificationOfSetKey
+from modules.set_once_dict import (
+    DeletionOfSetKey,
+    ModificationOfSetKey,
+    SetOnceDictionary,
+)
 
 
 def test_read():
