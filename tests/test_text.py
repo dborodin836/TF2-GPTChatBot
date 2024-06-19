@@ -4,15 +4,15 @@ import modules.utils.text
 from modules.lobby_manager import LobbyManager
 from modules.typing import LogLine, Player
 from modules.utils.text import (
+    get_args,
     get_chunk_size,
     get_chunks,
     get_console_logline,
-    has_cyrillic,
-    get_args,
-    parse_line,
     get_shortened_username,
+    has_cyrillic,
+    parse_line,
     remove_hashtags,
-    split_into_chunks
+    split_into_chunks,
 )
 from tests.common import MockConfig, get_player
 

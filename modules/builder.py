@@ -1,5 +1,5 @@
 import os.path
-from typing import List
+from typing import Dict, List
 
 import yaml
 
@@ -71,7 +71,7 @@ def get_commands_from_yaml() -> List[dict]:
 
 
 def create_command_from_dict(cmd: dict) -> BaseCommand:
-    command_dict = {}
+    command_dict: Dict = {}
     command_dict.update(name=cmd["name"])
     class_name = f"DynamicCommand{cmd['name']}"
 

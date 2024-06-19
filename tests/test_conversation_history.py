@@ -108,9 +108,7 @@ def test_settings_allow_long():
     chat.reset()
     chat.settings["allow-long"] = True
     chat.add_user_message_from_prompt("\l 2+2?")
-    assert chat.get_messages_array() == [
-        {"content": "2+2?", "role": "user"}
-    ]
+    assert chat.get_messages_array() == [{"content": "2+2?", "role": "user"}]
 
 
 def test_settings_soft_limit():
@@ -129,9 +127,7 @@ def test_settings_soft_limit():
     chat.reset()
     chat.settings["enable-soft-limit"] = False
     chat.add_user_message_from_prompt("2+2?")
-    assert chat.get_messages_array() == [
-        {"content": "2+2?", "role": "user"}
-    ]
+    assert chat.get_messages_array() == [{"content": "2+2?", "role": "user"}]
 
 
 def test_with_flags(mocker):
@@ -147,9 +143,7 @@ def test_with_flags(mocker):
 
     # Testing long "\l" argument
     chat.add_user_message_from_prompt(r"\l 2+2?")
-    assert chat.get_messages_array() == [
-        {"content": "2+2?", "role": "user"}
-    ]
+    assert chat.get_messages_array() == [{"content": "2+2?", "role": "user"}]
 
     chat.add_assistant_message(Message(role="assistant", content="4"))
     assert chat.message_history == [

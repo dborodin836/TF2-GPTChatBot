@@ -1,10 +1,8 @@
 import enum
-from typing import Callable, List, Optional
-from typing import Any, Callable, Dict, Optional
+from typing import Callable, Dict, List, Optional
 
 import pydantic
 from ordered_set import OrderedSet
-from pydantic import BaseConfig, BaseModel
 from pydantic import BaseModel, ConfigDict
 
 from modules.conversation_history import ConversationHistory
@@ -27,7 +25,7 @@ class CommandChatTypes(enum.Enum):
 
 class ChatHistoryManager(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
-    COMMAND = {}
+    COMMAND: Dict = {}
 
     def get_or_create_command_chat_history(
         self, cmd_name: str, type_: CommandChatTypes, settings: dict = None, user: Player = None
@@ -141,7 +139,7 @@ class GuiCommandController:
 
 class CommandController:
     def __init__(self, initializer_config: InitializerConfig = None) -> None:
-        self.__services = OrderedSet()
+        self.__services: OrderedSet = OrderedSet()
         self.__named_commands_registry: SetOnceDictionary[
             str, Callable[[LogLine, InitializerConfig], Optional[str]]
         ] = SetOnceDictionary()

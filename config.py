@@ -71,7 +71,6 @@ class Config(BaseModel):
     HOST_USERNAME: str = ""
     HOST_STEAMID3: str = "[U:X:XXXXXXX]"
 
-
     # Required
     TF2_LOGFILE_PATH: str = (
         r"C:\Program Files (x86)\Steam\steamapps\common\Team Fortress 2\tf\console.log"
@@ -239,7 +238,7 @@ def get_formatter_errors(exc: ValidationError) -> str:
         # If loc key is missing replace it with ERR_UNKNOWN_OPTION string
         loc = err.get("loc", ("ERR_UNKNOWN_OPTION",))[0]
         rtn += f"{loc}\n\t{err.get('msg')}"
-    rtn += '\n'
+    rtn += "\n"
     return rtn
 
 
@@ -260,7 +259,9 @@ def load_config() -> Config:
         buffered_fail_message(
             "Failed to load config. Loading default config...", "BOTH", level="ERROR"
         )
-        buffered_fail_message(f"Failed to load config. Loading default config.", "BOTH", level="ERROR")
+        buffered_fail_message(
+            f"Failed to load config. Loading default config.", "BOTH", level="ERROR"
+        )
 
     # Attempt #3: Load a default config as a last resort
     return Config()
@@ -268,10 +269,10 @@ def load_config() -> Config:
 
 class ConfigWrapper:
     def __init__(self):
-        self.__dict__['_config']: Config = load_config()
+        self.__dict__["_config"]: Config = load_config()
 
     def update_config(self, config: Config):
-        self.__dict__['_config'] = config
+        self.__dict__["_config"] = config
 
     def __getattr__(self, name):
         return getattr(self._config, name)
