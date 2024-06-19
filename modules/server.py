@@ -11,7 +11,7 @@ from starlette.websockets import WebSocketDisconnect
 from config import Config, ValidatableConfig, config
 from modules.gui.controller import command_controller
 from modules.logs import get_logger
-from modules.utils.config import save_config
+from modules.utils.config import DROP_KEYS, save_config
 
 combo_logger = get_logger("combo")
 
@@ -72,7 +72,9 @@ async def handle_get_settings():
 async def handle_get_default_settings():
     # Generate default config
     cfg = Config()
-    return cfg.dict()
+    # Remove keys that are useless
+    dict_ = {k: v for k, v in cfg.dict().items() if k not in DROP_KEYS}
+    return dict_
 
 
 @app.post("/settings")
