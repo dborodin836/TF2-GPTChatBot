@@ -60,6 +60,9 @@ CHAT_SETTINGS = {
     "allow-long",
     "enable-hard-limit",
     "hard-limit-length",
+    "allow-img",
+    "img-detail",
+    "img-screen-id"
 }
 
 
