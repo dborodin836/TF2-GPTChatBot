@@ -11,6 +11,7 @@ import { ChatSettings } from './ChatSettings';
 import { Controls } from './Controls';
 import { Settings } from './SettingsType';
 import { useAlert } from '../AlertContext';
+import { GroqSettings } from './GroqSettings';
 
 interface ValidationError {
   ctx: any;
@@ -118,6 +119,12 @@ export function PageSettings() {
         <RCONSettings settings={settings} onChangeInput={handleInputChange} />
 
         <OpenAISettings
+          settings={settings}
+          onChangeToggle={handleToggle}
+          onChangeInput={handleInputChange}
+        />
+
+        <GroqSettings
           settings={settings}
           onChangeToggle={handleToggle}
           onChangeInput={handleInputChange}

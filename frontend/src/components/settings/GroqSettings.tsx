@@ -3,7 +3,7 @@ import React from 'react';
 import * as PropTypes from 'prop-types';
 import { Settings } from './SettingsType';
 
-export function OpenAISettings(props: {
+export function GroqSettings(props: {
   settings: Settings | null;
   onChangeToggle: React.ChangeEventHandler<HTMLInputElement> | undefined;
   onChangeInput: React.ChangeEventHandler<HTMLInputElement> | undefined;
@@ -11,13 +11,13 @@ export function OpenAISettings(props: {
   return (
     <Card className="p-6 w-full">
       <Typography className="mb-3" variant="h2">
-        OpenAI
+        GroqCloud
       </Typography>
       <hr className="mb-3" />
 
       <div className="mb-3">
         <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
-          OpenAI API Key
+          GroqCloud API Key
         </label>
         <div className="min-w-[100%]">
           <Input
@@ -26,8 +26,8 @@ export function OpenAISettings(props: {
               className: 'hidden',
             }}
             containerProps={{ className: 'min-w-[100px]' }}
-            value={props.settings ? props.settings.OPENAI_API_KEY : ''}
-            name="OPENAI_API_KEY"
+            value={props.settings ? props.settings.GROQ_API_KEY : ''}
+            name="GROQ_API_KEY"
             onChange={props.onChangeInput}
           />
         </div>
@@ -36,7 +36,7 @@ export function OpenAISettings(props: {
   );
 }
 
-OpenAISettings.propTypes = {
+GroqSettings.propTypes = {
   settings: PropTypes.any,
   onChangeToggle: PropTypes.func,
   onChangeInput: PropTypes.func,

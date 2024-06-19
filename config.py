@@ -8,7 +8,6 @@ from typing import Any, Dict, Optional
 
 from pydantic import BaseModel, ValidationError, field_validator
 
-from modules.api.typing import CompletionRequest
 from modules.utils.buffered_messages import buffered_fail_message, buffered_message
 
 DEFAULT_CONFIG_FILE = "config.ini"
@@ -43,15 +42,6 @@ def read_config_from_file(filename: str) -> Dict:
         for key, value in configparser_config.items(section)
     }
 
-    try:
-        if config_dict.get("CUSTOM_MODEL_SETTINGS") != "":
-            key = config_dict.get("CUSTOM_MODEL_SETTINGS")
-            if key is None:
-                key = ""
-            config_dict["CUSTOM_MODEL_SETTINGS"] = json.loads(key)
-    except Exception as e:
-        raise Exception(f"CUSTOM_MODEL_SETTINGS is not dict [{e}].")
-
     # Set loaded config filename
     config_dict["CONFIG_NAME"] = config_file
 
@@ -82,36 +72,17 @@ class Config(BaseModel):
     RCON_PORT: int = 42465
 
     # OpenAI
-    ENABLE_OPENAI_COMMANDS: bool = True
-    TOS_VIOLATION: bool = False
-    GPT4_ADMIN_ONLY: bool = False
     OPENAI_API_KEY: str = "sk-" + "X" * 48
-    GPT3_MODEL: str = "gpt-3.5-turbo"
-    GPT3_CHAT_MODEL: str = "gpt-3.5-turbo"
-    GPT4_MODEL: str = "gpt-4-1106-preview"
-    GPT4L_MODEL: str = "gpt-4"
-    GPT4_COMMAND: str = "!gpt4"
-    GPT4_LEGACY_COMMAND: str = "!gpt4l"
-    GPT_COMMAND: str = "!gpt3"
-    CHATGPT_COMMAND: str = "!pc"
-    GLOBAL_CHAT_COMMAND: str = "!cgpt"
 
     # Text Generation Web UI
-    ENABLE_CUSTOM_MODEL: bool = False
     CUSTOM_MODEL_HOST: str = "127.0.0.1"
-    CUSTOM_MODEL_COMMAND: str = "!ai"
-    CUSTOM_MODEL_CHAT_COMMAND: str = "!pcc"
-    GLOBAL_CUSTOM_CHAT_COMMAND: str = "!chat"
-    ENABLE_SOFT_LIMIT_FOR_CUSTOM_MODEL: bool = True
-    GREETING: str = ""
-    CUSTOM_MODEL_SETTINGS: Optional[CompletionRequest] = None
-    CUSTOM_PROMPT: str = ""
+
+    # GroqCloud
+    GROQ_API_KEY: str = "gsk_" + "X" * 52
 
     # Chat
     DELAY_BETWEEN_MESSAGES: float = 1.3
     CLEAR_CHAT_COMMAND: str = "!clear"
-    SOFT_COMPLETION_LIMIT: int = 128
-    HARD_COMPLETION_LIMIT: int = 300
     ENABLE_SHORTENED_USERNAMES_RESPONSE: bool = True
     SHORTENED_USERNAMES_FORMAT: str = "[$username] "
     SHORTENED_USERNAME_LENGTH: int = 12
@@ -137,29 +108,11 @@ class Config(BaseModel):
         for k, v in config_dict.items():
             self.__setattr__(k, v)
 
-    @field_validator("CUSTOM_MODEL_SETTINGS", mode="before")
-    @classmethod
-    def empty_str_to_none(cls, v):
-        if v == "":
-            return None
-        return v
-
 
 class ValidatableConfig(Config):
     """
     Should only contain validators.
     """
-
-    @field_validator("CUSTOM_MODEL_SETTINGS")
-    @classmethod
-    def set_custom_model_settings(cls, v: Any) -> Optional[CompletionRequest]:
-        if v is None:
-            return None
-        try:
-            data = json.loads(v)
-            return CompletionRequest(**data)
-        except Exception:
-            raise ValueError("CUSTOM_MODEL_SETTINGS is not a valid dictionary.")
 
     @field_validator("OPENAI_API_KEY")
     def api_key_pattern_match(cls, v):
@@ -224,10 +177,6 @@ def init_config(filename: Optional[str] = None) -> Dict[str, Any]:
     # Set loaded config filename
     config_dict["CONFIG_NAME"] = config_file
 
-    # TODO: move that logic somewhere else
-    if not config_dict["ENABLE_OPENAI_COMMANDS"] and not config_dict["ENABLE_CUSTOM_MODEL"]:
-        buffered_message("You haven't enabled any AI related commands.")
-
     return config_dict
 
 
@@ -260,7 +209,7 @@ def load_config() -> Config:
             "Failed to load config. Loading default config...", "BOTH", level="ERROR"
         )
         buffered_fail_message(
-            f"Failed to load config. Loading default config.", "BOTH", level="ERROR"
+            "Failed to load config. Loading default config.", "BOTH", level="ERROR"
         )
 
     # Attempt #3: Load a default config as a last resort

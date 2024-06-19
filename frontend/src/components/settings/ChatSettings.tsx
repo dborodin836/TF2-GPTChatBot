@@ -1,4 +1,4 @@
-import { Card, Input, Switch, Textarea, Typography } from '@material-tailwind/react';
+import { Card, Input, Switch, Typography } from '@material-tailwind/react';
 import React from 'react';
 import * as PropTypes from 'prop-types';
 import { Settings } from './SettingsType';
@@ -46,44 +46,6 @@ export function ChatSettings(props: {
               containerProps={{ className: 'min-w-[100px]' }}
               value={props.settings ? props.settings.DELAY_BETWEEN_MESSAGES : ''}
               name="DELAY_BETWEEN_MESSAGES"
-              onChange={props.onChangeInput}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="flex">
-        <div className="mb-3 w-[100%]">
-          <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
-            Soft Completion Limit
-          </label>
-          <div className="min-w-[100%]">
-            <Input
-              className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
-              labelProps={{
-                className: 'hidden',
-              }}
-              containerProps={{ className: 'min-w-[100px]' }}
-              value={props.settings ? props.settings.SOFT_COMPLETION_LIMIT : ''}
-              name="SOFT_COMPLETION_LIMIT"
-              onChange={props.onChangeInput}
-            />
-          </div>
-        </div>
-
-        <div className="mb-3 ml-3 w-[100%]">
-          <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
-            Hard Completion Limit
-          </label>
-          <div className="min-w-[100%]">
-            <Input
-              className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
-              labelProps={{
-                className: 'hidden',
-              }}
-              containerProps={{ className: 'min-w-[100px]' }}
-              value={props.settings ? props.settings.HARD_COMPLETION_LIMIT : ''}
-              name="HARD_COMPLETION_LIMIT"
               onChange={props.onChangeInput}
             />
           </div>
@@ -143,41 +105,6 @@ export function ChatSettings(props: {
           </div>
         </div>
       </div>
-
-      <Typography className="mb-3 mt-2" variant="h4">
-        Behaviour
-      </Typography>
-      <hr className="mb-3" />
-
-      <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
-        User Prompt Suffix
-      </label>
-      <Textarea
-        className="!border mb-3 !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
-        size="lg"
-        id="textarea_logs"
-        labelProps={{
-          className: 'hidden',
-        }}
-        value={props.settings ? props.settings.CUSTOM_PROMPT : ''}
-        name="CUSTOM_PROMPT"
-        onChange={props.onChangeInput}
-      />
-
-      <label className="mb-2 inline-block text-neutral-500 dark:text-neutral-400">
-        AI Greeting Message
-      </label>
-      <Textarea
-        className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
-        size="lg"
-        id="textarea_logs"
-        labelProps={{
-          className: 'hidden',
-        }}
-        value={props.settings ? props.settings.GREETING : ''}
-        name="GREETING"
-        onChange={props.onChangeInput}
-      />
     </Card>
   );
 }
