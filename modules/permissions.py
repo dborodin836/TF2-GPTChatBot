@@ -1,15 +1,6 @@
 from config import config
 from modules.typing import Player
 
-# def check_permission(func):
-#     def wrapper(*args, **kwargs):
-#         if user_has_permission():
-#             return func(*args, **kwargs)
-#         else:
-#             return "Permission denied"
-#
-#     return wrapper
-
 
 def is_admin(user: Player) -> bool:
     if config.HOST_STEAMID3 == user.steamid3:

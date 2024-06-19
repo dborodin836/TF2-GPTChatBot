@@ -13,6 +13,10 @@ __gui_logger = logger.bind(name="gui")
 __combo_logger = logger.bind(name="combo")
 
 
+LOG_RETENTION = "1 week"
+LOG_ROTATION = "50 MB"
+
+
 class LoggerDontExist(Exception): ...
 
 
@@ -72,8 +76,8 @@ def setup_loggers():
         format=FORMAT_LINE_MAIN,
         level="DEBUG",
         filter=make_name_filter("main"),
-        retention="1 week",
-        rotation="50 MB",
+        retention=LOG_RETENTION,
+        rotation=LOG_ROTATION,
     )
 
     __gui_logger.add(sys.stdout, format="{message}", filter=make_name_filter("gui"))
@@ -83,8 +87,8 @@ def setup_loggers():
         format=FORMAT_LINE_GUI,
         level="DEBUG",
         filter=make_name_filter("gui"),
-        retention="1 week",
-        rotation="50 MB",
+        retention=LOG_RETENTION,
+        rotation=LOG_ROTATION,
     )
 
     __combo_logger.add(sys.stdout, format="{message}", filter=make_name_filter("combo"))
@@ -94,8 +98,8 @@ def setup_loggers():
         format=FORMAT_LINE_MAIN,
         level="DEBUG",
         filter=make_name_filter("combo"),
-        retention="1 week",
-        rotation="50 MB",
+        retention=LOG_RETENTION,
+        rotation=LOG_ROTATION,
     )
 
 
@@ -106,11 +110,14 @@ def get_time_stamp() -> str:
     return f"{dt.now().strftime('%H:%M:%S')}"
 
 
-def log_gui_model_message(message_type: str, username: str, user_prompt: str) -> None:
+def log_gui_model_message(type_: str, username: str, message: str) -> None:
     """
     Logs a message with the current timestamp, message type, username, user_id, and prompt text.
     """
-    log_msg = f"[{get_time_stamp()}] ({message_type}) User: '{username}' --- '{user_prompt}'"
+    if message:
+        log_msg = f"[{get_time_stamp()}] ({type_}) User: '{username}' --- '{message}'"
+    else:
+        log_msg = f"[{get_time_stamp()}] ({type_}) User: '{username}'"
     __gui_logger.info(log_msg)
 
 

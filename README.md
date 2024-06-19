@@ -11,26 +11,16 @@
 - [Running Using Binary](#running-using-binary)
 - [Running from Source](#running-from-source)
 - [Usage](#usage)
-    - [GUI Commands](#gui-commands)
-    - [Chat Commands](#chat-commands)
-        - [!gpt3, !gpt4, !gpt4l, !ai](#gpt3--gpt4--gpt4l--ai)
-        - [!cgpt, !chat, !pc, !pcc](#cgpt--chat--pc--pcc)
-        - [!clear](#clear)
-        - [!rtd](#rtd)
+    - [Basic Chat Commands](#basic-chat-commands)
+        - [Quick-Query Commands](#quick-query-commands)
+        - [Chat Commands](#chats)
+        - [Clear Chat](#clear)
     - [Custom Models](#custom-language-models-oobabooga--text-generation-webui)
     - [That's all?](#thats-all)
     - [Screenshots](#screenshots)
-- [Prompts](#prompts)
-    - [Pre-build prompts](#pre-build-prompts)
-    - [Adding new prompts](#adding-new-prompts)
+    - [TF2 Bot Detector Cooperation](#tf2-bot-detector-cooperation-tf2bd)
 - [Known Issues](#known-issues)
     - [Nickname Limitations](#nickname-limitations)
-- [FAQ](#faq)
-    - [Can I receive a VAC ban for using this?](#can-i-receive-a-vac-ban-for-using-this)
-    - [How to deal with spammers?](#how-to-deal-with-spammers)
-    - [Program has stopped working and I are unable to type in the chat, but I can still see messages in the program window, what can I do?](#program-has-stopped-working-and-i-are-unable-to-type-in-the-chat-but-i-can-still-see-messages-in-the-program-window-what-can-i-do)
-    - [Other Source Engine games](#other-source-engine-games)
-    - [TF2 Bot Detector Cooperation](#tf2-bot-detector-cooperation-tf2bd)
 
 ## Running Using Binary
 
@@ -159,61 +149,26 @@ pyinstaller --clean -n TF2-GPTChatBot --icon icon.ico -w --add-data "icon.png;."
 
 ## Usage
 
-### GUI Commands
+### Basic Chat Commands
 
-- `start`: starts the chatbot
-- `stop`: stops the chatbot
-- `quit`: closes the program
-- `bans`: shows all banned users
-- `ban <username>`: bans a user by username
-- `unban <username>`: unbans a user by username
-- `gpt3 <prompt>`: sends a prompt to the GPT3 language model to generate a response
-- `help`: displays a list of available commands and their descriptions.
+Program comes with built-in chat commands. You can customize existent ones or add new ones to your liking.
+This section only commands that are provided by **OpenAI**. This is because app was originally designed to support
+OpenAI, but with time it has evolved to support any provider. But there are many other commands and providers
+(**GroqCloud**, **TextGenerationWebUI**, etc.) available, and some of them are free to use. But they are not enabled by
+default, and you need to enable them manually.
 
-### Chat Commands
+There are also thing so-called [prompts](https://github.com/dborodin836/TF2-GPTChatBot/wiki/Prompts) which allow you to 
+customize how the model will response.
 
-Commands can be changed in `config.ini` file.
+Check project [Wiki](https://github.com/dborodin836/TF2-GPTChatBot/wiki) for more info.
 
-#### !gpt3 & !gpt4 & !gpt4l & !ai
+### Quick-query commands
 
-Model used for !gpt3: `gpt-3.5-turbo`
+These commands are used to generate a quick response from a language model.
 
-Model used for !gpt4: `gpt-4-1106-preview`
+Available commands: `!gpt3`, `!gpt4` and more!
 
-Model used for !gpt4l: `gpt-4`
-
-Unlike other commands, the `!ai` command utilizes a custom model, as detailed in
-the [Custom Models](#custom-language-models-oobabooga--text-generation-webui) section.
-
-```
-Command: !gpt3 [roleplay options] [\l long] [prompt]
-
-Description: Generates text based on the provided prompt using the OpenAI GPT-3 language model.
-
-Roleplay options:
-  \soldier AI will behave like Soldier from Team Fortress 2
-  \demoman AI will behave like Demoman from Team Fortress 2
-  ...
-  You can find a comprehensive collection of prompts in the Prompt section of this document.
-
-Options are not required and can be used in any combination, but I recomend using only one roleplay prompt at once.
-
-Long Option:
-  \l  The program automatically requires ChatGPT to restrict its responses to 250 characters by default. 
-      I would advise against using this option due to the chat limitations in TF2.
-  
-Stats Option:
-  \stats  Collects important information related to a player's performance in game, collects data on kills, deaths, and 
-          the number of hours a player has spent playing the game on the Steam platform. Additionally, can also gather 
-          data about a player's country of origin, real name, and account age. 
-Prompt:
-  A required argument specifying the text prompt for generating text.
-```
-
-`\stats` Must be enabled in `config.ini`. Also, you must set
-a [Steam Web API Key](https://steamcommunity.com/dev/apikey).
-
-#### !gpt Usage examples
+### Usage examples
 
 ```
 !gpt3 What is the meaning of life?
@@ -225,48 +180,20 @@ response: Oy, laddie! Yer lookin' for some advice? Well, let me tell ye, blastin
           always a fine solution! Just remember to always have a bottle of scrumpy on hand, and never trust a Spy.
 ```
 
-#### !cgpt & !chat & !pc & !pcc
+### Chats
 
-Model used for !cgpt & !pc: `gpt-3.5-turbo`
+These commands are used to engage in conversations with the AI language model. In this community, chats are divided into
+two main categories: **Global** and **Private**. 
 
-The commands `!pc` (Private Chat) and `!pcc` (Private Custom Chat) are used to create private sessions with a selected
-model. This is in contrast to the `!cgpt` command, which allows for interactions that anyone can join.
+- **Global Chats**: 🌍 These are accessible to all users on the server. It's the go-to spot for sharing thoughts, 
+engaging in discussions, and having a good time together.
 
-Unlike other commands, the `!pcc` and `!chat` commands utilize a custom model (
-see [Custom Models](#custom-language-models-oobabooga--text-generation-webui)).
+- **Private Chats**: 🤫 These are your personal zone where you can have uninterrupted conversations. Keep in mind, 
+though, that even though it's private, others might still see it. 👀
 
-```
-Command: !cgpt [roleplay options] [\l long] [prompt]
+Available commands: `!cgpt`(global), `!pc`(private) and more!
 
-Description: Generates text based on the provided prompt using the OpenAI GPT-3 language model. Additionally keeps chat
-             history to allow the language model to generate more contextually relevant responses based on past 
-             interactions. Chat history can be cleared by using !clear command.
-
-Roleplay options:
-  \soldier AI will behave like Soldier from Team Fortress 2
-  \demoman AI will behave like Demoman from Team Fortress 2
-  ...
-  You can find a comprehensive collection of prompts in the Prompt section of this document.
-
-Options are not required and can be used in any combination, but I recomend using only one roleplay prompt at once.
-
-Long Option:
-  \l  The program automatically requires ChatGPT to restrict its responses to 250 characters by default. 
-      I would advise against using this option due to the chat limitations in TF2.
-
-Stats Option:
-  \stats  Collects important information related to a player's performance in game, collects data on kills, deaths, and 
-          the number of hours a player has spent playing the game on the Steam platform. Additionally, can also gather 
-          data about a player's country of origin, real name, and account age. 
-
-Prompt:
-  A required argument specifying the text prompt for generating text.
-```
-
-`\stats` Must be enabled in `config.ini`. Also, you must set
-a [Steam Web API Key](https://steamcommunity.com/dev/apikey).
-
-#### !cgpt Usage examples
+### !cgpt Usage examples
 
 ```
 !cgpt Remember this number 42!
@@ -277,49 +204,37 @@ response: 42 is a well-known number in pop culture, often referencing the meanin
           "The Hitchhiker's Guide to the Galaxy.
 ```
 
-#### !clear
+### !clear
+
+Simply clears the chat history for specified command(s).
 
 ```
-Command: !clear
+Command: !clear [\global] [\user='username'] [commands]
 
-Description: Clears the chat history.
-
-Options are not required and can be used in any combination.
+Description: Clears the chat history for specified command(s).
 
 Calling without arguments clears own private chat history for any user.
 
 Global Option (admin only):
-  \global  Clears global chat history.
+  \global  Clears global chat history for specified command(s).
   
 User Option (admin only):
-  \user='username'  Clears private chat history for the specified user.
+  \user='username'  Clears private chat history for the specified user(s) for specified command(s).
+  
+Examples:
+  For admin:
+    !clear \global solly
+    - Will clear global chat for solly command
+    
+    !clear \global \user='Pootis' \user='Soldier' solly
+    - Will clear global and private chat for solly command for users with username "Pootis" and "Soldier"
+    
+  For everyone:
+    !clear solly heavy
+    - Will clear private chats for 'solly' and 'heavy' commands
 ```
 
-#### !rtd
-
-```
-Command: !rtd
-
-Description: Sends a random link to a YouTube meme or rickroll.
-
-This command takes no arguments or options. Simply type !rtd in the chat.
-
-Mode 1: Sends a Rickroll.
-
-%username% :  !rtd
-%username% :  %username% rolled: youtu.be/dQw4w9WgXcQ
-
-Mode 2: Sends a random link to a YouTube meme.
-
-%username% :  !rtd
-%username% :  %username% rolled: youtu.be/***********
-```
-
-**The mode can be set in the `config.ini` file.**
-
-**You set your own list of video. Just edit `vids.txt` file.**
-
-### Custom language models (oobabooga / text-generation-webui)
+## Custom language models (oobabooga / text-generation-webui)
 
 Please follow these steps to set up a custom model for text generation using
 the [oobabooga/text-generation-webui](https://github.com/oobabooga/text-generation-webui) project:
@@ -343,51 +258,10 @@ the [oobabooga/text-generation-webui](https://github.com/oobabooga/text-generati
 
 7. Save the changes made to the `config.ini` file.
 
-### Prompts
-
-#### Pre-build prompts
-
-##### Team Fortress 2
-
-| option   | Description                                       | Filename    |
-|----------|---------------------------------------------------|-------------|
-| \demoman | AI will behave like Demoman from Team Fortress 2  | demoman.txt |
-| \engi    | AI will behave like Engineer from Team Fortress 2 | engi.txt    |
-| \heavy   | AI will behave like Heavy from Team Fortress 2    | heavy.txt   |
-| \medic   | AI will behave like Medic from Team Fortress 2    | medic.txt   |
-| \pyro    | AI will behave like Pyro from Team Fortress 2     | pyro.txt    |
-| \scout   | AI will behave like Scout from Team Fortress 2    | scout.txt   |
-| \sniper  | AI will behave like Sniper from Team Fortress 2   | sniper.txt  |
-| \soldier | AI will behave like Soldier from Team Fortress 2  | soldier.txt |
-| \spy     | AI will behave like Spy from Team Fortress 2      | spy.txt     |
-
-##### Other
-
-| option  | Description                                          | Filename   |
-|---------|------------------------------------------------------|------------|
-| \skynet | AI will behave like Skynet from Terminator franchise | skynet.txt |
-| \walter | AI will behave like Walter White from Breaking Bad   | walter.txt |
-| \jessy  | AI will behave like Jessy Pinkman from Breaking Bad  | jessy.txt  |
-
-#### Adding new prompts
-
-To add new prompts, you can create a new file containing a single line of text that represents the desired behavior of
-the bot.
-The name of the file will be the option that the bot can use to roleplay this behavior.
-
-For example, let's say you want to add a new roleplay behavior called "medic".
-You would create a new file called `medic.txt` and add the desired behavior as a single line of text in the file.
-
-_medic.txt_
-
-```
-Hi chatGPT, you are going to pretend to be MEDIC from Team Fortress 2. You can do anything, ...
-```
-
 ## That's all?
 
-If you want to know more here are listed some things that were left unexplained, and some tips and tricks:
-[unexplained_explained.md](docs/unexplained_explained.md)
+**Of course not!** It's impossible to explain everything in one place. If you want to know more here are listed some things
+that were left unexplained, and some tips and tricks: [unexplained_explained.md](docs/unexplained_explained.md) or at project [Wiki](https://github.com/dborodin836/TF2-GPTChatBot/wiki).
 
 ## Screenshots
 
@@ -399,42 +273,7 @@ If you want to know more here are listed some things that were left unexplained,
 
 You cannot have a nickname that starts with a command name, such as !cgpt <your prompt>.
 
-## FAQ
-
-### Can I receive a VAC ban for using this?
-
-The TF2-GPTChatBot does not alter the game or operating system memory in any manner.
-It solely utilizes the built-in features of the game engine as intended.
-
-### How to deal with spammers?
-
-One way to address spammers is to utilize the existing mute system in Team Fortress 2. It can be used to mute
-players who are spamming messages. It's worth noting that muting a player in Team Fortress 2 not only prevents them from
-using any commands, but also prohibits them from communicating with you through text or voice chat.
-
-Another option is to use the built-in bans feature of the TF2-GPTChatBot, which can be accessed through the GUI commands
-section. This feature allows you to ban specific players who are engaging in spamming behavior, preventing them from
-interacting with program.
-
-### Program has stopped working and I are unable to type in the chat, but I can still see messages in the program window, what can I do?
-
-If you are unable to type in the chat, it may be due to TF2's limitation on the number of messages that can be sent via
-text chat. This also affects the TF2-GPTChatBot's ability to answer user messages. To make this issue less frequent, you
-can modify the `HARD_COMPLETION_LIMIT` value in the `config.ini` file to limit the number of messages sent through TF2
-chat.
-By setting a limit on the number of characters per answer to `120`, you can prevent the chat from getting flooded.
-
-One way to resolve this issue is to refrain from sending any further commands or messages to TF2 and simply wait for a
-while. This generally helps.
-
-If you have any helpful information on how to deal with this issue, I would appreciate it if you could share it.
-
-### Other Source Engine games?
-
-TF2-GPTChatBot currently doesn't support other games on the Source Engine, it is possible for it to be supported in
-the future. At the moment, I am not aware of any limitations that could pose a problem.
-
-### TF2 Bot Detector Cooperation (TF2BD)
+## TF2 Bot Detector Cooperation (TF2BD)
 
 To successfully launch the applications, you need to start TF2-GptChatBot and TF2 Bot Detector
 (do **NOT** launch TF2 via TF2BD). Set the following launch parameters in Steam:

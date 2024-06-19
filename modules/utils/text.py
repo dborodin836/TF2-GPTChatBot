@@ -10,8 +10,7 @@ from config import config
 from modules.lobby_manager import lobby_manager
 from modules.logs import get_logger
 from modules.rcon_client import RconClient
-from modules.typing import LogLine, Message
-from modules.utils.prompts import PROMPTS
+from modules.typing import LogLine
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -106,7 +105,7 @@ def follow_tail() -> Generator[str, None, None]:
                     for line in latest_lines[:-1]:
                         yield line + "\n"
         except FileNotFoundError:
-            gui_logger.warning(f"Logfile doesn't exist. Checking again in 4 seconds.")
+            gui_logger.warning("Logfile doesn't exist. Checking again in 4 seconds.")
             time.sleep(4)
             yield ""
         except Exception as e:
@@ -167,17 +166,15 @@ def get_console_logline() -> typing.Generator:
             line = line.replace(char, "").strip()
 
         # Send status commands based on events
-        if "Lobby updated" in line:
-            if time.time() - last_updated > min_delay:
-                main_logger.debug("Sending status command on lobby update connection.")
-                last_updated = time.time()
-                get_status()
+        if "Lobby updated" in line and time.time() - last_updated > min_delay:
+            main_logger.debug("Sending status command on lobby update connection.")
+            last_updated = time.time()
+            get_status()
 
-        if line.endswith("connected"):
-            if time.time() - last_updated > min_delay:
-                main_logger.debug("Sending status command on new player connection.")
-                last_updated = time.time()
-                get_status()
+        if line.endswith("connected") and time.time() - last_updated > min_delay:
+            main_logger.debug("Sending status command on new player connection.")
+            last_updated = time.time()
+            get_status()
 
         if time.time() - last_updated > max_delay:
             main_logger.debug("Max delay between status commands exceeded.")
@@ -273,33 +270,6 @@ def remove_args(prompt: str) -> str:
             result.append(item)
 
     return " ".join(result)
-
-
-def get_system_message(user_prompt: str, enable_soft_limit: bool = True) -> Message:
-    """
-    Adds prompts to a user prompt based on the flags provided in the prompt.
-    """
-    args = get_args(user_prompt)
-    message = ""
-
-    for prompt in PROMPTS:
-        if prompt["flag"] in args:
-            message += prompt["prompt"]
-            break
-
-    if r"\stats" in args:
-        message = (
-            f" {lobby_manager.get_data()} Based on this data answer following question. "
-            + message
-            + " Ignore unknown data."
-        )
-
-    if r"\l" not in args and enable_soft_limit:
-        message += (
-            f" Answer in less than {config.SOFT_COMPLETION_LIMIT} chars! {config.CUSTOM_PROMPT}"
-        )
-
-    return Message(role="system", content=message)
 
 
 def get_status():

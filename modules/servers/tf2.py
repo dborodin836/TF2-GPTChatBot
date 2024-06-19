@@ -68,13 +68,6 @@ def format_say_message(message: str, username: Optional[str] = None) -> str:
     # No " should be in answer it causes say command to broke
     message = message.replace('"', "")
 
-    # Strip the message if needed
-    if len(message) > config.HARD_COMPLETION_LIMIT:
-        main_logger.warning(
-            f"Message is longer than Hard Limit [{len(message)}]. Limit is {config.HARD_COMPLETION_LIMIT}."
-        )
-        message = message[: config.HARD_COMPLETION_LIMIT] + "..."
-
     return message
 
 

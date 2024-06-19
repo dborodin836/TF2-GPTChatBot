@@ -2,18 +2,17 @@ import time
 
 import modules.utils.text
 from modules.lobby_manager import LobbyManager
-from modules.typing import LogLine, Message, Player
+from modules.typing import LogLine, Player
 from modules.utils.text import (
-    get_args,
     get_chunk_size,
     get_chunks,
     get_console_logline,
-    get_shortened_username,
-    get_system_message,
     has_cyrillic,
+    get_args,
     parse_line,
+    get_shortened_username,
     remove_hashtags,
-    split_into_chunks,
+    split_into_chunks
 )
 from tests.common import MockConfig, get_player
 
@@ -68,12 +67,6 @@ def test_get_chunk_size_with_non_cyrillic_text():
     # Test the function with non-Cyrillic text
     text = "Hello, world!"
     assert get_chunk_size(text) == MAX_LENGTH_OTHER
-
-
-def test_get_system_message():
-    expected_output = Message(role="system", content="")
-    result = get_system_message(r"\l Please enter your name")
-    assert result == expected_output
 
 
 def test_get_args():

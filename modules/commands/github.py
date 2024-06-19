@@ -9,7 +9,7 @@ from modules.utils.text import get_shortened_username
 GITHUB_LINK = "bit.ly/tf2-gpt3"
 
 
-def handle_gh_command(logline: LogLine, shared_dict: InitializerConfig) -> None:
+def handle_gh_command(logline: LogLine, shared_dict: InitializerConfig):
     time.sleep(1)
 
     if config.ENABLE_SHORTENED_USERNAMES_RESPONSE:

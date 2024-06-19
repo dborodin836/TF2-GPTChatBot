@@ -64,7 +64,8 @@ MELEE_WEAPONS_KILL_IDS = {
     "batteaxe",
     "scotland_shard",
     "voodoo_pin",
-    "eternal_reward" "apocofists",
+    "eternal_reward",
+    "apocofists",
     "bread_bite",
     "eviction_notice",
     "gloves_running_urgently",
@@ -259,10 +260,10 @@ class LobbyManager:
         results_total_game_hours = BulkSteamGameDetailsUrlDownloader(hours_url).download_all()
 
         for response, steamid64 in results_total_game_hours:
-            for plr_stats in to_update_players_list:
-                if plr_stats.steam.steamid64 == steamid64:
+            for player in to_update_players_list:
+                if player.steam.steamid64 == steamid64:
                     try:
-                        plr_stats.steam.hours_in_team_fortress_2 = (
+                        player.steam.hours_in_team_fortress_2 = (
                             str(round(response["response"]["games"][0]["playtime_forever"] / 60))
                             + " hours"
                         )
@@ -394,9 +395,9 @@ class LobbyManager:
         # Parsing suicide
         elif matches := re.search(r"^(.*)\ssuicided", line):
             username = matches.groups()[0]
-            plr = self.get_player_by_name(username)
-            if plr is not None:
-                self.handle_kill_bind(plr)
+            player = self.get_player_by_name(username)
+            if player is not None:
+                self.handle_kill_bind(player)
 
         else:
             return False

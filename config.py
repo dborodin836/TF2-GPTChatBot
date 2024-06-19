@@ -64,12 +64,13 @@ class Config(BaseModel):
     """
 
     # App Internals
-    APP_VERSION: str = "1.3.0"
+    APP_VERSION: str = "1.4.0"
     CONFIG_NAME: str = "config.ini"
 
     # Player stuff
     HOST_USERNAME: str = ""
     HOST_STEAMID3: str = "[U:X:XXXXXXX]"
+
 
     # Required
     TF2_LOGFILE_PATH: str = (
