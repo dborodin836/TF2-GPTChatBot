@@ -74,6 +74,19 @@
             },
             "hard-limit-length": {
               "type": "integer"
+            },
+            "allow-img": {
+              "type": "boolean"
+            },
+            "img-screen-id": {
+              "type": "integer"
+            },
+            "img-detail": {
+              "type": "string",
+              "enum": [
+                "low",
+                "high"
+              ]
             }
           },
           "dependencies": {
@@ -85,6 +98,16 @@
             "enable-hard-limit": {
               "required": [
                 "hard-limit-length"
+              ]
+            },
+            "img-screen-id": {
+              "required": [
+                "allow-img"
+              ]
+            },
+            "img-detail": {
+              "required": [
+                "allow-img"
               ]
             }
           }

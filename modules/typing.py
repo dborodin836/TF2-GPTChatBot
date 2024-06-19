@@ -1,11 +1,11 @@
-from typing import Callable, List, Literal, NamedTuple, Optional, TypedDict
+from typing import Callable, List, Literal, NamedTuple, Optional, TypedDict, Union, Dict
 
 from pydantic import BaseModel
 
 
 class Message(TypedDict):
     role: Literal["assistant", "user", "system"]
-    content: str
+    content: Union[str, List[Dict[Literal["text", "image_url"], Union[str, Dict[str, str]]]]]
 
 
 MessageHistory = List[Message]
