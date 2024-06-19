@@ -94,7 +94,7 @@ class ConversationHistory:
 
         if r"\img" in args and self.settings.get("allow-img"):
             sct = mss.mss()
-            monitor = sct.monitors[1]
+            monitor = sct.monitors[self.settings.get("img-screen-id", 1)]
             scr = sct.grab(monitor)
             img = Image.frombytes("RGB", scr.size, scr.bgra, "raw", "BGRX")
             buffered = BytesIO()

@@ -78,6 +78,9 @@
             "allow-img": {
               "type": "boolean"
             },
+            "img-screen-id": {
+              "type": "integer"
+            },
             "img-detail": {
               "type": "string",
               "enum": [
@@ -95,6 +98,11 @@
             "enable-hard-limit": {
               "required": [
                 "hard-limit-length"
+              ]
+            },
+            "img-screen-id": {
+              "required": [
+                "allow-img"
               ]
             },
             "img-detail": {

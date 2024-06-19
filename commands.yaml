@@ -15,9 +15,6 @@ commands:
     provider: open-ai
     type: quick-query
     model: gpt-4o
-    settings:
-      allow-img: true
-      img-detail: low
     traits:
       - admin-only
       - openai-moderated
