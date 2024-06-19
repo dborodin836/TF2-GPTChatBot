@@ -5,6 +5,7 @@ import { Home } from './components/home/Home';
 import { PageSettings } from './components/settings/PageSettings';
 import { About } from './components/about/About';
 import React from 'react';
+import { CommandsPage } from './components/commands/CommandsPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/settings" element={<PageSettings />} />
           <Route path="/about" element={<About />} />
+          <Route path="/commands" element={<CommandsPage />} />
         </Routes>
       </div>
     </div>

@@ -104,6 +104,16 @@ async def handle_command(command: Command):
     return Response(status_code=status.HTTP_200_OK)
 
 
+@app.get("/schemas/command")
+async def handle_command_scheme():
+    schema = open("schemas/command.schema.json").read()
+    return Response(status_code=status.HTTP_200_OK, content=schema)
+
+@app.get("/commands/list")
+async def list_commands():
+    return Response(status_code=200)
+
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await connection_manager.connect(websocket)
