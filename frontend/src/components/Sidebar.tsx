@@ -22,7 +22,7 @@ export function DefaultSidebar() {
             </div>
           </Link>
 
-          <Link className="w-36" to="/commands">
+          <Link className="w-36" to="/command/list">
             <div
               role="button"
               className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-teal-50 hover:bg-opacity-80 active:bg-teal-50 active:bg-opacity-80 hover:text-green-700 active:text-green-700 outline-none"

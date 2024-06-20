@@ -8,6 +8,12 @@ import { useAlert } from '../AlertContext';
 const log = (type: unknown) => console.log.bind(console, type);
 
 const uiSchema: UiSchema = {
+  'ui:submitButtonOptions': {
+    'submitText': 'Create',
+    props: {
+      className: '',
+    },
+  },
   'traits': {
     'items': {
       'ui:options': {
@@ -20,7 +26,7 @@ const uiSchema: UiSchema = {
   },
 };
 
-export function CommandsPage() {
+export function CommandAdd() {
   const [schema, setSchema] = useState<RJSFSchema>({});
   const { openAlert } = useAlert();
 
@@ -29,7 +35,7 @@ export function CommandsPage() {
       console.log('No command to submit');
       return;
     }
-    console.log(formData)
+    console.log(formData);
 
     const response = await fetch('http://127.0.0.1:8000/command/add', {
       method: 'POST',
