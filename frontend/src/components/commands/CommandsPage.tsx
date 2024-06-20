@@ -24,6 +24,31 @@ export function CommandsPage() {
   const [schema, setSchema] = useState<RJSFSchema>({});
   const { openAlert } = useAlert();
 
+  const submitCommand = async ({ formData }: any) => {
+    if (!formData) {
+      console.log('No command to submit');
+      return;
+    }
+    console.log(formData)
+
+    const response = await fetch('http://127.0.0.1:8000/command/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      console.log(data);
+      openAlert(`Error occurred: ${JSON.stringify(data.err)}`);
+    } else {
+      openAlert('Successfully added command.');
+    }
+  };
+
+
   const fetchSchema = async () => {
     const response = await fetch('http://127.0.0.1:8000/schemas/command');
     if (!response.ok) {
@@ -46,7 +71,7 @@ export function CommandsPage() {
       uiSchema={uiSchema}
       validator={validator}
       onChange={log('changed')}
-      onSubmit={log('submitted')}
+      onSubmit={submitCommand}
       onError={log('errors')}
     />
   );

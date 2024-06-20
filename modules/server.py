@@ -1,5 +1,6 @@
 import asyncio
-from typing import Type, Union, get_type_hints
+import json
+from typing import Any, Dict, Type, Union, get_type_hints
 
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,8 +10,11 @@ from starlette.responses import Response
 from starlette.websockets import WebSocketDisconnect
 
 from config import Config, ValidatableConfig, config
-from modules.gui.controller import command_controller
+from modules.builder import create_command_from_dict
+from modules.gui.controller import command_controller as gui_cmd_controller
+from modules.chat import controller
 from modules.logs import get_logger
+from modules.set_once_dict import ModificationOfSetKey
 from modules.utils.config import DROP_KEYS, save_config
 
 combo_logger = get_logger("combo")
@@ -48,7 +52,7 @@ class ConnectionManager:
 connection_manager = ConnectionManager()
 
 
-class Command(BaseModel):
+class CommandName(BaseModel):
     text: str
 
 
@@ -99,8 +103,8 @@ async def update_settings(settings: PartialUpdateModel):  # type: ignore[valid-t
 
 
 @app.post("/cmd")
-async def handle_command(command: Command):
-    await asyncio.to_thread(command_controller.process_line, command.text)
+async def handle_command(command: CommandName):
+    await asyncio.to_thread(gui_cmd_controller.process_line, command.text)
     return Response(status_code=status.HTTP_200_OK)
 
 
@@ -109,9 +113,26 @@ async def handle_command_scheme():
     schema = open("schemas/command.schema.json").read()
     return Response(status_code=status.HTTP_200_OK, content=schema)
 
-@app.get("/commands/list")
+
+@app.get("/command/list")
 async def list_commands():
-    return Response(status_code=200)
+    data = controller.list_commands()
+    dumped = json.dumps(data)
+    return Response(status_code=200, content=dumped)
+
+
+@app.post("/command/add")
+async def add_command(command: Dict[Any, Any]):
+    try:
+        klass = create_command_from_dict(command)
+        chat_command_name = command["prefix"] + command["name"]
+        await asyncio.to_thread(controller.register_command, chat_command_name, klass.as_command(), command["name"])
+        return Response(status_code=status.HTTP_201_CREATED)
+    except ModificationOfSetKey:
+        return Response(status_code=status.HTTP_400_BAD_REQUEST,
+                        content='{"err": "Command with that name already exist."}')
+    except Exception as e:
+        return Response(status_code=500, content=f'{"err": "Unknown error {e}"}')
 
 
 @app.websocket("/ws")

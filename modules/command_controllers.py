@@ -151,7 +151,11 @@ class CommandController:
     def register_command(self, cmd: str, function: Callable, name: str = None) -> None:
         if name is not None:
             self.__shared.LOADED_COMMANDS.append(name)
+        main_logger.info(f"Loaded command '{cmd}'")
         self.__named_commands_registry[cmd] = function
+
+    def list_commands(self):
+        return self.__shared.LOADED_COMMANDS
 
     def register_service(self, function: Callable):
         self.__services.add(function)
