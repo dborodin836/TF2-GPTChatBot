@@ -1,7 +1,7 @@
 import os.path
 from typing import Dict, List
 
-import yaml
+import oyaml as yaml
 
 from modules.api.llm.groq import GroqCloudLLMProvider
 from modules.api.llm.openai import OpenAILLMProvider
@@ -106,17 +106,16 @@ def create_command_from_dict(cmd: dict) -> BaseCommand:
     # Update command wrappers
     if traits := cmd.get("traits"):
         wrappers = []
-        # Reverse the order to make it natural, to make wrappers applied from top to bottom in yaml file.
-        for wrapper_obj in traits[::-1]:
+        for wrapper in traits:
+            wrapper: dict
             try:
-                if isinstance(wrapper_obj, dict):
-                    key = list(wrapper_obj)[0]
-                    values = wrapper_obj[key]
-                    factory = WRAPPERS[key]
-                    wrappers.append(factory(**values))
-                elif isinstance(wrapper_obj, str):
-                    wrapper = WRAPPERS[wrapper_obj]
-                    wrappers.append(wrapper)
+                wrapper_id = wrapper['__id']
+                wrapper.pop('__id')
+                if len(list(wrapper.keys())) > 0:
+                    factory = WRAPPERS[wrapper_id]
+                    wrappers.append(factory(**wrapper))
+                else:
+                    wrappers.append(WRAPPERS[wrapper_id])
             except Exception as e:
                 gui_logger.warning(f"{e} is not a valid trait.")
         command_dict.update(wrappers=wrappers)

@@ -1,0 +1,226 @@
+{
+  "title": "Command",
+  "type": "object",
+  "required": [
+    "name",
+    "prefix",
+    "provider",
+    "type"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "title": "Command name",
+      "type": "string"
+    },
+    "prefix": {
+      "title": "Command prefix",
+      "type": "string"
+    },
+    "type": {
+      "title": "Command type",
+      "type": "string",
+      "enum": [
+        "quick-query",
+        "command-global",
+        "command-private"
+      ]
+    },
+    "provider": {
+      "title": "LLM Provider",
+      "type": "string",
+      "enum": [
+        "open-ai",
+        "text-generation-webui",
+        "groq-cloud"
+      ]
+    },
+    "model": {
+      "title": "Model name",
+      "type": "string"
+    },
+    "model_settings": {
+      "title": "Model settings",
+      "type": "object",
+      "uniqueItems": true,
+      "additionalProperties": true
+    },
+    "settings": {
+      "title": "Command Settings",
+      "type": "object",
+      "uniqueItems": true,
+      "additionalProperties": false,
+      "properties": {
+        "allow-prompt-overwrite": {
+          "title": "Allow prompt overwrite?",
+          "default": true,
+          "type": "boolean"
+        },
+        "allow-long": {
+          "title": "Allow long option? (\\l)",
+          "default": true,
+          "type": "boolean"
+        },
+        "enable-soft-limit": {
+          "title": "Enable soft limit?",
+          "default": true,
+          "type": "boolean"
+        },
+        "soft-limit-length": {
+          "title": "Soft limit length",
+          "default": 128,
+          "type": "integer"
+        },
+        "enable-hard-limit": {
+          "title": "Enable hard limit?",
+          "default": true,
+          "type": "boolean"
+        },
+        "hard-limit-length": {
+          "title": "Hard limit length",
+          "default": 300,
+          "type": "integer"
+        },
+        "prompt-file": {
+          "title": "Prompt file name",
+          "type": "string"
+        },
+        "message-suffix": {
+          "title": "Message suffix",
+          "type": "string"
+        },
+        "greeting": {
+          "title": "Greeting",
+          "type": "string"
+        },
+        "allow-img": {
+          "title": "Allow image input option? (\\img)",
+          "default": false,
+          "type": "boolean"
+        },
+        "img-screen-id": {
+          "title": "Screen id for image input",
+          "default": 1,
+          "type": "integer"
+        },
+        "img-detail": {
+          "title": "Image detail",
+          "default": "low",
+          "type": "string",
+          "enum": [
+            "low",
+            "high"
+          ]
+        }
+      },
+      "dependencies": {
+        "enable-soft-limit": {
+          "required": [
+            "soft-limit-length"
+          ]
+        },
+        "enable-hard-limit": {
+          "required": [
+            "hard-limit-length"
+          ]
+        },
+        "img-screen-id": {
+          "required": [
+            "allow-img"
+          ]
+        },
+        "img-detail": {
+          "required": [
+            "allow-img"
+          ]
+        }
+      }
+    },
+    "traits": {
+      "type": "array",
+      "title": "Traits",
+      "items": {
+        "title": "Trait",
+        "type": "object",
+        "anyOf": [
+          {
+            "title": "OpenAI Moderated",
+            "type": "object",
+            "properties": {
+              "__id": {
+                "type": "string",
+                "default": "openai-moderated"
+              }
+            }
+          },
+          {
+            "title": "Response in case of empty prompt",
+            "type": "object",
+            "required": [
+              "msg"
+            ],
+            "properties": {
+              "__id": {
+                "type": "string",
+                "default": "empty-prompt-message-response"
+              },
+              "msg": {
+                "title": "Message",
+                "type": "string"
+              }
+            }
+          },
+          {
+            "title": "Admin Only",
+            "type": "object",
+            "properties": {
+              "__id": {
+                "type": "string",
+                "default": "admin-only"
+              }
+            }
+          },
+          {
+            "title": "Disabled",
+            "type": "object",
+            "properties": {
+              "__id": {
+                "type": "string",
+                "default": "disabled"
+              }
+            }
+          },
+          {
+            "title": "Deny empty prompts",
+            "type": "object",
+            "properties": {
+              "__id": {
+                "type": "string",
+                "default": "deny-empty-prompt"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "if": {
+    "properties": {
+      "provider": {
+        "anyOf": [
+          {
+            "const": "open-ai"
+          },
+          {
+            "const": "groq-cloud"
+          }
+        ]
+      }
+    }
+  },
+  "then": {
+    "required": [
+      "model"
+    ]
+  }
+}

@@ -6,9 +6,9 @@ commands:
     type: quick-query
     model: gpt-3.5-turbo-1106
     traits:
-      - openai-moderated
-      - empty-prompt-message-response:
-          msg: "Hello there! I am ChatGPT, a ChatGPT plugin integrated into Team Fortress 2. Ask me anything!"
+      - __id: openai-moderated
+      - __id: empty-prompt-message-response
+        msg: "Hello there! I am ChatGPT, a ChatGPT plugin integrated into Team Fortress 2. Ask me anything!"
 
   - name: gpt4
     prefix: '!'
@@ -18,7 +18,7 @@ commands:
     settings:
       allow-img: true
     traits:
-      - openai-moderated
+      - __id: openai-moderated
 
   - name: cgpt
     prefix: '!'
@@ -26,7 +26,7 @@ commands:
     provider: open-ai
     model: gpt-3.5-turbo-1106
     traits:
-      - openai-moderated
+      - __id: openai-moderated
 
   - name: pc
     prefix: '!'
@@ -34,7 +34,7 @@ commands:
     provider: open-ai
     model: gpt-3.5-turbo-1106
     traits:
-      - openai-moderated
+      - __id: openai-moderated
 
   # Text-generation-webui commands
   - name: ai
@@ -42,21 +42,21 @@ commands:
     type: quick-query
     provider: text-generation-webui
     traits:
-      - disabled
+      - __id: disabled
 
   - name: chat
     prefix: '!'
     type: command-global
     provider: text-generation-webui
     traits:
-      - disabled
+      - __id: disabled
 
   - name: pcc
     prefix: '!'
     type: command-private
     provider: text-generation-webui
     traits:
-      - disabled
+      - __id: disabled
 
   # GroqCloud commands
   - name: g
@@ -65,7 +65,7 @@ commands:
     provider: groq-cloud
     model: llama3-70b-8192
     traits:
-      - disabled
+      - __id: disabled
 
   - name: gc
     prefix: '!'
@@ -73,7 +73,7 @@ commands:
     provider: groq-cloud
     model: llama3-70b-8192
     traits:
-      - disabled
+      - __id: disabled
 
   - name: gpc
     prefix: '!'
@@ -81,4 +81,4 @@ commands:
     provider: groq-cloud
     model: llama3-70b-8192
     traits:
-      - disabled
+      - __id: disabled
