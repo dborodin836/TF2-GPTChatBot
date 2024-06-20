@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict
 from modules.conversation_history import ConversationHistory
 from modules.logs import get_logger, log_gui_model_message
 from modules.set_once_dict import SetOnceDictionary
-from modules.typing import Command, LogLine, Player
+from modules.typing import GuiCommand, LogLine, Player, Command
 
 main_logger = get_logger("main")
 combo_logger = get_logger("combo")
@@ -98,29 +98,30 @@ class InitializerConfig(BaseModel):
     CHAT_CONVERSATION_HISTORY: ChatHistoryManager = pydantic.Field(
         default_factory=ChatHistoryManager
     )
+    # Stores reference name for the commands e.g. !gpt3 ref. name is gpt3, prefix is !
     LOADED_COMMANDS: List[str] = []
 
 
 class GuiCommandController:
     def __init__(self, initializer_config: dict = None, disable_help: bool = False) -> None:
-        self.__named_commands_registry: SetOnceDictionary[str, Command] = SetOnceDictionary()
+        self.__named_commands_registry: SetOnceDictionary[str, GuiCommand] = SetOnceDictionary()
         self.__shared = dict()
 
         if not disable_help:
             self.__named_commands_registry.update(
-                {"help": Command("help", self.help, "Prints this message.")}
+                {"help": GuiCommand("help", self.help, "Prints this message.")}
             )
 
         if initializer_config is not None:
             self.__shared.update(initializer_config)
 
     def register_command(self, name: str, function: Callable, description: str) -> None:
-        self.__named_commands_registry[name] = Command(name, function, description)
+        self.__named_commands_registry[name] = GuiCommand(name, function, description)
 
     def process_line(self, line: str):
         command_name = line.strip().split(" ")[0].lower()
 
-        command: Optional[Command] = self.__named_commands_registry.get(command_name, None)
+        command: Optional[GuiCommand] = self.__named_commands_registry.get(command_name, None)
         if command is None:
             combo_logger.error(f"Command '{command_name}' not found.")
             return
@@ -129,7 +130,7 @@ class GuiCommandController:
 
     def help(self, command: str, shared_dict: dict):
         gui_logger.info("### HELP ###")
-        max_cmd_length: Command = max(
+        max_cmd_length: GuiCommand = max(
             self.__named_commands_registry.values(), key=lambda cmd: len(cmd.name)
         )
         max_length = len(max_cmd_length.name)
@@ -140,25 +141,41 @@ class GuiCommandController:
 class CommandController:
     def __init__(self, initializer_config: InitializerConfig = None) -> None:
         self.__services: OrderedSet = OrderedSet()
-        self.__named_commands_registry: SetOnceDictionary[
-            str, Callable[[LogLine, InitializerConfig], Optional[str]]
-        ] = SetOnceDictionary()
+        self.__named_commands_registry: SetOnceDictionary[str, Command] = SetOnceDictionary()
         self.__shared = InitializerConfig()
 
         if initializer_config is not None:
             self.__shared.__dict__.update(initializer_config)
 
-    def register_command(self, cmd: str, function: Callable, name: str = None) -> None:
-        if name is not None:
-            self.__shared.LOADED_COMMANDS.append(name)
-        main_logger.info(f"Loaded command '{cmd}'")
-        self.__named_commands_registry[cmd] = function
+    def register_command(self, command_name: str, function: Callable, reference_name: str = None, meta: Dict = None) -> None:
+        cmd = Command(
+            full_name=command_name,
+            function=function,
+            ref_name=reference_name,
+            meta=meta
+        )
+        self.__named_commands_registry[command_name] = cmd
+        main_logger.info(f"Loaded command '{command_name}'")
+        self._update_shared()
+
+    def _update_shared(self):
+        keys = list(self.__named_commands_registry.keys())
+        loaded_commands_new = []
+        for key in keys:
+            if self.__named_commands_registry[key].ref_name is not None:
+                loaded_commands_new.append(self.__named_commands_registry[key].ref_name)
+
+        self.__shared.LOADED_COMMANDS = loaded_commands_new
 
     def list_commands(self):
-        return self.__shared.LOADED_COMMANDS
+        return list(self.__named_commands_registry.keys())
 
     def register_service(self, function: Callable):
         self.__services.add(function)
+
+    def delete_command(self, command_name: str) -> None:
+        self.__named_commands_registry.pop(command_name)
+        self._update_shared()
 
     def process_line(self, logline: LogLine):
         for task in self.__services:
@@ -166,9 +183,10 @@ class CommandController:
 
         command_name = logline.prompt.strip().split(" ")[0].lower()
 
-        handler: Optional[Callable] = self.__named_commands_registry.get(command_name, None)
-        if handler is None:
+        command: Optional[Command] = self.__named_commands_registry.get(command_name, None)
+        if command is None:
             return
+        handler = command.function
 
         cleaned_prompt = logline.prompt.removeprefix(command_name).strip()
 

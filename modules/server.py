@@ -135,6 +135,15 @@ async def add_command(command: Dict[Any, Any]):
         return Response(status_code=500, content=f'{"err": "Unknown error {e}"}')
 
 
+@app.post("/command/delete/{name}")
+async def delete_command(name: str):
+    try:
+        controller.delete_command(name)
+        return Response(status_code=201)
+    except (KeyError, ValueError):
+        return Response(status_code=404, content='{"err": "Command not found."}')
+
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await connection_manager.connect(websocket)

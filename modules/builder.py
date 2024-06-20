@@ -1,4 +1,5 @@
 import os.path
+import copy
 from typing import Dict, List
 
 import oyaml as yaml
@@ -150,15 +151,21 @@ def load_commands(controller: CommandController) -> None:
     loaded_commands_count = 0
     errors_count = 0
 
-    for cmd in commands:
+    for raw_command_dict in commands:
         try:
-            klass = create_command_from_dict(cmd)
-            chat_command_name = cmd["prefix"] + cmd["name"]
-            controller.register_command(chat_command_name, klass.as_command(), cmd["name"])
+            meta_info_copy = copy.deepcopy(raw_command_dict)
+            klass = create_command_from_dict(raw_command_dict)
+            chat_command_name = raw_command_dict["prefix"] + raw_command_dict["name"]
+            controller.register_command(
+                chat_command_name,
+                klass.as_command(),
+                raw_command_dict["name"],
+                meta=meta_info_copy
+            )
             loaded_commands_count += 1
         except Exception as e:
             errors_count += 1
-            cmd_name = cmd.get("name", None)
+            cmd_name = raw_command_dict.get("name", None)
             if cmd_name is None:
                 gui_logger.error(f"Failed to load command. [{e}]")
             else:

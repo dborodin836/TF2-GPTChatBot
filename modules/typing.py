@@ -14,10 +14,18 @@ BufferedMessageType = Literal["GUI", "LOG", "BOTH"]
 BufferedMessageLevel = Literal["TRACE", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
-class Command(NamedTuple):
+class GuiCommand(NamedTuple):
     name: str
     function: Callable
     description: str
+
+
+class Command(NamedTuple):
+    full_name: str
+    ref_name: Optional[str]
+    # Callable[[LogLine, InitializerConfig], Optional[str]
+    function: Callable
+    meta: Dict
 
 
 class QueuedMessage(NamedTuple):

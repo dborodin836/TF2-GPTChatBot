@@ -17,6 +17,24 @@ export function CommandList() {
     }
   };
 
+  const deleteCommand = async (command: string) => {
+    const response = await fetch(`http://127.0.0.1:8000/command/delete/${command}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      console.log(data);
+      openAlert(`Error occurred: ${JSON.stringify(data.err)}`);
+    } else {
+      setCommands((prevCommands) => prevCommands.filter((cmd) => cmd !== command));
+      openAlert('Successfully deleted command.');
+    }
+  };
+
   useEffect(() => {
     fetchCommands();
   }, []);
@@ -49,7 +67,7 @@ export function CommandList() {
                 Edit
               </button>
               <button
-                onClick={console.log}
+                onClick={() => deleteCommand(command)}
                 className="items-center min-w-[80px] hover:border-red-500 border-2 p-3 rounded-lg text-center leading-tight transition-all hover:bg-red-50 hover:bg-opacity-80 active:bg-red-50 active:bg-opacity-80 hover:text-red-900 active:text-red-900 outline-none">
                 Delete
               </button>
