@@ -61,11 +61,13 @@ export function CommandList() {
             className="flex items-center justify-between p-4 card rounded shadow">
             <span>{command}</span>
             <div>
-              <button
-                onClick={console.log}
-                className="items-center mx-3 min-w-[80px] text-center hover:border-amber-500 border-2 p-3 rounded-lg leading-tight transition-all hover:bg-amber-50 hover:bg-opacity-80 active:bg-amber-50 bg-opacity-80 hover:text-yellow-900 active:text-yellow-900 outline-none">
-                Edit
-              </button>
+              <Link className="w-36" to={`/command/edit/${command}`}>
+                <button
+                  onClick={console.log}
+                  className="items-center mx-3 min-w-[80px] text-center hover:border-amber-500 border-2 p-3 rounded-lg leading-tight transition-all hover:bg-amber-50 hover:bg-opacity-80 active:bg-amber-50 bg-opacity-80 hover:text-yellow-900 active:text-yellow-900 outline-none">
+                  Edit
+                </button>
+              </Link>
               <button
                 onClick={() => deleteCommand(command)}
                 className="items-center min-w-[80px] hover:border-red-500 border-2 p-3 rounded-lg text-center leading-tight transition-all hover:bg-red-50 hover:bg-opacity-80 active:bg-red-50 active:bg-opacity-80 hover:text-red-900 active:text-red-900 outline-none">

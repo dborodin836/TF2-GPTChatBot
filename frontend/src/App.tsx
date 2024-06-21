@@ -7,6 +7,7 @@ import { About } from './components/about/About';
 import React from 'react';
 import { CommandAdd } from './components/commands/CommandAdd';
 import { CommandList } from './components/commands/CommandList';
+import { CommandEdit } from './components/commands/CommandEdit';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/command/add" element={<CommandAdd />} />
           <Route path="/command/list" element={<CommandList />} />
+          <Route path="/command/edit/:command" element={<CommandEdit />} />
         </Routes>
       </div>
     </div>

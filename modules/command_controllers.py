@@ -177,6 +177,9 @@ class CommandController:
         self.__named_commands_registry.pop(command_name)
         self._update_shared()
 
+    def get_command(self, command_name: str):
+        return self.__named_commands_registry.get(command_name)
+
     def process_line(self, logline: LogLine):
         for task in self.__services:
             task(logline, self.__shared)

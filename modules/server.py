@@ -15,6 +15,7 @@ from modules.gui.controller import command_controller as gui_cmd_controller
 from modules.chat import controller
 from modules.logs import get_logger
 from modules.set_once_dict import ModificationOfSetKey
+from modules.typing import Command
 from modules.utils.config import DROP_KEYS, save_config
 
 combo_logger = get_logger("combo")
@@ -134,6 +135,14 @@ async def add_command(command: Dict[Any, Any]):
     except Exception as e:
         return Response(status_code=500, content=f'{"err": "Unknown error {e}"}')
 
+
+@app.get("/command/meta/{name}")
+async def get_command_meta(name: str):
+    try:
+        command: Command = controller.get_command(name)
+        return Response(status_code=200, content=json.dumps(command.meta))
+    except (KeyError, ValueError):
+        return Response(status_code=404, content='{"err": "Command not found."}')
 
 @app.post("/command/delete/{name}")
 async def delete_command(name: str):
