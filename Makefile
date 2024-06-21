@@ -67,6 +67,8 @@ frontend/node_modules: frontend/package.json
 ## clean		-	Cleanup.
 clean:
 	if exist ".venv" (rd /s /q ".venv")
+	if exist ".mypy_cache" (rd /s /q ".mypy_cache")
+	if exist ".pytest_cache" (rd /s /q ".pytest_cache")
 	if exist "build" (rd /s /q "build")
 	if exist "dist" (rd /s /q "dist")
 	if exist "htmlcov" (rd /s /q "htmlcov")
