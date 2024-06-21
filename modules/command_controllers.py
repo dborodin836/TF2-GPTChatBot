@@ -28,7 +28,7 @@ class ChatHistoryManager(BaseModel):
     COMMAND: Dict = {}
 
     def get_or_create_command_chat_history(
-        self, cmd_name: str, type_: CommandChatTypes, settings: dict = None, user: Player = None
+            self, cmd_name: str, type_: CommandChatTypes, settings: dict = None, user: Player = None
     ):
         if settings is None:
             settings = {}
@@ -36,7 +36,7 @@ class ChatHistoryManager(BaseModel):
         match type_:
             case CommandChatTypes.PRIVATE:
                 if chat_history := self.COMMAND.get(
-                    PRIVATE_CHAT_ID.format(cmd_name, user.steamid64)
+                        PRIVATE_CHAT_ID.format(cmd_name, user.steamid64)
                 ):
                     return chat_history
                 main_logger.info(
@@ -60,7 +60,7 @@ class ChatHistoryManager(BaseModel):
                 return new_ch
 
     def get_command_chat_history(
-        self, command_name: str, type_: CommandChatTypes, user: Player = None
+            self, command_name: str, type_: CommandChatTypes, user: Player = None
     ) -> Optional[ConversationHistory]:
         match type_:
             case CommandChatTypes.PRIVATE:
@@ -68,7 +68,7 @@ class ChatHistoryManager(BaseModel):
                     raise Exception("User argument must be provided for private chat retrieval.")
                 combo_logger.trace(PRIVATE_CHAT_ID.format(command_name, user.steamid64))
                 if chat_history := self.COMMAND.get(
-                    PRIVATE_CHAT_ID.format(command_name, user.steamid64)
+                        PRIVATE_CHAT_ID.format(command_name, user.steamid64)
                 ):
                     return chat_history
                 return None
@@ -80,11 +80,11 @@ class ChatHistoryManager(BaseModel):
                 return None
 
     def set_command_chat_history(
-        self,
-        name: str,
-        type_: CommandChatTypes,
-        chat_history: ConversationHistory,
-        user: Player = None,
+            self,
+            name: str,
+            type_: CommandChatTypes,
+            chat_history: ConversationHistory,
+            user: Player = None,
     ):
         match type_:
             case CommandChatTypes.PRIVATE:
@@ -147,7 +147,8 @@ class CommandController:
         if initializer_config is not None:
             self.__shared.__dict__.update(initializer_config)
 
-    def register_command(self, command_name: str, function: Callable, reference_name: str = None, meta: Dict = None) -> None:
+    def register_command(self, command_name: str, function: Callable, reference_name: str = None,
+                         meta: Dict = None) -> None:
         cmd = Command(
             full_name=command_name,
             function=function,
@@ -167,8 +168,11 @@ class CommandController:
 
         self.__shared.LOADED_COMMANDS = loaded_commands_new
 
-    def list_commands(self):
-        return list(self.__named_commands_registry.keys())
+    def list_commands(self, custom_only: bool = False):
+        if custom_only:
+            return [cmd.full_name for cmd in self.__named_commands_registry.values() if cmd.meta is not None]
+        else:
+            return list(self.__named_commands_registry.keys())
 
     def register_service(self, function: Callable):
         self.__services.add(function)
@@ -176,6 +180,19 @@ class CommandController:
     def delete_command(self, command_name: str) -> None:
         self.__named_commands_registry.pop(command_name)
         self._update_shared()
+
+    def export_commands(self):
+        commands = []
+
+        for command in self.__named_commands_registry.values():
+            if command.meta is not None:
+                commands.append(command.meta)
+
+        data = {
+            "commands": commands
+        }
+
+        return data
 
     def get_command(self, command_name: str):
         return self.__named_commands_registry.get(command_name)

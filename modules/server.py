@@ -16,7 +16,7 @@ from modules.chat import controller
 from modules.logs import get_logger
 from modules.set_once_dict import ModificationOfSetKey
 from modules.typing import Command
-from modules.utils.config import DROP_KEYS, save_config
+from modules.utils.config import DROP_KEYS, save_config, save_commands
 
 combo_logger = get_logger("combo")
 
@@ -117,17 +117,35 @@ async def handle_command_scheme():
 
 @app.get("/command/list")
 async def list_commands():
-    data = controller.list_commands()
+    data = controller.list_commands(custom_only=True)
     dumped = json.dumps(data)
     return Response(status_code=200, content=dumped)
 
 
-@app.post("/command/add")
-async def add_command(command: Dict[Any, Any]):
+@app.post("/command/edit/{name}")
+async def edit_command(name: str, command_data: Dict):
     try:
-        klass = create_command_from_dict(command)
-        chat_command_name = command["prefix"] + command["name"]
-        await asyncio.to_thread(controller.register_command, chat_command_name, klass.as_command(), command["name"])
+        klass = create_command_from_dict(command_data)
+        chat_command_name = command_data["prefix"] + command_data["name"]
+        controller.delete_command(name)
+        await asyncio.to_thread(controller.register_command, chat_command_name, klass.as_command(),
+                                command_data["name"], meta=command_data)
+        data_to_save = controller.export_commands()
+        save_commands(data_to_save)
+        return Response(status_code=status.HTTP_201_CREATED)
+    except Exception:
+        return Response(status_code=status.HTTP_400_BAD_REQUEST, content='{"err": "Error occurred."}')
+
+
+@app.post("/command/add")
+async def add_command(command_data: Dict[Any, Any]):
+    try:
+        klass = create_command_from_dict(command_data)
+        chat_command_name = command_data["prefix"] + command_data["name"]
+        await asyncio.to_thread(controller.register_command, chat_command_name, klass.as_command(),
+                                command_data["name"], meta=command_data)
+        data_to_save = controller.export_commands()
+        save_commands(data_to_save)
         return Response(status_code=status.HTTP_201_CREATED)
     except ModificationOfSetKey:
         return Response(status_code=status.HTTP_400_BAD_REQUEST,
@@ -144,10 +162,13 @@ async def get_command_meta(name: str):
     except (KeyError, ValueError):
         return Response(status_code=404, content='{"err": "Command not found."}')
 
+
 @app.post("/command/delete/{name}")
 async def delete_command(name: str):
     try:
         controller.delete_command(name)
+        data_to_save = controller.export_commands()
+        save_commands(data_to_save)
         return Response(status_code=201)
     except (KeyError, ValueError):
         return Response(status_code=404, content='{"err": "Command not found."}')

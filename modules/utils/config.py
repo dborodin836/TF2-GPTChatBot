@@ -3,6 +3,8 @@ import configparser
 import pprint
 from typing import List
 
+import yaml
+
 from config import config
 from modules.logs import get_logger
 
@@ -51,6 +53,11 @@ def save_config(filename: str):
         gui_logger.info("Config written successfully.")
     except Exception as e:
         gui_logger.warning(f"Failed to write config file [{e}]")
+
+
+def save_commands(data):
+    with codecs.open("cfg/commands.yaml", "w", encoding="utf-8") as file:
+        yaml.dump(data, file)
 
 
 def set_value_config(values: List):

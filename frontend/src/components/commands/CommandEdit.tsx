@@ -3,14 +3,14 @@ import Form from '@rjsf/mui';
 import { RJSFSchema, UiSchema } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 import { useAlert } from '../AlertContext';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 
 const log = (type: unknown) => console.log.bind(console, type);
 
 const uiSchema: UiSchema = {
   'ui:submitButtonOptions': {
-    'submitText': 'Create',
+    'submitText': 'Save',
     props: {
       className: '',
     },
@@ -32,6 +32,7 @@ export function CommandEdit() {
   const [formData, setFormData] = useState<any>({});
   const { command } = useParams<{ command: string }>();
   const { openAlert } = useAlert();
+  const navigate = useNavigate();
 
   const submitCommand = async ({ formData }: any) => {
     if (!formData) {
@@ -40,7 +41,7 @@ export function CommandEdit() {
     }
     console.log(formData);
 
-    const response = await fetch('http://127.0.0.1:8000/command/add', {
+    const response = await fetch(`http://127.0.0.1:8000/command/edit/${command}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -53,7 +54,8 @@ export function CommandEdit() {
       console.log(data);
       openAlert(`Error occurred: ${JSON.stringify(data.err)}`);
     } else {
-      openAlert('Successfully added command.');
+      navigate('/command/list')
+      openAlert('Successfully edited command.');
     }
   };
 

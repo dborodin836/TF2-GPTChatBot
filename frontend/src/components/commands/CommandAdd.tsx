@@ -3,6 +3,7 @@ import Form from '@rjsf/mui';
 import { RJSFSchema, UiSchema } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 import { useAlert } from '../AlertContext';
+import { useNavigate } from 'react-router-dom';
 
 
 const log = (type: unknown) => console.log.bind(console, type);
@@ -29,6 +30,7 @@ const uiSchema: UiSchema = {
 export function CommandAdd() {
   const [schema, setSchema] = useState<RJSFSchema>({});
   const { openAlert } = useAlert();
+  const navigate = useNavigate();
 
   const submitCommand = async ({ formData }: any) => {
     if (!formData) {
@@ -50,6 +52,7 @@ export function CommandAdd() {
       console.log(data);
       openAlert(`Error occurred: ${JSON.stringify(data.err)}`);
     } else {
+      navigate('/command/list');
       openAlert('Successfully added command.');
     }
   };

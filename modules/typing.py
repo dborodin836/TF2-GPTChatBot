@@ -25,7 +25,7 @@ class Command(NamedTuple):
     ref_name: Optional[str]
     # Callable[[LogLine, InitializerConfig], Optional[str]
     function: Callable
-    meta: Dict
+    meta: Optional[Dict]
 
 
 class QueuedMessage(NamedTuple):
