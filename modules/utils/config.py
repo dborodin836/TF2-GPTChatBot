@@ -56,7 +56,7 @@ def save_config(filename: str):
 
 
 def save_commands(data):
-    with codecs.open("cfg/commands.yaml", "w", encoding="utf-8") as file:
+    with codecs.open("commands.yaml", "w", encoding="utf-8") as file:
         yaml.dump(data, file)
 
 

@@ -34,8 +34,10 @@ build: .venv/pyvenv.cfg frontend/node_modules
 	$(PYTHON) -m PyInstaller -n tf2-gptcb --noconfirm --icon icon.ico -w main.py
 	xcopy cfg dist\tf2-gptcb\cfg /E /I /Y
 	xcopy icon.png dist\tf2-gptcb /Y
+	xcopy commands.yaml dist\tf2-gptcb /Y
 	mkdir dist\tf2-gptcb\logs
 	xcopy prompts dist\tf2-gptcb\prompts /E /I /Y
+	xcopy schemas dist\tf2-gptcb\schemas /E /I /Y
 
 	cd frontend
 	npm run pack

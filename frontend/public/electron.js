@@ -28,7 +28,7 @@ if (env === 'demo') {
 } else {
   // Production
   execPath = path.join(__dirname, '..', '..', '..', 'tf2-gptcb.exe');
-  launchOptions = ['--web-server', '--no-gui', '--sleep', '3'];
+  launchOptions = ['--web-server', '--no-gui', '--sleep', '1'];
   cwd = path.dirname(execPath);
 }
 
