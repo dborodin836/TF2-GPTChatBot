@@ -24,7 +24,7 @@ class DummyLLMChatCommand(LLMChatCommand):
     model: None
     model_settings = {}
     chat = None
-    chat_settings = {}
+    settings = {}
 
     @classmethod
     def get_chat(cls, logline, shared_dict): ...

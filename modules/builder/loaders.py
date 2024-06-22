@@ -66,7 +66,7 @@ class Loader(ABC):
                 if option not in COMMAND_TYPES.get(self.raw_command_data["type"]).settings:
                     gui_logger.warning(f'"{option}" is not a valid option.')
             # Update dict
-            self.command_data.update(chat_settings=command_settings)
+            self.command_data.update(settings=command_settings)
 
 
 class LLMCommandLoader(Loader):
@@ -135,6 +135,9 @@ COMMAND_TYPES: Dict[str, CommandSchemaDefinition] = {
     ),
     "rcon": CommandSchemaDefinition(
         klass=RconCommand,
-        loader=RCONCommandLoader
+        loader=RCONCommandLoader,
+        settings={
+            "wait-ms"
+        }
     )
 }

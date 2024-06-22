@@ -26,7 +26,7 @@ def test_command_hard_limit(mocker):
 
     class TestCmd(LLMChatCommand):
         provider = DummyProvider
-        chat_settings = chat_settings_shared
+        settings = chat_settings_shared
 
         @classmethod
         def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory:
