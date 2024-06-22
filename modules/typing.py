@@ -1,4 +1,4 @@
-from typing import Callable, List, Literal, NamedTuple, Optional, TypedDict, Union, Dict
+from typing import Callable, List, Literal, NamedTuple, Optional, Set, Type, TypedDict, Union, Dict
 
 from pydantic import BaseModel
 
@@ -18,6 +18,12 @@ class GuiCommand(NamedTuple):
     name: str
     function: Callable
     description: str
+
+
+class CommandSchemaDefinition(NamedTuple):
+    klass: Type
+    loader: Type
+    settings: Set[str] = set()
 
 
 class Command(NamedTuple):

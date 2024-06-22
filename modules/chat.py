@@ -2,7 +2,7 @@ from config import RTDModes, config
 from modules.api.github import check_for_updates
 from modules.bans import bans_manager
 from modules.bot_state import state_manager
-from modules.builder import load_commands
+from modules.builder.utils import load_commands
 from modules.command_controllers import CommandController, InitializerConfig
 from modules.commands.clear_chat import handle_clear
 from modules.commands.github import handle_gh_command

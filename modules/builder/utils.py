@@ -4,67 +4,15 @@ from typing import Dict, List
 
 import oyaml as yaml
 
-from modules.api.llm.groq import GroqCloudLLMProvider
-from modules.api.llm.openai import OpenAILLMProvider
-from modules.api.llm.textgen_webui import TextGenerationWebUILLMProvider
+from modules.builder.loaders import COMMAND_TYPES, InvalidCommandException, WRAPPERS
 from modules.command_controllers import CommandController
 from modules.commands.base import (
     BaseCommand,
-    CommandGlobalChatLLMChatCommand,
-    CommandPrivateChatLLMChatCommand,
-    QuickQueryLLMCommand,
-)
-from modules.commands.decorators import (
-    admin_only,
-    deny_empty_prompt,
-    disabled,
-    empty_prompt_message_response,
-    openai_moderated,
 )
 from modules.logs import get_logger
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
-
-
-class InvalidCommandException(Exception): ...
-
-
-TYPES = {
-    "quick-query": QuickQueryLLMCommand,
-    "command-private": CommandPrivateChatLLMChatCommand,
-    "command-global": CommandGlobalChatLLMChatCommand,
-}
-
-PROVIDERS = {
-    "open-ai": OpenAILLMProvider,
-    "groq-cloud": GroqCloudLLMProvider,
-    "text-generation-webui": TextGenerationWebUILLMProvider,
-}
-
-# Traits
-WRAPPERS = {
-    "openai-moderated": openai_moderated,
-    "admin-only": admin_only,
-    "empty-prompt-message-response": empty_prompt_message_response,
-    "disabled": disabled,
-    "deny-empty-prompt": deny_empty_prompt,
-}
-
-CHAT_SETTINGS = {
-    "prompt-file",
-    "enable-soft-limit",
-    "soft-limit-length",
-    "message-suffix",
-    "greeting",
-    "allow-prompt-overwrite",
-    "allow-long",
-    "enable-hard-limit",
-    "hard-limit-length",
-    "allow-img",
-    "img-detail",
-    "img-screen-id"
-}
 
 
 def get_commands_from_yaml() -> List[dict]:
@@ -74,6 +22,12 @@ def get_commands_from_yaml() -> List[dict]:
     return data["commands"]
 
 
+def load_command_specific_attrs(type_: str, raw_data: dict) -> Dict:
+    loader = COMMAND_TYPES.get(type_).loader
+    loader_instance = loader(raw_data)
+    return loader_instance.get_data()
+
+
 def create_command_from_dict(cmd: dict) -> BaseCommand:
     command_dict: Dict = {}
     command_dict.update(name=cmd["name"])
@@ -81,28 +35,13 @@ def create_command_from_dict(cmd: dict) -> BaseCommand:
 
     # Command type
     try:
-        type_ = TYPES[cmd["type"]]
+        type_ = COMMAND_TYPES[cmd["type"]].klass
     except Exception as e:
         raise InvalidCommandException(
-            f"Command type is invalid or missing. Expected one of {list(TYPES.keys())}"
+            f"Command type is invalid or missing. Expected one of {list(COMMAND_TYPES.keys())}"
         )
 
-    # Provider type
-    try:
-        provider = PROVIDERS[cmd["provider"]]
-        command_dict.update(provider=provider)
-    except Exception as e:
-        raise InvalidCommandException(
-            f"Command type is invalid or missing. Expected one of {list(PROVIDERS.keys())}"
-        )
-
-    # Model
-    if provider != PROVIDERS.get("text-generation-webui"):
-        try:
-            model = cmd["model"]
-            command_dict.update(model=model)
-        except Exception as e:
-            raise InvalidCommandException("Model name is invalid or missing.")
+    command_dict.update(load_command_specific_attrs(cmd["type"], cmd))
 
     # Update command wrappers
     if traits := cmd.get("traits"):
@@ -120,19 +59,6 @@ def create_command_from_dict(cmd: dict) -> BaseCommand:
             except Exception as e:
                 gui_logger.warning(f"{e} is not a valid trait.")
         command_dict.update(wrappers=wrappers)
-
-    # Update command settings
-    if model_settings := cmd.get("model_settings"):
-        command_dict.update(model_settings=model_settings)
-
-    # Update command settings
-    if chat_settings := cmd.get("settings"):
-        # Verify for unknown keys
-        for option in chat_settings.keys():
-            if option not in CHAT_SETTINGS:
-                gui_logger.warning(f'"{option}" is not a valid option.')
-        # Update dict
-        command_dict.update(chat_settings=chat_settings)
 
     return type(class_name, (type_,), command_dict)
 

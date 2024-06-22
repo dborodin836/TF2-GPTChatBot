@@ -10,7 +10,7 @@ from starlette.responses import Response
 from starlette.websockets import WebSocketDisconnect
 
 from config import Config, ValidatableConfig, config
-from modules.builder import create_command_from_dict
+from modules.builder.utils import create_command_from_dict
 from modules.gui.controller import command_controller as gui_cmd_controller
 from modules.chat import controller
 from modules.logs import get_logger
@@ -150,8 +150,8 @@ async def add_command(command_data: Dict[Any, Any]):
     except ModificationOfSetKey:
         return Response(status_code=status.HTTP_400_BAD_REQUEST,
                         content='{"err": "Command with that name already exist."}')
-    except Exception as e:
-        return Response(status_code=500, content=f'{"err": "Unknown error {e}"}')
+    except Exception:
+        return Response(status_code=500, content='{"err": "Unknown error"}')
 
 
 @app.get("/command/meta/{name}")

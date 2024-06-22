@@ -5,6 +5,7 @@ from modules.api.llm.base import LLMProvider
 from modules.command_controllers import CommandChatTypes, InitializerConfig
 from modules.conversation_history import ConversationHistory
 from modules.logs import get_logger
+from modules.rcon_client import RconClient
 from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import LogLine, Message
 
@@ -29,6 +30,24 @@ class BaseCommand(ABC):
         return func
 
 
+class RconCommand(BaseCommand):
+    command: str
+
+    @classmethod
+    def get_handler(cls):
+        def func(logline: LogLine, shared_dict: InitializerConfig) -> Optional[str]:
+            if logline.prompt.strip():
+                cmd = f"wait 2000;{cls.command} {logline.prompt.strip()};"
+            else:
+                cmd = f"wait 2000;{cls.command};"
+            with RconClient() as client:
+                get_logger("gui").warning(cmd)
+                client.run(cmd)
+                return cmd
+
+        return func
+
+
 class LLMChatCommand(BaseCommand):
     provider: LLMProvider
     model: str = Optional[str]
@@ -38,7 +57,8 @@ class LLMChatCommand(BaseCommand):
 
     @classmethod
     @abstractmethod
-    def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory: ...
+    def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory:
+        ...
 
     @classmethod
     def get_handler(cls) -> Callable[[LogLine, InitializerConfig], None]:
@@ -54,7 +74,7 @@ class LLMChatCommand(BaseCommand):
                 chat.add_assistant_message(Message(role="assistant", content=response))
                 # Strip the message if needed
                 if cls.chat_settings.get("enable-hard-limit") and len(
-                    response
+                        response
                 ) > cls.chat_settings.get("enable-hard-limit"):
                     main_logger.warning(
                         f"Message is longer than Hard Limit [{len(response)}]. Limit is {cls.chat_settings.get('hard-limit-length')}."
