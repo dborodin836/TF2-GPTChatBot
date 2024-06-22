@@ -14,7 +14,7 @@ htmlcov
 
 # Logs
 log_*.txt
-logs/
+/logs
 
 # Build
 dist

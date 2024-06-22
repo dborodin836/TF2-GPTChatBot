@@ -1,13 +1,14 @@
 import './App.css';
 import { DefaultSidebar } from './components/Sidebar';
 import { Route, Routes } from 'react-router-dom';
-import { Home } from './components/home/Home';
+import { LogsPage } from './components/logs/LogsPage';
 import { PageSettings } from './components/settings/PageSettings';
 import { About } from './components/about/About';
 import React from 'react';
 import { CommandAdd } from './components/commands/CommandAdd';
 import { CommandList } from './components/commands/CommandList';
 import { CommandEdit } from './components/commands/CommandEdit';
+import { Dashboard } from './components/dashboard/dashboardPage';
 
 function App() {
   return (
@@ -17,7 +18,8 @@ function App() {
       </div>
       <div className="flex-1 shadow-md rounded-xl ml-7 m-4 mt-0">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/logs" element={<LogsPage />} />
           <Route path="/settings" element={<PageSettings />} />
           <Route path="/about" element={<About />} />
           <Route path="/command/add" element={<CommandAdd />} />

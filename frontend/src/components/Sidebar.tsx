@@ -1,5 +1,11 @@
 import { Card } from '@material-tailwind/react';
-import { PresentationChartBarIcon, UserCircleIcon, Cog6ToothIcon, CommandLineIcon } from '@heroicons/react/24/solid';
+import {
+  PresentationChartBarIcon,
+  UserCircleIcon,
+  Cog6ToothIcon,
+  CommandLineIcon,
+  ChartBarIcon,
+} from '@heroicons/react/24/solid';
 
 import { Link } from 'react-router-dom';
 import React from 'react';
@@ -16,9 +22,9 @@ export function DefaultSidebar() {
               className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-teal-50 hover:bg-opacity-80 active:bg-teal-50 active:bg-opacity-80 hover:text-green-700 active:text-green-700 outline-none"
             >
               <div className="grid place-items-center mr-4">
-                <PresentationChartBarIcon className="h-5 w-5" />
+                <ChartBarIcon className="h-5 w-5" />
               </div>
-              Logs
+              Dashboard
             </div>
           </Link>
 
@@ -43,6 +49,18 @@ export function DefaultSidebar() {
                 <Cog6ToothIcon className="h-5 w-5" />
               </div>
               Settings
+            </div>
+          </Link>
+
+          <Link className="w-36" to="/logs">
+            <div
+              role="button"
+              className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-teal-50 hover:bg-opacity-80 active:bg-teal-50 active:bg-opacity-80 hover:text-green-700 active:text-green-700 outline-none"
+            >
+              <div className="grid place-items-center mr-4">
+                <PresentationChartBarIcon className="h-5 w-5" />
+              </div>
+              Logs
             </div>
           </Link>
 
