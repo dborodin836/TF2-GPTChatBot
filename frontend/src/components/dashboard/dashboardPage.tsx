@@ -177,90 +177,90 @@ export function Dashboard() {
 
   return (
     <>
-      <div className="w-[100%] h-[50%] text-gray-700 p-4">
-        <Typography variant="h3" className="mt-4 ms-3">
-          Command usage
-        </Typography>
-        <LineChart
-          xAxis={[
-            {
-              id: 'Years',
-              data: years,
-              scaleType: 'time',
-              valueFormatter: (date) => date.getFullYear().toString(),
-            },
-          ]}
-          series={[
-            {
-              id: 'France',
-              data: FranceGDPperCapita,
-              stack: 'total',
-              area: true,
-              curve: 'natural',
-              showMark: false,
-            },
-            {
-              id: 'Germany',
-              data: GermanyGDPperCapita,
-              stack: 'total',
-              area: true,
-              curve: 'natural',
-              showMark: false,
-            },
-            {
-              id: 'United Kingdom',
-              data: UKGDPperCapita,
-              stack: 'total',
-              area: true,
-              curve: 'natural',
-              showMark: false,
-            },
-          ]}
-          colors={categories[colorScheme]}
-          margin={{ right: 20, left: 70, top: 20 }} />
-      </div>
-      <div className="w-[100%] h-[50%] text-gray-700 p-4">
-        <Typography variant="h3" className="mt-4 ms-3">
-          Command usage
-        </Typography>
-        <LineChart
-          xAxis={[
-            {
-              id: 'Years',
-              data: years,
-              scaleType: 'time',
-              valueFormatter: (date) => date.getFullYear().toString(),
-            },
-          ]}
-          series={[
-            {
-              id: 'France',
-              data: FranceGDPperCapita,
-              stack: 'total',
-              area: true,
-              curve: 'natural',
-              showMark: false,
-            },
-            {
-              id: 'Germany',
-              data: GermanyGDPperCapita,
-              stack: 'total',
-              area: true,
-              curve: 'natural',
-              showMark: false,
-            },
-            {
-              id: 'United Kingdom',
-              data: UKGDPperCapita,
-              stack: 'total',
-              area: true,
-              curve: 'natural',
-              showMark: false,
-            },
-          ]}
-          colors={categories[colorScheme]}
-          margin={{ right: 20, left: 70, top: 20 }} />
-      </div>
+      {/*<div className="w-[100%] h-[50%] text-gray-700 p-4">*/}
+      {/*  <Typography variant="h3" className="mt-4 ms-3">*/}
+      {/*    Command usage*/}
+      {/*  </Typography>*/}
+      {/*  <LineChart*/}
+      {/*    xAxis={[*/}
+      {/*      {*/}
+      {/*        id: 'Years',*/}
+      {/*        data: years,*/}
+      {/*        scaleType: 'time',*/}
+      {/*        valueFormatter: (date) => date.getFullYear().toString(),*/}
+      {/*      },*/}
+      {/*    ]}*/}
+      {/*    series={[*/}
+      {/*      {*/}
+      {/*        id: 'France',*/}
+      {/*        data: FranceGDPperCapita,*/}
+      {/*        stack: 'total',*/}
+      {/*        area: true,*/}
+      {/*        curve: 'natural',*/}
+      {/*        showMark: false,*/}
+      {/*      },*/}
+      {/*      {*/}
+      {/*        id: 'Germany',*/}
+      {/*        data: GermanyGDPperCapita,*/}
+      {/*        stack: 'total',*/}
+      {/*        area: true,*/}
+      {/*        curve: 'natural',*/}
+      {/*        showMark: false,*/}
+      {/*      },*/}
+      {/*      {*/}
+      {/*        id: 'United Kingdom',*/}
+      {/*        data: UKGDPperCapita,*/}
+      {/*        stack: 'total',*/}
+      {/*        area: true,*/}
+      {/*        curve: 'natural',*/}
+      {/*        showMark: false,*/}
+      {/*      },*/}
+      {/*    ]}*/}
+      {/*    colors={categories[colorScheme]}*/}
+      {/*    margin={{ right: 20, left: 70, top: 20 }} />*/}
+      {/*</div>*/}
+      {/*<div className="w-[100%] h-[50%] text-gray-700 p-4">*/}
+      {/*  <Typography variant="h3" className="mt-4 ms-3">*/}
+      {/*    Command usage*/}
+      {/*  </Typography>*/}
+      {/*  <LineChart*/}
+      {/*    xAxis={[*/}
+      {/*      {*/}
+      {/*        id: 'Years',*/}
+      {/*        data: years,*/}
+      {/*        scaleType: 'time',*/}
+      {/*        valueFormatter: (date) => date.getFullYear().toString(),*/}
+      {/*      },*/}
+      {/*    ]}*/}
+      {/*    series={[*/}
+      {/*      {*/}
+      {/*        id: 'France',*/}
+      {/*        data: FranceGDPperCapita,*/}
+      {/*        stack: 'total',*/}
+      {/*        area: true,*/}
+      {/*        curve: 'natural',*/}
+      {/*        showMark: false,*/}
+      {/*      },*/}
+      {/*      {*/}
+      {/*        id: 'Germany',*/}
+      {/*        data: GermanyGDPperCapita,*/}
+      {/*        stack: 'total',*/}
+      {/*        area: true,*/}
+      {/*        curve: 'natural',*/}
+      {/*        showMark: false,*/}
+      {/*      },*/}
+      {/*      {*/}
+      {/*        id: 'United Kingdom',*/}
+      {/*        data: UKGDPperCapita,*/}
+      {/*        stack: 'total',*/}
+      {/*        area: true,*/}
+      {/*        curve: 'natural',*/}
+      {/*        showMark: false,*/}
+      {/*      },*/}
+      {/*    ]}*/}
+      {/*    colors={categories[colorScheme]}*/}
+      {/*    margin={{ right: 20, left: 70, top: 20 }} />*/}
+      {/*</div>*/}
     </>
   )
     ;
