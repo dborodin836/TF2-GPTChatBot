@@ -5,6 +5,7 @@ import {
   Cog6ToothIcon,
   CommandLineIcon,
   ChartBarIcon,
+  ChatBubbleLeftRightIcon
 } from '@heroicons/react/24/solid';
 
 import { Link } from 'react-router-dom';
@@ -25,6 +26,18 @@ export function DefaultSidebar() {
                 <ChartBarIcon className="h-5 w-5" />
               </div>
               Dashboard
+            </div>
+          </Link>
+
+          <Link className="w-36" to="/chats">
+            <div
+              role="button"
+              className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-teal-50 hover:bg-opacity-80 active:bg-teal-50 active:bg-opacity-80 hover:text-green-700 active:text-green-700 outline-none"
+            >
+              <div className="grid place-items-center mr-4">
+                <ChatBubbleLeftRightIcon className="h-5 w-5" />
+              </div>
+              Chats
             </div>
           </Link>
 

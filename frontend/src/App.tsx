@@ -9,6 +9,7 @@ import { CommandAdd } from './components/commands/CommandAdd';
 import { CommandList } from './components/commands/CommandList';
 import { CommandEdit } from './components/commands/CommandEdit';
 import { Dashboard } from './components/dashboard/dashboardPage';
+import { Chats } from './components/chats/ChatsPage';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/logs" element={<LogsPage />} />
+          <Route path="/chats" element={<Chats />} />
           <Route path="/settings" element={<PageSettings />} />
           <Route path="/about" element={<About />} />
           <Route path="/command/add" element={<CommandAdd />} />
