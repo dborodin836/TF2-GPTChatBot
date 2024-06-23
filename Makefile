@@ -62,7 +62,7 @@ format: .venv/pyvenv.cfg
 # Install node_modules
 frontend/node_modules: frontend/package.json
 	cd frontend
-	call npm ci
+	call npm ci -d
 
 ## clean		-	Cleanup.
 clean:

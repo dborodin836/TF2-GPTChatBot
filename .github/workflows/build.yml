@@ -33,10 +33,10 @@ jobs:
         run: |
           mkdir output
           cp -r frontend/dist/win-unpacked/* output/
-          powershell Compress-Archive -Path output/* -DestinationPath output/TF2-GPTChatBot-win-$(git rev-parse --short HEAD).zip
+          powershell Compress-Archive -Path output/* -DestinationPath output/TF2-GPTChatBot-win-${{ github.sha }}.zip
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v3
         with:
-          name: TF2-GPTChatBot-win-$(git rev-parse --short HEAD)
-          path: output/TF2-GPTChatBot-win-$(git rev-parse --short HEAD).zip
+          name: TF2-GPTChatBot-win-${{ github.sha }}
+          path: output/TF2-GPTChatBot-win-${{ github.sha }}.zip
