@@ -1,7 +1,7 @@
 {
   "name": "tf2-gptchatbot",
   "author": "dborodin836",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "An AI-powered chatbot for Team Fortress 2 fans and players.",
   "private": true,
   "homepage": "./",
