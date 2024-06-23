@@ -42,4 +42,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: TF2-GPTChatBot-win-${{ github.sha }}
-          path: output/
+          path:
+            output/
+            !output/TF2-GPTChatBot-win-${{ github.sha }}.zip
