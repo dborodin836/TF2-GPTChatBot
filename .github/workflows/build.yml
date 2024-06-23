@@ -34,7 +34,7 @@ jobs:
         run: |
           echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           echo "DATE=$(date -u +'%Y-%m-%d')" >> $GITHUB_ENV
-          echo "UNIQUE_NAME=TF2-GPTChatBot-win-${{ env.COMMIT_HASH }}" >> $GITHUB_ENV
+          echo "UNIQUE_NAME=TF2-GPTChatBot-win-$(env.COMMIT_HASH)" >> $GITHUB_ENV
 
       - name: Package the build into a ZIP file
         run: |
@@ -45,5 +45,5 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.UNIQUE_NAME }}
-          path: output/${{ env.UNIQUE_NAME }}.zip
+          name: $UNIQUE_NAME
+          path: output/$UNIQUE_NAME.zip
