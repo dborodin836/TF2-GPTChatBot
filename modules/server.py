@@ -11,12 +11,12 @@ from starlette.websockets import WebSocketDisconnect
 
 from config import Config, ValidatableConfig, config
 from modules.builder.utils import create_command_from_dict
-from modules.gui.controller import command_controller as gui_cmd_controller
 from modules.chat import controller
+from modules.gui.controller import command_controller as gui_cmd_controller
 from modules.logs import get_logger
 from modules.set_once_dict import ModificationOfSetKey
 from modules.typing import Command
-from modules.utils.config import DROP_KEYS, save_config, save_commands
+from modules.utils.config import DROP_KEYS, save_commands, save_config
 
 combo_logger = get_logger("combo")
 
@@ -128,13 +128,20 @@ async def edit_command(name: str, command_data: Dict):
         klass = create_command_from_dict(command_data)
         chat_command_name = command_data["prefix"] + command_data["name"]
         controller.delete_command(name)
-        await asyncio.to_thread(controller.register_command, chat_command_name, klass.as_command(),
-                                command_data["name"], meta=command_data)
+        await asyncio.to_thread(
+            controller.register_command,
+            chat_command_name,
+            klass.as_command(),
+            command_data["name"],
+            meta=command_data,
+        )
         data_to_save = controller.export_commands()
         save_commands(data_to_save)
         return Response(status_code=status.HTTP_201_CREATED)
     except Exception:
-        return Response(status_code=status.HTTP_400_BAD_REQUEST, content='{"err": "Error occurred."}')
+        return Response(
+            status_code=status.HTTP_400_BAD_REQUEST, content='{"err": "Error occurred."}'
+        )
 
 
 @app.post("/command/add")
@@ -142,14 +149,21 @@ async def add_command(command_data: Dict[Any, Any]):
     try:
         klass = create_command_from_dict(command_data)
         chat_command_name = command_data["prefix"] + command_data["name"]
-        await asyncio.to_thread(controller.register_command, chat_command_name, klass.as_command(),
-                                command_data["name"], meta=command_data)
+        await asyncio.to_thread(
+            controller.register_command,
+            chat_command_name,
+            klass.as_command(),
+            command_data["name"],
+            meta=command_data,
+        )
         data_to_save = controller.export_commands()
         save_commands(data_to_save)
         return Response(status_code=status.HTTP_201_CREATED)
     except ModificationOfSetKey:
-        return Response(status_code=status.HTTP_400_BAD_REQUEST,
-                        content='{"err": "Command with that name already exist."}')
+        return Response(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content='{"err": "Command with that name already exist."}',
+        )
     except Exception:
         return Response(status_code=500, content='{"err": "Unknown error"}')
 

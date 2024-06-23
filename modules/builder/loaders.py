@@ -1,15 +1,23 @@
 from abc import ABC
-from modules.logs import get_logger
-
 from typing import Dict
 
 from modules.api.llm.groq import GroqCloudLLMProvider
 from modules.api.llm.openai import OpenAILLMProvider
 from modules.api.llm.textgen_webui import TextGenerationWebUILLMProvider
-from modules.commands.base import CommandGlobalChatLLMChatCommand, CommandPrivateChatLLMChatCommand, \
-    QuickQueryLLMCommand, RconCommand
-from modules.commands.decorators import admin_only, deny_empty_prompt, disabled, empty_prompt_message_response, \
-    openai_moderated
+from modules.commands.base import (
+    CommandGlobalChatLLMChatCommand,
+    CommandPrivateChatLLMChatCommand,
+    QuickQueryLLMCommand,
+    RconCommand,
+)
+from modules.commands.decorators import (
+    admin_only,
+    deny_empty_prompt,
+    disabled,
+    empty_prompt_message_response,
+    openai_moderated,
+)
+from modules.logs import get_logger
 from modules.typing import CommandSchemaDefinition
 
 main_logger = get_logger("main")
@@ -27,7 +35,7 @@ LLM_COMMAND_SETTINGS = {
     "hard-limit-length",
     "allow-img",
     "img-detail",
-    "img-screen-id"
+    "img-screen-id",
 }
 
 # Traits
@@ -119,25 +127,19 @@ class RCONCommandLoader(Loader):
 
 COMMAND_TYPES: Dict[str, CommandSchemaDefinition] = {
     "quick-query": CommandSchemaDefinition(
-        klass=QuickQueryLLMCommand,
-        loader=LLMCommandLoader,
-        settings=LLM_COMMAND_SETTINGS
+        klass=QuickQueryLLMCommand, loader=LLMCommandLoader, settings=LLM_COMMAND_SETTINGS
     ),
     "command-private": CommandSchemaDefinition(
         klass=CommandPrivateChatLLMChatCommand,
         loader=LLMCommandLoader,
-        settings=LLM_COMMAND_SETTINGS
+        settings=LLM_COMMAND_SETTINGS,
     ),
     "command-global": CommandSchemaDefinition(
         klass=CommandGlobalChatLLMChatCommand,
         loader=LLMCommandLoader,
-        settings=LLM_COMMAND_SETTINGS
+        settings=LLM_COMMAND_SETTINGS,
     ),
     "rcon": CommandSchemaDefinition(
-        klass=RconCommand,
-        loader=RCONCommandLoader,
-        settings={
-            "wait-ms"
-        }
-    )
+        klass=RconCommand, loader=RCONCommandLoader, settings={"wait-ms"}
+    ),
 }

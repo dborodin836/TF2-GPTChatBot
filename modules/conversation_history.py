@@ -1,8 +1,10 @@
 import base64
 from io import BytesIO
+
 import mss
 import mss.tools
 from PIL import Image
+
 from modules.lobby_manager import lobby_manager
 from modules.typing import Message, MessageHistory
 from modules.utils.prompts import PROMPTS, get_prompt_by_name
@@ -29,8 +31,8 @@ class ConversationHistory:
 
         # Soft limiting the response
         if (
-                self.settings.get("enable-soft-limit") is True
-                or self.settings.get("enable-soft-limit") is None
+            self.settings.get("enable-soft-limit") is True
+            or self.settings.get("enable-soft-limit") is None
         ):
             enable_soft_limit = self.enable_soft_limit
         else:
@@ -75,7 +77,7 @@ class ConversationHistory:
         self.message_history.append(message)
 
     def add_user_message_from_prompt(
-            self, user_prompt: str, enable_soft_limit: bool = True
+        self, user_prompt: str, enable_soft_limit: bool = True
     ) -> None:
         user_message = remove_args(user_prompt)
         args = get_args(user_prompt)
@@ -102,17 +104,15 @@ class ConversationHistory:
             base64_encoded_image = base64.b64encode(buffered.getvalue()).decode("utf-8")
 
             content = [
-                {
-                    "type": "text",
-                    "text": f"{user_message}"
-                },
+                {"type": "text", "text": f"{user_message}"},
                 {
                     "type": "image_url",
                     "image_url": {
                         "url": f"data:image/jpeg;base64,{base64_encoded_image}",
-                        "detail": self.settings.get("img-detail") or "low"
-                    }
-                }]
+                        "detail": self.settings.get("img-detail") or "low",
+                    },
+                },
+            ]
         else:
             content = user_message
 

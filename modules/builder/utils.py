@@ -1,14 +1,12 @@
-import os.path
 import copy
+import os.path
 from typing import Dict, List
 
 import oyaml as yaml
 
-from modules.builder.loaders import COMMAND_TYPES, InvalidCommandException, WRAPPERS
+from modules.builder.loaders import COMMAND_TYPES, WRAPPERS, InvalidCommandException
 from modules.command_controllers import CommandController
-from modules.commands.base import (
-    BaseCommand,
-)
+from modules.commands.base import BaseCommand
 from modules.logs import get_logger
 
 main_logger = get_logger("main")
@@ -49,8 +47,8 @@ def create_command_from_dict(cmd: dict) -> BaseCommand:
         for wrapper in traits:
             wrapper: dict
             try:
-                wrapper_id = wrapper['__id']
-                wrapper.pop('__id')
+                wrapper_id = wrapper["__id"]
+                wrapper.pop("__id")
                 if len(list(wrapper.keys())) > 0:
                     factory = WRAPPERS[wrapper_id]
                     wrappers.append(factory(**wrapper))
@@ -83,10 +81,7 @@ def load_commands(controller: CommandController) -> None:
             klass = create_command_from_dict(raw_command_dict)
             chat_command_name = raw_command_dict["prefix"] + raw_command_dict["name"]
             controller.register_command(
-                chat_command_name,
-                klass.as_command(),
-                raw_command_dict["name"],
-                meta=meta_info_copy
+                chat_command_name, klass.as_command(), raw_command_dict["name"], meta=meta_info_copy
             )
             loaded_commands_count += 1
         except Exception as e:

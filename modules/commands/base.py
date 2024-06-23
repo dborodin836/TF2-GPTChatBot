@@ -38,7 +38,9 @@ class RconCommand(BaseCommand):
     def get_handler(cls):
         def func(logline: LogLine, shared_dict: InitializerConfig) -> Optional[str]:
             if logline.prompt.strip():
-                cmd = f"wait {cls.settings.get('wait-ms', 0)};{cls.command} {logline.prompt.strip()};"
+                cmd = (
+                    f"wait {cls.settings.get('wait-ms', 0)};{cls.command} {logline.prompt.strip()};"
+                )
             else:
                 cmd = f"wait {cls.settings.get('wait-ms', 0)};{cls.command};"
             with RconClient() as client:
@@ -57,8 +59,7 @@ class LLMChatCommand(BaseCommand):
 
     @classmethod
     @abstractmethod
-    def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory:
-        ...
+    def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory: ...
 
     @classmethod
     def get_handler(cls) -> Callable[[LogLine, InitializerConfig], None]:
@@ -73,9 +74,9 @@ class LLMChatCommand(BaseCommand):
             if response:
                 chat.add_assistant_message(Message(role="assistant", content=response))
                 # Strip the message if needed
-                if cls.settings.get("enable-hard-limit") and len(
-                        response
-                ) > cls.settings.get("enable-hard-limit"):
+                if cls.settings.get("enable-hard-limit") and len(response) > cls.settings.get(
+                    "enable-hard-limit"
+                ):
                     main_logger.warning(
                         f"Message is longer than Hard Limit [{len(response)}]. Limit is {cls.settings.get('hard-limit-length')}."
                     )
