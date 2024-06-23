@@ -27,7 +27,7 @@ jobs:
         run: choco install make
 
       - name: Build the project
-        run: make build
+        run: make build SHELL=cmd
 
       - name: Generate unique archive name
         id: vars
