@@ -6,6 +6,10 @@
     An AI-powered chatbot for Team Fortress 2 fans and players.
   </h3>
 
+> [!IMPORTANT]
+> This is v2 of the chatbot, which is now in beta. v1 will be replaced by v2 once it is ready.
+> The v1 chatbot is still available [here](https://github.com/dborodin836/TF2-GPTChatBot/)
+
 ## Table Of Contents
 
 - [Running Using Binary](#running-using-binary)
@@ -29,23 +33,13 @@
 - [OpenAI](https://platform.openai.com/account/api-keys) API key
 - Steam and Team Fortress 2 installed on your machine
 
-### 1. Download the latest release from GitHub
+### 1. Download the latest nightly build from GitHub
 
-- Go to the repository's releases page and download the latest version of the binary file.
-- Extract the contents of the downloaded file to a directory of your choice.
+You can download the latest nightly build [here]().
 
 ### 2. Edit the configuration file:
 
-Edit configuration file named config.ini and set the required configuration variables in `GENERAL` section, such as API
-keys and file paths. You can leave the rest as it is.
-
-```
-[GENERAL]
-TF2_LOGFILE_PATH=H:\Programs\Steam\steamapps\common\Team Fortress 2\tf\console.log
-OPENAI_API_KEY=sk-************************************************
-
-...
-```
+Edit configuration.
 
 ### 3. Add launch options to TF2 on Steam:
 
@@ -67,9 +61,15 @@ OPENAI_API_KEY=sk-************************************************
 
 - [Python](https://www.python.org/downloads/) 3.10 or higher
 - pip package manager
+- Node
+- make
 - [OpenAI](https://platform.openai.com/account/api-keys) API key
 - Steam and Team Fortress 2 installed on your machine
 
+You can you [Chocolatey](https://chocolatey.org/install) to install all the dependencies.
+```sh
+choco install make python310 nodejs-lts`
+```
 ### 1. Installation
 
 Clone the project repository:
@@ -84,42 +84,13 @@ git clone https://github.com/dborodin836/TF2-GPTChatBot.git
 cd TF2-GPTChatBot
 ```
 
-### 3. (Optional) Create and activate a new virtual environment:
-
-Linux:
+### 3. Use make to run the project:
 
 ```sh
-python3 -m venv venv
-source venv/bin/activate
+make dev
 ```
 
-Windows:
-
-```sh
-py -m venv venv
-venv/bin/activate
-```
-
-### 4. Install the project dependencies using pip:
-
-```sh
-pip install -r requirements.txt
-```
-
-### 5. Edit configuration file
-
-Edit configuration file named config.ini and set the required configuration variables in GENERAL section, such as API
-keys and file paths. You can leave the rest as it is.
-
-```
-[GENERAL]
-TF2_LOGFILE_PATH=H:\Programs\Steam\steamapps\common\Team Fortress 2\tf\console.log
-OPENAI_API_KEY=sk-************************************************
-
-...
-```
-
-### 6. Add launch options to TF2 on Steam:
+### 4. Add launch options to TF2 on Steam:
 
 1. Right-click on Team Fortress 2 in your Steam library and select "Properties"
 2. Click "Set Launch Options" under the "General" tab
@@ -144,7 +115,7 @@ _**NOTE: You can create your own executable using this command**_
 Windows:
 
 ```sh
-pyinstaller --clean -n TF2-GPTChatBot --icon icon.ico -w --add-data "icon.png;." main.py
+make build
 ```
 
 ## Usage
