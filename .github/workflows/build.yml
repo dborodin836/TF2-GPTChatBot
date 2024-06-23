@@ -33,17 +33,16 @@ jobs:
         id: vars
         run: |
           echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-          echo "DATE=$(date -u +'%Y-%m-%d')" >> $GITHUB_ENV
-          echo "UNIQUE_NAME=TF2-GPTChatBot-win-$COMMIT_HASH" >> $GITHUB_ENV
+          echo "UNIQUE_NAME=TF2-GPTChatBot-win-$(COMMIT_HASH)" >> $GITHUB_ENV
 
       - name: Package the build into a ZIP file
         run: |
           mkdir output
           cp -r frontend/dist/win-unpacked/* output/
-          powershell Compress-Archive -Path output/* -DestinationPath output/$UNIQUE_NAME.zip
+          powershell Compress-Archive -Path output/* -DestinationPath output/$(UNIQUE_NAME).zip
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v3
         with:
           name: $UNIQUE_NAME
-          path: output/$UNIQUE_NAME.zip
+          path: output/$(UNIQUE_NAME).zip
