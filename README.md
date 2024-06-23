@@ -35,7 +35,7 @@
 
 ### 1. Download the latest nightly build from GitHub
 
-You can download the latest nightly build [here]().
+You can download the latest nightly build [here](https://nightly.link/dborodin836/TF2-GPTChatBot/workflows/build/v2?preview).
 
 ### 2. Edit the configuration file:
 
