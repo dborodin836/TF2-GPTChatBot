@@ -29,20 +29,14 @@ jobs:
       - name: Build the project
         run: make build SHELL=cmd
 
-      - name: Generate unique archive name
-        id: vars
-        run: |
-          echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-          echo "UNIQUE_NAME=TF2-GPTChatBot-win-$(COMMIT_HASH)" >> $GITHUB_ENV
-
       - name: Package the build into a ZIP file
         run: |
           mkdir output
           cp -r frontend/dist/win-unpacked/* output/
-          powershell Compress-Archive -Path output/* -DestinationPath output/$(UNIQUE_NAME).zip
+          powershell Compress-Archive -Path output/* -DestinationPath output/TF2-GPTChatBot-win-$(git rev-parse --short HEAD).zip
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v3
         with:
-          name: $UNIQUE_NAME
-          path: output/$(UNIQUE_NAME).zip
+          name: TF2-GPTChatBot-win-$(git rev-parse --short HEAD)
+          path: output/TF2-GPTChatBot-win-$(git rev-parse --short HEAD).zip
