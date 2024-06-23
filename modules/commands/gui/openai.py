@@ -27,6 +27,7 @@ def gpt3_cmd_handler() -> None:
                     [Message(role="user", content=prompt)],
                     "admin",
                     model="gpt-3.5-turbo",
+                    settings=None
                 )
                 gui_logger.info(f"GPT3> {response}")
             except openai.error.RateLimitError:
