@@ -10,30 +10,40 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up the environment
-      run: choco install make python310 nodejs-lts
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
 
-    - name: Build the project
-      run: make build
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: Generate unique archive name
-      id: vars
-      run: |
-        echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-        echo "DATE=$(date -u +'%Y-%m-%d')" >> $GITHUB_ENV
-        echo "UNIQUE_NAME=TF2-GPTChatBot-win-${{ env.COMMIT_HASH }}" >> $GITHUB_ENV
+      - name: Set up the environment
+        run: choco install make
 
-    - name: Package the build into a ZIP file
-      run: |
-        mkdir output
-        cp -r frontend/dist/win-unpacked/* output/
-        powershell Compress-Archive -Path output/* -DestinationPath output/${{ env.UNIQUE_NAME }}.zip
+      - name: Build the project
+        run: make build
 
-    - name: Upload build artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.UNIQUE_NAME }}
-        path: output/${{ env.UNIQUE_NAME }}.zip
+      - name: Generate unique archive name
+        id: vars
+        run: |
+          echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "DATE=$(date -u +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "UNIQUE_NAME=TF2-GPTChatBot-win-${{ env.COMMIT_HASH }}" >> $GITHUB_ENV
+
+      - name: Package the build into a ZIP file
+        run: |
+          mkdir output
+          cp -r frontend/dist/win-unpacked/* output/
+          powershell Compress-Archive -Path output/* -DestinationPath output/${{ env.UNIQUE_NAME }}.zip
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.UNIQUE_NAME }}
+          path: output/${{ env.UNIQUE_NAME }}.zip
