@@ -1,6 +1,9 @@
+import asyncio
 from typing import Union
 from pathlib import Path
 import json
+
+from aiocache import cached
 
 DEFAULT_SCHEMAS_DIR = Path(__file__).parent.parent.parent / 'schemas'
 
@@ -43,3 +46,13 @@ class LocalFileRefCompiler:
                 raise
 
         return self.ref_cache[ref]
+
+
+@cached(ttl=3600)
+async def get_compiled_schema(path: Union[Path, str]) -> Union[dict, list]:
+    with open(path) as f:
+        schema = json.load(f)
+
+    compiler = LocalFileRefCompiler()
+    compiled_schema = await asyncio.to_thread(compiler.resolve, schema)
+    return compiled_schema

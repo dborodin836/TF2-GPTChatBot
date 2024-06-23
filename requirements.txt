@@ -28,3 +28,4 @@ types-requests==2.31.0.20240311
 httpx==0.27.0
 types-PyYAML==6.0.12.2
 mss==9.0.1
+aiocache==0.12.2

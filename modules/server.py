@@ -17,7 +17,7 @@ from modules.logs import get_logger
 from modules.set_once_dict import ModificationOfSetKey
 from modules.typing import Command
 from modules.utils.config import DROP_KEYS, save_commands, save_config
-from modules.utils.schemas import LocalFileRefCompiler
+from modules.utils.schemas import get_compiled_schema
 
 combo_logger = get_logger("combo")
 
@@ -112,9 +112,7 @@ async def handle_command(command: CommandName):
 
 @app.get("/schemas/command")
 async def handle_command_scheme():
-    schema = json.loads, open("schemas/command.schema.json").read()
-    compiler = LocalFileRefCompiler()
-    compiled_schema = await asyncio.to_thread(compiler.resolve, schema)
+    compiled_schema = await get_compiled_schema("schemas/command.schema.json")
     return Response(status_code=status.HTTP_200_OK, content=json.dumps(compiled_schema))
 
 
