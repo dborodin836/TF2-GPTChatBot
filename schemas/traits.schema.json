@@ -1,0 +1,67 @@
+{
+  "type": "array",
+  "title": "Traits",
+  "items": {
+    "title": "Trait",
+    "type": "object",
+    "anyOf": [
+      {
+        "title": "OpenAI Moderated",
+        "type": "object",
+        "properties": {
+          "__id": {
+            "type": "string",
+            "default": "openai-moderated"
+          }
+        }
+      },
+      {
+        "title": "Response in case of empty prompt",
+        "type": "object",
+        "required": [
+          "msg"
+        ],
+        "properties": {
+          "__id": {
+            "type": "string",
+            "default": "empty-prompt-message-response"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          }
+        }
+      },
+      {
+        "title": "Admin Only",
+        "type": "object",
+        "properties": {
+          "__id": {
+            "type": "string",
+            "default": "admin-only"
+          }
+        }
+      },
+      {
+        "title": "Disabled",
+        "type": "object",
+        "properties": {
+          "__id": {
+            "type": "string",
+            "default": "disabled"
+          }
+        }
+      },
+      {
+        "title": "Deny empty prompts",
+        "type": "object",
+        "properties": {
+          "__id": {
+            "type": "string",
+            "default": "deny-empty-prompt"
+          }
+        }
+      }
+    ]
+  }
+}

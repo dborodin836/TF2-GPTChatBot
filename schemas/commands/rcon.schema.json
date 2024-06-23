@@ -1,0 +1,27 @@
+{
+  "properties": {
+    "type": {
+      "const": "rcon"
+    },
+    "command": {
+      "type": "string",
+      "title": "RCON Command"
+    },
+    "settings": {
+      "title": "Settings",
+      "type": "object",
+      "properties": {
+        "wait-ms": {
+          "title": "Delay before command",
+          "type": "integer"
+        }
+      }
+    },
+    "traits": {
+      "$ref": "traits.schema.json"
+    }
+  },
+  "required": [
+    "command"
+  ]
+}
