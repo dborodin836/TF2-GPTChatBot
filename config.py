@@ -1,5 +1,4 @@
 import configparser
-import json
 import os
 import re
 from enum import IntEnum
@@ -11,7 +10,7 @@ from pydantic import BaseModel, ValidationError, field_validator
 from modules.utils.buffered_messages import buffered_fail_message, buffered_message
 
 DEFAULT_CONFIG_FILE = "config.ini"
-OPENAI_API_KEY_RE_PATTERN = r"sk-[a-zA-Z0-9]{48}"
+OPENAI_API_KEY_RE_PATTERNS = [r"sk-[a-zA-Z0-9]{48}", r"sk-proj-[a-zA-Z0-9]{48}"]
 WEB_API_KEY_RE_PATTERN = r"[a-zA-Z0-9]{32}"
 
 
@@ -116,7 +115,7 @@ class ValidatableConfig(Config):
 
     @field_validator("OPENAI_API_KEY")
     def api_key_pattern_match(cls, v):
-        if not re.fullmatch(OPENAI_API_KEY_RE_PATTERN, v):
+        if not any(re.fullmatch(pattern, v) for pattern in OPENAI_API_KEY_RE_PATTERNS):
             raise ValueError("API key not set or invalid!")
         return v
 
