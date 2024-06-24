@@ -61,6 +61,42 @@
             "default": "deny-empty-prompt"
           }
         }
+      },
+      {
+        "title": "Whitelist",
+        "type": "object",
+        "properties": {
+          "__id": {
+            "type": "string",
+            "default": "whitelist"
+          },
+          "player_ids": {
+            "title": "Whitelisted Players",
+            "type": "array",
+            "items": {
+              "title": "SteamID3",
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "title": "Blacklist",
+        "type": "object",
+        "properties": {
+          "__id": {
+            "type": "string",
+            "default": "blacklist"
+          },
+          "player_ids": {
+            "title": "Blacklisted Players",
+            "type": "array",
+            "items": {
+              "title": "SteamID3",
+              "type": "string"
+            }
+          }
+        }
       }
     ]
   }

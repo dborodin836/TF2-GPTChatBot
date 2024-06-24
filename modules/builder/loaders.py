@@ -16,6 +16,8 @@ from modules.commands.decorators import (
     disabled,
     empty_prompt_message_response,
     openai_moderated,
+    whitelist_factory,
+    blacklist_factory
 )
 from modules.logs import get_logger
 from modules.typing import CommandSchemaDefinition
@@ -45,6 +47,8 @@ WRAPPERS = {
     "empty-prompt-message-response": empty_prompt_message_response,
     "disabled": disabled,
     "deny-empty-prompt": deny_empty_prompt,
+    "whitelist": whitelist_factory,
+    "blacklist": blacklist_factory
 }
 
 LLM_PROVIDERS = {

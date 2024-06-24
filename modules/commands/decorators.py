@@ -43,6 +43,32 @@ def empty_prompt_message_response(msg: str):
     return decorator
 
 
+def whitelist_factory(player_ids: List[str]):
+    def decorator(func):
+        def wrapper(logline: LogLine, shared_dict: InitializerConfig):
+            if logline.player.steamid3 not in player_ids:
+                raise Exception("Player is not whitelisted. Skipping...")
+
+            return func(logline, shared_dict)
+
+        return wrapper
+
+    return decorator
+
+
+def blacklist_factory(player_ids: List[str]):
+    def decorator(func):
+        def wrapper(logline: LogLine, shared_dict: InitializerConfig):
+            if logline.player.steamid3 in player_ids:
+                raise Exception("Player is blacklisted. Skipping...")
+
+            return func(logline, shared_dict)
+
+        return wrapper
+
+    return decorator
+
+
 def admin_only(func):
     def wrapper(logline: LogLine, shared_dict: InitializerConfig):
         if is_admin(logline.player):
