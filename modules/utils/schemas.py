@@ -1,11 +1,18 @@
 import asyncio
+import sys
 from typing import Union
 from pathlib import Path
 import json
 
 from aiocache import cached
 
-DEFAULT_SCHEMAS_DIR = Path(__file__).parent.parent.parent / 'schemas'
+
+if hasattr(sys, "_MEIPASS"):
+    DEFAULT_SCHEMAS_DIR = Path(__file__).parent.parent.parent.parent
+else:
+    DEFAULT_SCHEMAS_DIR = Path(__file__).parent.parent.parent
+
+DEFAULT_SCHEMAS_DIR = DEFAULT_SCHEMAS_DIR / 'schemas'
 
 
 class LocalFileRefCompiler:
