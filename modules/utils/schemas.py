@@ -48,7 +48,7 @@ class LocalFileRefCompiler:
         return self.ref_cache[ref]
 
 
-@cached(ttl=3600)
+@cached()
 async def get_compiled_schema(path: Union[Path, str]) -> Union[dict, list]:
     with open(path) as f:
         schema = json.load(f)
