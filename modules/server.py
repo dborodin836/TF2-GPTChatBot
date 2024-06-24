@@ -1,4 +1,5 @@
 import asyncio
+import copy
 import json
 from typing import Any, Dict, Type, Union, get_type_hints
 
@@ -126,6 +127,7 @@ async def list_commands():
 @app.post("/command/edit/{name}")
 async def edit_command(name: str, command_data: Dict):
     try:
+        meta_info_copy = copy.deepcopy(command_data)
         klass = create_command_from_dict(command_data)
         chat_command_name = command_data["prefix"] + command_data["name"]
         controller.delete_command(name)
@@ -134,7 +136,7 @@ async def edit_command(name: str, command_data: Dict):
             chat_command_name,
             klass.as_command(),
             command_data["name"],
-            meta=command_data,
+            meta=meta_info_copy,
         )
         data_to_save = controller.export_commands()
         save_commands(data_to_save)
