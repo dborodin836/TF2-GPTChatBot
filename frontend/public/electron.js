@@ -27,7 +27,7 @@ if (env === 'demo') {
   // Doesn't start backend
 } else {
   // Production
-  execPath = path.join(__dirname, '..', '..', '..', 'tf2-gptcb.exe');
+  execPath = path.join(__dirname, '..', '..', '..', 'tf2-gptcb');
   launchOptions = ['--web-server', '--no-gui', '--sleep', '1'];
   cwd = path.dirname(execPath);
 }
