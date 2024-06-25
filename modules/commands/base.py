@@ -42,7 +42,7 @@ class TTSCommand(BaseCommand):
             msg = remove_args(logline.prompt)
             result = get_tts(msg, cls.settings)
 
-            pygame.mixer.init()
+            pygame.mixer.init(devicename=cls.settings.get("output_device", None))
             sound = pygame.mixer.Sound(io.BytesIO(result.content))
             sound.set_volume(cls.settings.get('volume', 1.0))
             sound.play()

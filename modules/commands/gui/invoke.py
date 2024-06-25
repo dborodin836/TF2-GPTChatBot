@@ -1,5 +1,5 @@
 from config import config
-from modules.chat import controller
+from modules.setup import controller
 from modules.lobby_manager import lobby_manager
 from modules.logs import get_logger
 from modules.typing import LogLine

@@ -151,7 +151,8 @@ COMMAND_TYPES: Dict[str, CommandSchemaDefinition] = {
             "model",
             "voice",
             "speed",
-            "volume"
+            "volume",
+            "output_device"
         }
     )
 }

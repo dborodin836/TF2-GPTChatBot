@@ -22,7 +22,7 @@ combo_logger = get_logger("combo")
 controller = CommandController(InitializerConfig())
 
 
-def setup() -> None:
+def init() -> None:
     """
     Initializes the program.
     """
@@ -49,7 +49,7 @@ def parse_console_logs_and_build_conversation_history() -> None:
     """
     Processes the console logs and builds a conversation history, filters banned usernames.
     """
-    setup()
+    init()
 
     # Commands
     controller.register_command("!gh", handle_gh_command)

@@ -24,6 +24,11 @@
         "volume": {
           "title": "Volume (0.00 - 1.00)",
           "type": "number"
+        },
+        "output_device": {
+          "type": "string",
+          "title": "Output device",
+          "description": "Use 'audio-devices' command to get all available devices."
         }
       },
       "required": [

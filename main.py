@@ -9,7 +9,7 @@ from pynput import keyboard
 
 from config import config
 from modules.bot_state import state_manager
-from modules.chat import parse_console_logs_and_build_conversation_history
+from modules.setup import parse_console_logs_and_build_conversation_history
 from modules.commands.gui.openai import gpt3_cmd_handler
 from modules.gui.log_window import (
     CopyStdoutToSocket,

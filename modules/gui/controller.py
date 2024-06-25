@@ -1,6 +1,7 @@
 import sys
 
 from modules.command_controllers import GuiCommandController
+from modules.commands.gui.audio import handle_list_devices
 from modules.commands.gui.bans import handle_ban, handle_list_bans, handle_unban
 from modules.commands.gui.config import handle_config
 from modules.commands.gui.invoke import invoke
@@ -29,3 +30,4 @@ command_controller.register_command(
 )
 command_controller.register_command("quit", lambda *args: sys.exit(0), "Quit the program.")
 command_controller.register_command("config", handle_config, config_command_description)
+command_controller.register_command("audio-devices", handle_list_devices, "List output audio devices.")
