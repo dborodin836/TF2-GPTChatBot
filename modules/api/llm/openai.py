@@ -1,7 +1,7 @@
 import hashlib
 
 import openai
-from openai import NotGiven
+from openai import NotGiven, OpenAI
 
 from config import config
 from modules.api.llm.base import LLMProvider
@@ -15,30 +15,32 @@ class OpenAILLMProvider(LLMProvider):
 
     @staticmethod
     def get_completion_text(conversation_history, username, model, settings):
-        openai.api_key = config.OPENAI_API_KEY
+        client = OpenAI(
+            api_key=config.OPENAI_API_KEY,
+        )
 
         if isinstance(settings, dict):
-            completion = openai.ChatCompletion.create(
+            completion = client.chat.completions.create(
                 model=model,
                 messages=conversation_history,
                 user=hashlib.md5(username.encode()).hexdigest(),
                 **settings,
             )
         else:
-            completion = openai.ChatCompletion.create(
+            completion = client.chat.completions.create(
                 model=model,
                 messages=conversation_history,
                 user=hashlib.md5(username.encode()).hexdigest(),
             )
 
-        response_text = completion.choices[0].message["content"].strip()
+        response_text = completion.choices[0].message.content.strip()
         return response_text
 
 
 def is_flagged(message: str) -> bool:
-    openai.api_key = config.OPENAI_API_KEY
+    client = OpenAI(api_key=config.OPENAI_API_KEY)
     try:
-        response = openai.Moderation.create(
+        response = client.moderations.create(
             input=message,
         )
     except openai.APIError:
@@ -48,13 +50,15 @@ def is_flagged(message: str) -> bool:
         main_logger.error(f"Failed to moderate message. [{e}]")
         return True
 
-    return response.results[0]["flagged"]
+    return response.results[0].flagged
 
 
-def get_tts(message: str, settings: dict) -> str:
-    openai.api_key = config.OPENAI_API_KEY
+def get_tts(message: str, settings: dict):
+    client = OpenAI(
+        api_key=config.OPENAI_API_KEY,
+    )
 
-    response = openai.audio.speech.create(
+    response = client.audio.speech.create(
         model=settings.get("model", "tts-1"),
         voice=settings.get("voice", "alloy"),
         input=message,
