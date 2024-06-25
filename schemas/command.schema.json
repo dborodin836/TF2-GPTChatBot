@@ -23,7 +23,7 @@
         "command-global",
         "command-private",
         "rcon",
-        "tts"
+        "openai-tts"
       ]
     }
   },
@@ -37,7 +37,7 @@
           "$ref": "commands/rcon.schema.json"
         },
         {
-          "$ref": "commands/tts.schema.json"
+          "$ref": "commands/openai-tts.schema.json"
         }
       ]
     }

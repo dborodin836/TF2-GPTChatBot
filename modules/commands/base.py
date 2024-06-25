@@ -1,3 +1,5 @@
+import pygame
+import io
 from abc import ABC, abstractmethod
 from typing import Callable, List, Optional
 
@@ -37,20 +39,19 @@ class TTSCommand(BaseCommand):
     @classmethod
     def get_handler(cls):
         def func(logline: LogLine, shared_dict: InitializerConfig) -> Optional[str]:
-            import pygame
-            import io
-
             msg = remove_args(logline.prompt)
-            result = get_tts(msg)
+            result = get_tts(msg, cls.settings)
 
             pygame.mixer.init()
             sound = pygame.mixer.Sound(io.BytesIO(result.content))
+            sound.set_volume(cls.settings.get('volume', 1.0))
             sound.play()
             # Keep the program running until the sound has finished playing
             while pygame.mixer.get_busy():
                 pygame.time.Clock().tick(10)
 
             return 'OK' if result.response.status_code == 200 else 'ERROR'
+
         return func
 
 
@@ -82,7 +83,8 @@ class LLMChatCommand(BaseCommand):
 
     @classmethod
     @abstractmethod
-    def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory: ...
+    def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory:
+        ...
 
     @classmethod
     def get_handler(cls) -> Callable[[LogLine, InitializerConfig], None]:

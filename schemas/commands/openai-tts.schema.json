@@ -1,0 +1,38 @@
+{
+  "properties": {
+    "type": {
+      "const": "openai-tts"
+    },
+    "settings": {
+      "title": "Settings",
+      "type": "object",
+      "properties": {
+        "model": {
+          "title": "Model",
+          "type": "string",
+          "default": "tts-1"
+        },
+        "voice": {
+          "title": "Voice",
+          "type": "string",
+          "default": "alloy"
+        },
+        "speed": {
+          "title": "Speed",
+          "type": "number"
+        },
+        "volume": {
+          "title": "Volume (0.00 - 1.00)",
+          "type": "number"
+        }
+      },
+      "required": [
+        "model",
+        "voice"
+      ]
+    },
+    "traits": {
+      "$ref": "traits.schema.json"
+    }
+  }
+}

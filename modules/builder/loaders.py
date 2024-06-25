@@ -146,7 +146,12 @@ COMMAND_TYPES: Dict[str, CommandSchemaDefinition] = {
     "rcon": CommandSchemaDefinition(
         klass=RconCommand, loader=RCONCommandLoader, settings={"wait-ms"}
     ),
-    "tts": CommandSchemaDefinition(
-        klass=TTSCommand, loader=Loader
+    "openai-tts": CommandSchemaDefinition(
+        klass=TTSCommand, loader=Loader, settings={
+            "model",
+            "voice",
+            "speed",
+            "volume"
+        }
     )
 }

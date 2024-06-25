@@ -1,6 +1,7 @@
 import hashlib
 
 import openai
+from openai import NotGiven
 
 from config import config
 from modules.api.llm.base import LLMProvider
@@ -50,13 +51,14 @@ def is_flagged(message: str) -> bool:
     return response.results[0]["flagged"]
 
 
-def get_tts(message: str):
+def get_tts(message: str, settings: dict) -> str:
     openai.api_key = config.OPENAI_API_KEY
 
     response = openai.audio.speech.create(
-        model="tts-1",
-        voice="alloy",
-        input=message
+        model=settings.get("model", "tts-1"),
+        voice=settings.get("voice", "alloy"),
+        input=message,
+        speed=settings.get("speed", NotGiven())
     )
 
     return response

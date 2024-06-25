@@ -71,3 +71,11 @@ commands:
     model: llama3-70b-8192
     traits:
       - __id: disabled
+  - name: tts
+    prefix: '!'
+    type: openai-tts
+    settings:
+      model: tts-1
+      voice: onyx
+    traits:
+      - __id: disabled
