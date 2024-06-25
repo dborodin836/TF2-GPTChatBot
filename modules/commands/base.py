@@ -2,12 +2,14 @@ from abc import ABC, abstractmethod
 from typing import Callable, List, Optional
 
 from modules.api.llm.base import LLMProvider
+from modules.api.llm.openai import get_tts
 from modules.command_controllers import CommandChatTypes, InitializerConfig
 from modules.conversation_history import ConversationHistory
 from modules.logs import get_logger
 from modules.rcon_client import RconClient
 from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import LogLine, Message
+from modules.utils.text import remove_args
 
 main_logger = get_logger("main")
 
@@ -28,6 +30,27 @@ class BaseCommand(ABC):
         for decorator in cls.wrappers:
             func = decorator(func)
 
+        return func
+
+
+class TTSCommand(BaseCommand):
+    @classmethod
+    def get_handler(cls):
+        def func(logline: LogLine, shared_dict: InitializerConfig) -> Optional[str]:
+            import pygame
+            import io
+
+            msg = remove_args(logline.prompt)
+            result = get_tts(msg)
+
+            pygame.mixer.init()
+            sound = pygame.mixer.Sound(io.BytesIO(result.content))
+            sound.play()
+            # Keep the program running until the sound has finished playing
+            while pygame.mixer.get_busy():
+                pygame.time.Clock().tick(10)
+
+            return 'OK' if result.response.status_code == 200 else 'ERROR'
         return func
 
 
@@ -75,7 +98,7 @@ class LLMChatCommand(BaseCommand):
                 chat.add_assistant_message(Message(role="assistant", content=response))
                 # Strip the message if needed
                 if cls.settings.get("enable-hard-limit") and len(response) > cls.settings.get(
-                    "enable-hard-limit"
+                        "enable-hard-limit"
                 ):
                     main_logger.warning(
                         f"Message is longer than Hard Limit [{len(response)}]. Limit is {cls.settings.get('hard-limit-length')}."

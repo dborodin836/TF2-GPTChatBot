@@ -8,7 +8,7 @@ from modules.commands.base import (
     CommandGlobalChatLLMChatCommand,
     CommandPrivateChatLLMChatCommand,
     QuickQueryLLMCommand,
-    RconCommand,
+    RconCommand, TTSCommand,
 )
 from modules.commands.decorators import (
     admin_only,
@@ -146,4 +146,7 @@ COMMAND_TYPES: Dict[str, CommandSchemaDefinition] = {
     "rcon": CommandSchemaDefinition(
         klass=RconCommand, loader=RCONCommandLoader, settings={"wait-ms"}
     ),
+    "tts": CommandSchemaDefinition(
+        klass=TTSCommand, loader=Loader
+    )
 }

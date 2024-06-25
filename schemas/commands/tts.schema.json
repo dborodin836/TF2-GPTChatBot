@@ -1,0 +1,10 @@
+{
+  "properties": {
+    "type": {
+      "const": "tts"
+    },
+    "traits": {
+      "$ref": "traits.schema.json"
+    }
+  }
+}

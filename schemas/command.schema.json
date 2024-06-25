@@ -22,7 +22,8 @@
         "quick-query",
         "command-global",
         "command-private",
-        "rcon"
+        "rcon",
+        "tts"
       ]
     }
   },
@@ -34,6 +35,9 @@
         },
         {
           "$ref": "commands/rcon.schema.json"
+        },
+        {
+          "$ref": "commands/tts.schema.json"
         }
       ]
     }
