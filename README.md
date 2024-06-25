@@ -6,6 +6,8 @@
     An AI-powered chatbot for Team Fortress 2 fans and players.
   </h3>
 
+> [!NOTE]
+> If you're interested, you can check out the new updated version [here](https://github.com/dborodin836/TF2-GPTChatBot/tree/v2), but beware — ~~here be dragons~~ nothing is documented yet and stability is not guaranteed.
 ## Table Of Contents
 
 - [Running Using Binary](#running-using-binary)
@@ -272,6 +274,10 @@ that were left unexplained, and some tips and tricks: [unexplained_explained.md]
 ### Nickname Limitations
 
 You cannot have a nickname that starts with a command name, such as !cgpt <your prompt>.
+
+### Game language limitations
+
+In non-English localizations of the game, some of the features may be broken
 
 ## TF2 Bot Detector Cooperation (TF2BD)
 
