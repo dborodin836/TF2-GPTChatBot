@@ -3,7 +3,7 @@ from modules.api.github import check_for_updates
 from modules.bans import bans_manager
 from modules.bot_state import state_manager
 from modules.builder.utils import load_commands
-from modules.command_controllers import CommandController, InitializerConfig
+from modules.command_controllers import CommandController, shared_config
 from modules.commands.clear_chat import handle_clear
 from modules.commands.github import handle_gh_command
 from modules.commands.rtd import handle_rtd
@@ -19,7 +19,7 @@ gui_logger = get_logger("gui")
 main_logger = get_logger("main")
 combo_logger = get_logger("combo")
 
-controller = CommandController(InitializerConfig())
+controller = CommandController()
 
 
 def init() -> None:

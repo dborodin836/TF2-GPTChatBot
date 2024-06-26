@@ -1,8 +1,8 @@
 import modules.servers.tf2
 import modules.utils.text
-from modules.builder import create_command_from_dict
+from modules.builder.utils import create_command_from_dict
 from modules.command_controllers import InitializerConfig
-from modules.commands.base import LLMChatCommand
+from modules.commands.llm import LLMChatCommand
 from modules.conversation_history import ConversationHistory
 from modules.typing import LogLine
 from tests.common import DummyProvider, MockConfig, get_player

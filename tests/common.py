@@ -4,7 +4,7 @@ import tempfile
 import pytest
 
 from modules.api.llm.base import LLMProvider
-from modules.commands.base import LLMChatCommand
+from modules.commands.llm import LLMChatCommand
 from modules.typing import Player
 from modules.utils.steam import steamid3_to_steamid64
 

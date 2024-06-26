@@ -1,3 +1,4 @@
+import enum
 from typing import (
     Callable,
     Dict,
@@ -130,3 +131,8 @@ class LogLine(NamedTuple):
     username: str
     is_team_message: bool
     player: Player
+
+
+class ConfirmationStatus(enum.Enum):
+    CONFIRMED = 1
+    WAITING = 2

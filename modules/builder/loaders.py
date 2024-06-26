@@ -4,12 +4,10 @@ from typing import Dict
 from modules.api.llm.groq import GroqCloudLLMProvider
 from modules.api.llm.openai import OpenAILLMProvider
 from modules.api.llm.textgen_webui import TextGenerationWebUILLMProvider
-from modules.commands.base import (
-    CommandGlobalChatLLMChatCommand,
-    CommandPrivateChatLLMChatCommand,
-    QuickQueryLLMCommand,
-    RconCommand, TTSCommand,
-)
+from modules.commands.tts import TTSCommand
+from modules.commands.rcon import RconCommand
+from modules.commands.llm import CommandGlobalChatLLMChatCommand, CommandPrivateChatLLMChatCommand, \
+    ConfirmableQuickQueryLLMCommand, QuickQueryLLMCommand
 from modules.commands.decorators import (
     admin_only,
     deny_empty_prompt,
@@ -154,5 +152,10 @@ COMMAND_TYPES: Dict[str, CommandSchemaDefinition] = {
             "volume",
             "output_device"
         }
+    ),
+    'confirmable-quick-query': CommandSchemaDefinition(
+        klass=ConfirmableQuickQueryLLMCommand,
+        loader=LLMCommandLoader,
+        settings=LLM_COMMAND_SETTINGS
     )
 }

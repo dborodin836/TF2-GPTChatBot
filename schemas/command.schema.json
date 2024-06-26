@@ -23,7 +23,8 @@
         "command-global",
         "command-private",
         "rcon",
-        "openai-tts"
+        "openai-tts",
+        "confirmable-quick-query"
       ]
     }
   },

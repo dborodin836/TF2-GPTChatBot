@@ -10,6 +10,9 @@
         },
         {
           "const": "command-private"
+        },
+        {
+          "const": "confirmable-quick-query"
         }
       ]
     },
@@ -19,7 +22,8 @@
       "enum": [
         "open-ai",
         "text-generation-webui",
-        "groq-cloud"
+        "groq-cloud",
+        "confirmable-quick-query"
       ]
     },
     "model": {

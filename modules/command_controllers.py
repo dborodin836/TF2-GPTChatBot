@@ -28,7 +28,7 @@ class ChatHistoryManager(BaseModel):
     COMMAND: Dict = {}
 
     def get_or_create_command_chat_history(
-        self, cmd_name: str, type_: CommandChatTypes, settings: dict = None, user: Player = None
+            self, cmd_name: str, type_: CommandChatTypes, settings: dict = None, user: Player = None
     ):
         if settings is None:
             settings = {}
@@ -36,7 +36,7 @@ class ChatHistoryManager(BaseModel):
         match type_:
             case CommandChatTypes.PRIVATE:
                 if chat_history := self.COMMAND.get(
-                    PRIVATE_CHAT_ID.format(cmd_name, user.steamid64)
+                        PRIVATE_CHAT_ID.format(cmd_name, user.steamid64)
                 ):
                     return chat_history
                 main_logger.info(
@@ -60,7 +60,7 @@ class ChatHistoryManager(BaseModel):
                 return new_ch
 
     def get_command_chat_history(
-        self, command_name: str, type_: CommandChatTypes, user: Player = None
+            self, command_name: str, type_: CommandChatTypes, user: Player = None
     ) -> Optional[ConversationHistory]:
         match type_:
             case CommandChatTypes.PRIVATE:
@@ -68,7 +68,7 @@ class ChatHistoryManager(BaseModel):
                     raise Exception("User argument must be provided for private chat retrieval.")
                 combo_logger.trace(PRIVATE_CHAT_ID.format(command_name, user.steamid64))
                 if chat_history := self.COMMAND.get(
-                    PRIVATE_CHAT_ID.format(command_name, user.steamid64)
+                        PRIVATE_CHAT_ID.format(command_name, user.steamid64)
                 ):
                     return chat_history
                 return None
@@ -80,11 +80,11 @@ class ChatHistoryManager(BaseModel):
                 return None
 
     def set_command_chat_history(
-        self,
-        name: str,
-        type_: CommandChatTypes,
-        chat_history: ConversationHistory,
-        user: Player = None,
+            self,
+            name: str,
+            type_: CommandChatTypes,
+            chat_history: ConversationHistory,
+            user: Player = None,
     ):
         match type_:
             case CommandChatTypes.PRIVATE:
@@ -100,12 +100,16 @@ class InitializerConfig(BaseModel):
     )
     # Stores reference name for the commands e.g. !gpt3 ref. name is gpt3, prefix is !
     LOADED_COMMANDS: List[str] = []
+    CONFIRMATIONS: dict = {}
+
+
+shared_config = InitializerConfig()
 
 
 class GuiCommandController:
-    def __init__(self, initializer_config: dict = None, disable_help: bool = False) -> None:
+    def __init__(self, initializer_config: InitializerConfig = None, disable_help: bool = False) -> None:
         self.__named_commands_registry: SetOnceDictionary[str, GuiCommand] = SetOnceDictionary()
-        self.__shared = dict()
+        self.__shared: InitializerConfig = shared_config
 
         if not disable_help:
             self.__named_commands_registry.update(
@@ -113,7 +117,7 @@ class GuiCommandController:
             )
 
         if initializer_config is not None:
-            self.__shared.update(initializer_config)
+            self.__shared.__dict__.update(initializer_config)
 
     def register_command(self, name: str, function: Callable, description: str) -> None:
         self.__named_commands_registry[name] = GuiCommand(name, function, description)
@@ -142,13 +146,13 @@ class CommandController:
     def __init__(self, initializer_config: InitializerConfig = None) -> None:
         self.__services: OrderedSet = OrderedSet()
         self.__named_commands_registry: SetOnceDictionary[str, Command] = SetOnceDictionary()
-        self.__shared = InitializerConfig()
+        self.__shared = shared_config
 
         if initializer_config is not None:
             self.__shared.__dict__.update(initializer_config)
 
     def register_command(
-        self, command_name: str, function: Callable, reference_name: str = None, meta: Dict = None
+            self, command_name: str, function: Callable, reference_name: str = None, meta: Dict = None
     ) -> None:
         cmd = Command(full_name=command_name, function=function, ref_name=reference_name, meta=meta)
         self.__named_commands_registry[command_name] = cmd

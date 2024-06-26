@@ -8,7 +8,7 @@ import modules.servers.tf2
 import modules.utils.text
 from modules.command_controllers import CommandController, InitializerConfig
 from modules.commands import decorators as traits
-from modules.commands.base import LLMChatCommand
+from modules.commands.llm import LLMChatCommand
 from modules.conversation_history import ConversationHistory
 from modules.lobby_manager import LobbyManager
 from modules.typing import LogLine
