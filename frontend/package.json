@@ -22,7 +22,7 @@
     "electron:dev": "wait-on tcp:3000 && cross-env VITE_ENVIRONMENT=development electron .",
     "electron:demo": "wait-on tcp:3000 && cross-env VITE_ENVIRONMENT=demo electron .",
     "build": "cross-env VITE_APP_ELECTRON=true vite build",
-    "pack": "npm run build && electron-builder",
+    "pack": "npm run build && electron-builder --publish never",
     "test": "vite test",
     "eject": "vite eject"
   },
@@ -89,6 +89,11 @@
       "main": "build/electron.js"
     },
     "win": {
+      "target": [
+        "zip"
+      ]
+    },
+    "linux": {
       "target": [
         "zip"
       ]

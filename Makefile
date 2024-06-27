@@ -5,7 +5,7 @@
 ifeq ($(OS),Windows_NT)
 PYTHON = ".venv/Scripts/python.exe"
 CP = xcopy /E /I /Y
-EXTRA_PYINSTALLER_FLAGS = ""
+EXTRA_PYINSTALLER_FLAGS =
 
 define find-functions
 	@powershell -Command "$$matches = Select-String -Path $(MAKEFILE_LIST) -Pattern '##'; foreach ($$match in $$matches) { if ($$match.Line -notmatch 'powershell|Select-String') { $$line = $$match.Line; $$line -replace '.*##', '' } }"
@@ -50,6 +50,19 @@ install: .venv/pyvenv.cfg frontend/node_modules
 
 ## build		-	Build whole project to frontend/dist.
 .PHONY: build
+ifeq ($(OS), Windows_NT)
+build: .venv/pyvenv.cfg frontend/node_modules
+	$(PYTHON) -m PyInstaller -n tf2-gptcb --noconfirm --icon icon.ico -w $(EXTRA_PYINSTALLER_FLAGS) main.py
+	$(CP) cfg dist\tf2-gptcb/cfg
+	$(CP) icon.png dist\tf2-gptcb
+	$(CP) commands.yaml dist\tf2-gptcb
+	mkdir dist\tf2-gptcb/logs
+	$(CP) prompts dist\tf2-gptcb\prompts
+	$(CP) schemas dist\tf2-gptcb\schemas
+
+	cd frontend
+	npm run pack
+else
 build: .venv/pyvenv.cfg frontend/node_modules
 	$(PYTHON) -m PyInstaller -n tf2-gptcb --noconfirm --icon icon.ico -w $(EXTRA_PYINSTALLER_FLAGS) main.py
 	$(CP) cfg dist/tf2-gptcb/cfg
@@ -61,6 +74,8 @@ build: .venv/pyvenv.cfg frontend/node_modules
 
 	cd frontend
 	npm run pack
+endif
+
 
 ## lint		-	Runs linters on src.
 .PHONY: lint
