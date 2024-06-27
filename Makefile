@@ -53,12 +53,12 @@ install: .venv/pyvenv.cfg frontend/node_modules
 ifeq ($(OS), Windows_NT)
 build: .venv/pyvenv.cfg frontend/node_modules
 	$(PYTHON) -m PyInstaller -n tf2-gptcb --noconfirm --icon icon.ico -w $(EXTRA_PYINSTALLER_FLAGS) main.py
-	$(CP) cfg dist\tf2-gptcb/cfg
-	$(CP) icon.png dist\tf2-gptcb
-	$(CP) commands.yaml dist\tf2-gptcb
-	mkdir dist\tf2-gptcb/logs
-	$(CP) prompts dist\tf2-gptcb\prompts
-	$(CP) schemas dist\tf2-gptcb\schemas
+	xcopy cfg dist\tf2-gptcb\cfg /E /I /Y
+	xcopy icon.png dist\tf2-gptcb /Y
+	xcopy commands.yaml dist\tf2-gptcb /Y
+	mkdir dist\tf2-gptcb\logs
+	xcopy prompts dist\tf2-gptcb\prompts /E /I /Y
+	xcopy schemas dist\tf2-gptcb\schemas /E /I /Y
 
 	cd frontend
 	npm run pack
@@ -93,8 +93,9 @@ format: .venv/pyvenv.cfg
 # Install .venv for python
 .venv/pyvenv.cfg: requirements.txt
 	python -m venv .venv
+	$(PYTHON) -m pip install uv
 	$(PYTHON) -m pip install --upgrade pip
-	$(PYTHON) -m pip install -r requirements.txt
+	$(PYTHON) -m uv pip install -r requirements.txt
 
 # Install node_modules
 frontend/node_modules: frontend/package.json
