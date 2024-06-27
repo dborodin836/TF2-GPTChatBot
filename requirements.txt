@@ -30,3 +30,4 @@ types-PyYAML==6.0.12.2
 mss==9.0.1
 aiocache==0.12.2
 pygame==2.5.2
+vdf==3.4

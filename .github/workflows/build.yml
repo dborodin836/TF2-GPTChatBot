@@ -7,7 +7,23 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        shell: [cmd, bash]
+        include:
+          - os: windows-latest
+            shell: cmd
+            make_install_command: choco install make
+            artifact_path: frontend/dist/win-unpacked/
+            artifact_name: TF2-GPTChatBot-win-${{ github.sha }}
+          - os: ubuntu-latest
+            shell: bash
+            make_install_command: sudo apt-get install -y make
+            artifact_path: frontend/dist/linux-unpacked/
+            artifact_name: TF2-GPTChatBot-linux-${{ github.sha }}
 
     steps:
       - name: Checkout repository
@@ -24,16 +40,16 @@ jobs:
           python-version: '3.10'
 
       - name: Install Make
-        run: choco install make
+        run: ${{ matrix.make_install_command }}
 
       - name: Install dependencies
-        run: make install SHELL=cmd
+        run: make install SHELL=${{ matrix.shell }}
 
       - name: Build the project
-        run: make build SHELL=cmd
+        run: make build SHELL=${{ matrix.shell }}
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: TF2-GPTChatBot-win-${{ github.sha }}
-          path: frontend/dist/win-unpacked/
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_path }}
