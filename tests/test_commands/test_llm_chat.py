@@ -4,7 +4,7 @@ from modules.builder.utils import create_command_from_dict
 from modules.command_controllers import InitializerConfig
 from modules.commands.llm import LLMChatCommand
 from modules.conversation_history import ConversationHistory
-from modules.typing import LogLine
+from modules.typing import GameChatMessage
 from tests.common import DummyProvider, MockConfig, get_player
 
 
@@ -29,11 +29,11 @@ def test_command_hard_limit(mocker):
         settings = chat_settings_shared
 
         @classmethod
-        def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory:
+        def get_chat(cls, logline: GameChatMessage, shared_dict: InitializerConfig) -> ConversationHistory:
             return chat
 
     player_1 = get_player("test", 1)
-    logline = LogLine(username="test", prompt="2+2", player=player_1, is_team_message=False)
+    logline = GameChatMessage(username="test", prompt="2+2", player=player_1, is_team_message=False)
 
     func = TestCmd.as_command()
     func(logline, InitializerConfig())

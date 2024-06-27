@@ -347,7 +347,7 @@ class LobbyManager:
             "players": new_players,
         }
 
-    def stats_regexes(self, line: str) -> bool:
+    def parse_stats_regex(self, line: str) -> bool:
         """Return True if any matches."""
         # Parsing user line from status command
         if matches := re.search(

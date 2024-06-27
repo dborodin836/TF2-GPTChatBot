@@ -6,7 +6,7 @@ from config import config
 from modules.command_controllers import InitializerConfig
 from modules.logs import get_logger
 from modules.rcon_client import RconClient
-from modules.typing import LogLine, QueuedMessage
+from modules.typing import GameChatMessage, QueuedMessage
 from modules.utils.text import has_cyrillic
 
 message_queue: queue.Queue = queue.Queue()
@@ -128,7 +128,7 @@ def message_queue_handler() -> None:
         confirmable_queue_manager.start_worker()
 
 
-def messaging_queue_service(logline: LogLine, shared_dict: InitializerConfig):
+def messaging_queue_service(logline: GameChatMessage, shared_dict: InitializerConfig):
     """
     Check for awaited message and unlock the queue if found.
     """

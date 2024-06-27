@@ -6,14 +6,14 @@ import pygame
 from modules.api.llm.openai import get_tts
 from modules.command_controllers import InitializerConfig
 from modules.commands.base import BaseCommand
-from modules.typing import LogLine
+from modules.typing import GameChatMessage
 from modules.utils.text import remove_args
 
 
 class TTSCommand(BaseCommand):
     @classmethod
     def get_handler(cls):
-        def func(logline: LogLine, shared_dict: InitializerConfig) -> Optional[str]:
+        def func(logline: GameChatMessage, shared_dict: InitializerConfig) -> Optional[str]:
             msg = remove_args(logline.prompt)
             result = get_tts(msg, cls.settings)
 

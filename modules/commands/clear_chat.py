@@ -2,7 +2,7 @@ from modules.command_controllers import CommandChatTypes, InitializerConfig
 from modules.lobby_manager import lobby_manager
 from modules.logs import get_logger
 from modules.permissions import is_admin
-from modules.typing import LogLine
+from modules.typing import GameChatMessage
 from modules.utils.text import get_args
 
 main_logger = get_logger("main")
@@ -11,7 +11,7 @@ combo_logger = get_logger("combo")
 CLEAR_WRONG_SYNTAX_MSG = r'Wrong syntax! e.g. !clear \global \user="username" !solly !medic'
 
 
-def handle_clear(logline: LogLine, shared_dict: InitializerConfig):
+def handle_clear(logline: GameChatMessage, shared_dict: InitializerConfig):
     args = get_args(logline.prompt)
     commands = [cmd for cmd in logline.prompt.split() if not cmd.startswith("\\")]
 

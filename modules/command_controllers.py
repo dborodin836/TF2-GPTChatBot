@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict
 from modules.conversation_history import ConversationHistory
 from modules.logs import get_logger, log_gui_model_message
 from modules.set_once_dict import SetOnceDictionary
-from modules.typing import Command, GuiCommand, LogLine, Player
+from modules.typing import Command, GuiCommand, GameChatMessage, Player
 
 main_logger = get_logger("main")
 combo_logger = get_logger("combo")
@@ -199,7 +199,7 @@ class CommandController:
     def get_command(self, command_name: str):
         return self.__named_commands_registry.get(command_name)
 
-    def process_line(self, logline: LogLine):
+    def process_line(self, logline: GameChatMessage):
         for task in self.__services:
             task(logline, self.__shared)
 
@@ -212,7 +212,7 @@ class CommandController:
 
         cleaned_prompt = logline.prompt.removeprefix(command_name).strip()
 
-        logline = LogLine(cleaned_prompt, logline.username, logline.is_team_message, logline.player)
+        logline = GameChatMessage(cleaned_prompt, logline.username, logline.is_team_message, logline.player)
 
         log_gui_model_message(command_name.upper(), logline.username, logline.prompt)
         try:

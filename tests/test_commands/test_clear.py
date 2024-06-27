@@ -8,7 +8,7 @@ from modules.command_controllers import (
 )
 from modules.commands.clear_chat import handle_clear
 from modules.lobby_manager import LobbyManager
-from modules.typing import LogLine, Message
+from modules.typing import GameChatMessage, Message
 from tests.common import DummyLLMChatCommand, MockConfig, get_player
 
 
@@ -37,7 +37,7 @@ def test_clear(mocker):
     assert chat_1.message_history == [Message(content="hello", role="user")]
 
     # Clear chat
-    logline = LogLine(
+    logline = GameChatMessage(
         username="user1", prompt="!clear test", is_team_message=False, player=player_1
     )
     handle_clear(logline, cfg)
@@ -74,10 +74,10 @@ def test_clear_admin(mocker):
     assert global_chat_1.message_history == [Message(content="hello", role="user")]
 
     # Clear chat as admin
-    logline_admin = LogLine(
+    logline_admin = GameChatMessage(
         username="admin", prompt=r"\global test", is_team_message=False, player=admin_player
     )
-    logline_admin_fail = LogLine(
+    logline_admin_fail = GameChatMessage(
         username="admin", prompt=r"test", is_team_message=False, player=admin_player
     )
     handle_clear(logline_admin_fail, cfg)
@@ -98,22 +98,22 @@ def test_clear_admin(mocker):
     assert chat_usr_2.message_history == [Message(content="hello from user 2", role="user")]
 
     # Test clear
-    logline_admin = LogLine(
+    logline_admin = GameChatMessage(
         username="admin", prompt=r"\user='user1' test_p", is_team_message=False, player=admin_player
     )
-    logline_admin_fail_0 = LogLine(
+    logline_admin_fail_0 = GameChatMessage(
         username="admin", prompt=r"test_p", is_team_message=False, player=admin_player
     )
-    logline_admin_fail_1 = LogLine(
+    logline_admin_fail_1 = GameChatMessage(
         username="admin", prompt=r"\global test_p", is_team_message=False, player=admin_player
     )
-    logline_admin_fail_2 = LogLine(
+    logline_admin_fail_2 = GameChatMessage(
         username="admin",
         prompt=r"\global \user='unknown' test_p",
         is_team_message=False,
         player=admin_player,
     )
-    logline_admin_fail_3 = LogLine(
+    logline_admin_fail_3 = GameChatMessage(
         username="admin",
         prompt=r"\user='unknown' test_p",
         is_team_message=False,
@@ -178,16 +178,16 @@ def test_clear_admin_bypass(mocker):
     assert chat_usr_2.message_history == [Message(content="hello from user 2", role="user")]
 
     # Test clear
-    logline_usr_2 = LogLine(
+    logline_usr_2 = GameChatMessage(
         username="user2", prompt=r"test_p", is_team_message=False, player=player_2
     )
-    logline_usr_1_fail_0 = LogLine(
+    logline_usr_1_fail_0 = GameChatMessage(
         username="user1", prompt=r"\user='user2' test_p", is_team_message=False, player=player_1
     )
-    logline_usr_1_fail_1 = LogLine(
+    logline_usr_1_fail_1 = GameChatMessage(
         username="user1", prompt=r"\global test", is_team_message=False, player=player_1
     )
-    logline_usr_1_fail_2 = LogLine(
+    logline_usr_1_fail_2 = GameChatMessage(
         username="user1",
         prompt=r"\global \user='user2' test_p test",
         is_team_message=False,

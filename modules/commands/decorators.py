@@ -6,14 +6,14 @@ from modules.command_controllers import InitializerConfig
 from modules.logs import get_logger
 from modules.permissions import is_admin
 from modules.servers.tf2 import format_say_message, send_say_command_to_tf2
-from modules.typing import LogLine, Player
+from modules.typing import GameChatMessage, Player
 
 gui_logger = get_logger("gui")
 
 
 def empty_prompt_wrapper_handler_factory(handler: Callable):
     def decorator(func):
-        def wrapper(logline: LogLine, shared_dict: InitializerConfig):
+        def wrapper(logline: GameChatMessage, shared_dict: InitializerConfig):
             if logline.prompt == "":
                 handler(logline, shared_dict)
                 return None
@@ -26,7 +26,7 @@ def empty_prompt_wrapper_handler_factory(handler: Callable):
 
 def empty_prompt_message_response(msg: str):
     def decorator(func):
-        def wrapper(logline: LogLine, shared_dict: InitializerConfig):
+        def wrapper(logline: GameChatMessage, shared_dict: InitializerConfig):
             if logline.prompt == "":
                 time.sleep(1)
                 message = format_say_message(msg, logline.username)
@@ -45,7 +45,7 @@ def empty_prompt_message_response(msg: str):
 
 def whitelist_factory(player_ids: List[str]):
     def decorator(func):
-        def wrapper(logline: LogLine, shared_dict: InitializerConfig):
+        def wrapper(logline: GameChatMessage, shared_dict: InitializerConfig):
             if logline.player.steamid3 not in player_ids:
                 raise Exception("Player is not whitelisted. Skipping...")
 
@@ -58,7 +58,7 @@ def whitelist_factory(player_ids: List[str]):
 
 def blacklist_factory(player_ids: List[str]):
     def decorator(func):
-        def wrapper(logline: LogLine, shared_dict: InitializerConfig):
+        def wrapper(logline: GameChatMessage, shared_dict: InitializerConfig):
             if logline.player.steamid3 in player_ids:
                 raise Exception("Player is blacklisted. Skipping...")
 
@@ -70,7 +70,7 @@ def blacklist_factory(player_ids: List[str]):
 
 
 def admin_only(func):
-    def wrapper(logline: LogLine, shared_dict: InitializerConfig):
+    def wrapper(logline: GameChatMessage, shared_dict: InitializerConfig):
         if is_admin(logline.player):
             return func(logline, shared_dict)
         raise Exception("User is not admin.")
@@ -79,7 +79,7 @@ def admin_only(func):
 
 
 def openai_moderated(func):
-    def wrapper(logline: LogLine, shared_dict: InitializerConfig):
+    def wrapper(logline: GameChatMessage, shared_dict: InitializerConfig):
         if is_flagged(logline.prompt) and not is_admin(logline.player):
             raise Exception("Request was flagged during moderation. Skipping...")
 
@@ -90,7 +90,7 @@ def openai_moderated(func):
 
 def permission_decorator_factory(permissions_funcs: List[Callable[[Player], bool]]):
     def permissions_decorator(func):
-        def wrapper(logline: LogLine, shared_dict: InitializerConfig):
+        def wrapper(logline: GameChatMessage, shared_dict: InitializerConfig):
             if all(map(lambda x: x(logline.player), permissions_funcs)):
                 return func(logline, shared_dict)
             return None
@@ -101,7 +101,7 @@ def permission_decorator_factory(permissions_funcs: List[Callable[[Player], bool
 
 
 def deny_empty_prompt(func):
-    def wrapper(logline: LogLine, shared_dict: InitializerConfig):
+    def wrapper(logline: GameChatMessage, shared_dict: InitializerConfig):
         if logline.prompt.strip() == "":
             raise Exception("Prompt is empty. Skipping...")
 
@@ -111,7 +111,7 @@ def deny_empty_prompt(func):
 
 
 def disabled(func):
-    def wrapper(logline: LogLine, shared_dict: InitializerConfig):
+    def wrapper(logline: GameChatMessage, shared_dict: InitializerConfig):
         raise Exception("This command is disabled.")
 
     return wrapper

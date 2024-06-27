@@ -13,7 +13,7 @@ from modules.servers.tf2 import check_connection, set_host_username
 from modules.utils.buffered_messages import print_buffered_config_innit_messages
 from modules.utils.prompts import load_prompts
 from modules.utils.steam import set_host_steamid3
-from modules.utils.text import get_console_logline
+from modules.utils.text import parse_logline_and_yield_chat_message
 
 gui_logger = get_logger("gui")
 main_logger = get_logger("main")
@@ -60,9 +60,7 @@ def parse_console_logs_and_build_conversation_history() -> None:
     # Services
     controller.register_service(messaging_queue_service)
 
-    for logline in get_console_logline():
-        if logline is None:
-            continue
+    for logline in parse_logline_and_yield_chat_message():
         if not state_manager.bot_running:
             continue
         if bans_manager.is_banned_player(logline.player):

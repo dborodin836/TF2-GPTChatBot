@@ -122,11 +122,10 @@ class Player(BaseModel):
         return f"Melee crit kill {self.crit_melee_kills}/{self.melee_kills} ({percentage}%)"
 
 
-class LogLine(NamedTuple):
+class GameChatMessage(NamedTuple):
     """
-    Represents a line from a log file.
+    Represents a chat message parsed from a log file.
     """
-
     prompt: str
     username: str
     is_team_message: bool

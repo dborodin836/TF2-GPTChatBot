@@ -7,7 +7,7 @@ from modules.commands.base import BaseCommand, main_logger
 from modules.conversation_history import ConversationHistory
 from modules.logs import get_logger
 from modules.servers.tf2 import send_say_command_to_tf2
-from modules.typing import ConfirmationStatus, LogLine, Message
+from modules.typing import ConfirmationStatus, GameChatMessage, Message
 
 main_logger = get_logger("main")
 gui_logger = get_logger("gui")
@@ -21,12 +21,12 @@ class LLMChatCommand(BaseCommand):
 
     @classmethod
     @abstractmethod
-    def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory:
+    def get_chat(cls, logline: GameChatMessage, shared_dict: InitializerConfig) -> ConversationHistory:
         ...
 
     @classmethod
-    def get_handler(cls) -> Callable[[LogLine, InitializerConfig], None]:
-        def func(logline: LogLine, shared_dict: InitializerConfig) -> Optional[str]:
+    def get_handler(cls) -> Callable[[GameChatMessage, InitializerConfig], None]:
+        def func(logline: GameChatMessage, shared_dict: InitializerConfig) -> Optional[str]:
             chat = cls.get_chat(logline, shared_dict)
 
             chat.add_user_message_from_prompt(logline.prompt)
@@ -54,12 +54,12 @@ class ConfirmableLLMChatCommand(LLMChatCommand):
 
     @classmethod
     @abstractmethod
-    def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory:
+    def get_chat(cls, logline: GameChatMessage, shared_dict: InitializerConfig) -> ConversationHistory:
         ...
 
     @classmethod
-    def get_handler(cls) -> Callable[[LogLine, InitializerConfig], None]:
-        def func(logline: LogLine, shared_dict: InitializerConfig) -> Optional[str]:
+    def get_handler(cls) -> Callable[[GameChatMessage, InitializerConfig], None]:
+        def func(logline: GameChatMessage, shared_dict: InitializerConfig) -> Optional[str]:
             confirmation = shared_dict.CONFIRMATIONS.get(cls.name, {})
             status = confirmation.get("status", None)
 
