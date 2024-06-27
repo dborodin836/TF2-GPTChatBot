@@ -2,8 +2,9 @@ name: Build and Package
 
 on:
   push:
-    branches:
-      - v2
+    branches: [ v2 ]
+  pull_request:
+    branches: [ v2 ]
 
 jobs:
   build:
