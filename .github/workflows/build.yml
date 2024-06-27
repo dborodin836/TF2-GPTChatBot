@@ -11,8 +11,6 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest]
-        shell: [cmd, bash]
         include:
           - os: windows-latest
             shell: cmd
