@@ -1,5 +1,6 @@
 import base64
 from io import BytesIO
+from typing import Optional
 
 import mss
 import mss.tools
@@ -12,7 +13,7 @@ from modules.utils.text import get_args, remove_args
 
 
 class ConversationHistory:
-    def __init__(self, settings: dict = None):
+    def __init__(self, settings: Optional[dict] = None):
         self.custom_prompt: str = ""
         self.enable_soft_limit: bool = True
         self.enable_stats: bool = False

@@ -2,7 +2,7 @@ import asyncio
 import json
 import sys
 from pathlib import Path
-from typing import Union
+from typing import Optional, Union
 
 from aiocache import cached
 
@@ -15,7 +15,7 @@ DEFAULT_SCHEMAS_DIR = DEFAULT_SCHEMAS_DIR / "schemas"
 
 
 class LocalFileRefCompiler:
-    def __init__(self, base_path: Path = None):
+    def __init__(self, base_path: Optional[Path] = None):
         self.path = base_path or DEFAULT_SCHEMAS_DIR
         self.ref_cache = {}
 

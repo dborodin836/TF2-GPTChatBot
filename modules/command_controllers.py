@@ -28,7 +28,11 @@ class ChatHistoryManager(BaseModel):
     COMMAND: Dict = {}
 
     def get_or_create_command_chat_history(
-        self, cmd_name: str, type_: CommandChatTypes, settings: dict = None, user: Player = None
+        self,
+        cmd_name: str,
+        type_: CommandChatTypes,
+        settings: Optional[dict] = None,
+        user: Optional[Player] = None,
     ):
         if settings is None:
             settings = {}
@@ -60,7 +64,7 @@ class ChatHistoryManager(BaseModel):
                 return new_ch
 
     def get_command_chat_history(
-        self, command_name: str, type_: CommandChatTypes, user: Player = None
+        self, command_name: str, type_: CommandChatTypes, user: Optional[Player] = None
     ) -> Optional[ConversationHistory]:
         match type_:
             case CommandChatTypes.PRIVATE:
@@ -84,7 +88,7 @@ class ChatHistoryManager(BaseModel):
         name: str,
         type_: CommandChatTypes,
         chat_history: ConversationHistory,
-        user: Player = None,
+        user: Optional[Player] = None,
     ):
         match type_:
             case CommandChatTypes.PRIVATE:
@@ -108,7 +112,7 @@ shared_config = InitializerConfig()
 
 class GuiCommandController:
     def __init__(
-        self, initializer_config: InitializerConfig = None, disable_help: bool = False
+        self, initializer_config: Optional[InitializerConfig] = None, disable_help: bool = False
     ) -> None:
         self.__named_commands_registry: SetOnceDictionary[str, GuiCommand] = SetOnceDictionary()
         self.__shared: InitializerConfig = shared_config
@@ -145,7 +149,7 @@ class GuiCommandController:
 
 
 class CommandController:
-    def __init__(self, initializer_config: InitializerConfig = None) -> None:
+    def __init__(self, initializer_config: Optional[InitializerConfig] = None) -> None:
         self.__services: OrderedSet = OrderedSet()
         self.__named_commands_registry: SetOnceDictionary[str, Command] = SetOnceDictionary()
         self.__shared = shared_config
@@ -154,7 +158,11 @@ class CommandController:
             self.__shared.__dict__.update(initializer_config)
 
     def register_command(
-        self, command_name: str, function: Callable, reference_name: str = None, meta: Dict = None
+        self,
+        command_name: str,
+        function: Callable,
+        reference_name: Optional[str] = None,
+        meta: Optional[Dict] = None,
     ) -> None:
         cmd = Command(full_name=command_name, function=function, ref_name=reference_name, meta=meta)
         self.__named_commands_registry[command_name] = cmd
