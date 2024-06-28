@@ -14,7 +14,7 @@ def handle_clear(logline: GameChatMessage, shared_dict: InitializerConfig):
 
     if is_admin(logline.player):
         if len(commands) == 0:
-            raise Exception(f"You didn't provide any commands to clear. (solly, demo etc.)")
+            raise Exception("You didn't provide any commands to clear. (solly, demo etc.)")
 
         for command in commands:
             # Check if command exist

@@ -32,10 +32,10 @@ def setup_mocks(mocker):
     mocker.patch.object(modules.lobby_manager, "config", conf)
     mocker.patch.object(modules.commands.clear_chat, "lobby_manager", lobby_manager)
     mocker.patch.object(modules.permissions, "config", conf)
-    mocker.patch.object(modules.commands.base, "send_say_command_to_tf2", dummy_func)
+    mocker.patch.object(modules.commands.llm, "send_say_command_to_tf2", dummy_func)
     mocker.patch.object(modules.servers.tf2, "config", conf)
     mocker.patch.object(modules.utils.text, "config", conf)
-    spy = mocker.spy(modules.commands.base, "send_say_command_to_tf2")
+    spy = mocker.spy(modules.commands.llm, "send_say_command_to_tf2")
 
     return lobby_manager, controller, chat, spy
 

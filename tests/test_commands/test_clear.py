@@ -80,9 +80,10 @@ def test_clear_admin(mocker):
     logline_admin_fail = GameChatMessage(
         username="admin", prompt=r"test", is_team_message=False, player=admin_player
     )
-    handle_clear(logline_admin_fail, cfg)
+    controller_shared_protected = controller._CommandController__shared
+    handle_clear(logline_admin_fail, controller_shared_protected)
     assert global_chat_1.message_history != []
-    handle_clear(logline_admin, cfg)
+    handle_clear(logline_admin, controller_shared_protected)
     assert global_chat_1.message_history == []
 
     # Create user chats
@@ -119,19 +120,19 @@ def test_clear_admin(mocker):
         is_team_message=False,
         player=admin_player,
     )
-    handle_clear(logline_admin_fail_0, cfg)
+    handle_clear(logline_admin_fail_0, controller_shared_protected)
     assert chat_usr_1.message_history != []
     assert chat_usr_2.message_history != []
-    handle_clear(logline_admin_fail_1, cfg)
+    handle_clear(logline_admin_fail_1, controller_shared_protected)
     assert chat_usr_1.message_history != []
     assert chat_usr_2.message_history != []
-    handle_clear(logline_admin_fail_2, cfg)
+    handle_clear(logline_admin_fail_2, controller_shared_protected)
     assert chat_usr_1.message_history != []
     assert chat_usr_2.message_history != []
-    handle_clear(logline_admin_fail_3, cfg)
+    handle_clear(logline_admin_fail_3, controller_shared_protected)
     assert chat_usr_1.message_history != []
     assert chat_usr_2.message_history != []
-    handle_clear(logline_admin, cfg)
+    handle_clear(logline_admin, controller_shared_protected)
     assert chat_usr_1.message_history == []
     assert chat_usr_2.message_history != []
 

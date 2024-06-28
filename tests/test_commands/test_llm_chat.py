@@ -14,10 +14,10 @@ def dummy_func(*args):
 
 def test_command_hard_limit(mocker):
     config = MockConfig()
-    mocker.patch.object(modules.commands.base, "send_say_command_to_tf2", dummy_func)
+    mocker.patch.object(modules.commands.llm, "send_say_command_to_tf2", dummy_func)
     mocker.patch.object(modules.servers.tf2, "config", config)
     mocker.patch.object(modules.utils.text, "config", config)
-    spy = mocker.spy(modules.commands.base, "send_say_command_to_tf2")
+    spy = mocker.spy(modules.commands.llm, "send_say_command_to_tf2")
     chat_settings_shared = {
         "enable-hard-limit": True,
         "hard-limit-length": 4,
@@ -44,7 +44,7 @@ def test_command_hard_limit(mocker):
     assert spy.spy_return == ("comp...", "test", False)
 
     chat_settings_new = {"enable-hard-limit": False, "hard-limit-length": 4}
-    TestCmd.chat_settings = chat_settings_new
+    TestCmd.settings = chat_settings_new
     func(logline, InitializerConfig())
     assert spy.call_count == 2
     assert spy.spy_return == ("completion text", "test", False)
@@ -56,14 +56,14 @@ def test_multiple_commands_global():
         "prefix": "!",
         "provider": "text-generation-webui",
         "type": "command-global",
-        "traits": [{"empty-prompt-message-response": {"msg": "EMPTY TEST_1 RESPONSE"}}],
+        "traits": [{"__id": "empty-prompt-message-response", "msg": "EMPTY TEST_1 RESPONSE"}],
     }
     cmd_dict_2 = {
         "name": "test_2",
         "prefix": "!",
         "provider": "text-generation-webui",
         "type": "command-global",
-        "traits": [{"empty-prompt-message-response": {"msg": "EMPTY TEST_2 RESPONSE"}}],
+        "traits": [{"__id": "empty-prompt-message-response", "msg": "EMPTY TEST_2 RESPONSE"}],
     }
     command_1 = create_command_from_dict(cmd_dict_1)
     command_2 = create_command_from_dict(cmd_dict_2)
@@ -78,14 +78,14 @@ def test_multiple_commands_private():
         "prefix": "!",
         "provider": "text-generation-webui",
         "type": "command-private",
-        "traits": [{"empty-prompt-message-response": {"msg": "EMPTY TEST_1 RESPONSE"}}],
+        "traits": [{"__id": "empty-prompt-message-response", "msg": "EMPTY TEST_1 RESPONSE"}],
     }
     cmd_dict_2 = {
         "name": "test_2",
         "prefix": "!",
         "provider": "text-generation-webui",
         "type": "command-private",
-        "traits": [{"empty-prompt-message-response": {"msg": "EMPTY TEST_2 RESPONSE"}}],
+        "traits": [{"__id": "empty-prompt-message-response", "msg": "EMPTY TEST_2 RESPONSE"}],
     }
     command_1 = create_command_from_dict(cmd_dict_1)
     command_2 = create_command_from_dict(cmd_dict_2)
@@ -100,14 +100,14 @@ def test_multiple_commands_quick():
         "prefix": "!",
         "provider": "text-generation-webui",
         "type": "quick-query",
-        "traits": [{"empty-prompt-message-response": {"msg": "EMPTY TEST_1 RESPONSE"}}],
+        "traits": [{"__id": "empty-prompt-message-response", "msg": "EMPTY TEST_1 RESPONSE"}],
     }
     cmd_dict_2 = {
         "name": "test_2",
         "prefix": "!",
         "provider": "text-generation-webui",
         "type": "quick-query",
-        "traits": [{"empty-prompt-message-response": {"msg": "EMPTY TEST_2 RESPONSE"}}],
+        "traits": [{"__id": "empty-prompt-message-response", "msg": "EMPTY TEST_2 RESPONSE"}],
     }
     command_1 = create_command_from_dict(cmd_dict_1)
     command_2 = create_command_from_dict(cmd_dict_2)
