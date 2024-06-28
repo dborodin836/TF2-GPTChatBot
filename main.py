@@ -9,7 +9,6 @@ from pynput import keyboard
 
 from config import config
 from modules.bot_state import state_manager
-from modules.setup import parse_console_logs_and_build_conversation_history
 from modules.commands.gui.openai import gpt3_cmd_handler
 from modules.gui.log_window import (
     CopyStdoutToSocket,
@@ -20,6 +19,7 @@ from modules.lobby_manager import lobby_manager
 from modules.logs import get_logger, setup_loggers
 from modules.message_queueing import message_queue_handler
 from modules.server import app
+from modules.setup import parse_console_logs_and_build_conversation_history
 
 gui_logger = get_logger("gui")
 

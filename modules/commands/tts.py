@@ -19,12 +19,12 @@ class TTSCommand(BaseCommand):
 
             pygame.mixer.init(devicename=cls.settings.get("output_device", None))
             sound = pygame.mixer.Sound(io.BytesIO(result.content))
-            sound.set_volume(cls.settings.get('volume', 1.0))
+            sound.set_volume(cls.settings.get("volume", 1.0))
             sound.play()
             # Keep the program running until the sound has finished playing
             while pygame.mixer.get_busy():
                 pygame.time.Clock().tick(10)
 
-            return 'OK' if result.response.status_code == 200 else 'ERROR'
+            return "OK" if result.response.status_code == 200 else "ERROR"
 
         return func

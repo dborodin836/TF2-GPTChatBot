@@ -7,12 +7,12 @@ from modules.utils.text import (
     get_args,
     get_chunk_size,
     get_chunks,
-    parse_logline_and_yield_chat_message,
     get_shortened_username,
     has_cyrillic,
-    try_parse_chat_message,
+    parse_logline_and_yield_chat_message,
     remove_hashtags,
     split_into_chunks,
+    try_parse_chat_message,
 )
 from tests.common import MockConfig, get_player
 

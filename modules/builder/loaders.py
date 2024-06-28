@@ -4,19 +4,23 @@ from typing import Dict
 from modules.api.llm.groq import GroqCloudLLMProvider
 from modules.api.llm.openai import OpenAILLMProvider
 from modules.api.llm.textgen_webui import TextGenerationWebUILLMProvider
-from modules.commands.tts import TTSCommand
-from modules.commands.rcon import RconCommand
-from modules.commands.llm import CommandGlobalChatLLMChatCommand, CommandPrivateChatLLMChatCommand, \
-    ConfirmableQuickQueryLLMCommand, QuickQueryLLMCommand
 from modules.commands.decorators import (
     admin_only,
+    blacklist_factory,
     deny_empty_prompt,
     disabled,
     empty_prompt_message_response,
     openai_moderated,
     whitelist_factory,
-    blacklist_factory
 )
+from modules.commands.llm import (
+    CommandGlobalChatLLMChatCommand,
+    CommandPrivateChatLLMChatCommand,
+    ConfirmableQuickQueryLLMCommand,
+    QuickQueryLLMCommand,
+)
+from modules.commands.rcon import RconCommand
+from modules.commands.tts import TTSCommand
 from modules.logs import get_logger
 from modules.typing import CommandSchemaDefinition
 
@@ -46,7 +50,7 @@ WRAPPERS = {
     "disabled": disabled,
     "deny-empty-prompt": deny_empty_prompt,
     "whitelist": whitelist_factory,
-    "blacklist": blacklist_factory
+    "blacklist": blacklist_factory,
 }
 
 LLM_PROVIDERS = {
@@ -145,17 +149,13 @@ COMMAND_TYPES: Dict[str, CommandSchemaDefinition] = {
         klass=RconCommand, loader=RCONCommandLoader, settings={"wait-ms"}
     ),
     "openai-tts": CommandSchemaDefinition(
-        klass=TTSCommand, loader=Loader, settings={
-            "model",
-            "voice",
-            "speed",
-            "volume",
-            "output_device"
-        }
+        klass=TTSCommand,
+        loader=Loader,
+        settings={"model", "voice", "speed", "volume", "output_device"},
     ),
-    'confirmable-quick-query': CommandSchemaDefinition(
+    "confirmable-quick-query": CommandSchemaDefinition(
         klass=ConfirmableQuickQueryLLMCommand,
         loader=LLMCommandLoader,
-        settings=LLM_COMMAND_SETTINGS
-    )
+        settings=LLM_COMMAND_SETTINGS,
+    ),
 }

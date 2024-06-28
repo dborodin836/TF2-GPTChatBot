@@ -9,15 +9,15 @@ gui_logger = get_logger("gui")
 def confirm(command: str, shared_dict: InitializerConfig):
     command_name = command.removeprefix("c").strip()
     if command_name not in shared_dict.LOADED_COMMANDS:
-        gui_logger.warning('Command with specified name not found.')
+        gui_logger.warning("Command with specified name not found.")
         return None
 
     try:
         shared_dict.CONFIRMATIONS[command_name]["status"]
     except KeyError:
-        gui_logger.warning('Command with specified name not found.')
+        gui_logger.warning("Command with specified name not found.")
         return None
 
     shared_dict.CONFIRMATIONS[command_name]["status"] = ConfirmationStatus.CONFIRMED
 
-    invoke(f'@ !{command_name}', shared_dict)
+    invoke(f"@ !{command_name}", shared_dict)

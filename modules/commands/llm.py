@@ -21,8 +21,9 @@ class LLMChatCommand(BaseCommand):
 
     @classmethod
     @abstractmethod
-    def get_chat(cls, logline: GameChatMessage, shared_dict: InitializerConfig) -> ConversationHistory:
-        ...
+    def get_chat(
+        cls, logline: GameChatMessage, shared_dict: InitializerConfig
+    ) -> ConversationHistory: ...
 
     @classmethod
     def get_handler(cls) -> Callable[[GameChatMessage, InitializerConfig], None]:
@@ -38,7 +39,7 @@ class LLMChatCommand(BaseCommand):
                 chat.add_assistant_message(Message(role="assistant", content=response))
                 # Strip the message if needed
                 if cls.settings.get("enable-hard-limit") and len(response) > cls.settings.get(
-                        "enable-hard-limit"
+                    "enable-hard-limit"
                 ):
                     main_logger.warning(
                         f"Message is longer than Hard Limit [{len(response)}]. Limit is {cls.settings.get('hard-limit-length')}."
@@ -54,8 +55,9 @@ class ConfirmableLLMChatCommand(LLMChatCommand):
 
     @classmethod
     @abstractmethod
-    def get_chat(cls, logline: GameChatMessage, shared_dict: InitializerConfig) -> ConversationHistory:
-        ...
+    def get_chat(
+        cls, logline: GameChatMessage, shared_dict: InitializerConfig
+    ) -> ConversationHistory: ...
 
     @classmethod
     def get_handler(cls) -> Callable[[GameChatMessage, InitializerConfig], None]:
@@ -70,7 +72,7 @@ class ConfirmableLLMChatCommand(LLMChatCommand):
                 chat.add_assistant_message(Message(role="assistant", content=response))
 
                 if cls.settings.get("enable-hard-limit") and len(response) > cls.settings.get(
-                        "enable-hard-limit"
+                    "enable-hard-limit"
                 ):
                     main_logger.warning(
                         f"Message is longer than Hard Limit [{len(response)}]. Limit is {cls.settings.get('hard-limit-length')}."
@@ -95,7 +97,7 @@ class ConfirmableLLMChatCommand(LLMChatCommand):
                     shared_dict.CONFIRMATIONS[cls.name] = {
                         "status": ConfirmationStatus.WAITING,
                         "input": logline,
-                        "output": response
+                        "output": response,
                     }
 
                     return " ".join(response.split())

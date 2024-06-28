@@ -126,6 +126,7 @@ class GameChatMessage(NamedTuple):
     """
     Represents a chat message parsed from a log file.
     """
+
     prompt: str
     username: str
     is_team_message: bool

@@ -62,7 +62,7 @@ def get_tts(message: str, settings: dict):
         model=settings.get("model", "tts-1"),
         voice=settings.get("voice", "alloy"),
         input=message,
-        speed=settings.get("speed", NotGiven())
+        speed=settings.get("speed", NotGiven()),
     )
 
     return response

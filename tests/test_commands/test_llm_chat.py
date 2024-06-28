@@ -29,7 +29,9 @@ def test_command_hard_limit(mocker):
         settings = chat_settings_shared
 
         @classmethod
-        def get_chat(cls, logline: GameChatMessage, shared_dict: InitializerConfig) -> ConversationHistory:
+        def get_chat(
+            cls, logline: GameChatMessage, shared_dict: InitializerConfig
+        ) -> ConversationHistory:
             return chat
 
     player_1 = get_player("test", 1)

@@ -1,6 +1,6 @@
 from modules.command_controllers import InitializerConfig
-from modules.utils.audio import get_devices
 from modules.logs import get_logger
+from modules.utils.audio import get_devices
 
 gui_logger = get_logger("gui")
 
