@@ -1,12 +1,9 @@
 from queue import Queue
 
-from modules.logs import get_logger
+from modules.logs import gui_logger, main_logger
 from modules.typing import BufferedMessage, BufferedMessageLevel, BufferedMessageType
 
 CONFIG_INIT_MESSAGES_QUEUE: Queue[BufferedMessage] = Queue()
-
-main_logger = get_logger("main")
-gui_logger = get_logger("gui")
 
 
 def buffered_message(

@@ -6,13 +6,9 @@ from ordered_set import OrderedSet
 from pydantic import BaseModel, ConfigDict
 
 from modules.conversation_history import ConversationHistory
-from modules.logs import get_logger, log_gui_model_message
+from modules.logs import combo_logger, gui_logger, log_gui_model_message, main_logger
 from modules.set_once_dict import SetOnceDictionary
 from modules.typing import Command, GameChatMessage, GuiCommand, Player
-
-main_logger = get_logger("main")
-combo_logger = get_logger("combo")
-gui_logger = get_logger("gui")
 
 PRIVATE_CHAT_ID = "CMD_{0}_USR_{1}"
 GLOBAL_CHAT_ID = "CMD_{0}"
@@ -28,11 +24,7 @@ class ChatHistoryManager(BaseModel):
     COMMAND: Dict = {}
 
     def get_or_create_command_chat_history(
-        self,
-        cmd_name: str,
-        type_: CommandChatTypes,
-        user: Player,
-        settings: Optional[dict] = None
+        self, cmd_name: str, type_: CommandChatTypes, user: Player, settings: Optional[dict] = None
     ):
         if settings is None:
             settings = {}

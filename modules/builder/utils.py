@@ -7,10 +7,7 @@ import oyaml as yaml
 from modules.builder.loaders import COMMAND_TYPES, WRAPPERS, InvalidCommandException
 from modules.command_controllers import CommandController
 from modules.commands.base import BaseCommand
-from modules.logs import get_logger
-
-main_logger = get_logger("main")
-gui_logger = get_logger("gui")
+from modules.logs import gui_logger, main_logger
 
 
 def get_commands_from_yaml() -> List[dict]:

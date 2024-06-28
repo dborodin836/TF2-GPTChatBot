@@ -4,16 +4,12 @@ from typing import Optional
 
 from config import config
 from modules.command_controllers import InitializerConfig
-from modules.logs import get_logger
+from modules.logs import combo_logger, main_logger
 from modules.rcon_client import RconClient
 from modules.typing import GameChatMessage, QueuedMessage
 from modules.utils.text import has_cyrillic
 
 message_queue: queue.Queue = queue.Queue()
-
-main_logger = get_logger("main")
-gui_logger = get_logger("gui")
-combo_logger = get_logger("combo")
 
 
 class ConfirmableQueueManager:

@@ -12,43 +12,8 @@ __main_logger = logger.bind(name="main")
 __gui_logger = logger.bind(name="gui")
 __combo_logger = logger.bind(name="combo")
 
-
 LOG_RETENTION = "1 week"
 LOG_ROTATION = "50 MB"
-
-
-class LoggerDontExist(Exception): ...
-
-
-def get_logger(name: str):
-    """
-    Returns the logger object based on the specified name.
-
-    Main logger:
-        - Logs to a file named log-{time:YYYY-MM-DD}.log in append mode.
-        - Uses DEBUG level logging with a specific format.
-        - Filters messages with 'main' in the name.
-
-    GUI logger:
-        - Logs to stdout with a specific format.
-        - Logs to a file named log-gui-{time:YYYY-MM-DD}.log in append mode.
-        - Uses DEBUG level logging with a specific format.
-        - Filters messages with 'gui' in the name.
-
-    Combo logger:
-        - Logs to stdout with a specific format.
-        - Logs to a file named log-{time:YYYY-MM-DD}.log in append mode.
-        - Uses DEBUG level logging with a specific format.
-        - Filters messages with 'combo' in the name.
-    """
-    if name == "main":
-        return __main_logger
-    elif name == "gui":
-        return __gui_logger
-    elif name == "combo":
-        return __combo_logger
-    else:
-        raise LoggerDontExist("Specified logger doesn't exist!")
 
 
 def make_name_filter(name: str):
@@ -127,3 +92,8 @@ def log_gui_general_message(message: str) -> None:
     """
     log_msg = f"[{get_time_stamp()}] -- {message}"
     __gui_logger.info(log_msg)
+
+
+main_logger = __main_logger
+gui_logger = __gui_logger
+combo_logger = __combo_logger

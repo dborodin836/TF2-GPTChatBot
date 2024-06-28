@@ -21,11 +21,8 @@ from modules.commands.llm import (
 )
 from modules.commands.rcon import RconCommand
 from modules.commands.tts import TTSCommand
-from modules.logs import get_logger
+from modules.logs import gui_logger
 from modules.typing import CommandSchemaDefinition
-
-main_logger = get_logger("main")
-gui_logger = get_logger("gui")
 
 LLM_COMMAND_SETTINGS = {
     "prompt-file",

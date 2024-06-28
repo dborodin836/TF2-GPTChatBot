@@ -2,9 +2,7 @@ import datetime
 import time
 from typing import Optional
 
-from modules.logs import get_logger
-
-main_logger = get_logger("main")
+from modules.logs import main_logger
 
 
 def get_date(epoch: int, relative_epoch_time: Optional[int] = None) -> str:

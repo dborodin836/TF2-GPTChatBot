@@ -8,12 +8,9 @@ from typing import Generator, Optional
 
 from config import config
 from modules.lobby_manager import lobby_manager
-from modules.logs import get_logger
+from modules.logs import gui_logger, main_logger
 from modules.rcon_client import RconClient
 from modules.typing import GameChatMessage
-
-main_logger = get_logger("main")
-gui_logger = get_logger("gui")
 
 MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120

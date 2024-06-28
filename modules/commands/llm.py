@@ -3,14 +3,11 @@ from typing import Any, Callable, Dict, Optional
 
 from modules.api.llm.base import LLMProvider
 from modules.command_controllers import CommandChatTypes, InitializerConfig
-from modules.commands.base import BaseCommand, main_logger
+from modules.commands.base import BaseCommand
 from modules.conversation_history import ConversationHistory
-from modules.logs import get_logger
+from modules.logs import main_logger
 from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import ConfirmationStatus, GameChatMessage, Message
-
-main_logger = get_logger("main")
-gui_logger = get_logger("gui")
 
 
 class LLMChatCommand(BaseCommand):

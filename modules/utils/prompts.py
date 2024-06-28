@@ -3,10 +3,7 @@ import os
 import sys
 from typing import List
 
-from modules.logs import get_logger
-
-gui_logger = get_logger("gui")
-combo_logger = get_logger("combo")
+from modules.logs import combo_logger, gui_logger
 
 # PROMPTS is an empty list used to store prompts data that will be loaded later.
 # TODO: create Prompt type

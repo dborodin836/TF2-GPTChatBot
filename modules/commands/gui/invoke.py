@@ -1,10 +1,7 @@
 from config import config
 from modules.lobby_manager import lobby_manager
-from modules.logs import get_logger
 from modules.setup import controller
 from modules.typing import GameChatMessage
-
-gui_logger = get_logger("main")
 
 
 def invoke(command, shared_dict):

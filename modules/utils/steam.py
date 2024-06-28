@@ -11,10 +11,7 @@ except ModuleNotFoundError:
 from typing import Optional
 
 from config import config
-from modules.logs import get_logger
-
-main_logger = get_logger("main")
-combo_logger = get_logger("combo")
+from modules.logs import combo_logger, main_logger
 
 STEAMID3_TO_STEAMID64_COEFFICIENT = 76561197960265728
 LINUX_STEAM_LOGINUSERS = f"{expanduser('~')}/.steam/steam/config/loginusers.vdf"

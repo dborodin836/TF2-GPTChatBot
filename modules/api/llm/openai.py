@@ -5,10 +5,7 @@ from openai import NotGiven, OpenAI
 
 from config import config
 from modules.api.llm.base import LLMProvider
-from modules.logs import get_logger
-
-main_logger = get_logger("main")
-gui_logger = get_logger("gui")
+from modules.logs import gui_logger, main_logger
 
 
 class OpenAILLMProvider(LLMProvider):

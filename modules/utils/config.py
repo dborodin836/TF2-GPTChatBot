@@ -6,9 +6,7 @@ from typing import List
 import yaml
 
 from config import config
-from modules.logs import get_logger
-
-gui_logger = get_logger("gui")
+from modules.logs import gui_logger
 
 INI_CONFIG_FILE_HEADER = "TF2-GPT-CHATBOT-CONFIG"
 DROP_KEYS = ("APP_VERSION", "CONFIG_NAME", "HOST_USERNAME", "HOST_STEAMID3")

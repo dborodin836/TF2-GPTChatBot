@@ -16,12 +16,10 @@ from modules.gui.log_window import (
     RedirectStdoutToLogWindow,
 )
 from modules.lobby_manager import lobby_manager
-from modules.logs import get_logger, setup_loggers
+from modules.logs import gui_logger, setup_loggers
 from modules.message_queueing import message_queue_handler
 from modules.server import app
 from modules.setup import parse_console_logs_and_build_conversation_history
-
-gui_logger = get_logger("gui")
 
 
 def keyboard_on_press(key):

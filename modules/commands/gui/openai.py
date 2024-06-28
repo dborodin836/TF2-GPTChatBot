@@ -4,11 +4,8 @@ import time
 import openai
 
 from modules.api.llm.openai import OpenAILLMProvider
-from modules.logs import get_logger
+from modules.logs import gui_logger, main_logger
 from modules.typing import Message
-
-main_logger = get_logger("main")
-gui_logger = get_logger("gui")
 
 GPT3_PROMPTS_QUEUE: queue.Queue = queue.Queue()
 

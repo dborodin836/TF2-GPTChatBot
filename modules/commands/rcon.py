@@ -2,7 +2,7 @@ from typing import Optional
 
 from modules.command_controllers import InitializerConfig
 from modules.commands.base import BaseCommand
-from modules.logs import get_logger
+from modules.logs import gui_logger
 from modules.rcon_client import RconClient
 from modules.typing import GameChatMessage
 
@@ -20,7 +20,7 @@ class RconCommand(BaseCommand):
             else:
                 cmd = f"wait {cls.settings.get('wait-ms', 0)};{cls.command};"
             with RconClient() as client:
-                get_logger("gui").warning(cmd)
+                gui_logger.warning(cmd)
                 client.run(cmd)
                 return cmd
 

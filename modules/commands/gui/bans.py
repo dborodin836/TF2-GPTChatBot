@@ -1,9 +1,7 @@
 from modules.bans import bans_manager
 from modules.command_controllers import InitializerConfig
 from modules.lobby_manager import lobby_manager
-from modules.logs import get_logger
-
-gui_logger = get_logger("gui")
+from modules.logs import gui_logger
 
 
 def handle_ban(command: str, shared_dict: InitializerConfig):

@@ -7,17 +7,13 @@ from modules.command_controllers import CommandController, shared_config
 from modules.commands.clear_chat import handle_clear
 from modules.commands.github import handle_gh_command
 from modules.commands.rtd import handle_rtd
-from modules.logs import get_logger
+from modules.logs import gui_logger, main_logger
 from modules.message_queueing import messaging_queue_service
 from modules.servers.tf2 import check_connection, set_host_username
 from modules.utils.buffered_messages import print_buffered_config_innit_messages
 from modules.utils.prompts import load_prompts
 from modules.utils.steam import set_host_steamid3
 from modules.utils.text import parse_logline_and_yield_chat_message
-
-gui_logger = get_logger("gui")
-main_logger = get_logger("main")
-combo_logger = get_logger("combo")
 
 controller = CommandController()
 

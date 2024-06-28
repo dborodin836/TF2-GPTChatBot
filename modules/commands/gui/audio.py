@@ -1,8 +1,6 @@
 from modules.command_controllers import InitializerConfig
-from modules.logs import get_logger
+from modules.logs import gui_logger
 from modules.utils.audio import get_devices
-
-gui_logger = get_logger("gui")
 
 
 def handle_list_devices(command: str, shared_dict: InitializerConfig):

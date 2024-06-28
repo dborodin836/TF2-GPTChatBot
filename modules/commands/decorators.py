@@ -3,12 +3,9 @@ from typing import Callable, List
 
 from modules.api.llm.openai import is_flagged
 from modules.command_controllers import InitializerConfig
-from modules.logs import get_logger
 from modules.permissions import is_admin
 from modules.servers.tf2 import format_say_message, send_say_command_to_tf2
 from modules.typing import GameChatMessage, Player
-
-gui_logger = get_logger("gui")
 
 
 def empty_prompt_wrapper_handler_factory(handler: Callable):

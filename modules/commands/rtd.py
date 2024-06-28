@@ -3,13 +3,11 @@ import time
 
 from config import RTDModes, config
 from modules.command_controllers import InitializerConfig
-from modules.logs import get_logger, log_gui_general_message
+from modules.logs import log_gui_general_message, main_logger
 from modules.servers.tf2 import send_say_command_to_tf2
 from modules.typing import GameChatMessage
 
 RICKROLL_LINK = "youtu.be/dQw4w9WgXcQ"
-
-main_logger = get_logger("main")
 
 
 def handle_rtd(logline: GameChatMessage, shared_dict: InitializerConfig) -> None:

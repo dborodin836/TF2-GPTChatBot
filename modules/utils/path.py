@@ -1,9 +1,7 @@
 import os
 import sys
 
-from modules.logs import get_logger
-
-main_logger = get_logger("main")
+from modules.logs import main_logger
 
 
 def resource_path(relative_path: str):

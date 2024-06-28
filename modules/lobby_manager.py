@@ -8,13 +8,10 @@ import requests
 
 from config import config
 from modules.bulk_url_downloader import BulkSteamGameDetailsUrlDownloader
-from modules.logs import get_logger
+from modules.logs import gui_logger, main_logger
 from modules.typing import Player, PlayerStats, SteamHoursApiUrlID64, VACStats
 from modules.utils.steam import steamid3_to_steamid64
 from modules.utils.time import get_date, get_minutes_from_str
-
-main_logger = get_logger("main")
-gui_logger = get_logger("gui")
 
 MELEE_WEAPONS_KILL_IDS = {
     "skullbat",
