@@ -31,7 +31,7 @@ def test_clear(mocker):
 
     # Create chat
     chat_1 = cfg.CHAT_CONVERSATION_HISTORY.get_or_create_command_chat_history(
-        "test", CommandChatTypes.PRIVATE, {}, player_1
+        "test", CommandChatTypes.PRIVATE, player_1, {}
     )
     chat_1.message_history.append(Message(content="hello", role="user"))
     assert chat_1.message_history == [Message(content="hello", role="user")]
@@ -68,7 +68,7 @@ def test_clear_admin(mocker):
 
     # Create chats
     global_chat_1 = cfg.CHAT_CONVERSATION_HISTORY.get_or_create_command_chat_history(
-        "test", CommandChatTypes.GLOBAL, {}, player_1
+        "test", CommandChatTypes.GLOBAL, player_1, {}
     )
     global_chat_1.message_history.append(Message(content="hello", role="user"))
     assert global_chat_1.message_history == [Message(content="hello", role="user")]
@@ -87,12 +87,12 @@ def test_clear_admin(mocker):
 
     # Create user chats
     chat_usr_1 = cfg.CHAT_CONVERSATION_HISTORY.get_or_create_command_chat_history(
-        "test_p", CommandChatTypes.PRIVATE, {}, player_1
+        "test_p", CommandChatTypes.PRIVATE, player_1, {}
     )
     chat_usr_1.message_history.append(Message(content="hello from user 1", role="user"))
     assert chat_usr_1.message_history == [Message(content="hello from user 1", role="user")]
     chat_usr_2 = cfg.CHAT_CONVERSATION_HISTORY.get_or_create_command_chat_history(
-        "test_p", CommandChatTypes.PRIVATE, {}, player_2
+        "test_p", CommandChatTypes.PRIVATE, player_2, {}
     )
     chat_usr_2.message_history.append(Message(content="hello from user 2", role="user"))
     assert chat_usr_2.message_history == [Message(content="hello from user 2", role="user")]
@@ -160,19 +160,19 @@ def test_clear_admin_bypass(mocker):
 
     # Create chats
     global_chat_1 = cfg.CHAT_CONVERSATION_HISTORY.get_or_create_command_chat_history(
-        "test", CommandChatTypes.GLOBAL, {}, player_1
+        "test", CommandChatTypes.GLOBAL, player_1, {}
     )
     global_chat_1.message_history.append(Message(content="hello", role="user"))
     assert global_chat_1.message_history == [Message(content="hello", role="user")]
 
     # Create user chats
     chat_usr_1 = cfg.CHAT_CONVERSATION_HISTORY.get_or_create_command_chat_history(
-        "test_p", CommandChatTypes.PRIVATE, {}, player_1
+        "test_p", CommandChatTypes.PRIVATE, player_1, {}
     )
     chat_usr_1.message_history.append(Message(content="hello from user 1", role="user"))
     assert chat_usr_1.message_history == [Message(content="hello from user 1", role="user")]
     chat_usr_2 = cfg.CHAT_CONVERSATION_HISTORY.get_or_create_command_chat_history(
-        "test_p", CommandChatTypes.PRIVATE, {}, player_2
+        "test_p", CommandChatTypes.PRIVATE, player_2, {}
     )
     chat_usr_2.message_history.append(Message(content="hello from user 2", role="user"))
     assert chat_usr_2.message_history == [Message(content="hello from user 2", role="user")]

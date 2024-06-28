@@ -1,6 +1,6 @@
 import base64
 from io import BytesIO
-from typing import Optional
+from typing import Dict, List, Optional, Union
 
 import mss
 import mss.tools
@@ -44,7 +44,7 @@ class ConversationHistory:
             sys_msg.append(f"Answer in less than {length} chars!")
 
         # Add custom prompt. Acts as a prompt suffix.
-        if prompt := self.settings.get("message-suffix"):
+        if prompt := self.settings.get("message-suffix", ""):
             sys_msg.append(prompt)
 
         # Stats
@@ -104,7 +104,7 @@ class ConversationHistory:
             img.save(buffered, format="JPEG")
             base64_encoded_image = base64.b64encode(buffered.getvalue()).decode("utf-8")
 
-            content = [
+            content: Union[List[Dict], str] = [
                 {"type": "text", "text": f"{user_message}"},
                 {
                     "type": "image_url",

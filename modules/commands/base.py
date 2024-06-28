@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Callable, List
+from typing import Any, Callable, Dict, List
 
 from modules.command_controllers import InitializerConfig
 from modules.logs import get_logger
@@ -11,7 +11,7 @@ gui_logger = get_logger("gui")
 
 class BaseCommand(ABC):
     name: str
-    settings = {}
+    settings: Dict[str, Any] = {}
     wrappers: List[Callable] = []
 
     @classmethod

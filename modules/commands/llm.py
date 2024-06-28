@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Callable, Optional
+from typing import Any, Callable, Dict, Optional
 
 from modules.api.llm.base import LLMProvider
 from modules.command_controllers import CommandChatTypes, InitializerConfig
@@ -16,7 +16,7 @@ gui_logger = get_logger("gui")
 class LLMChatCommand(BaseCommand):
     provider: LLMProvider
     model: str = Optional[str]
-    model_settings = {}
+    model_settings: Dict[str, Any] = {}
     chat: ConversationHistory
 
     @classmethod
@@ -26,7 +26,7 @@ class LLMChatCommand(BaseCommand):
     ) -> ConversationHistory: ...
 
     @classmethod
-    def get_handler(cls) -> Callable[[GameChatMessage, InitializerConfig], None]:
+    def get_handler(cls) -> Callable[[GameChatMessage, InitializerConfig], Optional[str]]:
         def func(logline: GameChatMessage, shared_dict: InitializerConfig) -> Optional[str]:
             chat = cls.get_chat(logline, shared_dict)
 
@@ -39,7 +39,7 @@ class LLMChatCommand(BaseCommand):
                 chat.add_assistant_message(Message(role="assistant", content=response))
                 # Strip the message if needed
                 if cls.settings.get("enable-hard-limit") and len(response) > cls.settings.get(
-                    "enable-hard-limit"
+                    "hard-limit-length", -1
                 ):
                     main_logger.warning(
                         f"Message is longer than Hard Limit [{len(response)}]. Limit is {cls.settings.get('hard-limit-length')}."
@@ -47,6 +47,7 @@ class LLMChatCommand(BaseCommand):
                     response = response[: cls.settings.get("hard-limit-length", 300)] + "..."
                 send_say_command_to_tf2(response, logline.username, logline.is_team_message)
                 return " ".join(response.split())
+            return None
 
         return func
 
@@ -60,7 +61,7 @@ class ConfirmableLLMChatCommand(LLMChatCommand):
     ) -> ConversationHistory: ...
 
     @classmethod
-    def get_handler(cls) -> Callable[[GameChatMessage, InitializerConfig], None]:
+    def get_handler(cls) -> Callable[[GameChatMessage, InitializerConfig], Optional[str]]:
         def func(logline: GameChatMessage, shared_dict: InitializerConfig) -> Optional[str]:
             confirmation = shared_dict.CONFIRMATIONS.get(cls.name, {})
             status = confirmation.get("status", None)
@@ -72,7 +73,7 @@ class ConfirmableLLMChatCommand(LLMChatCommand):
                 chat.add_assistant_message(Message(role="assistant", content=response))
 
                 if cls.settings.get("enable-hard-limit") and len(response) > cls.settings.get(
-                    "enable-hard-limit"
+                    "hard-limit-length", -1
                 ):
                     main_logger.warning(
                         f"Message is longer than Hard Limit [{len(response)}]. Limit is {cls.settings.get('hard-limit-length')}."
@@ -101,6 +102,7 @@ class ConfirmableLLMChatCommand(LLMChatCommand):
                     }
 
                     return " ".join(response.split())
+                return None
 
         return func
 
@@ -122,7 +124,7 @@ class CommandGlobalChatLLMChatCommand(LLMChatCommand):
     @classmethod
     def get_chat(cls, logline, shared_dict) -> ConversationHistory:
         return shared_dict.CHAT_CONVERSATION_HISTORY.get_or_create_command_chat_history(
-            cls.name, CommandChatTypes.GLOBAL, cls.settings
+            cls.name, CommandChatTypes.GLOBAL, logline.player, cls.settings
         )
 
 
@@ -130,5 +132,5 @@ class CommandPrivateChatLLMChatCommand(LLMChatCommand):
     @classmethod
     def get_chat(cls, logline, shared_dict) -> ConversationHistory:
         return shared_dict.CHAT_CONVERSATION_HISTORY.get_or_create_command_chat_history(
-            cls.name, CommandChatTypes.PRIVATE, cls.settings, logline.player
+            cls.name, CommandChatTypes.PRIVATE, logline.player, cls.settings
         )

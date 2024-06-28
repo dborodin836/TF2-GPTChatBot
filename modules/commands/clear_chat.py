@@ -60,8 +60,6 @@ def handle_clear(logline: GameChatMessage, shared_dict: InitializerConfig):
                             combo_logger.error(CLEAR_WRONG_SYNTAX_MSG)
                             continue
 
-                        name: str
-                        arg: str
                         arg, name = parts
 
                         if not (name.startswith("'") and name.endswith("'")):

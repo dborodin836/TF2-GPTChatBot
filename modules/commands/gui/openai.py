@@ -30,7 +30,7 @@ def gpt3_cmd_handler() -> None:
                     settings=None,
                 )
                 gui_logger.info(f"GPT3> {response}")
-            except openai.error.RateLimitError:
+            except openai.RateLimitError:
                 gui_logger.warning("Rate Limited! Try again later.")
             except Exception as e:
                 main_logger.error(f"Unhandled exception from request from gui. [{e}]")

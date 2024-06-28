@@ -31,8 +31,8 @@ class ChatHistoryManager(BaseModel):
         self,
         cmd_name: str,
         type_: CommandChatTypes,
-        settings: Optional[dict] = None,
-        user: Optional[Player] = None,
+        user: Player,
+        settings: Optional[dict] = None
     ):
         if settings is None:
             settings = {}
@@ -88,7 +88,7 @@ class ChatHistoryManager(BaseModel):
         name: str,
         type_: CommandChatTypes,
         chat_history: ConversationHistory,
-        user: Optional[Player] = None,
+        user: Player,
     ):
         match type_:
             case CommandChatTypes.PRIVATE:

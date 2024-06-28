@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Dict
+from typing import Callable, Dict
 
 from modules.api.llm.groq import GroqCloudLLMProvider
 from modules.api.llm.openai import OpenAILLMProvider
@@ -43,7 +43,7 @@ LLM_COMMAND_SETTINGS = {
 }
 
 # Traits
-WRAPPERS = {
+WRAPPERS: Dict[str, Callable] = {
     "openai-moderated": openai_moderated,
     "admin-only": admin_only,
     "empty-prompt-message-response": empty_prompt_message_response,
@@ -66,7 +66,7 @@ class InvalidCommandException(Exception): ...
 class Loader(ABC):
     def __init__(self, raw_data: dict) -> None:
         self.raw_command_data = raw_data
-        self.command_data = {}
+        self.command_data: Dict = {}
 
     def get_data(self) -> dict:
         self.__load_settings()
