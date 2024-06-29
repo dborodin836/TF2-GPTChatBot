@@ -7,10 +7,7 @@ import oyaml as yaml
 from modules.builder.loaders import COMMAND_TYPES, WRAPPERS, InvalidCommandException
 from modules.command_controllers import CommandController
 from modules.commands.base import BaseCommand
-from modules.logs import get_logger
-
-main_logger = get_logger("main")
-gui_logger = get_logger("gui")
+from modules.logs import gui_logger, main_logger
 
 
 def get_commands_from_yaml() -> List[dict]:
@@ -21,7 +18,10 @@ def get_commands_from_yaml() -> List[dict]:
 
 
 def load_command_specific_attrs(type_: str, raw_data: dict) -> Dict:
-    loader = COMMAND_TYPES.get(type_).loader
+    command_def = COMMAND_TYPES.get(type_)
+    if command_def is None:
+        raise InvalidCommandException(f"Command type {type_} not supported")
+    loader = command_def.loader
     loader_instance = loader(raw_data)
     return loader_instance.get_data()
 
@@ -45,20 +45,19 @@ def create_command_from_dict(cmd: dict) -> BaseCommand:
     if traits := cmd.get("traits"):
         wrappers = []
         for wrapper in traits:
-            wrapper: dict
             try:
                 wrapper_id = wrapper["__id"]
                 wrapper.pop("__id")
                 if len(list(wrapper.keys())) > 0:
                     factory = WRAPPERS[wrapper_id]
-                    wrappers.append(factory(**wrapper))
+                    wrappers.append(factory(**wrapper))  # type: ignore
                 else:
                     wrappers.append(WRAPPERS[wrapper_id])
             except Exception as e:
                 gui_logger.warning(f"{e} is not a valid trait.")
         command_dict.update(wrappers=wrappers)
 
-    return type(class_name, (type_,), command_dict)
+    return type(class_name, (type_,), command_dict)  # type: ignore
 
 
 def load_commands(controller: CommandController) -> None:

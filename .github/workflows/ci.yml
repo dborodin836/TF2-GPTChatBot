@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [master, main]
+    branches: [master, main, v2]
   pull_request:
-    branches: [master, main]
+    branches: [master, main, v2]
   schedule:
     - cron: '0 0 * * 1'
 
@@ -13,11 +13,17 @@ jobs:
     name: Pytest
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+          - os: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
@@ -37,10 +43,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
@@ -50,20 +56,20 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run isort check
-        run: isort .
+        run: python -m isort --check-only .
 
       - name: Run black check
-        run: black .
+        run: python -m black --check .
 
   mypy:
     name: mypy
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
@@ -72,5 +78,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run mypy
-        run: mypy .
+      - name: Run mypy check
+        run: python -m isort --check-only .

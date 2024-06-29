@@ -47,7 +47,7 @@ def test_regex_player(mocker):
     mocker.patch.object(modules.lobby_manager, "config", conf)
 
     line = r'#    878 "silly goose"       [U:1:220946399]     24:31      107    0 active'
-    res = lobby_manager.stats_regexes(line)
+    res = lobby_manager.parse_stats_regex(line)
     assert res is True
     assert lobby_manager.get_player_by_name("silly goose") is not None
 
@@ -58,7 +58,7 @@ def test_regex_map(mocker):
     mocker.patch.object(modules.lobby_manager, "config", conf)
 
     line = r"Map: ctf_2fort"
-    res = lobby_manager.stats_regexes(line)
+    res = lobby_manager.parse_stats_regex(line)
     assert res is True
     assert lobby_manager.map == "ctf_2fort"
 
@@ -69,7 +69,7 @@ def test_regex_ip(mocker):
     mocker.patch.object(modules.lobby_manager, "config", conf)
 
     line = r"udp/ip  : 169.254.239.115:45288"
-    res = lobby_manager.stats_regexes(line)
+    res = lobby_manager.parse_stats_regex(line)
     assert res is True
     assert lobby_manager.server_ip == "169.254.239.115:45288"
 
@@ -80,7 +80,7 @@ def test_regex_empty(mocker):
     mocker.patch.object(modules.lobby_manager, "config", conf)
 
     line = r"nothing :D"
-    res = lobby_manager.stats_regexes(line)
+    res = lobby_manager.parse_stats_regex(line)
     assert res is False
 
 
@@ -92,7 +92,7 @@ def test_regex_suicide(mocker):
     lobby_manager.add_player(plr)
 
     line = r"Gamer suicided."
-    res = lobby_manager.stats_regexes(line)
+    res = lobby_manager.parse_stats_regex(line)
     assert res is True
     assert lobby_manager.get_player_by_name("Gamer").deaths == 1
 
@@ -107,7 +107,7 @@ def test_regex_kill(mocker):
     lobby_manager.add_player(plr2)
 
     line = r"Gamer 1 killed Gamer 2 with bazaar_bargain. (crit)"
-    res = lobby_manager.stats_regexes(line)
+    res = lobby_manager.parse_stats_regex(line)
     assert res is True
     assert len(lobby_manager.players) == 2
 

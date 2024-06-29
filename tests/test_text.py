@@ -2,17 +2,17 @@ import time
 
 import modules.utils.text
 from modules.lobby_manager import LobbyManager
-from modules.typing import LogLine, Player
+from modules.typing import GameChatMessage, Player
 from modules.utils.text import (
     get_args,
     get_chunk_size,
     get_chunks,
-    get_console_logline,
     get_shortened_username,
     has_cyrillic,
-    parse_line,
+    parse_logline_and_yield_chat_message,
     remove_hashtags,
     split_into_chunks,
+    try_parse_chat_message,
 )
 from tests.common import MockConfig, get_player
 
@@ -114,9 +114,9 @@ def test_get_console_logline(mocker):
     mocker.patch.object(modules.lobby_manager, "config", conf)
     mocker.patch.object(time, "time", lambda: 1)
 
-    gen = get_console_logline()
+    gen = parse_logline_and_yield_chat_message()
 
-    assert next(gen) == LogLine(
+    assert next(gen) == GameChatMessage(
         prompt="!gpt3 test",
         username="silly goose",
         is_team_message=False,
@@ -135,7 +135,7 @@ def test_get_console_logline(mocker):
         ),
     )
 
-    assert next(gen) == LogLine(
+    assert next(gen) == GameChatMessage(
         prompt="!gpt3 test2",
         username="silly goose",
         is_team_message=False,
@@ -174,9 +174,9 @@ def test_get_tf2bd(mocker):
     mocker.patch.object(modules.lobby_manager, "config", conf)
     mocker.patch.object(time, "time", lambda: 1)
 
-    gen = get_console_logline()
+    gen = parse_logline_and_yield_chat_message()
 
-    assert next(gen) == LogLine(
+    assert next(gen) == GameChatMessage(
         prompt="!gpt3 2+2",
         username="jeff",
         is_team_message=False,
@@ -206,22 +206,22 @@ def test_parse_line_tf2bd(mocker):
     lobby_manager.add_player(pl)
 
     line = "(TEAM) jeff :  !cgpt 2+2"
-    assert parse_line(line) == LogLine(
+    assert try_parse_chat_message(line) == GameChatMessage(
         prompt="!cgpt 2+2", username="jeff", is_team_message=True, player=pl
     )
 
     line = "*DEAD*(TEAM) jeff :  !cgpt 2+2"
-    assert parse_line(line) == LogLine(
+    assert try_parse_chat_message(line) == GameChatMessage(
         prompt="!cgpt 2+2", username="jeff", is_team_message=True, player=pl
     )
 
     line = "*DEAD*(TEAM) jeff : !cgpt 2+2"
-    assert parse_line(line) == LogLine(
+    assert try_parse_chat_message(line) == GameChatMessage(
         prompt="!cgpt 2+2", username="jeff", is_team_message=True, player=pl
     )
 
     line = "*DEAD*(TEAM) jeff : !cgpt yo dude help me"
-    assert parse_line(line) == LogLine(
+    assert try_parse_chat_message(line) == GameChatMessage(
         prompt="!cgpt yo dude help me", username="jeff", is_team_message=True, player=pl
     )
 

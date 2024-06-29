@@ -1,23 +1,20 @@
 from modules.command_controllers import CommandChatTypes, InitializerConfig
 from modules.lobby_manager import lobby_manager
-from modules.logs import get_logger
+from modules.logs import combo_logger, main_logger
 from modules.permissions import is_admin
-from modules.typing import LogLine
+from modules.typing import GameChatMessage
 from modules.utils.text import get_args
-
-main_logger = get_logger("main")
-combo_logger = get_logger("combo")
 
 CLEAR_WRONG_SYNTAX_MSG = r'Wrong syntax! e.g. !clear \global \user="username" !solly !medic'
 
 
-def handle_clear(logline: LogLine, shared_dict: InitializerConfig):
+def handle_clear(logline: GameChatMessage, shared_dict: InitializerConfig):
     args = get_args(logline.prompt)
     commands = [cmd for cmd in logline.prompt.split() if not cmd.startswith("\\")]
 
     if is_admin(logline.player):
         if len(commands) == 0:
-            raise Exception(f"You didn't provide any commands to clear. (solly, demo etc.)")
+            raise Exception("You didn't provide any commands to clear. (solly, demo etc.)")
 
         for command in commands:
             # Check if command exist
@@ -60,8 +57,6 @@ def handle_clear(logline: LogLine, shared_dict: InitializerConfig):
                             combo_logger.error(CLEAR_WRONG_SYNTAX_MSG)
                             continue
 
-                        name: str
-                        arg: str
                         arg, name = parts
 
                         if not (name.startswith("'") and name.endswith("'")):

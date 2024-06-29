@@ -1,5 +1,6 @@
 import platform
 from os.path import expanduser
+
 import vdf
 
 try:
@@ -10,10 +11,7 @@ except ModuleNotFoundError:
 from typing import Optional
 
 from config import config
-from modules.logs import get_logger
-
-main_logger = get_logger("main")
-combo_logger = get_logger("combo")
+from modules.logs import combo_logger, main_logger
 
 STEAMID3_TO_STEAMID64_COEFFICIENT = 76561197960265728
 LINUX_STEAM_LOGINUSERS = f"{expanduser('~')}/.steam/steam/config/loginusers.vdf"
@@ -53,7 +51,7 @@ def get_host_steamid3_windows():
 
 def get_host_steamid3_linux():
     try:
-        with open(LINUX_STEAM_LOGINUSERS, 'r') as file:
+        with open(LINUX_STEAM_LOGINUSERS, "r") as file:
             loginusers = vdf.load(file)
             for steamid64, user_data in loginusers.get("users", {}).items():
                 if user_data.get("MostRecent", 0) == "1":
@@ -67,12 +65,12 @@ def get_host_steamid3_linux():
 
 def steamid64_to_steamid3(steamid64: int) -> str:
     steamid3 = []
-    steamid3.append('[U:1:')
+    steamid3.append("[U:1:")
     account_id = int(steamid64) - STEAMID3_TO_STEAMID64_COEFFICIENT
 
-    steamid3.append(str(account_id) + ']')
+    steamid3.append(str(account_id) + "]")
 
-    return ''.join(steamid3)
+    return "".join(steamid3)
 
 
 def steamid3_to_steamid64(steamid3: str) -> int:

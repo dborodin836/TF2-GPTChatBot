@@ -11,7 +11,7 @@ from modules.commands import decorators as traits
 from modules.commands.llm import LLMChatCommand
 from modules.conversation_history import ConversationHistory
 from modules.lobby_manager import LobbyManager
-from modules.typing import LogLine
+from modules.typing import GameChatMessage
 from tests.common import DummyProvider, MockConfig, get_player
 
 
@@ -32,10 +32,10 @@ def setup_mocks(mocker):
     mocker.patch.object(modules.lobby_manager, "config", conf)
     mocker.patch.object(modules.commands.clear_chat, "lobby_manager", lobby_manager)
     mocker.patch.object(modules.permissions, "config", conf)
-    mocker.patch.object(modules.commands.base, "send_say_command_to_tf2", dummy_func)
+    mocker.patch.object(modules.commands.llm, "send_say_command_to_tf2", dummy_func)
     mocker.patch.object(modules.servers.tf2, "config", conf)
     mocker.patch.object(modules.utils.text, "config", conf)
-    spy = mocker.spy(modules.commands.base, "send_say_command_to_tf2")
+    spy = mocker.spy(modules.commands.llm, "send_say_command_to_tf2")
 
     return lobby_manager, controller, chat, spy
 
@@ -49,7 +49,9 @@ def test_deny_empty(setup_mocks):
         wrappers = [traits.deny_empty_prompt]
 
         @classmethod
-        def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory:
+        def get_chat(
+            cls, logline: GameChatMessage, shared_dict: InitializerConfig
+        ) -> ConversationHistory:
             return chat
 
     controller.register_command("!test", TestCmd.as_command(), "test")
@@ -59,13 +61,15 @@ def test_deny_empty(setup_mocks):
     lobby_manager.add_player(player_1)
 
     # Test
-    logline = LogLine(
+    logline = GameChatMessage(
         username="user1", player=player_1, is_team_message=False, prompt="!test TEST PROMPT"
     )
     controller.process_line(logline)
     assert spy.call_count == 1
 
-    logline_1 = LogLine(username="user1", player=player_1, is_team_message=False, prompt="!test")
+    logline_1 = GameChatMessage(
+        username="user1", player=player_1, is_team_message=False, prompt="!test"
+    )
     controller.process_line(logline_1)
     assert spy.call_count == 1
 
@@ -79,7 +83,9 @@ def test_multiple(setup_mocks):
         wrappers = [traits.deny_empty_prompt, traits.admin_only]
 
         @classmethod
-        def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory:
+        def get_chat(
+            cls, logline: GameChatMessage, shared_dict: InitializerConfig
+        ) -> ConversationHistory:
             return chat
 
     controller.register_command("!test", TestCmd.as_command(), "test")
@@ -89,15 +95,19 @@ def test_multiple(setup_mocks):
     lobby_manager.add_player(player_1)
 
     # Test
-    logline = LogLine(username="admin", player=admin_player, is_team_message=False, prompt="!test")
+    logline = GameChatMessage(
+        username="admin", player=admin_player, is_team_message=False, prompt="!test"
+    )
     controller.process_line(logline)
     assert spy.call_count == 0
 
-    logline_1 = LogLine(username="user1", player=player_1, is_team_message=False, prompt="!test")
+    logline_1 = GameChatMessage(
+        username="user1", player=player_1, is_team_message=False, prompt="!test"
+    )
     controller.process_line(logline_1)
     assert spy.call_count == 0
 
-    logline_2 = LogLine(
+    logline_2 = GameChatMessage(
         username="admin", player=admin_player, is_team_message=False, prompt="!test 123"
     )
     controller.process_line(logline_2)
@@ -113,7 +123,9 @@ def test_admin_only(setup_mocks):
         wrappers = [traits.admin_only]
 
         @classmethod
-        def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory:
+        def get_chat(
+            cls, logline: GameChatMessage, shared_dict: InitializerConfig
+        ) -> ConversationHistory:
             return chat
 
     controller.register_command("!test", TestCmd.as_command(), "test")
@@ -123,13 +135,15 @@ def test_admin_only(setup_mocks):
     lobby_manager.add_player(player_1)
 
     # Test
-    logline = LogLine(
+    logline = GameChatMessage(
         username="admin", player=admin_player, is_team_message=False, prompt="!test TEST PROMPT"
     )
     controller.process_line(logline)
     assert spy.call_count == 1
 
-    logline_1 = LogLine(username="user1", player=player_1, is_team_message=False, prompt="!test")
+    logline_1 = GameChatMessage(
+        username="user1", player=player_1, is_team_message=False, prompt="!test"
+    )
     controller.process_line(logline_1)
     assert spy.call_count == 1
 
@@ -143,7 +157,9 @@ def test_disabled(setup_mocks):
         wrappers = [traits.disabled]
 
         @classmethod
-        def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory:
+        def get_chat(
+            cls, logline: GameChatMessage, shared_dict: InitializerConfig
+        ) -> ConversationHistory:
             return chat
 
     controller.register_command("!test", TestCmd.as_command(), "test")
@@ -153,13 +169,15 @@ def test_disabled(setup_mocks):
     lobby_manager.add_player(player_1)
 
     # Test
-    logline = LogLine(
+    logline = GameChatMessage(
         username="admin", player=admin_player, is_team_message=False, prompt="!test TEST PROMPT"
     )
     controller.process_line(logline)
     assert spy.call_count == 0
 
-    logline_1 = LogLine(username="user1", player=player_1, is_team_message=False, prompt="!test")
+    logline_1 = GameChatMessage(
+        username="user1", player=player_1, is_team_message=False, prompt="!test"
+    )
     controller.process_line(logline_1)
     assert spy.call_count == 0
 
@@ -174,7 +192,9 @@ def test_moderation(setup_mocks, mocker):
         wrappers = [traits.openai_moderated]
 
         @classmethod
-        def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory:
+        def get_chat(
+            cls, logline: GameChatMessage, shared_dict: InitializerConfig
+        ) -> ConversationHistory:
             return chat
 
     controller.register_command("!test", TestCmd.as_command(), "test")
@@ -184,13 +204,13 @@ def test_moderation(setup_mocks, mocker):
     lobby_manager.add_player(player_1)
 
     # Test
-    logline = LogLine(
+    logline = GameChatMessage(
         username="admin", player=admin_player, is_team_message=False, prompt="!test TEST PROMPT"
     )
     controller.process_line(logline)
     assert spy.call_count == 1
 
-    logline_1 = LogLine(
+    logline_1 = GameChatMessage(
         username="user1", player=player_1, is_team_message=False, prompt="!test TEST PROMPT"
     )
     controller.process_line(logline_1)
@@ -206,7 +226,9 @@ def test_empty_prompt_response(setup_mocks):
         wrappers = [traits.empty_prompt_message_response("EMPTY RESPONSE")]
 
         @classmethod
-        def get_chat(cls, logline: LogLine, shared_dict: InitializerConfig) -> ConversationHistory:
+        def get_chat(
+            cls, logline: GameChatMessage, shared_dict: InitializerConfig
+        ) -> ConversationHistory:
             return chat
 
     controller.register_command("!test", TestCmd.as_command(), "test")
@@ -216,13 +238,15 @@ def test_empty_prompt_response(setup_mocks):
     lobby_manager.add_player(player_1)
 
     # Test
-    logline = LogLine(
+    logline = GameChatMessage(
         username="admin", player=admin_player, is_team_message=False, prompt="!test TEST PROMPT"
     )
     controller.process_line(logline)
     assert spy.call_count == 1
     assert spy.spy_return == ("completion text", "admin", False)
 
-    logline_1 = LogLine(username="user1", player=player_1, is_team_message=False, prompt="!test")
+    logline_1 = GameChatMessage(
+        username="user1", player=player_1, is_team_message=False, prompt="!test"
+    )
     controller.process_line(logline_1)
     assert spy.call_count == 1

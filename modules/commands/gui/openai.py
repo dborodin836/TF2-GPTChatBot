@@ -4,11 +4,8 @@ import time
 import openai
 
 from modules.api.llm.openai import OpenAILLMProvider
-from modules.logs import get_logger
+from modules.logs import gui_logger, main_logger
 from modules.typing import Message
-
-main_logger = get_logger("main")
-gui_logger = get_logger("gui")
 
 GPT3_PROMPTS_QUEUE: queue.Queue = queue.Queue()
 
@@ -30,7 +27,7 @@ def gpt3_cmd_handler() -> None:
                     settings=None,
                 )
                 gui_logger.info(f"GPT3> {response}")
-            except openai.error.RateLimitError:
+            except openai.RateLimitError:
                 gui_logger.warning("Rate Limited! Try again later.")
             except Exception as e:
                 main_logger.error(f"Unhandled exception from request from gui. [{e}]")

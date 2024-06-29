@@ -1,29 +1,28 @@
 import asyncio
-import sys
-from typing import Union
-from pathlib import Path
 import json
+import sys
+from pathlib import Path
+from typing import Dict, Optional, Union
 
 from aiocache import cached
-
 
 if hasattr(sys, "_MEIPASS"):
     DEFAULT_SCHEMAS_DIR = Path(__file__).parent.parent.parent.parent
 else:
     DEFAULT_SCHEMAS_DIR = Path(__file__).parent.parent.parent
 
-DEFAULT_SCHEMAS_DIR = DEFAULT_SCHEMAS_DIR / 'schemas'
+DEFAULT_SCHEMAS_DIR = DEFAULT_SCHEMAS_DIR / "schemas"
 
 
 class LocalFileRefCompiler:
-    def __init__(self, base_path: Path = None):
+    def __init__(self, base_path: Optional[Path] = None):
         self.path = base_path or DEFAULT_SCHEMAS_DIR
-        self.ref_cache = {}
+        self.ref_cache: Dict[str, Union[dict, list]] = {}
 
     def resolve(self, obj: Union[dict, list]) -> Union[dict, list]:
         if isinstance(obj, dict):
-            if '$ref' in obj:
-                ref = obj['$ref']
+            if "$ref" in obj:
+                ref = obj["$ref"]
                 if isinstance(ref, str):
                     resolved_ref = self.load_and_resolve_ref(ref)
                     return resolved_ref
@@ -42,9 +41,11 @@ class LocalFileRefCompiler:
         if ref not in self.ref_cache:
             ref_path = self.path / ref
             try:
-                with open(ref_path, 'r') as ref_file:
+                with open(ref_path, "r") as ref_file:
                     referenced_schema = json.loads(ref_file.read())
-                    self.ref_cache[ref] = self.resolve(referenced_schema)  # Cache resolved reference
+                    self.ref_cache[ref] = self.resolve(
+                        referenced_schema
+                    )  # Cache resolved reference
             except FileNotFoundError:
                 print(f"Reference file not found: {ref_path}")
                 raise

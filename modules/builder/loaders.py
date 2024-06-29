@@ -1,27 +1,28 @@
 from abc import ABC
-from typing import Dict
+from typing import Callable, Dict
 
 from modules.api.llm.groq import GroqCloudLLMProvider
 from modules.api.llm.openai import OpenAILLMProvider
 from modules.api.llm.textgen_webui import TextGenerationWebUILLMProvider
-from modules.commands.tts import TTSCommand
-from modules.commands.rcon import RconCommand
-from modules.commands.llm import CommandGlobalChatLLMChatCommand, CommandPrivateChatLLMChatCommand, \
-    ConfirmableQuickQueryLLMCommand, QuickQueryLLMCommand
 from modules.commands.decorators import (
     admin_only,
+    blacklist_factory,
     deny_empty_prompt,
     disabled,
     empty_prompt_message_response,
     openai_moderated,
     whitelist_factory,
-    blacklist_factory
 )
-from modules.logs import get_logger
+from modules.commands.llm import (
+    CommandGlobalChatLLMChatCommand,
+    CommandPrivateChatLLMChatCommand,
+    ConfirmableQuickQueryLLMCommand,
+    QuickQueryLLMCommand,
+)
+from modules.commands.rcon import RconCommand
+from modules.commands.tts import TTSCommand
+from modules.logs import gui_logger
 from modules.typing import CommandSchemaDefinition
-
-main_logger = get_logger("main")
-gui_logger = get_logger("gui")
 
 LLM_COMMAND_SETTINGS = {
     "prompt-file",
@@ -39,14 +40,14 @@ LLM_COMMAND_SETTINGS = {
 }
 
 # Traits
-WRAPPERS = {
+WRAPPERS: Dict[str, Callable] = {
     "openai-moderated": openai_moderated,
     "admin-only": admin_only,
     "empty-prompt-message-response": empty_prompt_message_response,
     "disabled": disabled,
     "deny-empty-prompt": deny_empty_prompt,
     "whitelist": whitelist_factory,
-    "blacklist": blacklist_factory
+    "blacklist": blacklist_factory,
 }
 
 LLM_PROVIDERS = {
@@ -62,7 +63,7 @@ class InvalidCommandException(Exception): ...
 class Loader(ABC):
     def __init__(self, raw_data: dict) -> None:
         self.raw_command_data = raw_data
-        self.command_data = {}
+        self.command_data: Dict = {}
 
     def get_data(self) -> dict:
         self.__load_settings()
@@ -145,17 +146,13 @@ COMMAND_TYPES: Dict[str, CommandSchemaDefinition] = {
         klass=RconCommand, loader=RCONCommandLoader, settings={"wait-ms"}
     ),
     "openai-tts": CommandSchemaDefinition(
-        klass=TTSCommand, loader=Loader, settings={
-            "model",
-            "voice",
-            "speed",
-            "volume",
-            "output_device"
-        }
+        klass=TTSCommand,
+        loader=Loader,
+        settings={"model", "voice", "speed", "volume", "output_device"},
     ),
-    'confirmable-quick-query': CommandSchemaDefinition(
+    "confirmable-quick-query": CommandSchemaDefinition(
         klass=ConfirmableQuickQueryLLMCommand,
         loader=LLMCommandLoader,
-        settings=LLM_COMMAND_SETTINGS
-    )
+        settings=LLM_COMMAND_SETTINGS,
+    ),
 }

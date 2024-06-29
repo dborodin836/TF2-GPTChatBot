@@ -3,12 +3,8 @@ import json
 from json import JSONDecodeError
 from typing import Optional, Set
 
-from modules.logs import get_logger, log_gui_general_message
+from modules.logs import combo_logger, log_gui_general_message, main_logger
 from modules.typing import Player
-
-main_logger = get_logger("main")
-gui_logger = get_logger("gui")
-combo_logger = get_logger("combo")
 
 
 class BansManager:

@@ -6,15 +6,11 @@ from typing import Optional
 from rcon import WrongPassword
 
 from config import config
-from modules.logs import get_logger
+from modules.logs import combo_logger, gui_logger, main_logger
 from modules.message_queueing import message_queue
 from modules.rcon_client import RconClient
 from modules.typing import QueuedMessage
 from modules.utils.text import get_chunks, get_shortened_username
-
-main_logger = get_logger("main")
-gui_logger = get_logger("gui")
-combo_logger = get_logger("combo")
 
 
 def get_username() -> str:

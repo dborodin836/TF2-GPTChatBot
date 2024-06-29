@@ -12,15 +12,12 @@ from starlette.websockets import WebSocketDisconnect
 
 from config import Config, ValidatableConfig, config
 from modules.builder.utils import create_command_from_dict
-from modules.setup import controller
 from modules.gui.controller import command_controller as gui_cmd_controller
-from modules.logs import get_logger
 from modules.set_once_dict import ModificationOfSetKey
+from modules.setup import controller
 from modules.typing import Command
 from modules.utils.config import DROP_KEYS, save_commands, save_config
 from modules.utils.schemas import get_compiled_schema
-
-combo_logger = get_logger("combo")
 
 app = FastAPI()
 

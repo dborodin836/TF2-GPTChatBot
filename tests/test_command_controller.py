@@ -15,13 +15,13 @@ def test_chat_conversation_history_basic():
 
     # test creation global
     result_1 = chat_manager.get_or_create_command_chat_history(
-        "test", CommandChatTypes.GLOBAL, {}, player_1
+        "test", CommandChatTypes.GLOBAL, player_1, {}
     )
     assert result_1 is not None
 
     # test creation private
     result_2 = chat_manager.get_or_create_command_chat_history(
-        "test", CommandChatTypes.PRIVATE, {}, player_1
+        "test", CommandChatTypes.PRIVATE, player_1, {}
     )
     assert result_2 is not None
     assert result_2 != result_1
@@ -36,10 +36,10 @@ def test_chat_conversation_history_isolation_private():
 
     # Create 2 chats
     chat_1 = chat_manager.get_or_create_command_chat_history(
-        "test", CommandChatTypes.PRIVATE, {}, player_1
+        "test", CommandChatTypes.PRIVATE, player_1, {}
     )
     chat_2 = chat_manager.get_or_create_command_chat_history(
-        "test", CommandChatTypes.PRIVATE, {}, player_2
+        "test", CommandChatTypes.PRIVATE, player_2, {}
     )
     assert chat_1 != chat_2
     assert id(chat_1) != id(chat_2)
@@ -66,10 +66,10 @@ def test_chat_conversation_history_isolation_global():
 
     # Create 2 chats
     chat_1 = chat_manager.get_or_create_command_chat_history(
-        "test", CommandChatTypes.GLOBAL, {}, player_1
+        "test", CommandChatTypes.GLOBAL, player_1, {}
     )
     chat_2 = chat_manager.get_or_create_command_chat_history(
-        "test", CommandChatTypes.GLOBAL, {}, player_2
+        "test", CommandChatTypes.GLOBAL, player_2, {}
     )
     assert chat_1 == chat_2
     assert id(chat_1) == id(chat_2)

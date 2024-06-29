@@ -9,7 +9,6 @@ from pynput import keyboard
 
 from config import config
 from modules.bot_state import state_manager
-from modules.setup import parse_console_logs_and_build_conversation_history
 from modules.commands.gui.openai import gpt3_cmd_handler
 from modules.gui.log_window import (
     CopyStdoutToSocket,
@@ -17,11 +16,10 @@ from modules.gui.log_window import (
     RedirectStdoutToLogWindow,
 )
 from modules.lobby_manager import lobby_manager
-from modules.logs import get_logger, setup_loggers
+from modules.logs import gui_logger, setup_loggers
 from modules.message_queueing import message_queue_handler
 from modules.server import app
-
-gui_logger = get_logger("gui")
+from modules.setup import parse_console_logs_and_build_conversation_history
 
 
 def keyboard_on_press(key):

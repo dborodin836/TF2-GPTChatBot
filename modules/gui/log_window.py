@@ -8,13 +8,10 @@ import ttkbootstrap as ttk
 from ttkbootstrap import Style
 
 from modules.gui.controller import command_controller
-from modules.logs import get_logger
+from modules.logs import gui_logger
 from modules.server import connection_manager
 
 PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
-
-gui_logger = get_logger("gui")
-main_logger = get_logger("main")
 
 
 class LogWindow(tk.Frame):

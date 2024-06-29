@@ -8,13 +8,10 @@ import requests
 
 from config import config
 from modules.bulk_url_downloader import BulkSteamGameDetailsUrlDownloader
-from modules.logs import get_logger
+from modules.logs import gui_logger, main_logger
 from modules.typing import Player, PlayerStats, SteamHoursApiUrlID64, VACStats
 from modules.utils.steam import steamid3_to_steamid64
 from modules.utils.time import get_date, get_minutes_from_str
-
-main_logger = get_logger("main")
-gui_logger = get_logger("gui")
 
 MELEE_WEAPONS_KILL_IDS = {
     "skullbat",
@@ -260,10 +257,10 @@ class LobbyManager:
         results_total_game_hours = BulkSteamGameDetailsUrlDownloader(hours_url).download_all()
 
         for response, steamid64 in results_total_game_hours:
-            for player in to_update_players_list:
-                if player.steam.steamid64 == steamid64:
+            for player_stats in to_update_players_list:
+                if player_stats.steam.steamid64 == steamid64:
                     try:
-                        player.steam.hours_in_team_fortress_2 = (
+                        player_stats.steam.hours_in_team_fortress_2 = (
                             str(round(response["response"]["games"][0]["playtime_forever"] / 60))
                             + " hours"
                         )
@@ -347,7 +344,7 @@ class LobbyManager:
             "players": new_players,
         }
 
-    def stats_regexes(self, line: str) -> bool:
+    def parse_stats_regex(self, line: str) -> bool:
         """Return True if any matches."""
         # Parsing user line from status command
         if matches := re.search(
@@ -395,9 +392,9 @@ class LobbyManager:
         # Parsing suicide
         elif matches := re.search(r"^(.*)\ssuicided", line):
             username = matches.groups()[0]
-            player = self.get_player_by_name(username)
-            if player is not None:
-                self.handle_kill_bind(player)
+            suicided_player = self.get_player_by_name(username)
+            if suicided_player is not None:
+                self.handle_kill_bind(suicided_player)
 
         else:
             return False

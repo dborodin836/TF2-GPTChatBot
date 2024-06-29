@@ -4,16 +4,13 @@ import re
 import time
 import typing
 from string import Template
-from typing import Generator
+from typing import Generator, Optional
 
 from config import config
 from modules.lobby_manager import lobby_manager
-from modules.logs import get_logger
+from modules.logs import gui_logger, main_logger
 from modules.rcon_client import RconClient
-from modules.typing import LogLine
-
-main_logger = get_logger("main")
-gui_logger = get_logger("gui")
+from modules.typing import GameChatMessage
 
 MAX_LENGTH_CYRILLIC = 65
 MAX_LENGTH_OTHER = 120
@@ -30,7 +27,7 @@ TF2BD_WRAPPER_CHARS = [
 ]
 
 
-def split_into_chunks(string: str, maxlength: int) -> typing.Generator:
+def split_into_chunks(string: str, maxlength: int) -> typing.Generator[str, None, None]:
     """
     This function splits a string into chunks of a maximum length, with each chunk ending at the
     last space character before the maximum length.
@@ -45,6 +42,9 @@ def split_into_chunks(string: str, maxlength: int) -> typing.Generator:
 
 
 def get_shortened_username(username: str) -> str:
+    """
+    Shortens the given username if it exceeds a predefined length and formats it using a template.
+    """
     template = Template(config.SHORTENED_USERNAMES_FORMAT)
 
     if len(username) > config.SHORTENED_USERNAME_LENGTH:
@@ -113,36 +113,44 @@ def follow_tail() -> Generator[str, None, None]:
             yield ""
 
 
-def parse_line(line: str) -> typing.Optional[LogLine]:
+def try_parse_chat_message(logline: str) -> Optional[GameChatMessage]:
+    """
+    Tries to parse a chat message from a logline.
+    """
+
     # Fixes issue #80
     # Valve servers use 2 spaces after the colon symbol, but some servers use one.
     # Default:                          Modified:
     # <username>_:__<message>           <username>_:_<message>
-    if " :  " in line:
-        parts = line.split(" :  ")
+    if " :  " in logline:
+        parts = logline.split(" :  ")
     else:
-        parts = line.split(" : ")
+        parts = logline.split(" : ")
 
-    is_team_mes = "(TEAM)" in line
+    is_team_mes = "(TEAM)" in logline
     username = parts[0].replace("(TEAM)", "", 1).removeprefix("*DEAD*").strip()
 
+    # Username can't be empty
     if username == "":
         return None
 
+    # Check if the username exists, if not, try to search for it.
     if not lobby_manager.is_username_exist(username):
         username = lobby_manager.search_username(username)
 
+    # Get the player object
     player = lobby_manager.get_player_by_name(username)
     if player is None:
         main_logger.trace(f"Player with username '{username}' not found.")
         return None
 
+    # Join all parts of the message, if more than 2 are found.
     if len(parts) > 2:
-        prompt = " ".join(parts[1:])
+        chat_msg = " ".join(parts[1:])
     else:
-        prompt = parts[-1]
+        chat_msg = parts[-1]
 
-    return LogLine(prompt, username, is_team_mes, player)
+    return GameChatMessage(chat_msg, username, is_team_mes, player)
 
 
 ever_updated: bool = False
@@ -151,27 +159,28 @@ max_delay: float = 20
 min_delay: float = 10
 
 
-def get_console_logline() -> typing.Generator:
+def parse_logline_and_yield_chat_message() -> Generator[GameChatMessage, None, None]:
     """
-    Opens a log file for Team Fortress 2 and yields tuples containing user prompts and usernames.
+    Parse log lines and yields chat messages if they are successfully parsed.
+    It also handles sending status commands based on certain events.
     """
     global last_updated, ever_updated
 
-    for line in follow_tail():
+    for log_line in follow_tail():
         # Remove timestamp
-        line = line[23:]
+        log_line = log_line[23:]
 
         # Remove TF2BD chars
         for char in TF2BD_WRAPPER_CHARS:
-            line = line.replace(char, "").strip()
+            log_line = log_line.replace(char, "").strip()
 
         # Send status commands based on events
-        if "Lobby updated" in line and time.time() - last_updated > min_delay:
+        if "Lobby updated" in log_line and time.time() - last_updated > min_delay:
             main_logger.debug("Sending status command on lobby update connection.")
             last_updated = time.time()
             get_status()
 
-        if line.endswith("connected") and time.time() - last_updated > min_delay:
+        if log_line.endswith("connected") and time.time() - last_updated > min_delay:
             main_logger.debug("Sending status command on new player connection.")
             last_updated = time.time()
             get_status()
@@ -185,35 +194,39 @@ def get_console_logline() -> typing.Generator:
             get_status()
 
         # Ignore if line is from status command output
-        if lobby_manager.stats_regexes(line):
+        if lobby_manager.parse_stats_regex(log_line):
             ever_updated = True
             continue
 
-        res = None
-
         try:
-            res = parse_line(line)
+            chat_message = try_parse_chat_message(log_line)
+            if chat_message is not None:
+                yield chat_message
         except Exception as e:
             main_logger.warning(f"Unknown error happened while reading chat. [{e}]")
-        finally:
-            yield res
 
 
-def get_chunks(message: str) -> Generator:
-    chunks_size: int = get_chunk_size(message)
-    chunks = split_into_chunks(" ".join(message.split()), chunks_size)
+def get_chunks(string: str) -> Generator[str, None, None]:
+    """
+    This function takes a string as input and generates chunks of the string.
+    """
+    chunks_size: int = get_chunk_size(string)
+    chunks = split_into_chunks(" ".join(string.split()), chunks_size)
     return chunks
 
 
-def remove_hashtags(text: str) -> str:
+def remove_hashtags(string: str) -> str:
     """
     Removes hashtags from a given string.
     """
-    cleaned_text = re.sub(r"#\w+", "", text).strip()
+    cleaned_text = re.sub(r"#\w+", "", string).strip()
     return cleaned_text
 
 
 def get_args(prompt: str) -> typing.List[str]:
+    """
+    Parse the input string and extract arguments while considering quotes and escape characters.
+    """
     in_quote = None  # Track the type of quote we're inside (None, single ', or double ")
     current_arg = ""
     result = []
@@ -259,6 +272,9 @@ def get_args(prompt: str) -> typing.List[str]:
 
 
 def remove_args(prompt: str) -> str:
+    """
+    Function to remove arguments from a given prompt string.
+    """
     message = prompt.split(" ")
     result = []
     args_ended = False
@@ -272,7 +288,10 @@ def remove_args(prompt: str) -> str:
     return " ".join(result)
 
 
-def get_status():
+def get_status() -> str:
+    """
+    Get the status by running a command through Rcon.
+    """
     while True:
         try:
             with RconClient() as client:

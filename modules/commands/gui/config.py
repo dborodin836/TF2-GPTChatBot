@@ -1,4 +1,4 @@
-from modules.logs import get_logger
+from modules.logs import gui_logger
 from modules.utils.config import (
     dump_config,
     get_value_config,
@@ -7,8 +7,6 @@ from modules.utils.config import (
     save_config,
     set_value_config,
 )
-
-gui_logger = get_logger("gui")
 
 
 def handle_config(command, shared_dict):

@@ -1,10 +1,12 @@
 import os
 import tempfile
+from typing import Any, Dict
 
 import pytest
 
 from modules.api.llm.base import LLMProvider
 from modules.commands.llm import LLMChatCommand
+from modules.conversation_history import ConversationHistory
 from modules.typing import Player
 from modules.utils.steam import steamid3_to_steamid64
 
@@ -20,11 +22,11 @@ class DummyProvider(LLMProvider):
 
 
 class DummyLLMChatCommand(LLMChatCommand):
-    provider: None
-    model: None
+    provider: LLMProvider
+    model: str
     model_settings = {}
-    chat = None
-    settings = {}
+    chat: ConversationHistory
+    settings: Dict[str, Any] = {}
 
     @classmethod
     def get_chat(cls, logline, shared_dict): ...
