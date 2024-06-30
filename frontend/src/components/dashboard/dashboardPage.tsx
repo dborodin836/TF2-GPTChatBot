@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Typography } from '@material-tailwind/react';
-import { pieArcLabelClasses, PieChart } from '@mui/x-charts';
+import { Gauge, gaugeClasses, pieArcLabelClasses, PieChart } from '@mui/x-charts';
 import { useAlert } from '../AlertContext';
 
 export function Dashboard() {
   const [statsData, setStatsData] = useState<any>([]);
+  const [CPMData, setCPMData] = useState<number>(0);
+  const [activeUsers, setActiveUsers] = useState<Array<any>>([]);
+  const [popularCommands, setPopularCommands] = useState<Array<any>>([]);
   const { openAlert } = useAlert();
 
-  const fetchLineStats = async () => {
-    const response = await fetch(`http://127.0.0.1:8000/stats/`);
+  const fetchStats = async () => {
+    const response = await fetch(`http://127.0.0.1:8000/stats`);
     if (!response.ok) {
       console.error('Failed to fetch command data');
       openAlert('Failed to fetch command data.');
@@ -24,17 +27,20 @@ export function Dashboard() {
           label: 'System',
         },
       ];
-      console.log(resultArray);
+      console.log(data);
+      setPopularCommands(data.most_used_commands);
+      setActiveUsers(data.most_active_users);
+      setCPMData(data.request_per_minute);
       setStatsData(resultArray);
     }
   };
 
   useEffect(() => {
-    fetchLineStats();
+    fetchStats();
 
     // Set up the interval to fetch data periodically
     const interval = setInterval(() => {
-      fetchLineStats();
+      fetchStats();
     }, 2000);  // 2s
 
     // Clean up the interval on component unmount
@@ -68,9 +74,49 @@ export function Dashboard() {
           }}
         />
       </Card>
-      <div className="p-4 bg-green-500 text-white h-full">Item 2</div>
-      <div className="p-4 bg-red-500 text-white h-full">Item 3</div>
-      <div className="p-4 bg-yellow-500 text-white h-full">Item 4</div>
+      <Card className="p-4 h-full">
+        <Typography>Request per minute</Typography>
+        <Gauge
+          cornerRadius="50%"
+          value={CPMData}
+          startAngle={-110}
+          endAngle={110}
+          valueMax={40}
+          sx={(theme) => ({
+            [`& .${gaugeClasses.valueText}`]: {
+              fontSize: 40,
+            },
+            [`& .${gaugeClasses.valueArc}`]: {
+              fill: '#52b202',
+            },
+            [`& .${gaugeClasses.referenceArc}`]: {
+              fill: theme.palette.text.disabled,
+            },
+          })}
+        />
+      </Card>
+      <Card className="p-4 h-full">
+        <Typography>Most active users</Typography>
+        <ol className="mt-2 flex flex-col h-full">
+          {activeUsers.map((user, index) => (
+            <li key={index} className="text-xl pb-2 flex justify-between">
+              <span>{index + 1}. {user.username}</span>
+              <span>{user.calls} request(s)</span>
+            </li>
+          ))}
+        </ol>
+      </Card>
+      <Card className="p-4 h-full">
+        <Typography>Popular commands</Typography>
+        <ol className="mt-2 flex flex-col h-full">
+          {popularCommands.map((user, index) => (
+            <li key={index} className="text-xl pb-2 flex justify-between">
+              <span>{index + 1}. {user.name}</span>
+              <span>{user.calls} request(s)</span>
+            </li>
+          ))}
+        </ol>
+      </Card>
     </div>
 
   );
