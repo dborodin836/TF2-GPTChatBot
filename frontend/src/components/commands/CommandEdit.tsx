@@ -61,7 +61,7 @@ export function CommandEdit() {
 
 
   const fetchSchema = async () => {
-    const response = await fetch('http://127.0.0.1:8000/schemas/command');
+    const response = await fetch('http://127.0.0.1:8000/command/schema');
     if (!response.ok) {
       console.error('Failed to fetch command schema');
       openAlert('Failed to fetch command schema.');

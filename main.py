@@ -19,7 +19,7 @@ from modules.lobby_manager import lobby_manager
 from modules.logs import gui_logger, setup_loggers
 from modules.message_queueing import message_queue_handler
 from modules.server import app
-from modules.setup import parse_console_logs_and_build_conversation_history
+from modules.setup import handle_chat_messages
 
 
 def keyboard_on_press(key):
@@ -48,7 +48,7 @@ def run_threads(args: argparse.Namespace):
         sys.stdout = CopyStdoutToSocket()
         setup_loggers()
         run_common_threads()
-        parse_console_logs_and_build_conversation_history()
+        handle_chat_messages()
     else:
         root = tk.Tk()
         root.iconphoto(False, tk.PhotoImage(file="icon.png"))
@@ -58,9 +58,7 @@ def run_threads(args: argparse.Namespace):
         setup_loggers()
         run_common_threads()
 
-        threading.Thread(
-            target=parse_console_logs_and_build_conversation_history, daemon=True
-        ).start()
+        threading.Thread(target=handle_chat_messages, daemon=True).start()
 
         log_window.pack()
         root.mainloop()

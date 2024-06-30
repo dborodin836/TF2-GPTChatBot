@@ -1,5 +1,4 @@
 import codecs
-import os
 import re
 import time
 import typing
@@ -80,30 +79,16 @@ def follow_tail() -> Generator[str, None, None]:
     """
     Follows the tail of a file, yielding new lines as they are added.
     """
-    first_call = True
     while True:
         try:
-            with codecs.open(config.TF2_LOGFILE_PATH, encoding="utf-8", errors="ignore") as input:
-                if first_call:
-                    input.seek(0, 2)
-                    first_call = False
-                latest_data = input.read()
+            with codecs.open(config.TF2_LOGFILE_PATH, encoding="utf-8", errors="ignore") as file:
+                file.seek(0, 2)  # Jump to the end
                 while True:
-                    if "\n" not in latest_data:
-                        latest_data += input.read()
-                        if "\n" not in latest_data:
-                            yield ""
-                            if not os.path.isfile(config.TF2_LOGFILE_PATH):
-                                break
-                            time.sleep(0.1)
-                            continue
-                    latest_lines = latest_data.split("\n")
-                    if latest_data[-1] != "\n":
-                        latest_data = latest_lines[-1]
-                    else:
-                        latest_data = input.read()
-                    for line in latest_lines[:-1]:
-                        yield line + "\n"
+                    latest_data = file.readline()
+                    if latest_data == "":
+                        time.sleep(0.1)
+                        continue
+                    yield latest_data.strip()
         except FileNotFoundError:
             gui_logger.warning("Logfile doesn't exist. Checking again in 4 seconds.")
             time.sleep(4)
@@ -153,10 +138,13 @@ def try_parse_chat_message(logline: str) -> Optional[GameChatMessage]:
     return GameChatMessage(chat_msg, username, is_team_mes, player)
 
 
-ever_updated: bool = False
-last_updated: float = 0.0
-max_delay: float = 20
-min_delay: float = 10
+total_lines_parsed_count = 0
+stats_commands_parsed_count = 0
+chat_messages_parsed_count = 0
+
+
+def get_stats():
+    return total_lines_parsed_count, stats_commands_parsed_count, chat_messages_parsed_count
 
 
 def parse_logline_and_yield_chat_message() -> Generator[GameChatMessage, None, None]:
@@ -164,11 +152,19 @@ def parse_logline_and_yield_chat_message() -> Generator[GameChatMessage, None, N
     Parse log lines and yields chat messages if they are successfully parsed.
     It also handles sending status commands based on certain events.
     """
-    global last_updated, ever_updated
+    global total_lines_parsed_count, stats_commands_parsed_count, chat_messages_parsed_count
+
+    ever_updated: bool = False
+    last_updated: float = 0.0
+    max_delay: float = 20
+    min_delay: float = 10
 
     for log_line in follow_tail():
         # Remove timestamp
         log_line = log_line[23:]
+
+        # Increment total lines counter
+        total_lines_parsed_count += 1
 
         # Remove TF2BD chars
         for char in TF2BD_WRAPPER_CHARS:
@@ -195,12 +191,14 @@ def parse_logline_and_yield_chat_message() -> Generator[GameChatMessage, None, N
 
         # Ignore if line is from status command output
         if lobby_manager.parse_stats_regex(log_line):
+            stats_commands_parsed_count += 1
             ever_updated = True
             continue
 
         try:
             chat_message = try_parse_chat_message(log_line)
             if chat_message is not None:
+                chat_messages_parsed_count += 1
                 yield chat_message
         except Exception as e:
             main_logger.warning(f"Unknown error happened while reading chat. [{e}]")

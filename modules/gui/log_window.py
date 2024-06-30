@@ -9,7 +9,7 @@ from ttkbootstrap import Style
 
 from modules.gui.controller import command_controller
 from modules.logs import gui_logger
-from modules.server import connection_manager
+from modules.server.connection_manager import connection_manager
 
 PROMPT_PLACEHOLDER = "Type your commands here... Or start with 'help' command"
 
