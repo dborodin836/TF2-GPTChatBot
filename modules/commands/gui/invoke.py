@@ -1,5 +1,6 @@
 from config import config
 from modules.lobby_manager import lobby_manager
+from modules.logs import gui_logger
 from modules.setup import controller
 from modules.typing import GameChatMessage
 
