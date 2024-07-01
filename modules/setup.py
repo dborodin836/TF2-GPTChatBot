@@ -41,7 +41,7 @@ def init() -> None:
     print_buffered_config_innit_messages()
 
 
-def parse_console_logs_and_build_conversation_history() -> None:
+def handle_chat_messages() -> None:
     """
     Processes the console logs and builds a conversation history, filters banned usernames.
     """
@@ -56,13 +56,13 @@ def parse_console_logs_and_build_conversation_history() -> None:
     # Services
     controller.register_service(messaging_queue_service)
 
-    for logline in parse_logline_and_yield_chat_message():
+    for chat_message in parse_logline_and_yield_chat_message():
         if not state_manager.bot_running:
             continue
-        if bans_manager.is_banned_player(logline.player):
+        if bans_manager.is_banned_player(chat_message.player):
             main_logger.info(
-                f"Player '{logline.player.name}' {logline.player.steamid3} tried to use commands, but "
+                f"Player '{chat_message.player.name}' {chat_message.player.steamid3} tried to use commands, but "
                 f"he's banned."
             )
             continue
-        controller.process_line(logline)
+        controller.process_line(chat_message)

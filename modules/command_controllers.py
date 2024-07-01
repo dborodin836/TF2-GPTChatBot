@@ -5,6 +5,7 @@ import pydantic
 from ordered_set import OrderedSet
 from pydantic import BaseModel, ConfigDict
 
+from modules.command_monitor import monitor
 from modules.conversation_history import ConversationHistory
 from modules.logs import combo_logger, gui_logger, log_gui_model_message, main_logger
 from modules.set_once_dict import SetOnceDictionary
@@ -209,7 +210,10 @@ class CommandController:
 
         command: Optional[Command] = self.__named_commands_registry.get(command_name, None)
         if command is None:
-            return
+            return None
+
+        monitor.record_call(logline.username, command_name)
+
         handler = command.function
 
         cleaned_prompt = logline.prompt.removeprefix(command_name).strip()
