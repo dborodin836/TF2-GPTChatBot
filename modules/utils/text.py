@@ -92,10 +92,8 @@ def follow_tail() -> Generator[str, None, None]:
         except FileNotFoundError:
             gui_logger.warning("Logfile doesn't exist. Checking again in 4 seconds.")
             time.sleep(4)
-            yield ""
         except Exception as e:
             main_logger.error(f"Failed to parse line from game logfile [{e}]")
-            yield ""
 
 
 def try_parse_chat_message(logline: str) -> Optional[GameChatMessage]:
